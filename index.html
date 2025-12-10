@@ -12,9 +12,27 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
+
     gtag('config', 'AW-17075496858');
   </script>
-  <!-- Quando tiver a tag do Google Ads, cole aqui em cima o código do gtag.js -->
+
+  <!-- Event snippet – conversão no clique do botão do WhatsApp -->
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) !== 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17075496858/zJmpCO2ZoM8bEJrPnc4_',
+        'value': 1.0,
+        'currency': 'BRL',
+        'event_callback': callback
+      });
+      return false;
+    }
+  </script>
 
   <style>
     * {
@@ -216,12 +234,14 @@
           Santa Maria, Santa Cruz do Sul, Lajeado, Estrela e Venâncio Aires.
         </p>
 
+        <!-- Botão com conversão no clique -->
         <a class="cta-btn"
            href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB"
-           target="_blank" rel="noopener noreferrer">
+           onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB');">
           <span class="icon">💬</span>
           <span>Consultar disponibilidade no WhatsApp</span>
         </a>
+
         <p class="cta-note">
           Atendimento em horário comercial. Sem compromisso.
         </p>
