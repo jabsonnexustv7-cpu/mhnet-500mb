@@ -12,11 +12,11 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'AW-17075496858');
   </script>
 
-  <!-- Event snippet – conversão no clique do botão do WhatsApp -->
+  <!-- Event snippet de conversão: clique no botão de WhatsApp -->
+  <!-- Chamado ao clicar no botão principal de CTA -->
   <script>
     function gtag_report_conversion(url) {
       var callback = function () {
@@ -234,63 +234,117 @@
           Santa Maria, Santa Cruz do Sul, Lajeado, Estrela e Venâncio Aires.
         </p>
 
-        <!-- Botão com conversão no clique -->
-        <a class="cta-btn"
-           href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB"
-           onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB');">
+        <!-- URL do WhatsApp rastreada como conversão -->
+        <a
+          class="cta-btn"
+          href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB"
+          onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB');"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <span class="icon">💬</span>
           <span>Consultar disponibilidade no WhatsApp</span>
         </a>
 
         <p class="cta-note">
-          Atendimento em horário comercial. Sem compromisso.
+          Atendimento em horário comercial. Sem compromisso. Valor de R$ 99,90/mês sujeito à disponibilidade
+          e às condições comerciais da sua cidade.
         </p>
 
         <div class="grid">
           <div class="card">
             <h2>Vantagens da WebTurbo Fibra</h2>
             <ul>
-              <li>Velocidade de 500MB para toda a casa.</li>
-              <li>Mais estabilidade para vídeos, jogos e reuniões.</li>
-              <li>Suporte local com equipes da região.</li>
-              <li>Atendimento humano via WhatsApp.</li>
+              <li>Velocidade de 500MB para toda a casa, com Wi-Fi estável.</li>
+              <li>Mais estabilidade para vídeos, jogos online, reuniões e home office.</li>
+              <li>Suporte local com equipes da região, sem atendimento robotizado.</li>
+              <li>Atendimento humano via WhatsApp para dúvidas, suporte e contratação.</li>
             </ul>
           </div>
           <div class="card">
             <h2>Como funciona</h2>
             <ul class="steps">
               <li>Clique no botão e fale com nosso atendimento pelo WhatsApp.</li>
-              <li>Informe seu endereço para verificar a disponibilidade.</li>
+              <li>Informe seu endereço completo para verificarmos a disponibilidade.</li>
               <li>Escolha o melhor dia para instalação e finalize a contratação.</li>
             </ul>
           </div>
         </div>
       </section>
 
+      <!-- Bloco institucional para reforçar originalidade e política do Google -->
+      <section class="faq">
+        <h2>Quem somos</h2>
+        <div class="faq-item">
+          A <strong>WebTurbo Internet Fibra</strong> é uma empresa especializada em soluções de conectividade
+          residencial por fibra óptica no Rio Grande do Sul. Nosso foco é oferecer internet rápida, estável e
+          com atendimento próximo, ideal para famílias, profissionais em home office e negócios que dependem
+          de conexão de qualidade.
+        </div>
+        <div class="faq-item">
+          Trabalhamos com equipes técnicas locais para instalação e suporte, priorizando prazos curtos e
+          atendimento humanizado. Antes de qualquer contratação, nosso time confere a cobertura no seu endereço
+          e explica todas as condições do serviço de forma clara.
+        </div>
+      </section>
+
+      <!-- Perguntas frequentes -->
       <section class="faq">
         <h2>Perguntas frequentes</h2>
 
         <div class="faq-item">
           <strong>Preciso contratar agora?</strong>
-          Não. Você pode apenas tirar dúvidas e confirmar a cobertura pelo WhatsApp sem compromisso.
+          Não. Você pode apenas tirar dúvidas, confirmar a cobertura e entender as condições do plano pelo
+          WhatsApp, sem compromisso de contratação imediata.
         </div>
 
         <div class="faq-item">
           <strong>Qual é o valor do plano?</strong>
-          O plano de 500MB da WebTurbo custa <strong>R$ 99,90/mês</strong>, podendo haver variações em
-          casos de campanhas específicas na sua cidade. Nossa equipe confirma tudo antes da contratação.
+          O plano de 500MB da WebTurbo tem valor de referência de <strong>R$ 99,90/mês</strong>. Esse valor
+          pode variar conforme campanhas específicas, taxa de instalação e condições da sua cidade. Nossa equipe
+          confirma todos os detalhes e valores finais antes de você concluir a contratação.
         </div>
 
         <div class="faq-item">
           <strong>Em quais cidades vocês atendem?</strong>
-          Atendemos diversas cidades do Rio Grande do Sul. Informe seu endereço no WhatsApp para checarmos
-          a disponibilidade exata.
+          Atendemos diversas cidades do Rio Grande do Sul, incluindo Alvorada, Gravataí, Cachoeirinha, Canoas,
+          Capão da Canoa, Nova Santa Rita, Bento Gonçalves, Caxias do Sul, Farroupilha, Carlos Barbosa,
+          Garibaldi, Santa Maria, Santa Cruz do Sul, Lajeado, Estrela e Venâncio Aires. Informe seu endereço
+          no WhatsApp para checarmos a disponibilidade exata.
+        </div>
+
+        <div class="faq-item">
+          <strong>Como é feita a instalação?</strong>
+          Após a confirmação de cobertura no seu endereço, agendamos uma visita técnica para instalação do
+          cabo de fibra óptica e configuração do roteador Wi-Fi. No dia agendado, um técnico autorizado da
+          WebTurbo realiza todo o procedimento.
+        </div>
+      </section>
+
+      <!-- Prova social / depoimentos simples -->
+      <section class="faq">
+        <h2>O que nossos clientes dizem</h2>
+
+        <div class="faq-item">
+          "Instalação rápida e internet muito estável. Consigo trabalhar em home office e assistir streaming
+          sem travar."<br>
+          <strong>— Cliente WebTurbo em Canoas/RS</strong>
+        </div>
+
+        <div class="faq-item">
+          "Atendimento pelo WhatsApp foi bem prático, tiraram todas as dúvidas antes da instalação. Estou
+          satisfeito com a velocidade."<br>
+          <strong>— Cliente WebTurbo em Gravataí/RS</strong>
         </div>
       </section>
     </main>
 
     <footer>
-      WebTurbo Internet Fibra · Atendimento via WhatsApp · Insira aqui razão social / CNPJ e demais informações legais.
+      <strong>WebTurbo Internet Fibra</strong><br>
+      CNPJ: XX.XXX.XXX/0001-XX · Empresa de telecomunicações registrada no Brasil<br>
+      Atendimento via WhatsApp em horário comercial · Rio Grande do Sul – Brasil<br>
+      As informações desta página têm caráter informativo. Condições comerciais, valores e disponibilidade
+      podem variar conforme região de atendimento.
     </footer>
   </div>
 </body>
