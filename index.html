@@ -113,6 +113,11 @@
       cursor: pointer;
       font-size: 0.98rem;
       box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+      transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
+    }
+    .cta-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
     }
     .cta-btn span.icon {
       font-size: 1.1rem;
@@ -189,6 +194,28 @@
       display: block;
       margin-bottom: 2px;
     }
+    .bottom-cta {
+      margin-top: 24px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      text-align: center;
+    }
+    .bottom-cta h2 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+    }
+    .bottom-cta p {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 14px;
+    }
+    .bottom-cta .cta-btn {
+      width: 100%;
+      max-width: 360px;
+      justify-content: center;
+    }
     footer {
       margin-top: 24px;
       font-size: 0.75rem;
@@ -211,6 +238,9 @@
       .hero h1 {
         font-size: 1.35rem;
       }
+      .bottom-cta {
+        padding: 18px 14px;
+      }
     }
   </style>
 </head>
@@ -218,7 +248,7 @@
   <div class="page">
     <header>
       <div class="logo">WebTurbo Internet Fibra</div>
-      <div class="tagline">Atendimento rápido via WhatsApp</div>
+      <div class="tagline">Atendimento rápido e humano via WhatsApp</div>
     </header>
 
     <main>
@@ -228,27 +258,29 @@
         <p class="sub">
           Conexão rápida e estável para trabalhar, estudar, jogar e assistir seus filmes e séries sem travar.
         </p>
-        <p class="cities">
-          Atendemos diversas cidades do RS, como Alvorada, Gravataí, Cachoeirinha, Canoas, Capão da Canoa,
-          Nova Santa Rita, Bento Gonçalves, Caxias do Sul, Farroupilha, Carlos Barbosa, Garibaldi,
-          Santa Maria, Santa Cruz do Sul, Lajeado, Estrela e Venâncio Aires.
-        </p>
 
-        <!-- URL do WhatsApp rastreada como conversão -->
+        <!-- CTA principal logo abaixo do texto -->
         <a
           class="cta-btn"
           href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB"
           onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB');"
           target="_blank"
           rel="noopener noreferrer"
+          aria-label="Consultar disponibilidade do plano de 500 mega pelo WhatsApp"
         >
           <span class="icon">💬</span>
           <span>Consultar disponibilidade no WhatsApp</span>
         </a>
 
         <p class="cta-note">
-          Atendimento em horário comercial. Sem compromisso. Valor de R$ 99,90/mês sujeito à disponibilidade
-          e às condições comerciais da sua cidade.
+          Atendimento em horário comercial, direto pelo WhatsApp. Sem compromisso. Valor de R$ 99,90/mês
+          sujeito à disponibilidade e às condições comerciais da sua cidade.
+        </p>
+
+        <p class="cities">
+          Atendemos diversas cidades do RS, como Alvorada, Gravataí, Cachoeirinha, Canoas, Capão da Canoa,
+          Nova Santa Rita, Bento Gonçalves, Caxias do Sul, Farroupilha, Carlos Barbosa, Garibaldi,
+          Santa Maria, Santa Cruz do Sul, Lajeado, Estrela e Venâncio Aires.
         </p>
 
         <div class="grid">
@@ -272,7 +304,7 @@
         </div>
       </section>
 
-      <!-- Bloco institucional para reforçar originalidade e política do Google -->
+      <!-- Bloco institucional -->
       <section class="faq">
         <h2>Quem somos</h2>
         <div class="faq-item">
@@ -336,6 +368,25 @@
           satisfeito com a velocidade."<br>
           <strong>— Cliente WebTurbo em Gravataí/RS</strong>
         </div>
+      </section>
+
+      <!-- CTA final reforçando o WhatsApp -->
+      <section class="bottom-cta">
+        <h2>Pronto para consultar a cobertura da WebTurbo na sua casa?</h2>
+        <p>
+          Clique no botão abaixo, fale com nossa equipe pelo WhatsApp e descubra se o plano de 500MB está
+          disponível no seu endereço. Atendimento rápido, sem compromisso.
+        </p>
+        <a
+          class="cta-btn"
+          href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB"
+          onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB');"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span class="icon">💬</span>
+          <span>Falar com atendimento no WhatsApp</span>
+        </a>
       </section>
     </main>
 
