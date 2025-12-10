@@ -67,37 +67,36 @@
       color: #666;
       text-align: right;
     }
+
+    /* HERO colorido */
     .hero {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 24px 20px;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+      background: linear-gradient(135deg, #0056b3, #001f4d);
+      border-radius: 24px;
+      padding: 24px 20px 28px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.28);
       margin-bottom: 24px;
+      color: #ffffff;
     }
     .hero h1 {
-      font-size: 1.6rem;
-      margin-bottom: 8px;
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+      color: #ffffff;
     }
     .hero p.sub {
       font-size: 0.98rem;
-      color: #555;
-      margin-bottom: 12px;
-    }
-    .cities {
-      font-size: 0.82rem;
-      color: #666;
-      margin-top: 10px;
-      margin-bottom: 16px;
+      color: #e3ecff;
+      margin-bottom: 10px;
     }
     .pill {
       display: inline-block;
-      background: #e8f1ff;
-      color: #0056b3;
+      background: rgba(255,255,255,0.12);
+      color: #e3ecff;
       font-size: 0.75rem;
       padding: 4px 10px;
       border-radius: 999px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
+
     .cta-btn {
       display: inline-flex;
       align-items: center;
@@ -112,21 +111,54 @@
       border: none;
       cursor: pointer;
       font-size: 0.98rem;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
       transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
     }
     .cta-btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.3);
     }
     .cta-btn span.icon {
       font-size: 1.1rem;
     }
+
+    /* Botão rosa principal */
+    .cta-btn-alt {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #ff6b81;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 12px 20px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.98rem;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+      transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
+    }
+    .cta-btn-alt:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.3);
+    }
+
+    .cta-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+      margin-bottom: 8px;
+    }
+
     .cta-note {
       font-size: 0.8rem;
-      color: #555;
-      margin-top: 8px;
+      color: #c6d6ff;
+      margin-top: 4px;
     }
+
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -135,9 +167,10 @@
     }
     .card {
       background: #ffffff;
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      color: #222;
     }
     .card h2 {
       font-size: 1rem;
@@ -346,7 +379,7 @@
         text-align: left;
       }
       .hero h1 {
-        font-size: 1.35rem;
+        font-size: 1.45rem;
       }
       .bottom-cta {
         padding: 18px 14px;
@@ -376,31 +409,37 @@
         <span class="pill">Plano destaque · 500MB · R$ 99,90/mês</span>
         <h1>Internet Fibra 500MB para sua casa</h1>
         <p class="sub">
-          Conexão rápida e estável para trabalhar, estudar, jogar e assistir seus filmes e séries sem travar.
+          Consulte a cobertura e o valor exato para o seu endereço, direto pelo WhatsApp.
         </p>
 
-        <!-- CTA geral -->
-        <a
-          class="cta-btn"
-          href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20saber%20mais%20sobre%20os%20planos%20de%20internet."
-          onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20saber%20mais%20sobre%20os%20planos%20de%20internet.');"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Consultar planos de internet pelo WhatsApp"
-        >
-          <span class="icon">💬</span>
-          <span>Falar com atendimento no WhatsApp</span>
-        </a>
+        <!-- CTAs principais -->
+        <div class="cta-group">
+          <a
+            class="cta-btn-alt"
+            href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20consultar%20a%20cobertura%20da%20internet%20fibra%20na%20minha%20casa."
+            onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20consultar%20a%20cobertura%20da%20internet%20fibra%20na%20minha%20casa.');"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>Consultar cobertura</span>
+          </a>
+
+          <a
+            class="cta-btn"
+            href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20saber%20mais%20sobre%20os%20planos%20de%20internet."
+            onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20saber%20mais%20sobre%20os%20planos%20de%20internet.');"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Consultar planos de internet pelo WhatsApp"
+          >
+            <span class="icon">💬</span>
+            <span>Falar com atendimento no WhatsApp</span>
+          </a>
+        </div>
 
         <p class="cta-note">
           Atendimento em horário comercial, direto pelo WhatsApp. Sem compromisso. Valores sujeitos à
           disponibilidade e às condições comerciais da sua cidade.
-        </p>
-
-        <p class="cities">
-          Atendemos diversas cidades do RS, como Alvorada, Gravataí, Cachoeirinha, Canoas, Capão da Canoa,
-          Nova Santa Rita, Bento Gonçalves, Caxias do Sul, Farroupilha, Carlos Barbosa, Garibaldi,
-          Santa Maria, Santa Cruz do Sul, Lajeado, Estrela e Venâncio Aires.
         </p>
 
         <div class="grid">
@@ -416,7 +455,7 @@
           <div class="card">
             <h2>Como funciona</h2>
             <ul class="steps">
-              <li>Clique em um dos planos ou no botão de atendimento.</li>
+              <li>Clique em um dos planos ou em “Consultar cobertura”.</li>
               <li>Informe seu endereço completo para verificarmos a disponibilidade.</li>
               <li>Escolha o melhor dia para instalação e finalize a contratação.</li>
             </ul>
@@ -424,7 +463,7 @@
         </div>
       </section>
 
-      <!-- NOVA SEÇÃO: PLANOS COM BOTÃO PRÓPRIO -->
+      <!-- PLANOS -->
       <section class="plans">
         <div class="plans-header">
           <h2>Escolha o melhor plano para você</h2>
