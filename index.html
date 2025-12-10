@@ -16,7 +16,6 @@
   </script>
 
   <!-- Event snippet de conversão: clique no botão de WhatsApp -->
-  <!-- Chamado ao clicar no botão principal de CTA -->
   <script>
     function gtag_report_conversion(url) {
       var callback = function () {
@@ -87,6 +86,7 @@
     .cities {
       font-size: 0.82rem;
       color: #666;
+      margin-top: 10px;
       margin-bottom: 16px;
     }
     .pill {
@@ -175,6 +175,80 @@
       align-items: center;
       justify-content: center;
     }
+
+    /* PLANOS – mobile first */
+    .plans {
+      margin-bottom: 24px;
+    }
+    .plans-header {
+      margin-bottom: 12px;
+    }
+    .plans-header h2 {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+    .plans-header p {
+      font-size: 0.85rem;
+      color: #555;
+    }
+    .plans-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .plan-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      border: 1px solid #ececec;
+    }
+    .plan-card--highlight {
+      border-color: #ffc857;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .plan-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .plan-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .plan-badge {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #fff3cd;
+      color: #8a6d3b;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .plan-speed {
+      font-size: 0.78rem;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    .plan-price {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .plan-desc {
+      font-size: 0.8rem;
+      color: #555;
+      margin-bottom: 8px;
+    }
+    .plan-cta .cta-btn {
+      width: 100%;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+    }
+
     .faq {
       margin-top: 24px;
       background: #ffffff;
@@ -242,6 +316,16 @@
         padding: 18px 14px;
       }
     }
+
+    @media (min-width: 720px) {
+      .plans-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .plan-card--full {
+        grid-column: 1 / -1;
+      }
+    }
   </style>
 </head>
 <body>
@@ -259,22 +343,22 @@
           Conexão rápida e estável para trabalhar, estudar, jogar e assistir seus filmes e séries sem travar.
         </p>
 
-        <!-- CTA principal logo abaixo do texto -->
+        <!-- CTA geral -->
         <a
           class="cta-btn"
-          href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB"
-          onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB');"
+          href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20saber%20mais%20sobre%20os%20planos%20de%20internet."
+          onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20saber%20mais%20sobre%20os%20planos%20de%20internet.');"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Consultar disponibilidade do plano de 500 mega pelo WhatsApp"
+          aria-label="Consultar planos de internet pelo WhatsApp"
         >
           <span class="icon">💬</span>
-          <span>Consultar disponibilidade no WhatsApp</span>
+          <span>Falar com atendimento no WhatsApp</span>
         </a>
 
         <p class="cta-note">
-          Atendimento em horário comercial, direto pelo WhatsApp. Sem compromisso. Valor de R$ 99,90/mês
-          sujeito à disponibilidade e às condições comerciais da sua cidade.
+          Atendimento em horário comercial, direto pelo WhatsApp. Sem compromisso. Valores sujeitos à
+          disponibilidade e às condições comerciais da sua cidade.
         </p>
 
         <p class="cities">
@@ -296,11 +380,137 @@
           <div class="card">
             <h2>Como funciona</h2>
             <ul class="steps">
-              <li>Clique no botão e fale com nosso atendimento pelo WhatsApp.</li>
+              <li>Clique em um dos planos ou no botão de atendimento.</li>
               <li>Informe seu endereço completo para verificarmos a disponibilidade.</li>
               <li>Escolha o melhor dia para instalação e finalize a contratação.</li>
             </ul>
           </div>
+        </div>
+      </section>
+
+      <!-- NOVA SEÇÃO: PLANOS COM BOTÃO PRÓPRIO -->
+      <section class="plans">
+        <div class="plans-header">
+          <h2>Escolha o melhor plano para você</h2>
+          <p>Toque no plano desejado para falar direto com nossa equipe pelo WhatsApp.</p>
+        </div>
+
+        <div class="plans-grid">
+          <!-- Plano 1 -->
+          <article class="plan-card">
+            <div class="plan-top">
+              <div class="plan-title">1️⃣ FIBRA 500 Megas</div>
+            </div>
+            <div class="plan-speed">Ideal para famílias com vários dispositivos conectados.</div>
+            <div class="plan-price">R$ 99,90/mês</div>
+            <div class="plan-desc">Wi-Fi forte na casa toda, com estabilidade para streaming e jogos.</div>
+            <div class="plan-cta">
+              <a
+                class="cta-btn"
+                href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%201%20de%20500%20mega%20por%2099%2C90%20por%20mes."
+                onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%201%20de%20500%20mega%20por%2099%2C90%20por%20mes.');"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span class="icon">💬</span>
+                <span>Quero este plano</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Plano 2 -->
+          <article class="plan-card">
+            <div class="plan-top">
+              <div class="plan-title">2️⃣ FIBRA 400 Megas + CHIP 5 GB</div>
+            </div>
+            <div class="plan-speed">Internet na sua casa e no seu celular.</div>
+            <div class="plan-price">R$ 119,90/mês</div>
+            <div class="plan-desc">Plano com chip móvel de 5GB para você usar internet também fora de casa.</div>
+            <div class="plan-cta">
+              <a
+                class="cta-btn"
+                href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%202%20de%20400%20mega%20%2B%20chip%205GB%20por%20119%2C90%20por%20mes."
+                onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%202%20de%20400%20mega%20%2B%20chip%205GB%20por%20119%2C90%20por%20mes.');"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span class="icon">💬</span>
+                <span>Quero este plano</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Plano 3 -->
+          <article class="plan-card">
+            <div class="plan-top">
+              <div class="plan-title">3️⃣ FIBRA 500 Megas + PONTO EXTRA Wi-Fi</div>
+            </div>
+            <div class="plan-speed">Cobertura melhor em todos os cômodos.</div>
+            <div class="plan-price">R$ 139,90/mês</div>
+            <div class="plan-desc">Inclui ponto extra de Wi-Fi para ampliar o sinal em áreas mais distantes da casa.</div>
+            <div class="plan-cta">
+              <a
+                class="cta-btn"
+                href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%203%20de%20500%20mega%20%2B%20ponto%20extra%20wi-fi%20por%20139%2C90%20por%20mes."
+                onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%203%20de%20500%20mega%20%2B%20ponto%20extra%20wi-fi%20por%20139%2C90%20por%20mes.');"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span class="icon">💬</span>
+                <span>Quero este plano</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Plano 4 - destaque -->
+          <article class="plan-card plan-card--highlight plan-card--full">
+            <div class="plan-top">
+              <div class="plan-title">4️⃣ FIBRA 600 Megas + CHIP 10 GB</div>
+              <span class="plan-badge">🏆 Mais vendido</span>
+            </div>
+            <div class="plan-speed">Para quem usa muito internet dentro e fora de casa.</div>
+            <div class="plan-price">R$ 144,90/mês</div>
+            <div class="plan-desc">
+              Combina alta velocidade de 600 Megas com chip móvel de 10GB. Ideal para streaming pesado,
+              home office e uso intenso no celular.
+            </div>
+            <div class="plan-cta">
+              <a
+                class="cta-btn"
+                href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%204%20de%20600%20mega%20%2B%20chip%2010GB%20por%20144%2C90%20por%20mes."
+                onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%204%20de%20600%20mega%20%2B%20chip%2010GB%20por%20144%2C90%20por%20mes.');"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span class="icon">💬</span>
+                <span>Quero este plano</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Plano 5 -->
+          <article class="plan-card">
+            <div class="plan-top">
+              <div class="plan-title">5️⃣ FIBRA 700 Megas</div>
+            </div>
+            <div class="plan-speed">Ultra velocidade para quem exige o máximo.</div>
+            <div class="plan-price">R$ 149,90/mês</div>
+            <div class="plan-desc">
+              Indicado para casas com muitos dispositivos, gamers e quem precisa do máximo desempenho da conexão.
+            </div>
+            <div class="plan-cta">
+              <a
+                class="cta-btn"
+                href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%205%20de%20700%20mega%20por%20149%2C90%20por%20mes."
+                onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%205%20de%20700%20mega%20por%20149%2C90%20por%20mes.');"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span class="icon">💬</span>
+                <span>Quero este plano</span>
+              </a>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -331,10 +541,10 @@
         </div>
 
         <div class="faq-item">
-          <strong>Qual é o valor do plano?</strong>
-          O plano de 500MB da WebTurbo tem valor de referência de <strong>R$ 99,90/mês</strong>. Esse valor
-          pode variar conforme campanhas específicas, taxa de instalação e condições da sua cidade. Nossa equipe
-          confirma todos os detalhes e valores finais antes de você concluir a contratação.
+          <strong>Os valores são fixos?</strong>
+          Os valores informados são de referência e podem variar conforme campanhas específicas, taxa de instalação
+          e condições da sua cidade. Nossa equipe confirma todos os detalhes e valores finais antes de você concluir
+          a contratação.
         </div>
 
         <div class="faq-item">
@@ -353,7 +563,7 @@
         </div>
       </section>
 
-      <!-- Prova social / depoimentos simples -->
+      <!-- Prova social -->
       <section class="faq">
         <h2>O que nossos clientes dizem</h2>
 
@@ -370,22 +580,22 @@
         </div>
       </section>
 
-      <!-- CTA final reforçando o WhatsApp -->
+      <!-- CTA final -->
       <section class="bottom-cta">
-        <h2>Pronto para consultar a cobertura da WebTurbo na sua casa?</h2>
+        <h2>Quer saber qual plano fica melhor para sua casa?</h2>
         <p>
-          Clique no botão abaixo, fale com nossa equipe pelo WhatsApp e descubra se o plano de 500MB está
-          disponível no seu endereço. Atendimento rápido, sem compromisso.
+          Clique no botão abaixo, fale com nossa equipe pelo WhatsApp e descubra o plano ideal para o seu uso.
+          Atendimento rápido, sem compromisso.
         </p>
         <a
           class="cta-btn"
-          href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB"
-          onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20gostaria%20de%20informa%C3%A7%C3%B5es%20sobre%20a%20internet%20500MB');"
+          href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20ajuda%20para%20escolher%20o%20melhor%20plano%20de%20internet."
+          onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20ajuda%20para%20escolher%20o%20melhor%20plano%20de%20internet.');"
           target="_blank"
           rel="noopener noreferrer"
         >
           <span class="icon">💬</span>
-          <span>Falar com atendimento no WhatsApp</span>
+          <span>Falar com atendimento</span>
         </a>
       </section>
     </main>
