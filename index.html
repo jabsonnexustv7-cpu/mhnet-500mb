@@ -268,6 +268,42 @@
       display: block;
       margin-bottom: 2px;
     }
+
+    /* FAQ accordion */
+    .faq-accordion details {
+      border-top: 1px solid #eee;
+      padding: 8px 0;
+    }
+    .faq-accordion details:last-of-type {
+      border-bottom: 1px solid #eee;
+    }
+    .faq-accordion summary {
+      list-style: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #222;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .faq-accordion summary::-webkit-details-marker {
+      display: none;
+    }
+    .faq-accordion summary::after {
+      content: "+";
+      font-weight: 700;
+      margin-left: 8px;
+    }
+    .faq-accordion details[open] summary::after {
+      content: "–";
+    }
+    .faq-accordion .faq-body {
+      margin-top: 4px;
+      font-size: 0.88rem;
+      color: #555;
+    }
+
     .bottom-cta {
       margin-top: 24px;
       background: #ffffff;
@@ -530,37 +566,45 @@
         </div>
       </section>
 
-      <!-- Perguntas frequentes -->
-      <section class="faq">
+      <!-- Perguntas frequentes em accordion -->
+      <section class="faq faq-accordion">
         <h2>Perguntas frequentes</h2>
 
-        <div class="faq-item">
-          <strong>Preciso contratar agora?</strong>
-          Não. Você pode apenas tirar dúvidas, confirmar a cobertura e entender as condições do plano pelo
-          WhatsApp, sem compromisso de contratação imediata.
-        </div>
+        <details>
+          <summary>Preciso contratar agora?</summary>
+          <div class="faq-body">
+            Não. Você pode apenas tirar dúvidas, confirmar a cobertura e entender as condições do plano
+            pelo WhatsApp, sem compromisso de contratação imediata.
+          </div>
+        </details>
 
-        <div class="faq-item">
-          <strong>Os valores são fixos?</strong>
-          Os valores informados são de referência e podem variar conforme campanhas específicas, taxa de instalação
-          e condições da sua cidade. Nossa equipe confirma todos os detalhes e valores finais antes de você concluir
-          a contratação.
-        </div>
+        <details>
+          <summary>Os valores são fixos?</summary>
+          <div class="faq-body">
+            Os valores informados são de referência e podem variar conforme campanhas específicas, taxa
+            de instalação e condições da sua cidade. Nossa equipe confirma todos os detalhes e valores
+            finais antes de você concluir a contratação.
+          </div>
+        </details>
 
-        <div class="faq-item">
-          <strong>Em quais cidades vocês atendem?</strong>
-          Atendemos diversas cidades do Rio Grande do Sul, incluindo Alvorada, Gravataí, Cachoeirinha, Canoas,
-          Capão da Canoa, Nova Santa Rita, Bento Gonçalves, Caxias do Sul, Farroupilha, Carlos Barbosa,
-          Garibaldi, Santa Maria, Santa Cruz do Sul, Lajeado, Estrela e Venâncio Aires. Informe seu endereço
-          no WhatsApp para checarmos a disponibilidade exata.
-        </div>
+        <details>
+          <summary>Em quais cidades vocês atendem?</summary>
+          <div class="faq-body">
+            Atendemos diversas cidades do Rio Grande do Sul, incluindo Alvorada, Gravataí, Cachoeirinha,
+            Canoas, Capão da Canoa, Nova Santa Rita, Bento Gonçalves, Caxias do Sul, Farroupilha,
+            Carlos Barbosa, Garibaldi, Santa Maria, Santa Cruz do Sul, Lajeado, Estrela e Venâncio Aires.
+            Informe seu endereço no WhatsApp para checarmos a disponibilidade exata.
+          </div>
+        </details>
 
-        <div class="faq-item">
-          <strong>Como é feita a instalação?</strong>
-          Após a confirmação de cobertura no seu endereço, agendamos uma visita técnica para instalação do
-          cabo de fibra óptica e configuração do roteador Wi-Fi. No dia agendado, um técnico autorizado da
-          WebTurbo realiza todo o procedimento.
-        </div>
+        <details>
+          <summary>Como é feita a instalação?</summary>
+          <div class="faq-body">
+            Após a confirmação de cobertura no seu endereço, agendamos uma visita técnica para instalação
+            do cabo de fibra óptica e configuração do roteador Wi-Fi. No dia agendado, um técnico autorizado
+            da WebTurbo realiza todo o procedimento.
+          </div>
+        </details>
       </section>
 
       <!-- Prova social -->
