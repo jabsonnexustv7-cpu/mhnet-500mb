@@ -1,228 +1,823 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebTurbo | Internet Fibra Óptica</title>
+  <meta name="description" content="Internet fibra óptica com alta velocidade, estabilidade e suporte rápido. Consulte sua cobertura e contrate pelo WhatsApp." />
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root{
+      --bg:#04112b;
+      --bg-2:#071936;
+      --card:#0b1f44;
+      --card-soft:rgba(255,255,255,0.06);
+      --line:rgba(255,255,255,0.10);
+      --text:#ffffff;
+      --muted:#b8c4da;
+      --green:#22c55e;
+      --green-2:#16a34a;
+      --blue:#60a5fa;
+      --white:#ffffff;
+      --shadow:0 20px 50px rgba(0,0,0,.28);
+      --radius:24px;
+    }
 
-<title>WebTurbo Internet Fibra</title>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
 
-<style>
+    html{scroll-behavior:smooth;}
 
-body{
-font-family:Arial;
-margin:0;
-background:#020617;
-color:white;
-}
+    body{
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(34,197,94,.12), transparent 22%),
+        linear-gradient(180deg, #03102a 0%, #04112b 55%, #020817 100%);
+      color:var(--text);
+    }
 
-.container{
-max-width:1100px;
-margin:auto;
-padding:20px;
-}
+    .container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:0 22px;
+    }
 
-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:10;
+      backdrop-filter: blur(14px);
+      background:rgba(3,16,42,.68);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
 
-.logo{
-font-size:22px;
-font-weight:900;
-}
+    .topbar-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 0;
+      gap:16px;
+    }
 
-.hero{
-margin-top:40px;
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:40px;
-}
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
 
-.hero h1{
-font-size:40px;
-}
+    .brand strong{
+      font-size:18px;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
 
-.card{
-background:#0f172a;
-padding:25px;
-border-radius:18px;
-}
+    .brand span{
+      font-size:12px;
+      color:var(--muted);
+    }
 
-input{
-width:100%;
-padding:12px;
-margin-top:8px;
-border-radius:10px;
-border:none;
-}
+    .btn-whats,
+    .btn-primary,
+    .btn-secondary{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      text-decoration:none;
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      font-weight:800;
+      transition:.2s ease;
+    }
 
-button{
-background:#22c55e;
-border:none;
-padding:12px;
-border-radius:10px;
-margin-top:10px;
-font-weight:700;
-cursor:pointer;
-}
+    .btn-whats,
+    .btn-primary{
+      background:linear-gradient(180deg, #34d399, var(--green));
+      color:#052814;
+      box-shadow:0 10px 24px rgba(34,197,94,.25);
+    }
 
-.planos{
-margin-top:60px;
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:20px;
-}
+    .btn-whats:hover,
+    .btn-primary:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.03);
+    }
 
-.plano{
-background:white;
-color:black;
-padding:20px;
-border-radius:20px;
-}
+    .btn-whats{
+      padding:14px 22px;
+      min-width:160px;
+    }
 
-.plano h3{
-margin:0;
-}
+    .hero{
+      padding:56px 0 34px;
+    }
 
-.preco{
-font-size:28px;
-font-weight:900;
-margin:10px 0;
-}
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:30px;
+      align-items:stretch;
+    }
 
-.whats{
-display:inline-block;
-margin-top:15px;
-background:#25D366;
-color:black;
-padding:10px 20px;
-border-radius:999px;
-font-weight:800;
-text-decoration:none;
-}
+    .hero-left{
+      padding:20px 0;
+    }
 
-@media(max-width:900px){
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+      color:#dbe7ff;
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:18px;
+    }
 
-.hero{
-grid-template-columns:1fr;
-}
+    .hero-left h1{
+      font-size: clamp(36px, 5vw, 62px);
+      line-height:1.03;
+      letter-spacing:-1.2px;
+      max-width:720px;
+      margin-bottom:16px;
+    }
 
-.planos{
-grid-template-columns:1fr;
-}
+    .hero-left p{
+      font-size:18px;
+      line-height:1.7;
+      color:var(--muted);
+      max-width:620px;
+      margin-bottom:24px;
+    }
 
-}
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-bottom:26px;
+    }
 
-</style>
+    .btn-primary{
+      padding:15px 24px;
+    }
+
+    .btn-secondary{
+      padding:15px 24px;
+      color:#fff;
+      background:transparent;
+      border:1px solid rgba(255,255,255,.14);
+    }
+
+    .btn-secondary:hover{
+      background:rgba(255,255,255,.05);
+    }
+
+    .hero-benefits{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      max-width:650px;
+    }
+
+    .benefit{
+      background:var(--card-soft);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:15px 16px;
+      color:#e6eefc;
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .hero-card{
+      background:linear-gradient(180deg, rgba(11,31,68,.95), rgba(8,23,50,.95));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:26px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero-card::before{
+      content:"";
+      position:absolute;
+      inset:-80px auto auto -60px;
+      width:200px;
+      height:200px;
+      background:radial-gradient(circle, rgba(96,165,250,.18), transparent 65%);
+      pointer-events:none;
+    }
+
+    .hero-card h2{
+      font-size:30px;
+      line-height:1.1;
+      margin-bottom:10px;
+    }
+
+    .hero-card p{
+      color:var(--muted);
+      line-height:1.6;
+      margin-bottom:18px;
+      font-size:15px;
+    }
+
+    .consult-box{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:22px;
+      padding:18px;
+    }
+
+    .consult-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+    }
+
+    .field.full{
+      grid-column:1/-1;
+    }
+
+    .field label{
+      font-size:12px;
+      color:#d7e1f5;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+
+    .field input{
+      width:100%;
+      height:50px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.96);
+      padding:0 15px;
+      font-size:15px;
+      color:#111827;
+      outline:none;
+    }
+
+    .field input::placeholder{
+      color:#6b7280;
+    }
+
+    .field input:focus{
+      border-color:#60a5fa;
+      box-shadow:0 0 0 4px rgba(96,165,250,.15);
+    }
+
+    .consult-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:8px;
+    }
+
+    .consult-actions button{
+      height:50px;
+      padding:0 22px;
+      border-radius:14px;
+      border:none;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    #btnConsultar{
+      background:linear-gradient(180deg, #34d399, var(--green));
+      color:#052814;
+      min-width:180px;
+    }
+
+    #btnLimpar{
+      background:rgba(255,255,255,.07);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    .status-box{
+      margin-top:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:14px 16px;
+    }
+
+    .status-label{
+      font-size:12px;
+      color:#cbd5e1;
+      margin-bottom:6px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+    }
+
+    .status-text{
+      font-size:15px;
+      color:#fff;
+      font-weight:700;
+    }
+
+    .status-text.ok{color:#86efac;}
+    .status-text.bad{color:#fca5a5;}
+
+    .cta-viavel{
+      margin-top:14px;
+      padding:16px;
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(34,197,94,.16), rgba(34,197,94,.08));
+      border:1px solid rgba(34,197,94,.28);
+      display:none;
+    }
+
+    .cta-viavel.show{
+      display:block;
+    }
+
+    .cta-viavel strong{
+      display:block;
+      margin-bottom:8px;
+      font-size:17px;
+    }
+
+    .cta-viavel p{
+      margin-bottom:12px;
+      color:#dcfce7;
+      font-size:14px;
+      line-height:1.6;
+    }
+
+    .cta-viavel a{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:220px;
+      height:48px;
+      border-radius:999px;
+      text-decoration:none;
+      font-weight:900;
+      background:#fff;
+      color:#14532d;
+    }
+
+    .section{
+      padding:26px 0 48px;
+    }
+
+    .section-head{
+      text-align:center;
+      margin-bottom:24px;
+    }
+
+    .section-head h3{
+      font-size:34px;
+      margin-bottom:10px;
+    }
+
+    .section-head p{
+      color:var(--muted);
+      max-width:720px;
+      margin:0 auto;
+      line-height:1.7;
+    }
+
+    .plans{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:22px;
+    }
+
+    .plan{
+      position:relative;
+      background:#fff;
+      color:#0f172a;
+      border-radius:28px;
+      padding:26px;
+      box-shadow:0 18px 40px rgba(0,0,0,.20);
+      overflow:hidden;
+    }
+
+    .plan.featured{
+      transform:translateY(-8px);
+      border:2px solid rgba(34,197,94,.55);
+    }
+
+    .plan-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#dcfce7;
+      color:#166534;
+      font-size:12px;
+      font-weight:900;
+      margin-bottom:16px;
+    }
+
+    .plan h4{
+      font-size:28px;
+      margin-bottom:8px;
+    }
+
+    .plan .subtitle{
+      color:#475569;
+      line-height:1.6;
+      min-height:48px;
+      margin-bottom:16px;
+    }
+
+    .price{
+      font-size:46px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:-1.4px;
+      margin-bottom:6px;
+    }
+
+    .price small{
+      font-size:16px;
+      font-weight:700;
+      color:#475569;
+    }
+
+    .plan ul{
+      list-style:none;
+      margin:22px 0;
+      display:grid;
+      gap:11px;
+    }
+
+    .plan ul li{
+      font-size:15px;
+      color:#1e293b;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      line-height:1.5;
+    }
+
+    .plan ul li::before{
+      content:"✓";
+      color:#16a34a;
+      font-weight:900;
+      margin-top:1px;
+    }
+
+    .plan a{
+      width:100%;
+      height:52px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+      font-weight:900;
+      background:#0f172a;
+      color:#fff;
+    }
+
+    .plan.featured a{
+      background:linear-gradient(180deg, #34d399, var(--green));
+      color:#052814;
+    }
+
+    .mini-info{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+      margin-top:28px;
+    }
+
+    .mini-card{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:20px;
+      padding:18px;
+    }
+
+    .mini-card strong{
+      display:block;
+      font-size:18px;
+      margin-bottom:8px;
+    }
+
+    .mini-card p{
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+    }
+
+    footer{
+      padding:24px 0 40px;
+      color:#94a3b8;
+      text-align:center;
+      font-size:13px;
+    }
+
+    @media (max-width: 1024px){
+      .hero-grid{grid-template-columns:1fr;}
+      .plans{grid-template-columns:1fr;}
+      .plan.featured{transform:none;}
+      .mini-info{grid-template-columns:1fr;}
+    }
+
+    @media (max-width: 640px){
+      .container{padding:0 16px;}
+      .topbar-inner{padding:14px 0;}
+      .btn-whats{min-width:auto; padding:12px 16px;}
+      .hero{padding:34px 0 24px;}
+      .hero-benefits{grid-template-columns:1fr;}
+      .consult-grid{grid-template-columns:1fr;}
+      .hero-left p{font-size:16px;}
+      .section-head h3{font-size:28px;}
+      .hero-card h2{font-size:24px;}
+      .price{font-size:40px;}
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="container">
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <strong>WebTurbo</strong>
+        <span>Internet Fibra Óptica</span>
+      </div>
 
-<header>
+      <a class="btn-whats" href="https://wa.me/5551999999999?text=Olá!%20Quero%20falar%20sobre%20os%20planos." target="_blank">
+        WhatsApp
+      </a>
+    </div>
+  </header>
 
-<div class="logo">
-WebTurbo
-</div>
+  <main class="hero">
+    <div class="container hero-grid">
+      <div class="hero-left">
+        <div class="tag">🚀 Oferta especial para novos assinantes</div>
+        <h1>Internet fibra com velocidade de verdade para sua casa.</h1>
+        <p>
+          Consulte a cobertura no seu endereço, veja os planos disponíveis e avance para a contratação pelo WhatsApp com muito mais rapidez.
+        </p>
 
-<a class="whats" href="https://wa.me/5551999999999">
-WhatsApp
-</a>
+        <div class="hero-actions">
+          <a href="#planos" class="btn-primary">Ver planos</a>
+          <a href="#consulta" class="btn-secondary">Consultar cobertura</a>
+        </div>
 
-</header>
+        <div class="hero-benefits">
+          <div class="benefit">✅ Wi-Fi potente para vários dispositivos conectados ao mesmo tempo.</div>
+          <div class="benefit">✅ Mais estabilidade para streaming, trabalho e jogos online.</div>
+          <div class="benefit">✅ Consulta rápida de cobertura antes da contratação.</div>
+          <div class="benefit">✅ Atendimento comercial direto pelo WhatsApp.</div>
+        </div>
+      </div>
 
-<section class="hero">
+      <div class="hero-card" id="consulta">
+        <h2>Consulte a cobertura</h2>
+        <p>Preencha os dados abaixo para verificar disponibilidade no endereço do cliente.</p>
 
-<div>
+        <div class="consult-box">
+          <div class="consult-grid">
+            <div class="field">
+              <label for="cep">CEP</label>
+              <input id="cep" type="text" placeholder="Digite seu CEP" maxlength="9" />
+            </div>
 
-<h1>
-Internet fibra óptica de alta velocidade
-</h1>
+            <div class="field">
+              <label for="numero">Número</label>
+              <input id="numero" type="text" placeholder="Número da casa" />
+            </div>
 
-<p>
-Consulte se sua casa tem cobertura e contrate agora mesmo.
-</p>
+            <div class="field full">
+              <label for="logradouro">Endereço encontrado</label>
+              <input id="logradouro" type="text" placeholder="Será preenchido automaticamente" readonly />
+            </div>
+          </div>
 
-</div>
+          <div class="consult-actions">
+            <button id="btnConsultar" type="button">Consultar cobertura</button>
+            <button id="btnLimpar" type="button">Limpar</button>
+          </div>
 
-<div class="card">
+          <div class="status-box">
+            <div class="status-label">Status da consulta</div>
+            <div class="status-text" id="status">Aguardando preenchimento.</div>
+          </div>
 
-<h3>Consultar cobertura</h3>
+          <div id="ctaViavel" class="cta-viavel">
+            <strong>✅ Cobertura disponível</strong>
+            <p>Encontramos viabilidade para este endereço. Clique abaixo para seguir para a contratação.</p>
+            <a id="btnContratarCobertura" href="#" target="_blank">Contratar agora</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 
-<input placeholder="Digite seu CEP">
+  <section class="section" id="planos">
+    <div class="container">
+      <div class="section-head">
+        <h3>Escolha o plano ideal</h3>
+        <p>
+          Planos pensados para entregar velocidade, estabilidade e ótimo custo-benefício para diferentes perfis de uso.
+        </p>
+      </div>
 
-<input placeholder="Número da casa">
+      <div class="plans">
+        <article class="plan">
+          <div class="plan-badge">Plano econômico</div>
+          <h4>400 Mega</h4>
+          <div class="subtitle">Boa performance para navegação, vídeos, redes sociais e uso diário da casa.</div>
+          <div class="price">R$ 89,90 <small>/mês</small></div>
 
-<button>
-Consultar
-</button>
+          <ul>
+            <li>100% fibra óptica</li>
+            <li>Wi-Fi incluso</li>
+            <li>Ótimo custo-benefício</li>
+            <li>Ideal para uso residencial</li>
+          </ul>
 
-</div>
+          <a href="https://wa.me/5551999999999?text=Olá!%20Quero%20contratar%20o%20plano%20de%20400%20Mega." target="_blank">Contratar</a>
+        </article>
 
-</section>
+        <article class="plan featured">
+          <div class="plan-badge">Mais vendido</div>
+          <h4>500 Mega</h4>
+          <div class="subtitle">Mais velocidade para famílias conectadas, streaming, trabalho remoto e vários aparelhos.</div>
+          <div class="price">R$ 99,90 <small>/mês</small></div>
 
-<section class="planos">
+          <ul>
+            <li>Mais estabilidade no dia a dia</li>
+            <li>Melhor experiência para streaming</li>
+            <li>Ideal para múltiplos dispositivos</li>
+            <li>Plano com maior procura</li>
+          </ul>
 
-<div class="plano">
+          <a href="https://wa.me/5551999999999?text=Olá!%20Quero%20contratar%20o%20plano%20de%20500%20Mega." target="_blank">Contratar</a>
+        </article>
 
-<h3>400 Mega</h3>
+        <article class="plan">
+          <div class="plan-badge">Alta performance</div>
+          <h4>600 Mega</h4>
+          <div class="subtitle">Mais potência para casas com uso intenso de internet, jogos e consumo simultâneo.</div>
+          <div class="price">R$ 119,90 <small>/mês</small></div>
 
-<div class="preco">
-R$89,90
-</div>
+          <ul>
+            <li>Ultra velocidade</li>
+            <li>Excelente para gamers</li>
+            <li>Mais folga para vários usuários</li>
+            <li>Conexão robusta e estável</li>
+          </ul>
 
-<p>
-Wi-Fi incluso
-</p>
+          <a href="https://wa.me/5551999999999?text=Olá!%20Quero%20contratar%20o%20plano%20de%20600%20Mega." target="_blank">Contratar</a>
+        </article>
+      </div>
 
-<a class="whats" href="https://wa.me/5551999999999?text=Quero%20400MB">
-Contratar
-</a>
+      <div class="mini-info">
+        <div class="mini-card">
+          <strong>Consulta rápida</strong>
+          <p>O cliente verifica a cobertura antes de avançar na contratação, reduzindo atrito no atendimento.</p>
+        </div>
+        <div class="mini-card">
+          <strong>Mais conversão</strong>
+          <p>Com visual melhor, CTA mais claro e hierarquia mais forte, o site passa mais confiança comercial.</p>
+        </div>
+        <div class="mini-card">
+          <strong>Atendimento direto</strong>
+          <p>Após a viabilidade, o cliente pode seguir imediatamente para o WhatsApp com uma mensagem pronta.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-</div>
+  <footer>
+    <div class="container">
+      © 2026 WebTurbo - Todos os direitos reservados.
+    </div>
+  </footer>
 
-<div class="plano">
+  <script>
+    const WHATS_NUMBER = "5551999999999";
 
-<h3>500 Mega</h3>
+    const $ = (id) => document.getElementById(id);
 
-<div class="preco">
-R$99,90
-</div>
+    const formatCep = (value) => {
+      const digits = value.replace(/\D/g, "").slice(0, 8);
+      return digits.length > 5 ? digits.slice(0, 5) + "-" + digits.slice(5) : digits;
+    };
 
-<p>
-Mais velocidade para sua casa
-</p>
+    const onlyDigits = (value) => value.replace(/\D/g, "");
 
-<a class="whats" href="https://wa.me/5551999999999?text=Quero%20500MB">
-Contratar
-</a>
+    function setStatus(text, type = "") {
+      const el = $("status");
+      el.textContent = text;
+      el.className = "status-text" + (type ? " " + type : "");
+    }
 
-</div>
+    function clearForm() {
+      $("cep").value = "";
+      $("numero").value = "";
+      $("logradouro").value = "";
+      $("ctaViavel").classList.remove("show");
+      $("btnContratarCobertura").href = "#";
+      setStatus("Aguardando preenchimento.");
+    }
 
-<div class="plano">
+    async function buscarEnderecoPorCep(cep) {
+      const cepLimpo = onlyDigits(cep);
+      if (cepLimpo.length !== 8) return null;
 
-<h3>600 Mega</h3>
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+        const data = await res.json();
+        if (data.erro) return null;
 
-<div class="preco">
-R$119,90
-</div>
+        return {
+          logradouro: data.logradouro || "",
+          bairro: data.bairro || "",
+          cidade: data.localidade || "",
+          uf: data.uf || ""
+        };
+      } catch {
+        return null;
+      }
+    }
 
-<p>
-Ultra velocidade
-</p>
+    async function consultarCobertura() {
+      const cep = $("cep").value.trim();
+      const numero = $("numero").value.trim();
 
-<a class="whats" href="https://wa.me/5551999999999?text=Quero%20600MB">
-Contratar
-</a>
+      $("ctaViavel").classList.remove("show");
 
-</div>
+      if (onlyDigits(cep).length !== 8) {
+        setStatus("Informe um CEP válido.", "bad");
+        return;
+      }
 
-</section>
+      if (!numero) {
+        setStatus("Informe o número do endereço.", "bad");
+        return;
+      }
 
-</div>
+      setStatus("Consultando endereço...");
 
+      const endereco = await buscarEnderecoPorCep(cep);
+
+      if (!endereco) {
+        $("logradouro").value = "";
+        setStatus("Não foi possível localizar esse CEP.", "bad");
+        return;
+      }
+
+      const enderecoCompleto =
+        [endereco.logradouro, numero, endereco.bairro, `${endereco.cidade} - ${endereco.uf}`]
+          .filter(Boolean)
+          .join(" | ");
+
+      $("logradouro").value = enderecoCompleto;
+
+      const viavel = true;
+
+      if (viavel) {
+        const mensagem = `Olá! Consultei a cobertura no site e quero contratar.%0A%0ACEP: ${cep}%0ANúmero: ${numero}%0AEndereço: ${enderecoCompleto}`;
+        $("btnContratarCobertura").href = `https://wa.me/${WHATS_NUMBER}?text=${mensagem}`;
+        $("ctaViavel").classList.add("show");
+        setStatus("Cobertura disponível para este endereço.", "ok");
+      } else {
+        setStatus("No momento não há cobertura disponível neste endereço.", "bad");
+      }
+    }
+
+    $("cep").addEventListener("input", (e) => {
+      e.target.value = formatCep(e.target.value);
+    });
+
+    $("btnConsultar").addEventListener("click", consultarCobertura);
+    $("btnLimpar").addEventListener("click", clearForm);
+
+    $("cep").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") consultarCobertura();
+    });
+
+    $("numero").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") consultarCobertura();
+    });
+  </script>
 </body>
 </html>
