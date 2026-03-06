@@ -1,721 +1,228 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WebTurbo Internet Fibra 500MB</title>
-  <meta name="description" content="WebTurbo Internet Fibra óptica 500MB para sua casa, com atendimento pelo WhatsApp. Consulte disponibilidade, valor de R$ 99,90 e condições para sua cidade.">
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17075496858"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'AW-17075496858');
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Event snippet de conversão: clique no botão de WhatsApp -->
-  <script>
-    function gtag_report_conversion(url) {
-      var callback = function () {
-        if (typeof url !== 'undefined') {
-          window.location = url;
-        }
-      };
-      gtag('event', 'conversion', {
-        'send_to': 'AW-17075496858/zJmpCO2ZoM8bEJrPnc4_',
-        'value': 1.0,
-        'currency': 'BRL',
-        'event_callback': callback
-      });
-      return false;
-    }
-  </script>
+<title>WebTurbo Internet Fibra</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, Helvetica, Arial, sans-serif;
-    }
-    body {
-      background: #f5f5f5;
-      color: #222;
-      line-height: 1.5;
-    }
-    .page {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 16px 16px 40px;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0 24px;
-    }
-    .logo {
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: #0056b3;
-    }
-    .tagline {
-      font-size: 0.85rem;
-      color: #666;
-      text-align: right;
-    }
+<style>
 
-    /* HERO colorido */
-    .hero {
-      background: linear-gradient(135deg, #0056b3, #001f4d);
-      border-radius: 24px;
-      padding: 24px 20px 28px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.28);
-      margin-bottom: 24px;
-      color: #ffffff;
-    }
-    .hero h1 {
-      font-size: 1.7rem;
-      margin-bottom: 10px;
-      color: #ffffff;
-    }
-    .hero p.sub {
-      font-size: 0.98rem;
-      color: #e3ecff;
-      margin-bottom: 10px;
-    }
-    .pill {
-      display: inline-block;
-      background: rgba(255,255,255,0.12);
-      color: #e3ecff;
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 14px;
-    }
+body{
+font-family:Arial;
+margin:0;
+background:#020617;
+color:white;
+}
 
-    .cta-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: #25d366;
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 12px 20px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-size: 0.98rem;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-      transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
-    }
-    .cta-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.3);
-    }
-    .cta-btn span.icon {
-      font-size: 1.1rem;
-    }
+.container{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
 
-    /* Botão rosa principal */
-    .cta-btn-alt {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: #ff6b81;
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: 600;
-      padding: 12px 20px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-size: 0.98rem;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-      transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
-    }
-    .cta-btn-alt:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.3);
-    }
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
 
-    .cta-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 12px;
-      margin-bottom: 8px;
-    }
+.logo{
+font-size:22px;
+font-weight:900;
+}
 
-    .cta-note {
-      font-size: 0.8rem;
-      color: #c6d6ff;
-      margin-top: 4px;
-    }
+.hero{
+margin-top:40px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 20px;
-    }
-    .card {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-      color: #222;
-    }
-    .card h2 {
-      font-size: 1rem;
-      margin-bottom: 8px;
-    }
-    .card ul {
-      padding-left: 18px;
-      font-size: 0.9rem;
-      color: #444;
-    }
-    .steps {
-      counter-reset: step;
-      list-style: none;
-      padding-left: 0;
-    }
-    .steps li {
-      position: relative;
-      margin-bottom: 10px;
-      padding-left: 32px;
-      font-size: 0.9rem;
-    }
-    .steps li::before {
-      counter-increment: step;
-      content: counter(step);
-      position: absolute;
-      left: 0;
-      top: 3px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #0056b3;
-      color: #fff;
-      font-size: 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+.hero h1{
+font-size:40px;
+}
 
-    /* SEÇÕES ALTERNADAS */
-    .section-soft,
-    .section-white {
-      border-radius: 24px;
-      padding: 20px 16px;
-      margin-top: 20px;
-    }
-    .section-soft {
-      background: #f1f6ff; /* azul bem clarinho */
-    }
-    .section-white {
-      background: #ffffff;
-    }
+.card{
+background:#0f172a;
+padding:25px;
+border-radius:18px;
+}
 
-    /* PLANOS – mobile first */
-    .plans {
-      margin-bottom: 24px;
-    }
-    .plans-header {
-      margin-bottom: 12px;
-    }
-    .plans-header h2 {
-      font-size: 1.1rem;
-      margin-bottom: 4px;
-    }
-    .plans-header p {
-      font-size: 0.85rem;
-      color: #555;
-    }
-    .plans-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 10px;
-    }
-    .plan-card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 14px 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-      border: 1px solid #ececec;
-    }
-    .plan-card--highlight {
-      border-color: #ffc857;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-    }
-    .plan-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-    .plan-title {
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-    .plan-badge {
-      font-size: 0.7rem;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #fff3cd;
-      color: #8a6d3b;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .plan-speed {
-      font-size: 0.78rem;
-      color: #666;
-      margin-bottom: 4px;
-    }
-    .plan-price {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .plan-desc {
-      font-size: 0.8rem;
-      color: #555;
-      margin-bottom: 8px;
-    }
-    .plan-cta .cta-btn {
-      width: 100%;
-      padding: 10px 16px;
-      font-size: 0.9rem;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.12);
-    }
+input{
+width:100%;
+padding:12px;
+margin-top:8px;
+border-radius:10px;
+border:none;
+}
 
-    .faq {
-      margin-top: 24px;
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    }
-    .faq h2 {
-      font-size: 1rem;
-      margin-bottom: 8px;
-    }
-    .faq-item {
-      margin-bottom: 10px;
-      font-size: 0.9rem;
-    }
-    .faq-item strong {
-      display: block;
-      margin-bottom: 2px;
-    }
+button{
+background:#22c55e;
+border:none;
+padding:12px;
+border-radius:10px;
+margin-top:10px;
+font-weight:700;
+cursor:pointer;
+}
 
-    /* FAQ accordion */
-    .faq-accordion details {
-      border-top: 1px solid #eee;
-      padding: 8px 0;
-    }
-    .faq-accordion details:last-of-type {
-      border-bottom: 1px solid #eee;
-    }
-    .faq-accordion summary {
-      list-style: none;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: #222;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .faq-accordion summary::-webkit-details-marker {
-      display: none;
-    }
-    .faq-accordion summary::after {
-      content: "+";
-      font-weight: 700;
-      margin-left: 8px;
-    }
-    .faq-accordion details[open] summary::after {
-      content: "–";
-    }
-    .faq-accordion .faq-body {
-      margin-top: 4px;
-      font-size: 0.88rem;
-      color: #555;
-    }
+.planos{
+margin-top:60px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+}
 
-    .bottom-cta {
-      margin-top: 24px;
-      border-radius: 24px;
-      padding: 20px 16px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.18);
-      text-align: center;
-      background: linear-gradient(135deg, #0056b3, #001f4d);
-      color: #ffffff;
-    }
-    .bottom-cta h2 {
-      font-size: 1.05rem;
-      margin-bottom: 8px;
-      color: #ffffff;
-    }
-    .bottom-cta p {
-      font-size: 0.9rem;
-      color: #e3ecff;
-      margin-bottom: 14px;
-    }
-    .bottom-cta .cta-btn {
-      width: 100%;
-      max-width: 360px;
-      justify-content: center;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
-    }
+.plano{
+background:white;
+color:black;
+padding:20px;
+border-radius:20px;
+}
 
-    footer {
-      margin-top: 24px;
-      font-size: 0.75rem;
-      color: #777;
-      text-align: center;
-    }
+.plano h3{
+margin:0;
+}
 
-    @media (max-width: 720px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-      }
-      .tagline {
-        text-align: left;
-      }
-      .hero h1 {
-        font-size: 1.45rem;
-      }
-      .bottom-cta {
-        padding: 18px 14px;
-      }
-    }
+.preco{
+font-size:28px;
+font-weight:900;
+margin:10px 0;
+}
 
-    @media (min-width: 720px) {
-      .plans-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-      }
-      .plan-card--full {
-        grid-column: 1 / -1;
-      }
-    }
-  </style>
+.whats{
+display:inline-block;
+margin-top:15px;
+background:#25D366;
+color:black;
+padding:10px 20px;
+border-radius:999px;
+font-weight:800;
+text-decoration:none;
+}
+
+@media(max-width:900px){
+
+.hero{
+grid-template-columns:1fr;
+}
+
+.planos{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
 </head>
+
 <body>
-  <div class="page">
-    <header>
-      <div class="logo">WebTurbo Internet Fibra</div>
-      <div class="tagline">Atendimento rápido e humano via WhatsApp</div>
-    </header>
 
-    <main>
-      <section class="hero">
-        <span class="pill">Plano destaque · 500MB · R$ 99,90/mês</span>
-        <h1>Internet Fibra 500MB para sua casa</h1>
-        <p class="sub">
-          Consulte a cobertura e o valor exato para o seu endereço, direto pelo WhatsApp.
-        </p>
+<div class="container">
 
-        <!-- CTAs principais -->
-        <div class="cta-group">
-          <a
-            class="cta-btn-alt"
-            href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20consultar%20a%20cobertura%20da%20internet%20fibra%20na%20minha%20casa."
-            onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20consultar%20a%20cobertura%20da%20internet%20fibra%20na%20minha%20casa.');"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span>Consultar cobertura</span>
-          </a>
+<header>
 
-          <a
-            class="cta-btn"
-            href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20saber%20mais%20sobre%20os%20planos%20de%20internet."
-            onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20saber%20mais%20sobre%20os%20planos%20de%20internet.');"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Consultar planos de internet pelo WhatsApp"
-          >
-            <span class="icon">💬</span>
-            <span>Falar com atendimento no WhatsApp</span>
-          </a>
-        </div>
+<div class="logo">
+WebTurbo
+</div>
 
-        <p class="cta-note">
-          Atendimento em horário comercial, direto pelo WhatsApp. Sem compromisso. Valores sujeitos à
-          disponibilidade e às condições comerciais da sua cidade.
-        </p>
+<a class="whats" href="https://wa.me/5551999999999">
+WhatsApp
+</a>
 
-        <div class="grid">
-          <div class="card">
-            <h2>Vantagens da WebTurbo Fibra</h2>
-            <ul>
-              <li>Velocidade de 500MB para toda a casa, com Wi-Fi estável.</li>
-              <li>Mais estabilidade para vídeos, jogos online, reuniões e home office.</li>
-              <li>Suporte local com equipes da região, sem atendimento robotizado.</li>
-              <li>Atendimento humano via WhatsApp para dúvidas, suporte e contratação.</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h2>Como funciona</h2>
-            <ul class="steps">
-              <li>Clique em um dos planos ou em “Consultar cobertura”.</li>
-              <li>Informe seu endereço completo para verificarmos a disponibilidade.</li>
-              <li>Escolha o melhor dia para instalação e finalize a contratação.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
+</header>
 
-      <!-- PLANOS (DOBRA 2 – azul claro) -->
-      <section class="section-soft">
-        <section class="plans">
-          <div class="plans-header">
-            <h2>Escolha o melhor plano para você</h2>
-            <p>Toque no plano desejado para falar direto com nossa equipe pelo WhatsApp.</p>
-          </div>
+<section class="hero">
 
-          <div class="plans-grid">
-            <!-- Plano 1 -->
-            <article class="plan-card">
-              <div class="plan-top">
-                <div class="plan-title">1️⃣ FIBRA 500 Megas</div>
-              </div>
-              <div class="plan-speed">Ideal para famílias com vários dispositivos conectados.</div>
-              <div class="plan-price">R$ 99,90/mês</div>
-              <div class="plan-desc">Wi-Fi forte na casa toda, com estabilidade para streaming e jogos.</div>
-              <div class="plan-cta">
-                <a
-                  class="cta-btn"
-                  href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%201%20de%20500%20mega%20por%2099%2C90%20por%20mes."
-                  onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%201%20de%20500%20mega%20por%2099%2C90%20por%20mes.');"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span class="icon">💬</span>
-                  <span>Quero este plano</span>
-                </a>
-              </div>
-            </article>
+<div>
 
-            <!-- Plano 2 -->
-            <article class="plan-card">
-              <div class="plan-top">
-                <div class="plan-title">2️⃣ FIBRA 400 Megas + CHIP 5 GB</div>
-              </div>
-              <div class="plan-speed">Internet na sua casa e no seu celular.</div>
-              <div class="plan-price">R$ 119,90/mês</div>
-              <div class="plan-desc">Plano com chip móvel de 5GB para você usar internet também fora de casa.</div>
-              <div class="plan-cta">
-                <a
-                  class="cta-btn"
-                  href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%202%20de%20400%20mega%20%2B%20chip%205GB%20por%20119%2C90%20por%20mes."
-                  onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%202%20de%20400%20mega%20%2B%20chip%205GB%20por%20119%2C90%20por%20mes.');"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span class="icon">💬</span>
-                  <span>Quero este plano</span>
-                </a>
-              </div>
-            </article>
+<h1>
+Internet fibra óptica de alta velocidade
+</h1>
 
-            <!-- Plano 3 -->
-            <article class="plan-card">
-              <div class="plan-top">
-                <div class="plan-title">3️⃣ FIBRA 500 Megas + PONTO EXTRA Wi-Fi</div>
-              </div>
-              <div class="plan-speed">Cobertura melhor em todos os cômodos.</div>
-              <div class="plan-price">R$ 139,90/mês</div>
-              <div class="plan-desc">Inclui ponto extra de Wi-Fi para ampliar o sinal em áreas mais distantes da casa.</div>
-              <div class="plan-cta">
-                <a
-                  class="cta-btn"
-                  href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%203%20de%20500%20mega%20%2B%20ponto%20extra%20wi-fi%20por%20139%2C90%20por%20mes."
-                  onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%203%20de%20500%20mega%20%2B%20ponto%20extra%20wi-fi%20por%20139%2C90%20por%20mes.');"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span class="icon">💬</span>
-                  <span>Quero este plano</span>
-                </a>
-              </div>
-            </article>
+<p>
+Consulte se sua casa tem cobertura e contrate agora mesmo.
+</p>
 
-            <!-- Plano 4 - destaque -->
-            <article class="plan-card plan-card--highlight plan-card--full">
-              <div class="plan-top">
-                <div class="plan-title">4️⃣ FIBRA 600 Megas + CHIP 10 GB</div>
-                <span class="plan-badge">🏆 Mais vendido</span>
-              </div>
-              <div class="plan-speed">Para quem usa muito internet dentro e fora de casa.</div>
-              <div class="plan-price">R$ 144,90/mês</div>
-              <div class="plan-desc">
-                Combina alta velocidade de 600 Megas com chip móvel de 10GB. Ideal para streaming pesado,
-                home office e uso intenso no celular.
-              </div>
-              <div class="plan-cta">
-                <a
-                  class="cta-btn"
-                  href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%204%20de%20600%20mega%20%2B%20chip%2010GB%20por%20144%2C90%20por%20mes."
-                  onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%204%20de%20600%20mega%20%2B%20chip%2010GB%20por%20144%2C90%20por%20mes.');"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span class="icon">💬</span>
-                  <span>Quero este plano</span>
-                </a>
-              </div>
-            </article>
+</div>
 
-            <!-- Plano 5 -->
-            <article class="plan-card">
-              <div class="plan-top">
-                <div class="plan-title">5️⃣ FIBRA 700 Megas</div>
-              </div>
-              <div class="plan-speed">Ultra velocidade para quem exige o máximo.</div>
-              <div class="plan-price">R$ 149,90/mês</div>
-              <div class="plan-desc">
-                Indicado para casas com muitos dispositivos, gamers e quem precisa do máximo desempenho da conexão.
-              </div>
-              <div class="plan-cta">
-                <a
-                  class="cta-btn"
-                  href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%205%20de%20700%20mega%20por%20149%2C90%20por%20mes."
-                  onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20o%20plano%205%20de%20700%20mega%20por%20149%2C90%20por%20mes.');"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span class="icon">💬</span>
-                  <span>Quero este plano</span>
-                </a>
-              </div>
-            </article>
-          </div>
-        </section>
-      </section>
+<div class="card">
 
-      <!-- Bloco institucional (DOBRA 3 – branco) -->
-      <section class="section-white">
-        <section class="faq">
-          <h2>Quem somos</h2>
-          <div class="faq-item">
-            A <strong>WebTurbo Internet Fibra</strong> é uma empresa especializada em soluções de conectividade
-            residencial por fibra óptica no Rio Grande do Sul. Nosso foco é oferecer internet rápida, estável e
-            com atendimento próximo, ideal para famílias, profissionais em home office e negócios que dependem
-            de conexão de qualidade.
-          </div>
-          <div class="faq-item">
-            Trabalhamos com equipes técnicas locais para instalação e suporte, priorizando prazos curtos e
-            atendimento humanizado. Antes de qualquer contratação, nosso time confere a cobertura no seu endereço
-            e explica todas as condições do serviço de forma clara.
-          </div>
-        </section>
-      </section>
+<h3>Consultar cobertura</h3>
 
-      <!-- Perguntas frequentes em accordion (DOBRA 4 – azul claro) -->
-      <section class="section-soft">
-        <section class="faq faq-accordion">
-          <h2>Perguntas frequentes</h2>
+<input placeholder="Digite seu CEP">
 
-          <details>
-            <summary>Preciso contratar agora?</summary>
-            <div class="faq-body">
-              Não. Você pode apenas tirar dúvidas, confirmar a cobertura e entender as condições do plano
-              pelo WhatsApp, sem compromisso de contratação imediata.
-            </div>
-          </details>
+<input placeholder="Número da casa">
 
-          <details>
-            <summary>Os valores são fixos?</summary>
-            <div class="faq-body">
-              Os valores informados são de referência e podem variar conforme campanhas específicas, taxa
-              de instalação e condições da sua cidade. Nossa equipe confirma todos os detalhes e valores
-              finais antes de você concluir a contratação.
-            </div>
-          </details>
+<button>
+Consultar
+</button>
 
-          <details>
-            <summary>Em quais cidades vocês atendem?</summary>
-            <div class="faq-body">
-              Atendemos diversas cidades do Rio Grande do Sul, incluindo Alvorada, Gravataí, Cachoeirinha,
-              Canoas, Capão da Canoa, Nova Santa Rita, Bento Gonçalves, Caxias do Sul, Farroupilha,
-              Carlos Barbosa, Garibaldi, Santa Maria, Santa Cruz do Sul, Lajeado, Estrela e Venâncio Aires.
-              Informe seu endereço no WhatsApp para checarmos a disponibilidade exata.
-            </div>
-          </details>
+</div>
 
-          <details>
-            <summary>Como é feita a instalação?</summary>
-            <div class="faq-body">
-              Após a confirmação de cobertura no seu endereço, agendamos uma visita técnica para instalação
-              do cabo de fibra óptica e configuração do roteador Wi-Fi. No dia agendado, um técnico autorizado
-              da WebTurbo realiza todo o procedimento.
-            </div>
-          </details>
-        </section>
-      </section>
+</section>
 
-      <!-- Prova social (DOBRA 5 – branco) -->
-      <section class="section-white">
-        <section class="faq">
-          <h2>O que nossos clientes dizem</h2>
+<section class="planos">
 
-          <div class="faq-item">
-            "Instalação rápida e internet muito estável. Consigo trabalhar em home office e assistir streaming
-            sem travar."<br>
-            <strong>— Cliente WebTurbo em Canoas/RS</strong>
-          </div>
+<div class="plano">
 
-          <div class="faq-item">
-            "Atendimento pelo WhatsApp foi bem prático, tiraram todas as dúvidas antes da instalação. Estou
-            satisfeito com a velocidade."<br>
-            <strong>— Cliente WebTurbo em Gravataí/RS</strong>
-          </div>
-        </section>
-      </section>
+<h3>400 Mega</h3>
 
-      <!-- CTA final (DOBRA 6 – azul escuro) -->
-      <section class="bottom-cta">
-        <h2>Quer saber qual plano fica melhor para sua casa?</h2>
-        <p>
-          Clique no botão abaixo, fale com nossa equipe pelo WhatsApp e descubra o plano ideal para o seu uso.
-          Atendimento rápido, sem compromisso.
-        </p>
-        <a
-          class="cta-btn"
-          href="https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20ajuda%20para%20escolher%20o%20melhor%20plano%20de%20internet."
-          onclick="return gtag_report_conversion('https://api.whatsapp.com/send?phone=555193187300&text=Vim%20do%20Google%20e%20quero%20ajuda%20para%20escolher%20o%20melhor%20plano%20de%20internet.');"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span class="icon">💬</span>
-          <span>Falar com atendimento</span>
-        </a>
-      </section>
-    </main>
+<div class="preco">
+R$89,90
+</div>
 
-    <footer>
-      <strong>WebTurbo Internet Fibra</strong><br>
-      CNPJ: XX.XXX.XXX/0001-XX · Empresa de telecomunicações registrada no Brasil<br>
-      Atendimento via WhatsApp em horário comercial · Rio Grande do Sul – Brasil<br>
-      As informações desta página têm caráter informativo. Condições comerciais, valores e disponibilidade
-      podem variar conforme região de atendimento.
-    </footer>
-  </div>
+<p>
+Wi-Fi incluso
+</p>
+
+<a class="whats" href="https://wa.me/5551999999999?text=Quero%20400MB">
+Contratar
+</a>
+
+</div>
+
+<div class="plano">
+
+<h3>500 Mega</h3>
+
+<div class="preco">
+R$99,90
+</div>
+
+<p>
+Mais velocidade para sua casa
+</p>
+
+<a class="whats" href="https://wa.me/5551999999999?text=Quero%20500MB">
+Contratar
+</a>
+
+</div>
+
+<div class="plano">
+
+<h3>600 Mega</h3>
+
+<div class="preco">
+R$119,90
+</div>
+
+<p>
+Ultra velocidade
+</p>
+
+<a class="whats" href="https://wa.me/5551999999999?text=Quero%20600MB">
+Contratar
+</a>
+
+</div>
+
+</section>
+
+</div>
+
 </body>
 </html>
