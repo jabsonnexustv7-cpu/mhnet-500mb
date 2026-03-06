@@ -3,24 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WebTurbo | Internet Fibra Óptica</title>
-  <meta name="description" content="Internet fibra óptica com alta velocidade, estabilidade e suporte rápido. Consulte sua cobertura e contrate pelo WhatsApp." />
+
+  <title>Internet Fibra Óptica | WebTurbo Internet</title>
+  <meta name="description" content="Consulte cobertura de internet fibra óptica, veja planos residenciais e contrate pelo WhatsApp. Atendimento em cidades do RS, SC, PR, SP e MS." />
+  <meta name="keywords" content="internet fibra, internet fibra óptica, consultar cobertura, provedor de internet, internet residencial, planos de internet, internet RS, internet SC, internet PR" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="WebTurbo Internet" />
+  <meta name="theme-color" content="#0a1a3c" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="WebTurbo Internet | Consulte cobertura e contrate online" />
+  <meta property="og:description" content="Internet fibra com alta velocidade, consulta de cobertura e contratação rápida pelo WhatsApp." />
+  <meta property="og:url" content="https://webturbo-internet.com.br/" />
+  <meta property="og:site_name" content="WebTurbo Internet" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="WebTurbo Internet | Consulte cobertura e contrate online" />
+  <meta name="twitter:description" content="Internet fibra com alta velocidade, consulta de cobertura e contratação rápida pelo WhatsApp." />
+
+  <link rel="canonical" href="https://webturbo-internet.com.br/" />
 
   <style>
     :root{
-      --bg:#04112b;
-      --bg-2:#071936;
-      --card:#0b1f44;
-      --card-soft:rgba(255,255,255,0.06);
+      --bg:#06122d;
+      --bg2:#0b1c45;
+      --bg3:#0f255a;
+      --card:#102452;
+      --card-soft:rgba(255,255,255,0.05);
       --line:rgba(255,255,255,0.10);
       --text:#ffffff;
-      --muted:#b8c4da;
+      --muted:#b8c4dd;
       --green:#22c55e;
-      --green-2:#16a34a;
+      --green-dark:#16a34a;
       --blue:#60a5fa;
+      --blue-soft:rgba(96,165,250,.16);
       --white:#ffffff;
-      --shadow:0 20px 50px rgba(0,0,0,.28);
+      --shadow:0 20px 60px rgba(0,0,0,.32);
       --radius:24px;
+      --max:1200px;
     }
 
     *{
@@ -33,33 +53,35 @@
     html{scroll-behavior:smooth;}
 
     body{
-      background:
-        radial-gradient(circle at top left, rgba(96,165,250,.18), transparent 28%),
-        radial-gradient(circle at top right, rgba(34,197,94,.12), transparent 22%),
-        linear-gradient(180deg, #03102a 0%, #04112b 55%, #020817 100%);
       color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,.20), transparent 28%),
+        radial-gradient(circle at top right, rgba(34,197,94,.10), transparent 18%),
+        linear-gradient(180deg, #06122d 0%, #071733 42%, #050d20 100%);
     }
 
+    a{color:inherit;}
+
     .container{
-      max-width:1200px;
+      max-width:var(--max);
       margin:0 auto;
-      padding:0 22px;
+      padding:0 20px;
     }
 
     .topbar{
       position:sticky;
       top:0;
-      z-index:10;
+      z-index:30;
       backdrop-filter: blur(14px);
-      background:rgba(3,16,42,.68);
+      background:rgba(6,18,45,.72);
       border-bottom:1px solid rgba(255,255,255,.06);
     }
 
     .topbar-inner{
+      min-height:76px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      padding:18px 0;
       gap:16px;
     }
 
@@ -70,7 +92,7 @@
     }
 
     .brand strong{
-      font-size:18px;
+      font-size:20px;
       font-weight:900;
       letter-spacing:.2px;
     }
@@ -80,72 +102,96 @@
       color:var(--muted);
     }
 
-    .btn-whats,
-    .btn-primary,
-    .btn-secondary{
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn,
+    .btn-outline,
+    .btn-whats{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      gap:10px;
       text-decoration:none;
-      border:none;
-      cursor:pointer;
       border-radius:999px;
       font-weight:800;
       transition:.2s ease;
+      cursor:pointer;
+      border:none;
+      white-space:nowrap;
     }
 
-    .btn-whats,
-    .btn-primary{
-      background:linear-gradient(180deg, #34d399, var(--green));
-      color:#052814;
-      box-shadow:0 10px 24px rgba(34,197,94,.25);
+    .btn,
+    .btn-whats{
+      background:linear-gradient(180deg, #3ddd7f, var(--green));
+      color:#062914;
+      box-shadow:0 10px 24px rgba(34,197,94,.22);
     }
 
-    .btn-whats:hover,
-    .btn-primary:hover{
+    .btn:hover,
+    .btn-whats:hover{
       transform:translateY(-1px);
-      filter:brightness(1.03);
+      filter:brightness(1.04);
+    }
+
+    .btn{
+      min-height:52px;
+      padding:0 24px;
     }
 
     .btn-whats{
-      padding:14px 22px;
-      min-width:160px;
+      min-height:48px;
+      padding:0 18px;
+    }
+
+    .btn-outline{
+      min-height:52px;
+      padding:0 22px;
+      background:transparent;
+      color:#fff;
+      border:1px solid rgba(255,255,255,.14);
+    }
+
+    .btn-outline:hover{
+      background:rgba(255,255,255,.05);
     }
 
     .hero{
-      padding:56px 0 34px;
+      padding:54px 0 32px;
     }
 
     .hero-grid{
       display:grid;
-      grid-template-columns:1.1fr .9fr;
+      grid-template-columns:1.08fr .92fr;
       gap:30px;
       align-items:stretch;
     }
 
     .hero-left{
-      padding:20px 0;
+      padding:16px 0;
     }
 
-    .tag{
+    .eyebrow{
       display:inline-flex;
       align-items:center;
       gap:8px;
       padding:9px 14px;
       border-radius:999px;
-      background:rgba(255,255,255,.08);
+      background:rgba(255,255,255,.07);
       border:1px solid rgba(255,255,255,.08);
-      color:#dbe7ff;
+      color:#dbe8ff;
       font-size:13px;
-      font-weight:700;
+      font-weight:800;
       margin-bottom:18px;
     }
 
     .hero-left h1{
-      font-size: clamp(36px, 5vw, 62px);
-      line-height:1.03;
-      letter-spacing:-1.2px;
+      font-size:clamp(38px, 5vw, 64px);
+      line-height:1.02;
+      letter-spacing:-1.5px;
       max-width:720px;
       margin-bottom:16px;
     }
@@ -154,73 +200,59 @@
       font-size:18px;
       line-height:1.7;
       color:var(--muted);
-      max-width:620px;
+      max-width:640px;
       margin-bottom:24px;
     }
 
     .hero-actions{
       display:flex;
-      flex-wrap:wrap;
       gap:12px;
-      margin-bottom:26px;
+      flex-wrap:wrap;
+      margin-bottom:28px;
     }
 
-    .btn-primary{
-      padding:15px 24px;
-    }
-
-    .btn-secondary{
-      padding:15px 24px;
-      color:#fff;
-      background:transparent;
-      border:1px solid rgba(255,255,255,.14);
-    }
-
-    .btn-secondary:hover{
-      background:rgba(255,255,255,.05);
-    }
-
-    .hero-benefits{
+    .hero-badges{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
-      max-width:650px;
+      max-width:680px;
     }
 
-    .benefit{
+    .badge-card{
       background:var(--card-soft);
       border:1px solid var(--line);
       border-radius:18px;
-      padding:15px 16px;
-      color:#e6eefc;
+      padding:14px 16px;
+      color:#e7eefc;
       font-size:14px;
       line-height:1.5;
     }
 
     .hero-card{
-      background:linear-gradient(180deg, rgba(11,31,68,.95), rgba(8,23,50,.95));
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:28px;
-      box-shadow:var(--shadow);
-      padding:26px;
       position:relative;
       overflow:hidden;
+      border-radius:28px;
+      border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(16,36,82,.96), rgba(9,22,54,.96));
+      box-shadow:var(--shadow);
+      padding:28px;
     }
 
     .hero-card::before{
       content:"";
       position:absolute;
-      inset:-80px auto auto -60px;
-      width:200px;
-      height:200px;
-      background:radial-gradient(circle, rgba(96,165,250,.18), transparent 65%);
+      width:220px;
+      height:220px;
+      top:-70px;
+      right:-60px;
+      background:radial-gradient(circle, rgba(96,165,250,.20), transparent 66%);
       pointer-events:none;
     }
 
     .hero-card h2{
       font-size:30px;
-      line-height:1.1;
       margin-bottom:10px;
+      line-height:1.1;
     }
 
     .hero-card p{
@@ -251,25 +283,25 @@
     }
 
     .field.full{
-      grid-column:1/-1;
+      grid-column:1 / -1;
     }
 
     .field label{
       font-size:12px;
-      color:#d7e1f5;
-      font-weight:700;
+      font-weight:800;
+      color:#d9e3f8;
       letter-spacing:.2px;
     }
 
     .field input{
       width:100%;
-      height:50px;
+      height:52px;
       border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.96);
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.97);
+      color:#111827;
       padding:0 15px;
       font-size:15px;
-      color:#111827;
       outline:none;
     }
 
@@ -282,55 +314,58 @@
       box-shadow:0 0 0 4px rgba(96,165,250,.15);
     }
 
+    .field input[readonly]{
+      background:#f8fafc;
+    }
+
     .consult-actions{
       display:flex;
-      flex-wrap:wrap;
       gap:10px;
+      flex-wrap:wrap;
       margin-top:8px;
     }
 
     .consult-actions button{
-      height:50px;
+      min-height:50px;
       padding:0 22px;
       border-radius:14px;
-      border:none;
-      font-weight:800;
+      font-weight:900;
       cursor:pointer;
+      border:none;
     }
 
     #btnConsultar{
-      background:linear-gradient(180deg, #34d399, var(--green));
-      color:#052814;
-      min-width:180px;
+      background:linear-gradient(180deg, #3ddd7f, var(--green));
+      color:#072b15;
+      min-width:190px;
     }
 
     #btnLimpar{
-      background:rgba(255,255,255,.07);
+      background:rgba(255,255,255,.08);
       color:#fff;
       border:1px solid rgba(255,255,255,.10);
     }
 
     .status-box{
       margin-top:14px;
+      padding:14px 16px;
       background:rgba(255,255,255,.04);
       border:1px solid rgba(255,255,255,.08);
       border-radius:18px;
-      padding:14px 16px;
     }
 
     .status-label{
       font-size:12px;
-      color:#cbd5e1;
-      margin-bottom:6px;
-      font-weight:700;
+      color:#cad6ee;
+      font-weight:800;
       text-transform:uppercase;
-      letter-spacing:.4px;
+      letter-spacing:.45px;
+      margin-bottom:6px;
     }
 
     .status-text{
       font-size:15px;
-      color:#fff;
-      font-weight:700;
+      font-weight:800;
       line-height:1.5;
     }
 
@@ -341,7 +376,7 @@
       margin-top:14px;
       padding:16px;
       border-radius:18px;
-      background:linear-gradient(180deg, rgba(34,197,94,.16), rgba(34,197,94,.08));
+      background:linear-gradient(180deg, rgba(34,197,94,.18), rgba(34,197,94,.08));
       border:1px solid rgba(34,197,94,.28);
       display:none;
     }
@@ -353,31 +388,31 @@
     .cta-viavel strong{
       display:block;
       margin-bottom:8px;
-      font-size:17px;
+      font-size:18px;
     }
 
     .cta-viavel p{
-      margin-bottom:12px;
       color:#dcfce7;
-      font-size:14px;
       line-height:1.6;
+      margin-bottom:12px;
+      font-size:14px;
     }
 
     .cta-viavel a{
+      min-width:220px;
+      min-height:48px;
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-width:220px;
-      height:48px;
-      border-radius:999px;
       text-decoration:none;
-      font-weight:900;
+      border-radius:999px;
       background:#fff;
       color:#14532d;
+      font-weight:900;
     }
 
     .section{
-      padding:26px 0 48px;
+      padding:34px 0 56px;
     }
 
     .section-head{
@@ -385,43 +420,39 @@
       margin-bottom:24px;
     }
 
-    .section-head h3{
+    .section-head h2{
       font-size:34px;
       margin-bottom:10px;
     }
 
     .section-head p{
-      color:var(--muted);
-      max-width:720px;
+      max-width:760px;
       margin:0 auto;
+      color:var(--muted);
       line-height:1.7;
     }
 
     .plans{
       display:grid;
-      grid-template-columns:repeat(3, minmax(0,1fr));
+      grid-template-columns:repeat(3,minmax(0,1fr));
       gap:22px;
     }
 
     .plan{
-      position:relative;
       background:#fff;
       color:#0f172a;
       border-radius:28px;
       padding:26px;
-      box-shadow:0 18px 40px rgba(0,0,0,.20);
-      overflow:hidden;
+      box-shadow:0 18px 40px rgba(0,0,0,.18);
     }
 
     .plan.featured{
-      transform:translateY(-8px);
       border:2px solid rgba(34,197,94,.55);
+      transform:translateY(-8px);
     }
 
     .plan-badge{
       display:inline-flex;
-      align-items:center;
-      justify-content:center;
       padding:8px 12px;
       border-radius:999px;
       background:#dcfce7;
@@ -431,12 +462,13 @@
       margin-bottom:16px;
     }
 
-    .plan h4{
+    .plan h3{
       font-size:28px;
       margin-bottom:8px;
+      line-height:1.15;
     }
 
-    .plan .subtitle{
+    .subtitle{
       color:#475569;
       line-height:1.6;
       min-height:48px;
@@ -446,43 +478,43 @@
     .price{
       font-size:46px;
       line-height:1;
-      font-weight:900;
       letter-spacing:-1.4px;
+      font-weight:900;
       margin-bottom:6px;
     }
 
     .price small{
       font-size:16px;
-      font-weight:700;
       color:#475569;
+      font-weight:700;
     }
 
     .plan ul{
       list-style:none;
-      margin:22px 0;
       display:grid;
       gap:11px;
+      margin:22px 0;
     }
 
     .plan ul li{
-      font-size:15px;
-      color:#1e293b;
       display:flex;
       gap:10px;
       align-items:flex-start;
       line-height:1.5;
+      color:#1e293b;
+      font-size:15px;
     }
 
     .plan ul li::before{
       content:"✓";
-      color:#16a34a;
       font-weight:900;
+      color:#16a34a;
       margin-top:1px;
     }
 
     .plan a{
       width:100%;
-      height:52px;
+      min-height:52px;
       border-radius:16px;
       display:flex;
       align-items:center;
@@ -494,63 +526,219 @@
     }
 
     .plan.featured a{
-      background:linear-gradient(180deg, #34d399, var(--green));
-      color:#052814;
+      background:linear-gradient(180deg, #3ddd7f, var(--green));
+      color:#072b15;
     }
 
-    .mini-info{
+    .seo-strip{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
       gap:16px;
       margin-top:28px;
     }
 
-    .mini-card{
+    .seo-card{
       background:rgba(255,255,255,.05);
       border:1px solid rgba(255,255,255,.08);
       border-radius:20px;
       padding:18px;
     }
 
-    .mini-card strong{
+    .seo-card strong{
       display:block;
       font-size:18px;
       margin-bottom:8px;
     }
 
-    .mini-card p{
+    .seo-card p{
       color:var(--muted);
       line-height:1.6;
       font-size:14px;
     }
 
-    footer{
-      padding:24px 0 40px;
+    .faq{
+      display:grid;
+      gap:14px;
+      max-width:980px;
+      margin:0 auto;
+    }
+
+    .faq-item{
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      border-radius:20px;
+      padding:18px;
+    }
+
+    .faq-item h3{
+      font-size:18px;
+      margin-bottom:8px;
+    }
+
+    .faq-item p{
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    .legal{
+      padding:0 0 54px;
+    }
+
+    .legal-box{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:24px;
+      padding:24px;
+    }
+
+    .legal-box h2{
+      font-size:28px;
+      margin-bottom:14px;
+    }
+
+    .legal-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .legal-item{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .legal-item strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:14px;
+      color:#dbe7ff;
+    }
+
+    .legal-item span,
+    .legal-item a{
+      color:var(--muted);
+      line-height:1.6;
+      text-decoration:none;
+      word-break:break-word;
+    }
+
+    .footer{
+      border-top:1px solid rgba(255,255,255,.06);
+      padding:22px 0 36px;
       color:#94a3b8;
-      text-align:center;
       font-size:13px;
+      text-align:center;
+    }
+
+    .floating-wa{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      width:60px;
+      height:60px;
+      border-radius:50%;
+      background:linear-gradient(180deg, #3ddd7f, var(--green));
+      color:#062914;
+      font-weight:900;
+      text-decoration:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 16px 30px rgba(34,197,94,.28);
+      z-index:40;
     }
 
     @media (max-width: 1024px){
       .hero-grid{grid-template-columns:1fr;}
       .plans{grid-template-columns:1fr;}
       .plan.featured{transform:none;}
-      .mini-info{grid-template-columns:1fr;}
+      .seo-strip{grid-template-columns:1fr;}
+      .legal-grid{grid-template-columns:1fr;}
     }
 
     @media (max-width: 640px){
       .container{padding:0 16px;}
-      .topbar-inner{padding:14px 0;}
-      .btn-whats{min-width:auto; padding:12px 16px;}
-      .hero{padding:34px 0 24px;}
-      .hero-benefits{grid-template-columns:1fr;}
-      .consult-grid{grid-template-columns:1fr;}
+      .topbar-inner{min-height:68px;}
+      .nav-actions{gap:8px;}
+      .btn-whats{min-height:44px;padding:0 14px;}
+      .hero{padding:34px 0 20px;}
       .hero-left p{font-size:16px;}
-      .section-head h3{font-size:28px;}
+      .hero-actions{display:grid;grid-template-columns:1fr;}
+      .hero-actions .btn,
+      .hero-actions .btn-outline{width:100%;}
+      .hero-badges{grid-template-columns:1fr;}
+      .hero-card{padding:20px;}
+      .consult-box{padding:14px;}
+      .consult-grid{grid-template-columns:1fr;}
+      .consult-actions{display:grid;grid-template-columns:1fr;}
+      .consult-actions button{width:100%;}
+      .section{padding:28px 0 46px;}
+      .section-head h2{font-size:28px;}
       .hero-card h2{font-size:24px;}
       .price{font-size:40px;}
+      .floating-wa{width:56px;height:56px;right:14px;bottom:14px;}
     }
   </style>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"InternetServiceProvider",
+    "name":"WebTurbo Internet",
+    "url":"https://webturbo-internet.com.br/",
+    "telephone":"+55-51-9318-7300",
+    "email":"contato@webturbo-internet.com.br",
+    "address":{
+      "@type":"PostalAddress",
+      "addressCountry":"BR",
+      "addressLocality":"Brasil"
+    },
+    "areaServed":"Brasil"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {
+        "@type":"Question",
+        "name":"Como consultar a cobertura da WebTurbo?",
+        "acceptedAnswer":{
+          "@type":"Answer",
+          "text":"Basta informar o CEP e o número do endereço no formulário da página. A consulta é feita automaticamente e, quando houver viabilidade, o botão de contratação é liberado."
+        }
+      },
+      {
+        "@type":"Question",
+        "name":"Quais cidades a WebTurbo atende?",
+        "acceptedAnswer":{
+          "@type":"Answer",
+          "text":"Atendimento em cidades dos estados RS, SC, PR, SP e MS. Entre as cidades atendidas estão Alvorada, Cachoeirinha, Venâncio Aires, Abelardo Luz, Balneário Camboriú, Xanxerê, Cascavel, Guarapuava, Toledo, Itapetininga e Dourados."
+        }
+      },
+      {
+        "@type":"Question",
+        "name":"Como funciona a contratação?",
+        "acceptedAnswer":{
+          "@type":"Answer",
+          "text":"Após a confirmação de cobertura, o cliente pode seguir direto para o WhatsApp para receber atendimento comercial e avançar com a contratação."
+        }
+      },
+      {
+        "@type":"Question",
+        "name":"Quais planos estão disponíveis?",
+        "acceptedAnswer":{
+          "@type":"Answer",
+          "text":"Os planos em destaque nesta página são 400 Mega, 500 Mega e 600MB + 1 Chip 10GB, sujeitos à disponibilidade e viabilidade técnica."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -561,35 +749,39 @@
         <span>Internet Fibra Óptica</span>
       </div>
 
-      <a class="btn-whats" href="https://wa.me/555193187300?text=Olá!%20Quero%20falar%20sobre%20os%20planos." target="_blank">
-        WhatsApp
-      </a>
+      <div class="nav-actions">
+        <a href="#planos" class="btn-outline">Planos</a>
+        <a href="#faq" class="btn-outline">FAQ</a>
+        <a class="btn-whats" href="https://wa.me/555193187300?text=Olá!%20Quero%20falar%20sobre%20os%20planos." target="_blank" rel="noopener noreferrer">
+          WhatsApp
+        </a>
+      </div>
     </div>
   </header>
 
   <main class="hero">
     <div class="container hero-grid">
-      <div class="hero-left">
-        <div class="tag">🚀 Oferta especial para novos assinantes</div>
-        <h1>Internet fibra com velocidade de verdade para sua casa.</h1>
+      <section class="hero-left" aria-label="Apresentação da empresa">
+        <div class="eyebrow">🚀 Consulte cobertura e contrate online</div>
+        <h1>Internet fibra com velocidade, estabilidade e contratação rápida.</h1>
         <p>
-          Consulte a cobertura no seu endereço, veja os planos disponíveis e avance para a contratação pelo WhatsApp com muito mais rapidez.
+          Consulte a cobertura no seu endereço, veja os planos disponíveis e siga para o atendimento comercial pelo WhatsApp com uma experiência mais simples e profissional.
         </p>
 
         <div class="hero-actions">
-          <a href="#planos" class="btn-primary">Ver planos</a>
-          <a href="#consulta" class="btn-secondary">Consultar cobertura</a>
+          <a href="#consulta" class="btn">Consultar cobertura</a>
+          <a href="#planos" class="btn-outline">Ver planos</a>
         </div>
 
-        <div class="hero-benefits">
-          <div class="benefit">✅ Wi-Fi potente para vários dispositivos conectados ao mesmo tempo.</div>
-          <div class="benefit">✅ Mais estabilidade para streaming, trabalho e jogos online.</div>
-          <div class="benefit">✅ Consulta rápida de cobertura antes da contratação.</div>
-          <div class="benefit">✅ Atendimento comercial direto pelo WhatsApp.</div>
+        <div class="hero-badges">
+          <div class="badge-card">✅ Consulta de cobertura com preenchimento automático por CEP.</div>
+          <div class="badge-card">✅ Planos pensados para uso residencial e famílias conectadas.</div>
+          <div class="badge-card">✅ Atendimento comercial rápido e direto no WhatsApp.</div>
+          <div class="badge-card">✅ Estrutura de página otimizada para busca, mobile e performance.</div>
         </div>
-      </div>
+      </section>
 
-      <div class="hero-card" id="consulta">
+      <aside class="hero-card" id="consulta" aria-label="Consulta de cobertura">
         <h2>Consulte a cobertura</h2>
         <p>Preencha os dados abaixo para verificar disponibilidade no endereço do cliente.</p>
 
@@ -597,12 +789,12 @@
           <div class="consult-grid">
             <div class="field">
               <label for="cep">CEP</label>
-              <input id="cep" type="text" placeholder="Digite seu CEP" maxlength="9" />
+              <input id="cep" type="text" inputmode="numeric" placeholder="Digite seu CEP" maxlength="9" />
             </div>
 
             <div class="field">
               <label for="numero">Número</label>
-              <input id="numero" type="text" placeholder="Número da casa" />
+              <input id="numero" type="text" inputmode="numeric" placeholder="Número da casa" />
             </div>
 
             <div class="field full">
@@ -624,26 +816,26 @@
           <div id="ctaViavel" class="cta-viavel">
             <strong>✅ Cobertura disponível</strong>
             <p>Encontramos viabilidade para este endereço. Clique abaixo para seguir para a contratação.</p>
-            <a id="btnContratarCobertura" href="#" target="_blank">Contratar agora</a>
+            <a id="btnContratarCobertura" href="#" target="_blank" rel="noopener noreferrer">Contratar agora</a>
           </div>
         </div>
-      </div>
+      </aside>
     </div>
   </main>
 
   <section class="section" id="planos">
     <div class="container">
       <div class="section-head">
-        <h3>Escolha o plano ideal</h3>
+        <h2>Escolha o plano ideal</h2>
         <p>
-          Planos pensados para entregar velocidade, estabilidade e ótimo custo-benefício para diferentes perfis de uso.
+          Planos com ótimo custo-benefício para diferentes perfis de consumo, com foco em estabilidade, boa experiência de navegação e contratação simplificada.
         </p>
       </div>
 
       <div class="plans">
         <article class="plan">
           <div class="plan-badge">Plano econômico</div>
-          <h4>400 Mega</h4>
+          <h3>400 Mega</h3>
           <div class="subtitle">Boa performance para navegação, vídeos, redes sociais e uso diário da casa.</div>
           <div class="price">R$ 89,90 <small>/mês</small></div>
 
@@ -654,28 +846,28 @@
             <li>Ideal para uso residencial</li>
           </ul>
 
-          <a href="https://wa.me/555193187300?text=Olá!%20Quero%20contratar%20o%20plano%20de%20400%20Mega." target="_blank">Contratar</a>
+          <a href="https://wa.me/555193187300?text=Olá!%20Quero%20contratar%20o%20plano%20de%20400%20Mega." target="_blank" rel="noopener noreferrer">Contratar</a>
         </article>
 
         <article class="plan featured">
           <div class="plan-badge">Mais vendido</div>
-          <h4>500 Mega</h4>
-          <div class="subtitle">Mais velocidade para famílias conectadas, streaming, trabalho remoto e vários aparelhos.</div>
+          <h3>500 Mega</h3>
+          <div class="subtitle">Mais velocidade para famílias conectadas, streaming, trabalho remoto e vários aparelhos ao mesmo tempo.</div>
           <div class="price">R$ 99,90 <small>/mês</small></div>
 
           <ul>
             <li>Mais estabilidade no dia a dia</li>
-            <li>Melhor experiência para streaming</li>
+            <li>Excelente para streaming</li>
             <li>Ideal para múltiplos dispositivos</li>
             <li>Plano com maior procura</li>
           </ul>
 
-          <a href="https://wa.me/555193187300?text=Olá!%20Quero%20contratar%20o%20plano%20de%20500%20Mega." target="_blank">Contratar</a>
+          <a href="https://wa.me/555193187300?text=Olá!%20Quero%20contratar%20o%20plano%20de%20500%20Mega." target="_blank" rel="noopener noreferrer">Contratar</a>
         </article>
 
         <article class="plan">
           <div class="plan-badge">Combo destaque</div>
-          <h4>600MB + 1 Chip 10GB</h4>
+          <h3>600MB + 1 Chip 10GB</h3>
           <div class="subtitle">Internet fibra de alta performance com 1 chip de 10GB incluso no combo.</div>
           <div class="price">R$ 144,90 <small>/mês</small></div>
 
@@ -686,32 +878,120 @@
             <li>Excelente opção de combo</li>
           </ul>
 
-          <a href="https://wa.me/555193187300?text=Olá!%20Quero%20contratar%20o%20plano%20de%20600MB%20%2B%201%20Chip%2010GB." target="_blank">Contratar</a>
+          <a href="https://wa.me/555193187300?text=Olá!%20Quero%20contratar%20o%20plano%20de%20600MB%20%2B%201%20Chip%2010GB." target="_blank" rel="noopener noreferrer">Contratar</a>
         </article>
       </div>
 
-      <div class="mini-info">
-        <div class="mini-card">
+      <div class="seo-strip">
+        <div class="seo-card">
           <strong>Consulta rápida</strong>
-          <p>O cliente verifica a cobertura antes de avançar na contratação, reduzindo atrito no atendimento.</p>
+          <p>O cliente verifica a cobertura antes de avançar no atendimento, reduzindo atrito e aumentando a chance de conversão.</p>
         </div>
-        <div class="mini-card">
-          <strong>Mais conversão</strong>
-          <p>Com visual melhor, CTA mais claro e hierarquia mais forte, o site passa mais confiança comercial.</p>
+
+        <div class="seo-card">
+          <strong>Página mais confiável</strong>
+          <p>Estrutura com informações institucionais, FAQ e comunicação clara, ajudando percepção de marca e qualidade da landing.</p>
         </div>
-        <div class="mini-card">
-          <strong>Atendimento direto</strong>
-          <p>Após a viabilidade, o cliente pode seguir imediatamente para o WhatsApp com uma mensagem pronta.</p>
+
+        <div class="seo-card">
+          <strong>Melhor base para tráfego</strong>
+          <p>Conteúdo mais completo, mobile bem trabalhado e organização de headings ajudam o desempenho orgânico e de mídia paga.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <footer>
+  <section class="section" id="faq">
     <div class="container">
-      © 2026 WebTurbo - Todos os direitos reservados.
+      <div class="section-head">
+        <h2>Perguntas frequentes</h2>
+        <p>
+          Informações importantes para quem quer consultar cobertura, entender a contratação e verificar as cidades atendidas.
+        </p>
+      </div>
+
+      <div class="faq">
+        <div class="faq-item">
+          <h3>Como consultar a cobertura?</h3>
+          <p>
+            Basta informar o CEP e o número do endereço. O sistema busca o endereço automaticamente e consulta a viabilidade técnica. Quando houver cobertura disponível, o botão de contratação é liberado.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Quais cidades atendemos?</h3>
+          <p>
+            Atendemos cidades dos estados <strong>RS, SC, PR, SP e MS</strong>. Entre elas estão:
+            <strong>Alvorada, Aratiba, Áurea, Cachoeirinha, Bento Gonçalves, Sarandi, Venâncio Aires, Vacaria, Abelardo Luz, Águas de Chapecó, Balneário Camboriú, Biguaçu, São José, Xanxerê, Xaxim, Cascavel, Castro, Cruzeiro do Oeste, Guarapuava, Irati, Toledo, Itapetininga, São Miguel Arcanjo, Buri e Dourados</strong>.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Como funciona a contratação?</h3>
+          <p>
+            Depois da confirmação de cobertura, o cliente pode seguir direto para o WhatsApp para receber atendimento comercial, confirmar a oferta disponível e avançar com a contratação.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Os planos podem variar por região?</h3>
+          <p>
+            Sim. A disponibilidade dos planos e das ofertas pode variar conforme a cidade, a cobertura local e a viabilidade técnica do endereço informado.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="legal">
+    <div class="container">
+      <div class="legal-box">
+        <h2>Informações da empresa</h2>
+
+        <div class="legal-grid">
+          <div class="legal-item">
+            <strong>Razão demonstrativa</strong>
+            <span>WebTurbo Internet</span>
+          </div>
+
+          <div class="legal-item">
+            <strong>CNPJ</strong>
+            <span>00.000.000/0001-00</span>
+          </div>
+
+          <div class="legal-item">
+            <strong>Endereço</strong>
+            <span>Brasil</span>
+          </div>
+
+          <div class="legal-item">
+            <strong>Telefone / WhatsApp</strong>
+            <a href="https://wa.me/555193187300" target="_blank" rel="noopener noreferrer">(51) 9318-7300</a>
+          </div>
+
+          <div class="legal-item">
+            <strong>E-mail</strong>
+            <a href="mailto:contato@webturbo-internet.com.br">contato@webturbo-internet.com.br</a>
+          </div>
+
+          <div class="legal-item">
+            <strong>Atendimento</strong>
+            <span>Consulta de cobertura, planos residenciais e atendimento comercial online.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      © 2026 WebTurbo Internet - Todos os direitos reservados.
     </div>
   </footer>
+
+  <a class="floating-wa" href="https://wa.me/555193187300?text=Olá!%20Quero%20falar%20sobre%20os%20planos." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp">
+      WA
+  </a>
 
   <script>
     const ENDPOINT = "https://script.google.com/macros/s/AKfycbxZGS3gyYjRE7VOWBWfy0HpOk7YfVgYmbTg1EC0R3yTU99-wQDDIQkvmd2I7Xjk-iJn/exec";
