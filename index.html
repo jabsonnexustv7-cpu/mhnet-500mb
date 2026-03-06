@@ -6,10 +6,10 @@
 
   <title>Internet Fibra Óptica | WebTurbo Internet</title>
   <meta name="description" content="Consulte cobertura de internet fibra óptica, veja planos residenciais e contrate pelo WhatsApp. Atendimento em cidades do RS, SC, PR, SP e MS." />
-  <meta name="keywords" content="internet fibra, internet fibra óptica, consultar cobertura, provedor de internet, internet residencial, planos de internet, internet RS, internet SC, internet PR" />
+  <meta name="keywords" content="internet fibra, internet fibra óptica, consultar cobertura, provedor de internet, internet residencial, planos de internet, internet RS, internet SC, internet PR, internet SP, internet MS" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="WebTurbo Internet" />
-  <meta name="theme-color" content="#0a1a3c" />
+  <meta name="theme-color" content="#091833" />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="WebTurbo Internet | Consulte cobertura e contrate online" />
@@ -25,21 +25,25 @@
 
   <style>
     :root{
-      --bg:#06122d;
-      --bg2:#0b1c45;
-      --bg3:#0f255a;
-      --card:#102452;
-      --card-soft:rgba(255,255,255,0.05);
-      --line:rgba(255,255,255,0.10);
+      --bg:#06152e;
+      --bg-soft:#0a1d3f;
+      --bg-card:#10254d;
+      --bg-card-2:#0d2146;
+      --line:rgba(255,255,255,0.08);
+      --line-strong:rgba(255,255,255,0.12);
       --text:#ffffff;
-      --muted:#b8c4dd;
-      --green:#22c55e;
-      --green-dark:#16a34a;
-      --blue:#60a5fa;
-      --blue-soft:rgba(96,165,250,.16);
+      --muted:#b8c5dc;
+      --muted-2:#94a7c8;
+      --green:#32d06c;
+      --green-dark:#24b45a;
+      --green-soft:rgba(50,208,108,0.12);
       --white:#ffffff;
-      --shadow:0 20px 60px rgba(0,0,0,.32);
-      --radius:24px;
+      --ink:#0f172a;
+      --shadow:0 24px 70px rgba(0,0,0,.28);
+      --shadow-soft:0 16px 40px rgba(0,0,0,.16);
+      --radius-xl:30px;
+      --radius-lg:22px;
+      --radius-md:16px;
       --max:1200px;
     }
 
@@ -47,7 +51,7 @@
       margin:0;
       padding:0;
       box-sizing:border-box;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
 
     html{scroll-behavior:smooth;}
@@ -55,9 +59,9 @@
     body{
       color:var(--text);
       background:
-        radial-gradient(circle at top left, rgba(96,165,250,.20), transparent 28%),
-        radial-gradient(circle at top right, rgba(34,197,94,.10), transparent 18%),
-        linear-gradient(180deg, #06122d 0%, #071733 42%, #050d20 100%);
+        radial-gradient(circle at top left, rgba(109,168,255,.12), transparent 26%),
+        radial-gradient(circle at top right, rgba(50,208,108,.08), transparent 18%),
+        linear-gradient(180deg, #071327 0%, #06152e 42%, #041022 100%);
     }
 
     a{color:inherit;}
@@ -65,20 +69,20 @@
     .container{
       max-width:var(--max);
       margin:0 auto;
-      padding:0 20px;
+      padding:0 22px;
     }
 
     .topbar{
       position:sticky;
       top:0;
       z-index:30;
-      backdrop-filter: blur(14px);
-      background:rgba(6,18,45,.72);
-      border-bottom:1px solid rgba(255,255,255,.06);
+      backdrop-filter:blur(14px);
+      background:rgba(6,21,46,.74);
+      border-bottom:1px solid rgba(255,255,255,.05);
     }
 
     .topbar-inner{
-      min-height:76px;
+      min-height:78px;
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -126,19 +130,19 @@
 
     .btn,
     .btn-whats{
-      background:linear-gradient(180deg, #3ddd7f, var(--green));
-      color:#062914;
-      box-shadow:0 10px 24px rgba(34,197,94,.22);
+      background:linear-gradient(180deg, #43da7a, var(--green));
+      color:#082a14;
+      box-shadow:0 12px 28px rgba(50,208,108,.18);
     }
 
     .btn:hover,
     .btn-whats:hover{
       transform:translateY(-1px);
-      filter:brightness(1.04);
+      filter:brightness(1.03);
     }
 
     .btn{
-      min-height:52px;
+      min-height:54px;
       padding:0 24px;
     }
 
@@ -148,11 +152,11 @@
     }
 
     .btn-outline{
-      min-height:52px;
-      padding:0 22px;
+      min-height:48px;
+      padding:0 20px;
       background:transparent;
       color:#fff;
-      border:1px solid rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.12);
     }
 
     .btn-outline:hover{
@@ -160,80 +164,80 @@
     }
 
     .hero{
-      padding:54px 0 32px;
+      padding:56px 0 30px;
     }
 
     .hero-grid{
       display:grid;
-      grid-template-columns:1.08fr .92fr;
-      gap:30px;
+      grid-template-columns:1.05fr .95fr;
+      gap:34px;
       align-items:stretch;
     }
 
     .hero-left{
-      padding:16px 0;
+      padding:20px 0 8px;
     }
 
     .eyebrow{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      padding:9px 14px;
+      padding:10px 15px;
       border-radius:999px;
-      background:rgba(255,255,255,.07);
+      background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.08);
-      color:#dbe8ff;
+      color:#dce7fb;
       font-size:13px;
       font-weight:800;
-      margin-bottom:18px;
+      margin-bottom:20px;
     }
 
     .hero-left h1{
-      font-size:clamp(38px, 5vw, 64px);
-      line-height:1.02;
-      letter-spacing:-1.5px;
+      font-size:clamp(38px, 5vw, 66px);
+      line-height:1.01;
+      letter-spacing:-1.7px;
       max-width:720px;
-      margin-bottom:16px;
+      margin-bottom:18px;
     }
 
     .hero-left p{
       font-size:18px;
-      line-height:1.7;
+      line-height:1.75;
       color:var(--muted);
       max-width:640px;
-      margin-bottom:24px;
+      margin-bottom:26px;
     }
 
     .hero-actions{
       display:flex;
       gap:12px;
       flex-wrap:wrap;
-      margin-bottom:28px;
+      margin-bottom:26px;
     }
 
-    .hero-badges{
+    .hero-points{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:14px;
-      max-width:680px;
+      max-width:700px;
     }
 
-    .badge-card{
-      background:var(--card-soft);
+    .hero-point{
+      background:rgba(255,255,255,.045);
       border:1px solid var(--line);
       border-radius:18px;
-      padding:14px 16px;
+      padding:15px 16px;
       color:#e7eefc;
       font-size:14px;
-      line-height:1.5;
+      line-height:1.6;
     }
 
     .hero-card{
       position:relative;
       overflow:hidden;
-      border-radius:28px;
-      border:1px solid rgba(255,255,255,.08);
-      background:linear-gradient(180deg, rgba(16,36,82,.96), rgba(9,22,54,.96));
+      border-radius:var(--radius-xl);
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(16,37,77,.96), rgba(11,28,58,.98));
       box-shadow:var(--shadow);
       padding:28px;
     }
@@ -245,7 +249,7 @@
       height:220px;
       top:-70px;
       right:-60px;
-      background:radial-gradient(circle, rgba(96,165,250,.20), transparent 66%);
+      background:radial-gradient(circle, rgba(108,167,255,.16), transparent 66%);
       pointer-events:none;
     }
 
@@ -253,19 +257,25 @@
       font-size:30px;
       margin-bottom:10px;
       line-height:1.1;
+      position:relative;
+      z-index:1;
     }
 
     .hero-card p{
       color:var(--muted);
-      line-height:1.6;
+      line-height:1.65;
       margin-bottom:18px;
       font-size:15px;
+      position:relative;
+      z-index:1;
     }
 
     .consult-box{
-      background:rgba(255,255,255,.04);
+      position:relative;
+      z-index:1;
+      background:rgba(255,255,255,.035);
       border:1px solid rgba(255,255,255,.08);
-      border-radius:22px;
+      border-radius:24px;
       padding:18px;
     }
 
@@ -289,20 +299,21 @@
     .field label{
       font-size:12px;
       font-weight:800;
-      color:#d9e3f8;
+      color:#dce6f8;
       letter-spacing:.2px;
     }
 
     .field input{
       width:100%;
-      height:52px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.97);
+      height:54px;
+      border-radius:15px;
+      border:1px solid rgba(255,255,255,.10);
+      background:#f8fafc;
       color:#111827;
-      padding:0 15px;
+      padding:0 16px;
       font-size:15px;
       outline:none;
+      transition:.18s ease;
     }
 
     .field input::placeholder{
@@ -310,12 +321,13 @@
     }
 
     .field input:focus{
-      border-color:#60a5fa;
-      box-shadow:0 0 0 4px rgba(96,165,250,.15);
+      border-color:#78adff;
+      box-shadow:0 0 0 4px rgba(96,165,250,.16);
+      background:#fff;
     }
 
     .field input[readonly]{
-      background:#f8fafc;
+      background:#f3f6fb;
     }
 
     .consult-actions{
@@ -328,16 +340,22 @@
     .consult-actions button{
       min-height:50px;
       padding:0 22px;
-      border-radius:14px;
+      border-radius:15px;
       font-weight:900;
       cursor:pointer;
       border:none;
+      transition:.2s ease;
     }
 
     #btnConsultar{
-      background:linear-gradient(180deg, #3ddd7f, var(--green));
-      color:#072b15;
+      background:linear-gradient(180deg, #43da7a, var(--green));
+      color:#082a14;
       min-width:190px;
+    }
+
+    #btnConsultar:hover{
+      filter:brightness(1.03);
+      transform:translateY(-1px);
     }
 
     #btnLimpar{
@@ -346,11 +364,15 @@
       border:1px solid rgba(255,255,255,.10);
     }
 
+    #btnLimpar:hover{
+      background:rgba(255,255,255,.11);
+    }
+
     .status-box{
       margin-top:14px;
-      padding:14px 16px;
+      padding:15px 16px;
       background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.07);
       border-radius:18px;
     }
 
@@ -366,18 +388,19 @@
     .status-text{
       font-size:15px;
       font-weight:800;
-      line-height:1.5;
+      line-height:1.55;
+      color:#fff;
     }
 
-    .status-text.ok{color:#86efac;}
-    .status-text.bad{color:#fca5a5;}
+    .status-text.ok{color:#8cf2b1;}
+    .status-text.bad{color:#ffb0b0;}
 
     .cta-viavel{
       margin-top:14px;
       padding:16px;
-      border-radius:18px;
-      background:linear-gradient(180deg, rgba(34,197,94,.18), rgba(34,197,94,.08));
-      border:1px solid rgba(34,197,94,.28);
+      border-radius:20px;
+      background:linear-gradient(180deg, rgba(50,208,108,.15), rgba(50,208,108,.08));
+      border:1px solid rgba(50,208,108,.24);
       display:none;
     }
 
@@ -392,7 +415,7 @@
     }
 
     .cta-viavel p{
-      color:#dcfce7;
+      color:#e2fbe9;
       line-height:1.6;
       margin-bottom:12px;
       font-size:14px;
@@ -406,56 +429,66 @@
       justify-content:center;
       text-decoration:none;
       border-radius:999px;
-      background:#fff;
+      background:#ffffff;
       color:#14532d;
       font-weight:900;
+      box-shadow:0 10px 22px rgba(255,255,255,.08);
     }
 
     .section{
-      padding:34px 0 56px;
+      padding:42px 0 56px;
     }
 
     .section-head{
       text-align:center;
-      margin-bottom:24px;
+      margin-bottom:26px;
     }
 
     .section-head h2{
-      font-size:34px;
+      font-size:36px;
       margin-bottom:10px;
+      letter-spacing:-.7px;
     }
 
     .section-head p{
       max-width:760px;
       margin:0 auto;
       color:var(--muted);
-      line-height:1.7;
+      line-height:1.75;
+      font-size:16px;
     }
 
     .plans{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:22px;
+      gap:24px;
+      align-items:stretch;
     }
 
     .plan{
-      background:#fff;
-      color:#0f172a;
-      border-radius:28px;
-      padding:26px;
-      box-shadow:0 18px 40px rgba(0,0,0,.18);
+      background:#ffffff;
+      color:var(--ink);
+      border-radius:30px;
+      padding:28px;
+      box-shadow:var(--shadow-soft);
+      display:flex;
+      flex-direction:column;
+      min-height:100%;
     }
 
     .plan.featured{
-      border:2px solid rgba(34,197,94,.55);
+      border:2px solid rgba(50,208,108,.48);
       transform:translateY(-8px);
+      box-shadow:0 20px 44px rgba(0,0,0,.18);
     }
 
     .plan-badge{
       display:inline-flex;
+      align-items:center;
+      width:max-content;
       padding:8px 12px;
       border-radius:999px;
-      background:#dcfce7;
+      background:#dff6e7;
       color:#166534;
       font-size:12px;
       font-weight:900;
@@ -463,46 +496,57 @@
     }
 
     .plan h3{
-      font-size:28px;
-      margin-bottom:8px;
-      line-height:1.15;
+      font-size:30px;
+      margin-bottom:10px;
+      line-height:1.14;
+      letter-spacing:-.4px;
     }
 
     .subtitle{
-      color:#475569;
-      line-height:1.6;
-      min-height:48px;
-      margin-bottom:16px;
+      color:#4b5d78;
+      line-height:1.7;
+      min-height:82px;
+      margin-bottom:18px;
+      font-size:16px;
     }
 
     .price{
-      font-size:46px;
+      display:flex;
+      align-items:flex-end;
+      gap:8px;
+      margin-bottom:18px;
       line-height:1;
-      letter-spacing:-1.4px;
+    }
+
+    .price .value{
+      font-size:56px;
+      letter-spacing:-2px;
       font-weight:900;
-      margin-bottom:6px;
+      color:#0b1834;
     }
 
     .price small{
-      font-size:16px;
+      font-size:17px;
       color:#475569;
       font-weight:700;
+      padding-bottom:8px;
     }
 
     .plan ul{
       list-style:none;
       display:grid;
-      gap:11px;
-      margin:22px 0;
+      gap:12px;
+      margin:0 0 24px;
+      flex:1;
     }
 
     .plan ul li{
       display:flex;
       gap:10px;
       align-items:flex-start;
-      line-height:1.5;
+      line-height:1.55;
       color:#1e293b;
-      font-size:15px;
+      font-size:16px;
     }
 
     .plan ul li::before{
@@ -514,118 +558,106 @@
 
     .plan a{
       width:100%;
-      min-height:52px;
-      border-radius:16px;
+      min-height:54px;
+      border-radius:18px;
       display:flex;
       align-items:center;
       justify-content:center;
       text-decoration:none;
       font-weight:900;
-      background:#0f172a;
+      background:#0c1732;
       color:#fff;
     }
 
     .plan.featured a{
-      background:linear-gradient(180deg, #3ddd7f, var(--green));
-      color:#072b15;
-    }
-
-    .seo-strip{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:16px;
-      margin-top:28px;
-    }
-
-    .seo-card{
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:20px;
-      padding:18px;
-    }
-
-    .seo-card strong{
-      display:block;
-      font-size:18px;
-      margin-bottom:8px;
-    }
-
-    .seo-card p{
-      color:var(--muted);
-      line-height:1.6;
-      font-size:14px;
+      background:linear-gradient(180deg, #43da7a, var(--green));
+      color:#082a14;
     }
 
     .faq{
       display:grid;
-      gap:14px;
-      max-width:980px;
+      gap:16px;
+      max-width:960px;
       margin:0 auto;
     }
 
     .faq-item{
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.04);
-      border-radius:20px;
-      padding:18px;
+      border:1px solid rgba(255,255,255,.07);
+      background:rgba(255,255,255,.035);
+      border-radius:22px;
+      padding:20px 20px 18px;
     }
 
     .faq-item h3{
-      font-size:18px;
-      margin-bottom:8px;
+      font-size:21px;
+      margin-bottom:10px;
+      letter-spacing:-.2px;
     }
 
     .faq-item p{
       color:var(--muted);
-      line-height:1.7;
+      line-height:1.8;
+      font-size:16px;
     }
 
     .legal{
-      padding:0 0 54px;
+      padding:8px 0 56px;
     }
 
     .legal-box{
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:24px;
-      padding:24px;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:30px;
+      padding:28px;
     }
 
-    .legal-box h2{
-      font-size:28px;
-      margin-bottom:14px;
+    .legal-head{
+      margin-bottom:18px;
+    }
+
+    .legal-head h2{
+      font-size:34px;
+      margin-bottom:8px;
+      letter-spacing:-.6px;
+    }
+
+    .legal-head p{
+      color:var(--muted);
+      line-height:1.7;
+      max-width:760px;
     }
 
     .legal-grid{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:16px;
+      gap:14px;
     }
 
     .legal-item{
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.07);
       border-radius:18px;
-      padding:16px;
+      padding:16px 17px;
     }
 
     .legal-item strong{
       display:block;
       margin-bottom:6px;
       font-size:14px;
-      color:#dbe7ff;
+      color:#deebff;
     }
 
     .legal-item span,
     .legal-item a{
       color:var(--muted);
-      line-height:1.6;
+      line-height:1.7;
       text-decoration:none;
       word-break:break-word;
+      font-size:16px;
     }
 
     .footer{
-      border-top:1px solid rgba(255,255,255,.06);
+      border-top:1px solid rgba(255,255,255,.05);
       padding:22px 0 36px;
       color:#94a3b8;
       font-size:13px;
@@ -636,48 +668,52 @@
       position:fixed;
       right:18px;
       bottom:18px;
-      width:60px;
-      height:60px;
+      width:58px;
+      height:58px;
       border-radius:50%;
-      background:linear-gradient(180deg, #3ddd7f, var(--green));
+      background:linear-gradient(180deg, #43da7a, var(--green));
       color:#062914;
       font-weight:900;
       text-decoration:none;
       display:flex;
       align-items:center;
       justify-content:center;
-      box-shadow:0 16px 30px rgba(34,197,94,.28);
+      box-shadow:0 14px 28px rgba(50,208,108,.24);
       z-index:40;
+      border:2px solid rgba(255,255,255,.16);
     }
 
     @media (max-width: 1024px){
       .hero-grid{grid-template-columns:1fr;}
       .plans{grid-template-columns:1fr;}
       .plan.featured{transform:none;}
-      .seo-strip{grid-template-columns:1fr;}
       .legal-grid{grid-template-columns:1fr;}
     }
 
     @media (max-width: 640px){
       .container{padding:0 16px;}
-      .topbar-inner{min-height:68px;}
+      .topbar-inner{min-height:70px;}
       .nav-actions{gap:8px;}
       .btn-whats{min-height:44px;padding:0 14px;}
+      .btn-outline{min-height:44px;padding:0 16px;}
       .hero{padding:34px 0 20px;}
       .hero-left p{font-size:16px;}
       .hero-actions{display:grid;grid-template-columns:1fr;}
       .hero-actions .btn,
       .hero-actions .btn-outline{width:100%;}
-      .hero-badges{grid-template-columns:1fr;}
+      .hero-points{grid-template-columns:1fr;}
       .hero-card{padding:20px;}
       .consult-box{padding:14px;}
       .consult-grid{grid-template-columns:1fr;}
       .consult-actions{display:grid;grid-template-columns:1fr;}
       .consult-actions button{width:100%;}
-      .section{padding:28px 0 46px;}
-      .section-head h2{font-size:28px;}
+      .section{padding:34px 0 46px;}
+      .section-head h2{font-size:30px;}
       .hero-card h2{font-size:24px;}
-      .price{font-size:40px;}
+      .subtitle{min-height:auto;}
+      .price .value{font-size:48px;}
+      .faq-item h3{font-size:19px;}
+      .legal-head h2{font-size:28px;}
       .floating-wa{width:56px;height:56px;right:14px;bottom:14px;}
     }
   </style>
@@ -730,10 +766,10 @@
       },
       {
         "@type":"Question",
-        "name":"Quais planos estão disponíveis?",
+        "name":"Os planos podem variar por região?",
         "acceptedAnswer":{
           "@type":"Answer",
-          "text":"Os planos em destaque nesta página são 400 Mega, 500 Mega e 600MB + 1 Chip 10GB, sujeitos à disponibilidade e viabilidade técnica."
+          "text":"Sim. A disponibilidade dos planos e das ofertas pode variar conforme a cidade, a cobertura local e a viabilidade técnica do endereço informado."
         }
       }
     ]
@@ -765,7 +801,7 @@
         <div class="eyebrow">🚀 Consulte cobertura e contrate online</div>
         <h1>Internet fibra com velocidade, estabilidade e contratação rápida.</h1>
         <p>
-          Consulte a cobertura no seu endereço, veja os planos disponíveis e siga para o atendimento comercial pelo WhatsApp com uma experiência mais simples e profissional.
+          Consulte a cobertura no seu endereço, veja os planos disponíveis e siga para o atendimento comercial pelo WhatsApp com uma experiência simples, segura e profissional.
         </p>
 
         <div class="hero-actions">
@@ -773,11 +809,11 @@
           <a href="#planos" class="btn-outline">Ver planos</a>
         </div>
 
-        <div class="hero-badges">
-          <div class="badge-card">✅ Consulta de cobertura com preenchimento automático por CEP.</div>
-          <div class="badge-card">✅ Planos pensados para uso residencial e famílias conectadas.</div>
-          <div class="badge-card">✅ Atendimento comercial rápido e direto no WhatsApp.</div>
-          <div class="badge-card">✅ Estrutura de página otimizada para busca, mobile e performance.</div>
+        <div class="hero-points">
+          <div class="hero-point">✅ Consulta de cobertura com preenchimento automático por CEP.</div>
+          <div class="hero-point">✅ Planos pensados para uso residencial e famílias conectadas.</div>
+          <div class="hero-point">✅ Atendimento comercial direto pelo WhatsApp.</div>
+          <div class="hero-point">✅ Página preparada para mobile, busca e mídia paga.</div>
         </div>
       </section>
 
@@ -837,7 +873,11 @@
           <div class="plan-badge">Plano econômico</div>
           <h3>400 Mega</h3>
           <div class="subtitle">Boa performance para navegação, vídeos, redes sociais e uso diário da casa.</div>
-          <div class="price">R$ 89,90 <small>/mês</small></div>
+
+          <div class="price">
+            <span class="value">R$ 89,90</span>
+            <small>/mês</small>
+          </div>
 
           <ul>
             <li>100% fibra óptica</li>
@@ -853,7 +893,11 @@
           <div class="plan-badge">Mais vendido</div>
           <h3>500 Mega</h3>
           <div class="subtitle">Mais velocidade para famílias conectadas, streaming, trabalho remoto e vários aparelhos ao mesmo tempo.</div>
-          <div class="price">R$ 99,90 <small>/mês</small></div>
+
+          <div class="price">
+            <span class="value">R$ 99,90</span>
+            <small>/mês</small>
+          </div>
 
           <ul>
             <li>Mais estabilidade no dia a dia</li>
@@ -869,7 +913,11 @@
           <div class="plan-badge">Combo destaque</div>
           <h3>600MB + 1 Chip 10GB</h3>
           <div class="subtitle">Internet fibra de alta performance com 1 chip de 10GB incluso no combo.</div>
-          <div class="price">R$ 144,90 <small>/mês</small></div>
+
+          <div class="price">
+            <span class="value">R$ 144,90</span>
+            <small>/mês</small>
+          </div>
 
           <ul>
             <li>600MB de internet fibra</li>
@@ -880,23 +928,6 @@
 
           <a href="https://wa.me/555193187300?text=Olá!%20Quero%20contratar%20o%20plano%20de%20600MB%20%2B%201%20Chip%2010GB." target="_blank" rel="noopener noreferrer">Contratar</a>
         </article>
-      </div>
-
-      <div class="seo-strip">
-        <div class="seo-card">
-          <strong>Consulta rápida</strong>
-          <p>O cliente verifica a cobertura antes de avançar no atendimento, reduzindo atrito e aumentando a chance de conversão.</p>
-        </div>
-
-        <div class="seo-card">
-          <strong>Página mais confiável</strong>
-          <p>Estrutura com informações institucionais, FAQ e comunicação clara, ajudando percepção de marca e qualidade da landing.</p>
-        </div>
-
-        <div class="seo-card">
-          <strong>Melhor base para tráfego</strong>
-          <p>Conteúdo mais completo, mobile bem trabalhado e organização de headings ajudam o desempenho orgânico e de mídia paga.</p>
-        </div>
       </div>
     </div>
   </section>
@@ -946,7 +977,12 @@
   <section class="legal">
     <div class="container">
       <div class="legal-box">
-        <h2>Informações da empresa</h2>
+        <div class="legal-head">
+          <h2>Informações da empresa</h2>
+          <p>
+            Conteúdo institucional exibido para reforçar transparência, credibilidade e adequação para campanhas e presença de busca.
+          </p>
+        </div>
 
         <div class="legal-grid">
           <div class="legal-item">
@@ -990,7 +1026,7 @@
   </footer>
 
   <a class="floating-wa" href="https://wa.me/555193187300?text=Olá!%20Quero%20falar%20sobre%20os%20planos." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp">
-      WA
+    WA
   </a>
 
   <script>
