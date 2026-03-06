@@ -87,23 +87,28 @@
       align-items:center;
       justify-content:space-between;
       gap:16px;
+      padding:12px 0;
     }
 
     .brand{
       display:flex;
       flex-direction:column;
       gap:4px;
+      min-width:0;
+      flex:1;
     }
 
     .brand strong{
       font-size:20px;
       font-weight:900;
       letter-spacing:.2px;
+      line-height:1.05;
     }
 
     .brand span{
       font-size:12px;
       color:var(--muted);
+      line-height:1.2;
     }
 
     .nav-actions{
@@ -111,6 +116,7 @@
       align-items:center;
       gap:10px;
       flex-wrap:wrap;
+      justify-content:flex-end;
     }
 
     .btn,
@@ -745,32 +751,192 @@
       .legal-grid{grid-template-columns:1fr;}
     }
 
+    @media (max-width: 768px){
+      .topbar-inner{
+        display:grid;
+        grid-template-columns:1fr;
+        gap:12px;
+        align-items:start;
+        padding:14px 0 16px;
+      }
+
+      .brand{
+        align-items:flex-start;
+      }
+
+      .brand strong{
+        font-size:18px;
+      }
+
+      .brand span{
+        font-size:11px;
+      }
+
+      .nav-actions{
+        width:100%;
+        justify-content:flex-start;
+        gap:8px;
+      }
+
+      .nav-actions .btn-outline{
+        min-height:42px;
+        padding:0 16px;
+        font-size:15px;
+      }
+
+      .nav-actions .btn-whats{
+        min-height:44px;
+        padding:0 18px;
+        font-size:15px;
+      }
+
+      .hero{
+        padding:30px 0 18px;
+      }
+
+      .hero-left{
+        padding-top:8px;
+      }
+
+      .eyebrow{
+        margin-bottom:16px;
+      }
+
+      .hero-left h1{
+        font-size:clamp(34px, 9vw, 52px);
+        line-height:1.03;
+        margin-bottom:14px;
+      }
+
+      .hero-left p{
+        font-size:16px;
+        line-height:1.7;
+        margin-bottom:20px;
+      }
+    }
+
     @media (max-width: 640px){
       .container{padding:0 16px;}
-      .topbar-inner{min-height:70px;}
-      .nav-actions{gap:8px;}
-      .btn-whats{min-height:44px;padding:0 14px;}
-      .btn-outline{min-height:44px;padding:0 16px;}
-      .hero{padding:34px 0 20px;}
-      .hero-left p{font-size:16px;}
-      .hero-actions{display:grid;grid-template-columns:1fr;}
+
+      .topbar{
+        position:sticky;
+      }
+
+      .topbar-inner{
+        padding:12px 0 14px;
+      }
+
+      .brand{
+        gap:3px;
+      }
+
+      .brand strong{
+        font-size:16px;
+      }
+
+      .brand span{
+        font-size:10px;
+      }
+
+      .nav-actions{
+        display:grid;
+        grid-template-columns:repeat(3, auto);
+        align-items:center;
+        justify-content:flex-start;
+      }
+
+      .nav-actions .btn-outline,
+      .nav-actions .btn-whats{
+        min-height:40px;
+        padding:0 14px;
+        font-size:14px;
+      }
+
+      .hero{
+        padding:22px 0 18px;
+      }
+
+      .hero-left p{
+        font-size:16px;
+      }
+
+      .hero-actions{
+        display:grid;
+        grid-template-columns:1fr;
+        gap:10px;
+      }
+
       .hero-actions .btn,
-      .hero-actions .btn-outline{width:100%;}
-      .hero-points{grid-template-columns:1fr;}
-      .hero-card{padding:20px;}
-      .consult-box{padding:14px;}
-      .consult-grid{grid-template-columns:1fr;}
-      .consult-actions{display:grid;grid-template-columns:1fr;}
-      .consult-actions button{width:100%;}
-      .section{padding:34px 0 46px;}
-      .section-head h2{font-size:30px;}
-      .hero-card h2{font-size:24px;}
-      .subtitle{min-height:auto;}
-      .price .value{font-size:48px;}
-      .faq-item h3{font-size:19px;}
-      .legal-head h2{font-size:28px;}
-      .floating-wa{width:56px;height:56px;right:14px;bottom:14px;}
-      .floating-wa svg{width:26px;height:26px;}
+      .hero-actions .btn-outline{
+        width:100%;
+      }
+
+      .hero-points{
+        grid-template-columns:1fr;
+      }
+
+      .hero-card{
+        padding:18px;
+        border-radius:24px;
+      }
+
+      .hero-card h2{
+        font-size:24px;
+      }
+
+      .consult-box{
+        padding:14px;
+        border-radius:20px;
+      }
+
+      .consult-grid{
+        grid-template-columns:1fr;
+      }
+
+      .consult-actions{
+        display:grid;
+        grid-template-columns:1fr;
+      }
+
+      .consult-actions button{
+        width:100%;
+      }
+
+      .section{
+        padding:34px 0 46px;
+      }
+
+      .section-head h2{
+        font-size:30px;
+      }
+
+      .subtitle{
+        min-height:auto;
+      }
+
+      .price .value{
+        font-size:48px;
+      }
+
+      .faq-item h3{
+        font-size:19px;
+      }
+
+      .legal-head h2{
+        font-size:28px;
+      }
+
+      .floating-wa{
+        width:56px;
+        height:56px;
+        right:14px;
+        bottom:14px;
+      }
+
+      .floating-wa svg{
+        width:26px;
+        height:26px;
+      }
     }
   </style>
 
@@ -1240,13 +1406,13 @@ Motivo: ${res.motivo || "-"}`;
             $("ctaViavel").classList.add("show");
             setStatus("Cobertura disponível para este endereço.", "ok");
           } else {
-            setStatus(\`Sem cobertura no momento. \${res.motivo ? "Motivo: " + res.motivo : ""}\`, "bad");
+            setStatus(`Sem cobertura no momento. ${res.motivo ? "Motivo: " + res.motivo : ""}`, "bad");
           }
         } else {
-          setStatus(\`Erro na consulta. \${res && res.motivo ? res.motivo : "Resposta inválida."}\`, "bad");
+          setStatus(`Erro na consulta. ${res && res.motivo ? res.motivo : "Resposta inválida."}`, "bad");
         }
       } catch (error) {
-        setStatus(\`Erro ao consultar cobertura: \${error.message || error}\`, "bad");
+        setStatus(`Erro ao consultar cobertura: ${error.message || error}`, "bad");
       }
     }
 
