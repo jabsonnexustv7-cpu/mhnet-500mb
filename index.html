@@ -331,6 +331,7 @@
       font-size:15px;
       color:#fff;
       font-weight:700;
+      line-height:1.5;
     }
 
     .status-text.ok{color:#86efac;}
@@ -560,7 +561,7 @@
         <span>Internet Fibra Óptica</span>
       </div>
 
-      <a class="btn-whats" href="https://wa.me/5551999999999?text=Olá!%20Quero%20falar%20sobre%20os%20planos." target="_blank">
+      <a class="btn-whats" href="https://wa.me/555193187300?text=Olá!%20Quero%20falar%20sobre%20os%20planos." target="_blank">
         WhatsApp
       </a>
     </div>
@@ -653,7 +654,7 @@
             <li>Ideal para uso residencial</li>
           </ul>
 
-          <a href="https://wa.me/5551999999999?text=Olá!%20Quero%20contratar%20o%20plano%20de%20400%20Mega." target="_blank">Contratar</a>
+          <a href="https://wa.me/555193187300?text=Olá!%20Quero%20contratar%20o%20plano%20de%20400%20Mega." target="_blank">Contratar</a>
         </article>
 
         <article class="plan featured">
@@ -669,23 +670,23 @@
             <li>Plano com maior procura</li>
           </ul>
 
-          <a href="https://wa.me/5551999999999?text=Olá!%20Quero%20contratar%20o%20plano%20de%20500%20Mega." target="_blank">Contratar</a>
+          <a href="https://wa.me/555193187300?text=Olá!%20Quero%20contratar%20o%20plano%20de%20500%20Mega." target="_blank">Contratar</a>
         </article>
 
         <article class="plan">
-          <div class="plan-badge">Alta performance</div>
-          <h4>600 Mega</h4>
-          <div class="subtitle">Mais potência para casas com uso intenso de internet, jogos e consumo simultâneo.</div>
-          <div class="price">R$ 119,90 <small>/mês</small></div>
+          <div class="plan-badge">Combo destaque</div>
+          <h4>600MB + 1 Chip 10GB</h4>
+          <div class="subtitle">Internet fibra de alta performance com 1 chip de 10GB incluso no combo.</div>
+          <div class="price">R$ 144,90 <small>/mês</small></div>
 
           <ul>
-            <li>Ultra velocidade</li>
-            <li>Excelente para gamers</li>
-            <li>Mais folga para vários usuários</li>
-            <li>Conexão robusta e estável</li>
+            <li>600MB de internet fibra</li>
+            <li>1 Chip com 10GB incluso</li>
+            <li>Mais performance no dia a dia</li>
+            <li>Excelente opção de combo</li>
           </ul>
 
-          <a href="https://wa.me/5551999999999?text=Olá!%20Quero%20contratar%20o%20plano%20de%20600%20Mega." target="_blank">Contratar</a>
+          <a href="https://wa.me/555193187300?text=Olá!%20Quero%20contratar%20o%20plano%20de%20600MB%20%2B%201%20Chip%2010GB." target="_blank">Contratar</a>
         </article>
       </div>
 
@@ -713,16 +714,18 @@
   </footer>
 
   <script>
-    const WHATS_NUMBER = "5551999999999";
+    const ENDPOINT = "https://script.google.com/macros/s/AKfycbxZGS3gyYjRE7VOWBWfy0HpOk7YfVgYmbTg1EC0R3yTU99-wQDDIQkvmd2I7Xjk-iJn/exec";
+    const FIXED_RADIUS = 200;
+    const WHATS_NUMBER = "555193187300";
 
     const $ = (id) => document.getElementById(id);
 
     const formatCep = (value) => {
-      const digits = value.replace(/\D/g, "").slice(0, 8);
+      const digits = String(value || "").replace(/\D/g, "").slice(0, 8);
       return digits.length > 5 ? digits.slice(0, 5) + "-" + digits.slice(5) : digits;
     };
 
-    const onlyDigits = (value) => value.replace(/\D/g, "");
+    const onlyDigits = (value) => String(value || "").replace(/\D/g, "");
 
     function setStatus(text, type = "") {
       const el = $("status");
@@ -759,11 +762,52 @@
       }
     }
 
+    function jsonpRequest(payload) {
+      return new Promise((resolve, reject) => {
+        const cbName = "cb_" + Date.now() + "_" + Math.random().toString(16).slice(2);
+        const timeoutMs = 15000;
+        let script;
+
+        const timer = setTimeout(() => {
+          cleanup();
+          reject(new Error("Timeout na requisição."));
+        }, timeoutMs);
+
+        function cleanup() {
+          clearTimeout(timer);
+          try { delete window[cbName]; } catch(e) { window[cbName] = undefined; }
+          if (script && script.parentNode) script.parentNode.removeChild(script);
+        }
+
+        window[cbName] = (data) => {
+          cleanup();
+          resolve(data);
+        };
+
+        const url =
+          ENDPOINT +
+          "?data=" + encodeURIComponent(JSON.stringify(payload)) +
+          "&callback=" + encodeURIComponent(cbName);
+
+        script = document.createElement("script");
+        script.src = url;
+        script.async = true;
+
+        script.onerror = () => {
+          cleanup();
+          reject(new Error("Falha ao chamar o WebApp."));
+        };
+
+        document.body.appendChild(script);
+      });
+    }
+
     async function consultarCobertura() {
       const cep = $("cep").value.trim();
       const numero = $("numero").value.trim();
 
       $("ctaViavel").classList.remove("show");
+      $("btnContratarCobertura").href = "#";
 
       if (onlyDigits(cep).length !== 8) {
         setStatus("Informe um CEP válido.", "bad");
@@ -775,32 +819,59 @@
         return;
       }
 
-      setStatus("Consultando endereço...");
+      setStatus("Buscando endereço...");
 
       const endereco = await buscarEnderecoPorCep(cep);
 
-      if (!endereco) {
+      if (!endereco || !endereco.logradouro) {
         $("logradouro").value = "";
         setStatus("Não foi possível localizar esse CEP.", "bad");
         return;
       }
 
-      const enderecoCompleto =
-        [endereco.logradouro, numero, endereco.bairro, `${endereco.cidade} - ${endereco.uf}`]
-          .filter(Boolean)
-          .join(" | ");
+      const fachada = [endereco.logradouro, numero].filter(Boolean).join(", ");
+      const enderecoCompleto = [
+        endereco.logradouro,
+        numero,
+        endereco.bairro,
+        `${endereco.cidade} - ${endereco.uf}`
+      ].filter(Boolean).join(" | ");
 
       $("logradouro").value = enderecoCompleto;
+      setStatus("Consultando cobertura...");
 
-      const viavel = true;
+      try {
+        const payload = {
+          cep: onlyDigits(cep),
+          fachada: fachada,
+          radius: FIXED_RADIUS
+        };
 
-      if (viavel) {
-        const mensagem = `Olá! Consultei a cobertura no site e quero contratar.%0A%0ACEP: ${cep}%0ANúmero: ${numero}%0AEndereço: ${enderecoCompleto}`;
-        $("btnContratarCobertura").href = `https://wa.me/${WHATS_NUMBER}?text=${mensagem}`;
-        $("ctaViavel").classList.add("show");
-        setStatus("Cobertura disponível para este endereço.", "ok");
-      } else {
-        setStatus("No momento não há cobertura disponível neste endereço.", "bad");
+        const res = await jsonpRequest(payload);
+
+        if (res && res.ok === true) {
+          if (res.viavel === true) {
+            const mensagem = `Olá! Consultei a cobertura no site e quero contratar.
+
+CEP: ${cep}
+Número: ${numero}
+Endereço: ${enderecoCompleto}
+Coords: ${res.coords || "-"}
+Motivo: ${res.motivo || "-"}`;
+
+            $("btnContratarCobertura").href =
+              `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(mensagem)}`;
+
+            $("ctaViavel").classList.add("show");
+            setStatus("Cobertura disponível para este endereço.", "ok");
+          } else {
+            setStatus(`Sem cobertura no momento. ${res.motivo ? "Motivo: " + res.motivo : ""}`, "bad");
+          }
+        } else {
+          setStatus(`Erro na consulta. ${res && res.motivo ? res.motivo : "Resposta inválida."}`, "bad");
+        }
+      } catch (error) {
+        setStatus(`Erro ao consultar cobertura: ${error.message || error}`, "bad");
       }
     }
 
@@ -812,11 +883,17 @@
     $("btnLimpar").addEventListener("click", clearForm);
 
     $("cep").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") consultarCobertura();
+      if (e.key === "Enter") {
+        e.preventDefault();
+        consultarCobertura();
+      }
     });
 
     $("numero").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") consultarCobertura();
+      if (e.key === "Enter") {
+        e.preventDefault();
+        consultarCobertura();
+      }
     });
   </script>
 </body>
