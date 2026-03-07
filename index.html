@@ -327,8 +327,25 @@
       background:#fff;
     }
 
-    .field input[readonly]{
+    .address-display{
+      width:100%;
+      min-height:72px;
+      border-radius:15px;
+      border:1px solid rgba(255,255,255,.10);
       background:#f3f6fb;
+      color:#111827;
+      padding:14px 16px;
+      font-size:15px;
+      line-height:1.55;
+      white-space:normal;
+      word-break:break-word;
+      overflow-wrap:anywhere;
+      display:flex;
+      align-items:flex-start;
+    }
+
+    .address-display.empty{
+      color:#6b7280;
     }
 
     .consult-actions{
@@ -857,6 +874,12 @@
         width:100%;
       }
 
+      .address-display{
+        min-height:88px;
+        font-size:15px;
+        line-height:1.55;
+      }
+
       .section{
         padding:34px 0 46px;
       }
@@ -1024,7 +1047,7 @@
 
             <div class="field full">
               <label for="logradouro">Endereço encontrado</label>
-              <input id="logradouro" type="text" placeholder="Será preenchido automaticamente" readonly />
+              <div id="logradouro" class="address-display empty">Será preenchido automaticamente</div>
             </div>
           </div>
 
@@ -1241,10 +1264,21 @@
       el.className = "status-text" + (type ? " " + type : "");
     }
 
+    function setAddress(text = "", isPlaceholder = false) {
+      const el = $("logradouro");
+      if (!text) {
+        el.textContent = "Será preenchido automaticamente";
+        el.classList.add("empty");
+        return;
+      }
+      el.textContent = text;
+      el.classList.remove("empty");
+    }
+
     function clearForm() {
       $("cep").value = "";
       $("numero").value = "";
-      $("logradouro").value = "";
+      setAddress("", true);
       $("ctaViavel").classList.remove("show");
       $("btnContratarCobertura").href = "#";
       setStatus("Aguardando preenchimento.");
@@ -1332,7 +1366,7 @@
       const endereco = await buscarEnderecoPorCep(cep);
 
       if (!endereco || !endereco.logradouro) {
-        $("logradouro").value = "";
+        setAddress("", true);
         setStatus("Não foi possível localizar esse CEP.", "bad");
         return;
       }
@@ -1345,7 +1379,7 @@
         `${endereco.cidade} - ${endereco.uf}`
       ].filter(Boolean).join(" | ");
 
-      $("logradouro").value = enderecoCompleto;
+      setAddress(enderecoCompleto);
       setStatus("Consultando cobertura...");
 
       try {
@@ -1403,6 +1437,8 @@ Motivo: ${res.motivo || "-"}`;
         consultarCobertura();
       }
     });
+
+    setAddress("", true);
   </script>
 </body>
 </html>
