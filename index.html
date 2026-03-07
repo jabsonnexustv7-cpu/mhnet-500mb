@@ -27,8 +27,6 @@
     :root{
       --bg:#06152e;
       --bg-soft:#0a1d3f;
-      --bg-card:#10254d;
-      --bg-card-2:#0d2146;
       --line:rgba(255,255,255,0.08);
       --text:#ffffff;
       --muted:#b8c5dc;
@@ -71,7 +69,7 @@
       top:0;
       z-index:30;
       backdrop-filter:blur(14px);
-      background:rgba(6,21,46,.74);
+      background:rgba(6,21,46,.78);
       border-bottom:1px solid rgba(255,255,255,.05);
     }
 
@@ -109,7 +107,7 @@
       display:flex;
       align-items:center;
       gap:10px;
-      flex-wrap:wrap;
+      flex-wrap:nowrap;
       justify-content:flex-end;
     }
 
@@ -744,56 +742,12 @@
     }
 
     @media (max-width: 768px){
-      .topbar-inner{
-        display:grid;
-        grid-template-columns:1fr;
-        justify-items:center;
-        gap:10px;
-        padding:14px 0 16px;
-      }
-
-      .brand{
-        align-items:center;
-        text-align:center;
-        flex:none;
-      }
-
-      .brand strong{
-        font-size:18px;
-      }
-
-      .brand span{
-        font-size:11px;
-      }
-
-      .nav-actions{
-        width:100%;
-        justify-content:center;
-        gap:8px;
-      }
-
-      .nav-actions .btn-outline{
-        min-height:42px;
-        padding:0 16px;
-        font-size:15px;
-      }
-
-      .nav-actions .btn-whats{
-        min-height:42px;
-        padding:0 16px;
-        font-size:15px;
-      }
-
       .hero{
-        padding:28px 0 18px;
+        padding:30px 0 18px;
       }
 
       .hero-left{
         padding-top:4px;
-      }
-
-      .eyebrow{
-        margin-bottom:16px;
       }
 
       .hero-left h1{
@@ -813,38 +767,44 @@
       .container{padding:0 16px;}
 
       .topbar-inner{
-        padding:12px 0 14px;
-        gap:12px;
+        min-height:64px;
+        padding:10px 0;
+        gap:10px;
       }
 
       .brand{
-        gap:3px;
+        flex:0 0 auto;
+        min-width:auto;
       }
 
       .brand strong{
-        font-size:16px;
+        font-size:15px;
       }
 
       .brand span{
-        font-size:10px;
+        display:none;
       }
 
       .nav-actions{
-        display:flex;
-        flex-wrap:wrap;
-        justify-content:center;
-        gap:8px;
+        gap:6px;
+        flex:0 1 auto;
       }
 
       .nav-actions .btn-outline,
       .nav-actions .btn-whats{
-        min-height:40px;
-        padding:0 14px;
-        font-size:14px;
+        min-height:36px;
+        padding:0 12px;
+        font-size:13px;
       }
 
       .hero{
-        padding:20px 0 18px;
+        padding:18px 0 18px;
+      }
+
+      .eyebrow{
+        margin-bottom:14px;
+        font-size:12px;
+        padding:9px 12px;
       }
 
       .hero-left{
@@ -931,6 +891,19 @@
       .floating-wa svg{
         width:26px;
         height:26px;
+      }
+    }
+
+    @media (max-width: 390px){
+      .brand strong{
+        font-size:14px;
+      }
+
+      .nav-actions .btn-outline,
+      .nav-actions .btn-whats{
+        min-height:34px;
+        padding:0 10px;
+        font-size:12px;
       }
     }
   </style>
