@@ -1,364 +1,556 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Confirmar endereço</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirmar endereço</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --border: rgba(255,255,255,.08);
+    }
 
-<style>
+    * { box-sizing: border-box; }
 
-:root{
---bg:#0f172a;
---card:#111827;
---muted:#94a3b8;
---text:#e5e7eb;
---primary:#2563eb;
---primary-hover:#1d4ed8;
---border:rgba(255,255,255,.08);
-}
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
 
-*{box-sizing:border-box;}
+    .wrap {
+      width: min(980px, calc(100vw - 20px));
+      margin: 12px auto 24px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
 
-body{
-margin:0;
-font-family:Inter,Arial,sans-serif;
-background:linear-gradient(180deg,#0b1220 0%,#0f172a 100%);
-color:var(--text);
-min-height:100vh;
-}
+    .card {
+      background: rgba(17, 24, 39, 0.96);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+    }
 
-.wrap{
-width:min(980px,calc(100vw - 20px));
-margin:12px auto 24px;
-display:grid;
-grid-template-columns:1fr;
-gap:14px;
-}
+    h1 {
+      font-size: 24px;
+      line-height: 1.15;
+      margin: 0 0 6px;
+    }
 
-.card{
-background:rgba(17,24,39,.96);
-border:1px solid var(--border);
-border-radius:18px;
-padding:16px;
-box-shadow:0 10px 30px rgba(0,0,0,.22);
-}
+    .sub {
+      color: var(--muted);
+      margin: 0 0 16px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
 
-h1{
-font-size:24px;
-margin:0 0 6px;
-}
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 14px 0 8px;
+      font-size: 14px;
+    }
 
-.sub{
-color:var(--muted);
-margin:0 0 16px;
-font-size:14px;
-}
+    input, textarea, button { font: inherit; }
 
-label{
-display:block;
-font-weight:600;
-margin:14px 0 8px;
-font-size:14px;
-}
+    .field {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 14px;
+      outline: none;
+      transition: .18s ease;
+    }
 
-input,textarea,button{font:inherit;}
+    .field:focus {
+      border-color: rgba(37,99,235,.72);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.18);
+    }
 
-.field{
-width:100%;
-border-radius:14px;
-border:1px solid rgba(255,255,255,.12);
-background:rgba(255,255,255,.04);
-color:var(--text);
-padding:14px;
-outline:none;
-}
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
 
-.actions{
-display:grid;
-grid-template-columns:1fr;
-gap:10px;
-margin-top:16px;
-}
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 18px;
+      min-height: 50px;
+      cursor: pointer;
+      font-weight: 700;
+      width: 100%;
+    }
 
-.btn{
-border:0;
-border-radius:14px;
-padding:14px 18px;
-min-height:50px;
-cursor:pointer;
-font-weight:700;
-}
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
 
-.btn-primary{
-background:var(--primary);
-color:#fff;
-}
+    .btn-primary:hover { background: var(--primary-hover); }
 
-.btn-secondary{
-background:rgba(255,255,255,.08);
-color:var(--text);
-}
+    .btn-secondary {
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+    }
 
-.map{
-width:100%;
-height:260px;
-border-radius:16px;
-overflow:hidden;
-border:1px solid rgba(255,255,255,.08);
-}
+    .btn-secondary:hover { background: rgba(255,255,255,.12); }
 
-.preview{
-width:100%;
-border-radius:16px;
-margin-top:10px;
-display:none;
-}
+    .map {
+      width: 100%;
+      height: 260px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
 
-.out{
-min-height:140px;
-resize:vertical;
-}
+    .preview {
+      width: 100%;
+      border-radius: 16px;
+      margin-top: 10px;
+      display: none;
+      border: 1px solid rgba(255,255,255,.08);
+    }
 
-.status{
-min-height:22px;
-margin-top:10px;
-font-size:14px;
-color:var(--muted);
-}
+    .out {
+      min-height: 140px;
+      resize: vertical;
+      line-height: 1.45;
+    }
 
-.ok{color:#4ade80;}
-.err{color:#f87171;}
+    .status {
+      min-height: 22px;
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
 
-#payload{display:none;}
+    .ok { color: #4ade80; }
+    .err { color: #f87171; }
 
-</style>
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+      margin-top: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(37,99,235,.15);
+      border: 1px solid rgba(37,99,235,.28);
+      color: #bfdbfe;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .pac-container {
+      z-index: 99999 !important;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(0,0,0,.25);
+    }
+
+    #payload, #bgFrame {
+      display: none;
+    }
+
+    @media (min-width: 860px) {
+      .wrap {
+        width: min(980px, calc(100vw - 28px));
+        margin: 24px auto;
+        grid-template-columns: 1.05fr .95fr;
+        gap: 18px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .btn { width: auto; }
+      .map { height: 340px; border-radius: 18px; }
+      h1 { font-size: 26px; }
+      .card { padding: 18px; border-radius: 20px; }
+    }
+  </style>
 </head>
-
 <body>
-
-<div class="wrap">
-
-<section class="card">
-
-<h1>Confirme seu endereço</h1>
-
-<p class="sub">
-Digite o endereço completo com número, selecione a opção correta e confirme no mapa.
-</p>
-
-<label>Digite seu endereço</label>
-
-<input
-id="addressInput"
-class="field"
-placeholder="Ex: Rua Coronel Evaristo 1366 Taquara"
-/>
-
-<label>Endereço encontrado</label>
-
-<textarea id="obs" class="field out" readonly></textarea>
-
-<div class="actions">
-
-<button id="btnConfirmar" class="btn btn-primary">
-Confirmar endereço
-</button>
-
-<button id="btnAbrirMaps" class="btn btn-secondary">
-Abrir no mapa
-</button>
-
-</div>
-
-<div id="status" class="status">
-Digite o endereço completo.
-</div>
-
-</section>
-
-<aside class="card">
-
-<div id="map" class="map"></div>
-
-<img id="staticPreview" class="preview"/>
-
-<textarea id="payload"></textarea>
-
-</aside>
-
-</div>
-
-<script>
-
-const GOOGLE_MAPS_API_KEY = "AIzaSyAiZg6hvX1FsFBBk6cFHD6tr5bQiBWBF2Q"
-
-const APPS_SCRIPT_WEBHOOK_URL =
-"https://script.google.com/macros/s/AKfycby86KFST9SHyU7x_qXqIRbWJOD-VPIi19jsL9c1fr_qtER3GB4bs9g7Lj-069o1IIIyDQ/exec"
-
-const WEBHOOK_SECRET = "webturbo123"
-
-let map
-let marker
-let geocoder
-let autocomplete
-let currentPayload = null
-
-const addressInputEl = document.getElementById("addressInput")
-const obsEl = document.getElementById("obs")
-const statusEl = document.getElementById("status")
-const staticPreviewEl = document.getElementById("staticPreview")
-const btnConfirmar = document.getElementById("btnConfirmar")
-const btnAbrirMaps = document.getElementById("btnAbrirMaps")
-
-function getContactId(){
-const url = new URLSearchParams(window.location.search)
-return url.get("contact_id") || ""
-}
-
-function setStatus(msg,type=""){
-statusEl.innerText = msg
-statusEl.className = "status"
-if(type) statusEl.classList.add(type)
-}
-
-function extractComponent(components,type){
-const c = components.find(e=>e.types.includes(type))
-return c ? c.long_name : ""
-}
-
-function buildMapLink(lat,lng){
-return "https://www.google.com/maps?q="+lat+","+lng
-}
-
-function updatePayload(parts,lat,lng){
-
-const endereco =
-parts.route+", "+parts.street_number+
-" - "+parts.locality+
-" - "+parts.administrative_area_level_1
-
-currentPayload = {
-rua:parts.route,
-numero:parts.street_number,
-cidade:parts.locality,
-uf:parts.administrative_area_level_1,
-cep:parts.postal_code,
-lat,
-lng,
-maps_link:buildMapLink(lat,lng)
-}
-
-obsEl.value = endereco
-setStatus("Endereço localizado","ok")
-}
-
-function initMiniSite(){
-
-const center={lat:-30.0346,lng:-51.2177}
-
-map=new google.maps.Map(
-document.getElementById("map"),
-{
-center,
-zoom:12
-}
-)
-
-marker=new google.maps.Marker({
-position:center,
-map
-})
-
-geocoder=new google.maps.Geocoder()
-
-autocomplete=new google.maps.places.Autocomplete(
-addressInputEl,
-{componentRestrictions:{country:"br"}}
-)
-
-autocomplete.addListener("place_changed",()=>{
-
-const place=autocomplete.getPlace()
-
-if(!place.geometry) return
-
-const lat=place.geometry.location.lat()
-const lng=place.geometry.location.lng()
-
-map.setCenter({lat,lng})
-marker.setPosition({lat,lng})
-
-updatePayload(
-Object.fromEntries(
-place.address_components.map(c=>[c.types[0],c.long_name])
-),
-lat,
-lng
-)
-
-})
-
-}
-
-function enviarParaAppsScript(){
-
-const contact_id=getContactId()
-
-if(!contact_id){
-setStatus("contact_id não encontrado","err")
-return
-}
-
-const form=document.createElement("form")
-
-form.method="POST"
-form.action=APPS_SCRIPT_WEBHOOK_URL
-
-const fields={
-secret:WEBHOOK_SECRET,
-contact_id,
-payload:JSON.stringify(currentPayload)
-}
-
-Object.entries(fields).forEach(([k,v])=>{
-const i=document.createElement("input")
-i.type="hidden"
-i.name=k
-i.value=v
-form.appendChild(i)
-})
-
-document.body.appendChild(form)
-
-form.submit()
-
-}
-
-btnConfirmar.onclick=()=>{
-
-if(!currentPayload){
-setStatus("Selecione um endereço primeiro","err")
-return
-}
-
-btnConfirmar.innerText="Enviando..."
-
-enviarParaAppsScript()
-
-}
-
-btnAbrirMaps.onclick=()=>{
-if(!currentPayload) return
-window.open(currentPayload.maps_link)
-}
-
-window.initMiniSite=initMiniSite
-
-</script>
-
-<script
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiZg6hvX1FsFBBk6cFHD6tr5bQiBWBF2Q&libraries=places&callback=initMiniSite"
-async defer></script>
-
+  <div class="wrap">
+    <section class="card">
+      <div class="pill">Confirmação rápida de endereço</div>
+      <h1>Confirme seu endereço</h1>
+      <p class="sub">
+        Digite o endereço completo com número, selecione a opção correta e confira o local no mapa. Depois toque em <strong>Confirmar endereço</strong> para continuar.
+      </p>
+
+      <label for="addressInput">Digite seu endereço</label>
+      <input
+        id="addressInput"
+        class="field"
+        type="text"
+        autocomplete="off"
+        placeholder="Ex.: Rua Coronel Evaristo 1366, Taquara"
+      />
+
+      <label for="obs">Confira seu endereço</label>
+      <textarea id="obs" class="field out" readonly></textarea>
+
+      <div class="actions">
+        <button id="btnConfirmar" class="btn btn-primary" type="button">Confirmar endereço</button>
+        <button id="btnAbrirMaps" class="btn btn-secondary" type="button">Abrir no mapa</button>
+      </div>
+
+      <div id="status" class="status">Digite o endereço completo e confirme se o ponto exibido no mapa está correto.</div>
+      <div class="small">O mapa ajuda a validar o local antes de continuar o atendimento.</div>
+    </section>
+
+    <aside class="card">
+      <div id="map" class="map"></div>
+      <img id="staticPreview" class="preview" alt="Prévia do mapa estático" />
+      <div class="small">Confira o ponto no mapa antes de continuar.</div>
+      <textarea id="payload" readonly></textarea>
+    </aside>
+  </div>
+
+  <iframe id="bgFrame" name="bgFrame"></iframe>
+
+  <script>
+    const GOOGLE_MAPS_API_KEY = 'AIzaSyAiZg6hvX1FsFBBk6cFHD6tr5bQiBWBF2Q';
+    const APPS_SCRIPT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycby86KFST9SHyU7x_qXqIRbWJOD-VPIi19jsL9c1fr_qtER3GB4bs9g7Lj-069o1IIIyDQ/exec';
+    const WEBHOOK_SECRET = 'webturbo123';
+    const WHATSAPP_REDIRECT_URL = 'https://wa.me/555193187300';
+    const DEFAULT_ZOOM = 16;
+    const STATIC_SIZE = '900x420';
+    const COUNTRY = 'br';
+    const GEOCODER_REGION = 'BR';
+
+    let map;
+    let marker;
+    let geocoder;
+    let autocomplete;
+    let selectedPlace = null;
+    let currentPayload = null;
+
+    const addressInputEl = document.getElementById('addressInput');
+    const obsEl = document.getElementById('obs');
+    const payloadEl = document.getElementById('payload');
+    const statusEl = document.getElementById('status');
+    const staticPreviewEl = document.getElementById('staticPreview');
+    const btnConfirmar = document.getElementById('btnConfirmar');
+    const btnAbrirMaps = document.getElementById('btnAbrirMaps');
+
+    function setStatus(message, kind = '') {
+      statusEl.textContent = message;
+      statusEl.className = 'status';
+      if (kind) statusEl.classList.add(kind);
+    }
+
+    function esc(value) {
+      return String(value ?? '').trim();
+    }
+
+    function extractComponent(components, wantedType) {
+      const found = components.find(c => (c.types || []).includes(wantedType));
+      return found?.long_name || found?.short_name || '';
+    }
+
+    function extractNumberFromText(text) {
+      const match = String(text || '').match(/\b(\d{1,6}[A-Za-z]?)\b/);
+      return match ? match[1] : '';
+    }
+
+    function extractPartsFromComponents(components) {
+      return {
+        route: extractComponent(components, 'route'),
+        streetNumber: extractComponent(components, 'street_number'),
+        neighborhood:
+          extractComponent(components, 'neighborhood') ||
+          extractComponent(components, 'sublocality_level_1') ||
+          extractComponent(components, 'sublocality'),
+        city:
+          extractComponent(components, 'administrative_area_level_2') ||
+          extractComponent(components, 'locality'),
+        state: extractComponent(components, 'administrative_area_level_1'),
+        postalCode: extractComponent(components, 'postal_code')
+      };
+    }
+
+    function formatAddressFromParts(parts) {
+      const line1 = [parts.route, parts.streetNumber].filter(Boolean).join(', ');
+      const list = [];
+      if (line1) list.push(line1);
+      if (parts.neighborhood) list.push(parts.neighborhood);
+      if (parts.city) list.push(parts.city);
+      if (parts.state) list.push(parts.state);
+      if (parts.postalCode) list.push(parts.postalCode);
+      return list.join(' - ');
+    }
+
+    function buildStaticMapUrl(lat, lng) {
+      const base = 'https://maps.googleapis.com/maps/api/staticmap';
+      const params = new URLSearchParams({
+        center: `${lat},${lng}`,
+        zoom: String(DEFAULT_ZOOM),
+        size: STATIC_SIZE,
+        markers: `color:red|${lat},${lng}`,
+        key: GOOGLE_MAPS_API_KEY,
+      });
+      return `${base}?${params.toString()}`;
+    }
+
+    function buildMapsLink(lat, lng) {
+      return `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}`;
+    }
+
+    function getContactIdFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('contact_id') || '';
+    }
+
+    function updateOutputsFromResolved(parts, lat, lng, placeId = '') {
+      const enderecoFormatado = formatAddressFromParts(parts);
+      const mapaUrl = buildStaticMapUrl(lat, lng);
+      const mapsLink = buildMapsLink(lat, lng);
+
+      currentPayload = {
+        ok: true,
+        endereco_formatado: enderecoFormatado,
+        rua: parts.route || '',
+        numero: parts.streetNumber || '',
+        bairro: parts.neighborhood || '',
+        cidade: parts.city || '',
+        uf: parts.state || '',
+        cep: parts.postalCode || '',
+        lat,
+        lng,
+        TxtCoordenadas: `${lat},${lng}`,
+        mapa_url: mapaUrl,
+        maps_link: mapsLink,
+        place_id: placeId,
+        ver: 'mini-site-endereco-v6'
+      };
+
+      obsEl.value = enderecoFormatado;
+      payloadEl.value = JSON.stringify(currentPayload, null, 2);
+      staticPreviewEl.src = mapaUrl;
+      staticPreviewEl.style.display = 'block';
+      setStatus('Endereço localizado. Confira o ponto no mapa e confirme para continuar.', 'ok');
+    }
+
+    function updateMap(lat, lng) {
+      const pos = { lat: Number(lat), lng: Number(lng) };
+      marker.setPosition(pos);
+      map.setCenter(pos);
+      map.setZoom(DEFAULT_ZOOM);
+    }
+
+    function resolveTypedAddress() {
+      return new Promise((resolve, reject) => {
+        const typed = esc(addressInputEl.value);
+        if (!typed) {
+          reject(new Error('Digite um endereço para continuar.'));
+          return;
+        }
+
+        geocoder.geocode(
+          {
+            address: typed,
+            componentRestrictions: { country: COUNTRY },
+            region: GEOCODER_REGION
+          },
+          (results, status) => {
+            if (status !== 'OK' || !results || !results.length) {
+              reject(new Error('Não encontramos esse endereço. Tente informar rua, número e cidade.'));
+              return;
+            }
+
+            const best = results[0];
+            const location = best.geometry?.location;
+            if (!location) {
+              reject(new Error('Não foi possível obter a localização desse endereço.'));
+              return;
+            }
+
+            const parts = extractPartsFromComponents(best.address_components || []);
+            if (!parts.streetNumber) {
+              parts.streetNumber = extractNumberFromText(typed);
+            }
+
+            const lat = Number(location.lat()).toFixed(6);
+            const lng = Number(location.lng()).toFixed(6);
+            resolve({ parts, lat, lng, placeId: best.place_id || '' });
+          }
+        );
+      });
+    }
+
+    function initAutocomplete() {
+      autocomplete = new google.maps.places.Autocomplete(addressInputEl, {
+        componentRestrictions: { country: COUNTRY },
+        fields: ['address_components', 'formatted_address', 'geometry', 'place_id', 'name'],
+        types: ['address']
+      });
+
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (!place || !place.geometry || !place.geometry.location) {
+          selectedPlace = null;
+          return;
+        }
+
+        selectedPlace = place;
+        const parts = extractPartsFromComponents(place.address_components || []);
+        if (!parts.streetNumber) {
+          parts.streetNumber = extractNumberFromText(addressInputEl.value);
+        }
+
+        const lat = Number(place.geometry.location.lat()).toFixed(6);
+        const lng = Number(place.geometry.location.lng()).toFixed(6);
+        updateMap(lat, lng);
+        updateOutputsFromResolved(parts, lat, lng, place.place_id || '');
+      });
+    }
+
+    function submitToAppsScriptInBackground(payload) {
+      const contactId = getContactIdFromUrl();
+
+      if (!contactId) {
+        throw new Error('contact_id não encontrado na URL.');
+      }
+
+      if (!APPS_SCRIPT_WEBHOOK_URL) {
+        throw new Error('URL do Apps Script não configurada.');
+      }
+
+      if (!WEBHOOK_SECRET) {
+        throw new Error('Secret do webhook não configurado.');
+      }
+
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = APPS_SCRIPT_WEBHOOK_URL;
+      form.target = 'bgFrame';
+      form.style.display = 'none';
+
+      const fields = {
+        secret: WEBHOOK_SECRET,
+        contact_id: contactId,
+        payload: JSON.stringify(payload)
+      };
+
+      Object.entries(fields).forEach(([key, value]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+
+      setTimeout(() => {
+        window.location.href = WHATSAPP_REDIRECT_URL;
+      }, 500);
+    }
+
+    function initMiniSite() {
+      const center = { lat: -30.0346, lng: -51.2177 };
+
+      map = new google.maps.Map(document.getElementById('map'), {
+        center,
+        zoom: 12,
+        mapTypeControl: true,
+        streetViewControl: false,
+        fullscreenControl: true
+      });
+
+      marker = new google.maps.Marker({
+        position: center,
+        map
+      });
+
+      geocoder = new google.maps.Geocoder();
+      initAutocomplete();
+
+      addressInputEl.addEventListener('input', () => {
+        selectedPlace = null;
+        currentPayload = null;
+        obsEl.value = '';
+        payloadEl.value = '';
+        staticPreviewEl.style.display = 'none';
+        setStatus('Digite o endereço completo e confirme se o ponto exibido no mapa está correto.');
+      });
+    }
+
+    btnAbrirMaps.addEventListener('click', () => {
+      if (!currentPayload?.maps_link) {
+        setStatus('Localize um endereço antes de abrir o mapa.', 'err');
+        return;
+      }
+      window.open(currentPayload.maps_link, '_blank', 'noopener,noreferrer');
+    });
+
+    btnConfirmar.addEventListener('click', async () => {
+      try {
+        btnConfirmar.disabled = true;
+        btnConfirmar.textContent = 'Localizando...';
+
+        if (selectedPlace && selectedPlace.geometry && selectedPlace.geometry.location) {
+          const parts = extractPartsFromComponents(selectedPlace.address_components || []);
+          if (!parts.streetNumber) {
+            parts.streetNumber = extractNumberFromText(addressInputEl.value);
+          }
+          const lat = Number(selectedPlace.geometry.location.lat()).toFixed(6);
+          const lng = Number(selectedPlace.geometry.location.lng()).toFixed(6);
+          updateMap(lat, lng);
+          updateOutputsFromResolved(parts, lat, lng, selectedPlace.place_id || '');
+        } else {
+          const resolved = await resolveTypedAddress();
+          updateMap(resolved.lat, resolved.lng);
+          updateOutputsFromResolved(resolved.parts, resolved.lat, resolved.lng, resolved.placeId);
+        }
+
+        if (!currentPayload) {
+          throw new Error('Não foi possível preparar os dados do endereço.');
+        }
+
+        btnConfirmar.textContent = 'Redirecionando...';
+        submitToAppsScriptInBackground(currentPayload);
+      } catch (error) {
+        console.error(error);
+        setStatus(error.message || 'Não foi possível localizar esse endereço.', 'err');
+        btnConfirmar.disabled = false;
+        btnConfirmar.textContent = 'Confirmar endereço';
+      }
+    });
+
+    window.initMiniSite = initMiniSite;
+  </script>
+
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiZg6hvX1FsFBBk6cFHD6tr5bQiBWBF2Q&libraries=places&callback=initMiniSite"
+    async
+    defer></script>
 </body>
 </html>
