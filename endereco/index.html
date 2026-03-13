@@ -39,6 +39,7 @@
       border-radius: 18px;
       padding: 16px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(6px);
     }
 
     h1 {
@@ -93,6 +94,7 @@
       min-height: 50px;
       cursor: pointer;
       font-weight: 700;
+      transition: .18s ease;
       width: 100%;
     }
 
@@ -123,8 +125,8 @@
       width: 100%;
       border-radius: 16px;
       margin-top: 10px;
-      display: none;
       border: 1px solid rgba(255,255,255,.08);
+      display: none;
     }
 
     .out {
@@ -170,7 +172,8 @@
       box-shadow: 0 12px 28px rgba(0,0,0,.25);
     }
 
-    #payload, #bgFrame {
+    #payload,
+    #bgFrame {
       display: none;
     }
 
@@ -258,6 +261,7 @@
     const staticPreviewEl = document.getElementById('staticPreview');
     const btnConfirmar = document.getElementById('btnConfirmar');
     const btnAbrirMaps = document.getElementById('btnAbrirMaps');
+    const bgFrame = document.getElementById('bgFrame');
 
     function setStatus(message, kind = '') {
       statusEl.textContent = message;
@@ -446,6 +450,13 @@
         throw new Error('Secret do webhook não configurado.');
       }
 
+      let redirected = false;
+      const redirectToWhatsApp = () => {
+        if (redirected) return;
+        redirected = true;
+        window.location.href = WHATSAPP_REDIRECT_URL;
+      };
+
       const form = document.createElement('form');
       form.method = 'POST';
       form.action = APPS_SCRIPT_WEBHOOK_URL;
@@ -466,12 +477,17 @@
         form.appendChild(input);
       });
 
+      const onLoad = () => {
+        bgFrame.removeEventListener('load', onLoad);
+        redirectToWhatsApp();
+      };
+
+      bgFrame.addEventListener('load', onLoad);
+
       document.body.appendChild(form);
       form.submit();
 
-      setTimeout(() => {
-        window.location.href = WHATSAPP_REDIRECT_URL;
-      }, 500);
+      setTimeout(redirectToWhatsApp, 4000);
     }
 
     function initMiniSite() {
