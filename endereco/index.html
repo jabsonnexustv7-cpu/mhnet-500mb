@@ -14,7 +14,9 @@
       --primary-hover: #1d4ed8;
       --border: rgba(255,255,255,.08);
     }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Inter, Arial, sans-serif;
@@ -22,41 +24,46 @@
       color: var(--text);
       min-height: 100vh;
     }
+
     .wrap {
       width: min(980px, calc(100vw - 20px));
-      margin: 10px auto 24px;
+      margin: 12px auto 24px;
       display: grid;
       grid-template-columns: 1fr;
       gap: 14px;
     }
+
     .card {
-      background: rgba(17,24,39,.96);
+      background: rgba(17, 24, 39, 0.96);
       border: 1px solid var(--border);
       border-radius: 18px;
       padding: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.22);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
       backdrop-filter: blur(6px);
     }
+
     h1 {
       font-size: 24px;
       line-height: 1.15;
       margin: 0 0 6px;
     }
+
     .sub {
       color: var(--muted);
       margin: 0 0 16px;
       line-height: 1.5;
       font-size: 14px;
     }
+
     label {
       display: block;
       font-weight: 600;
       margin: 14px 0 8px;
       font-size: 14px;
     }
-    input, textarea, button {
-      font: inherit;
-    }
+
+    input, textarea, button { font: inherit; }
+
     .field {
       width: 100%;
       border-radius: 14px;
@@ -67,16 +74,19 @@
       outline: none;
       transition: .18s ease;
     }
+
     .field:focus {
       border-color: rgba(37,99,235,.72);
       box-shadow: 0 0 0 4px rgba(37,99,235,.18);
     }
+
     .actions {
       display: grid;
       grid-template-columns: 1fr;
       gap: 10px;
       margin-top: 16px;
     }
+
     .btn {
       border: 0;
       border-radius: 14px;
@@ -87,16 +97,21 @@
       transition: .18s ease;
       width: 100%;
     }
+
     .btn-primary {
       background: var(--primary);
       color: #fff;
     }
+
     .btn-primary:hover { background: var(--primary-hover); }
+
     .btn-secondary {
       background: rgba(255,255,255,.08);
       color: var(--text);
     }
+
     .btn-secondary:hover { background: rgba(255,255,255,.12); }
+
     .map {
       width: 100%;
       height: 260px;
@@ -105,6 +120,7 @@
       border: 1px solid rgba(255,255,255,.08);
       background: rgba(255,255,255,.03);
     }
+
     .preview {
       width: 100%;
       border-radius: 16px;
@@ -112,25 +128,30 @@
       border: 1px solid rgba(255,255,255,.08);
       display: none;
     }
+
     .out {
       min-height: 140px;
       resize: vertical;
       line-height: 1.45;
     }
+
     .status {
       min-height: 22px;
       margin-top: 10px;
       font-size: 14px;
       color: var(--muted);
     }
+
     .ok { color: #4ade80; }
     .err { color: #f87171; }
+
     .small {
       font-size: 12px;
       color: var(--muted);
       line-height: 1.45;
       margin-top: 10px;
     }
+
     .pill {
       display: inline-flex;
       align-items: center;
@@ -142,6 +163,7 @@
       font-size: 12px;
       margin-bottom: 12px;
     }
+
     .pac-container {
       z-index: 99999 !important;
       border-radius: 12px;
@@ -149,7 +171,9 @@
       overflow: hidden;
       box-shadow: 0 12px 28px rgba(0,0,0,.25);
     }
+
     #payload { display: none; }
+
     @media (min-width: 860px) {
       .wrap {
         width: min(980px, calc(100vw - 28px));
@@ -157,10 +181,12 @@
         grid-template-columns: 1.05fr .95fr;
         gap: 18px;
       }
+
       .actions {
         display: flex;
         flex-wrap: wrap;
       }
+
       .btn { width: auto; }
       .map { height: 340px; border-radius: 18px; }
       h1 { font-size: 26px; }
@@ -178,7 +204,13 @@
       </p>
 
       <label for="addressInput">Digite seu endereço</label>
-      <input id="addressInput" class="field" type="text" autocomplete="off" placeholder="Ex.: Rua Coronel Evaristo 1366, Taquara" />
+      <input
+        id="addressInput"
+        class="field"
+        type="text"
+        autocomplete="off"
+        placeholder="Ex.: Rua Coronel Evaristo 1366, Taquara"
+      />
 
       <label for="obs">Confira seu endereço</label>
       <textarea id="obs" class="field out" readonly></textarea>
@@ -189,9 +221,7 @@
       </div>
 
       <div id="status" class="status">Digite o endereço completo e confirme se o ponto exibido no mapa está correto.</div>
-      <div class="small">
-        O mapa ajuda a validar o local antes de continuar o atendimento.
-      </div>
+      <div class="small">O mapa ajuda a validar o local antes de continuar o atendimento.</div>
     </section>
 
     <aside class="card">
@@ -204,6 +234,9 @@
 
   <script>
     const GOOGLE_MAPS_API_KEY = 'AIzaSyAiZg6hvX1FsFBBk6cFHD6tr5bQiBWBF2Q';
+    const APPS_SCRIPT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycby86KFST9SHyU7x_qXqIRbWJOD-VPIi19jsL9c1fr_qtER3GB4bs9g7Lj-069o1IIIyDQ/exec';
+    const WEBHOOK_SECRET = '3423858:c93bcf9afcbad462bef80bf3a9cd756b
+';
     const DEFAULT_ZOOM = 16;
     const STATIC_SIZE = '900x420';
     const COUNTRY = 'br';
@@ -248,8 +281,13 @@
       return {
         route: extractComponent(components, 'route'),
         streetNumber: extractComponent(components, 'street_number'),
-        neighborhood: extractComponent(components, 'neighborhood') || extractComponent(components, 'sublocality_level_1') || extractComponent(components, 'sublocality'),
-        city: extractComponent(components, 'administrative_area_level_2') || extractComponent(components, 'locality'),
+        neighborhood:
+          extractComponent(components, 'neighborhood') ||
+          extractComponent(components, 'sublocality_level_1') ||
+          extractComponent(components, 'sublocality'),
+        city:
+          extractComponent(components, 'administrative_area_level_2') ||
+          extractComponent(components, 'locality'),
         state: extractComponent(components, 'administrative_area_level_1'),
         postalCode: extractComponent(components, 'postal_code')
       };
@@ -282,6 +320,11 @@
       return `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}`;
     }
 
+    function getContactIdFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('contact_id') || '';
+    }
+
     function updateOutputsFromResolved(parts, lat, lng, placeId = '') {
       const enderecoFormatado = formatAddressFromParts(parts);
       const mapaUrl = buildStaticMapUrl(lat, lng);
@@ -302,7 +345,7 @@
         mapa_url: mapaUrl,
         maps_link: mapsLink,
         place_id: placeId,
-        ver: 'mini-site-endereco-v4'
+        ver: 'mini-site-endereco-v5'
       };
 
       obsEl.value = enderecoFormatado;
@@ -384,6 +427,47 @@
       });
     }
 
+    function submitToAppsScript(payload) {
+      const contactId = getContactIdFromUrl();
+
+      if (!contactId) {
+        throw new Error('contact_id não encontrado na URL.');
+      }
+
+      if (!APPS_SCRIPT_WEBHOOK_URL || APPS_SCRIPT_WEBHOOK_URL.includes('https://script.google.com/macros/s/AKfycby86KFST9SHyU7x_qXqIRbWJOD-VPIi19jsL9c1fr_qtER3GB4bs9g7Lj-069o1IIIyDQ/exec
+
+AppScript mini site')) {
+        throw new Error('URL do Apps Script não configurada.');
+      }
+
+      if (!WEBHOOK_SECRET || WEBHOOK_SECRET.includes('3423858:c93bcf9afcbad462bef80bf3a9cd756b
+')) {
+        throw new Error('Secret do webhook não configurado.');
+      }
+
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = APPS_SCRIPT_WEBHOOK_URL;
+      form.style.display = 'none';
+
+      const fields = {
+        secret: WEBHOOK_SECRET,
+        contact_id: contactId,
+        payload: JSON.stringify(payload)
+      };
+
+      Object.entries(fields).forEach(([key, value]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+
     function initMiniSite() {
       const center = { lat: -30.0346, lng: -51.2177 };
       map = new google.maps.Map(document.getElementById('map'), {
@@ -434,17 +518,21 @@
           const lng = Number(selectedPlace.geometry.location.lng()).toFixed(6);
           updateMap(lat, lng);
           updateOutputsFromResolved(parts, lat, lng, selectedPlace.place_id || '');
-          setStatus('Endereço confirmado com sucesso.', 'ok');
         } else {
           const resolved = await resolveTypedAddress();
           updateMap(resolved.lat, resolved.lng);
           updateOutputsFromResolved(resolved.parts, resolved.lat, resolved.lng, resolved.placeId);
-          setStatus('Endereço confirmado com sucesso.', 'ok');
         }
+
+        if (!currentPayload) {
+          throw new Error('Não foi possível preparar os dados do endereço.');
+        }
+
+        btnConfirmar.textContent = 'Enviando...';
+        submitToAppsScript(currentPayload);
       } catch (error) {
         console.error(error);
         setStatus(error.message || 'Não foi possível localizar esse endereço.', 'err');
-      } finally {
         btnConfirmar.disabled = false;
         btnConfirmar.textContent = 'Confirmar endereço';
       }
