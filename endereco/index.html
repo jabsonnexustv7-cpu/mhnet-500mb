@@ -294,7 +294,8 @@
         city:
           extractComponent(components, 'administrative_area_level_2') ||
           extractComponent(components, 'locality'),
-        state: extractComponent(components, 'administrative_area_level_1'),
+        state:
+          (components.find(c => c.types.includes('administrative_area_level_1'))?.short_name) || '',
         postalCode: extractComponent(components, 'postal_code')
       };
     }
@@ -351,7 +352,7 @@
         mapa_url: mapaUrl,
         maps_link: mapsLink,
         place_id: placeId,
-        ver: 'mini-site-endereco-v6'
+        ver: 'mini-site-endereco-v7'
       };
 
       obsEl.value = enderecoFormatado;
