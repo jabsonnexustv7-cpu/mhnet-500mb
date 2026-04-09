@@ -1263,7 +1263,7 @@
       el.className = "status-text" + (type ? " " + type : "");
     }
 
-    function setAddress(text = "", isPlaceholder = false) {
+    function setAddress(text = "") {
       const el = $("logradouro");
       if (!text) {
         el.textContent = "Será preenchido automaticamente";
@@ -1277,7 +1277,7 @@
     function clearForm() {
       $("cep").value = "";
       $("numero").value = "";
-      setAddress("", true);
+      setAddress("");
       $("ctaViavel").classList.remove("show");
       $("btnContratarCobertura").href = "#";
       setStatus("Aguardando preenchimento.");
@@ -1365,7 +1365,7 @@
       const endereco = await buscarEnderecoPorCep(cep);
 
       if (!endereco || !endereco.logradouro) {
-        setAddress("", true);
+        setAddress("");
         setStatus("Não foi possível localizar esse CEP.", "bad");
         return;
       }
@@ -1406,13 +1406,13 @@ Motivo: ${res.motivo || "-"}`;
             $("ctaViavel").classList.add("show");
             setStatus("Cobertura disponível para este endereço.", "ok");
           } else {
-            setStatus(\`Sem cobertura no momento. \${res.motivo ? "Motivo: " + res.motivo : ""}\`, "bad");
+            setStatus(`Sem cobertura no momento. ${res.motivo ? "Motivo: " + res.motivo : ""}`, "bad");
           }
         } else {
-          setStatus(\`Erro na consulta. \${res && res.motivo ? res.motivo : "Resposta inválida."}\`, "bad");
+          setStatus(`Erro na consulta. ${res && res.motivo ? res.motivo : "Resposta inválida."}`, "bad");
         }
       } catch (error) {
-        setStatus(\`Erro ao consultar cobertura: \${error.message || error}\`, "bad");
+        setStatus(`Erro ao consultar cobertura: ${error.message || error}`, "bad");
       }
     }
 
@@ -1437,7 +1437,7 @@ Motivo: ${res.motivo || "-"}`;
       }
     });
 
-    setAddress("", true);
+    setAddress("");
   </script>
 </body>
 </html>
