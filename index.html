@@ -1243,6 +1243,51 @@
     </svg>
   </a>
 
+  <!-- Google Ads conversion tracking: clique no WhatsApp -->
+  <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof url !== 'undefined') {
+          window.location = url;
+        }
+      };
+
+      if (typeof gtag === 'function') {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-17075496858/mdbTCLiuxcsaEJrPnc4_',
+          'value': 1.0,
+          'currency': 'BRL',
+          'event_callback': callback
+        });
+      } else if (typeof url !== 'undefined') {
+        window.location = url;
+      }
+
+      return false;
+    }
+
+    document.addEventListener('click', function (event) {
+      var link = event.target.closest('a');
+      if (!link) return;
+
+      var href = link.getAttribute('href') || '';
+      var isWhatsAppLink =
+        href.includes('wa.me') ||
+        href.includes('api.whatsapp.com') ||
+        href.includes('web.whatsapp.com');
+
+      if (!isWhatsAppLink) return;
+
+      event.preventDefault();
+      gtag_report_conversion(href);
+
+      setTimeout(function () {
+        window.location = href;
+      }, 900);
+    });
+  </script>
+
+
   <script>
     const ENDPOINT = "https://script.google.com/macros/s/AKfycbxZGS3gyYjRE7VOWBWfy0HpOk7YfVgYmbTg1EC0R3yTU99-wQDDIQkvmd2I7Xjk-iJn/exec";
     const FIXED_RADIUS = 200;
