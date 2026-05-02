@@ -23,6 +23,17 @@
 
   <link rel="canonical" href="https://webturbo-internet.com.br/" />
 
+  <!-- Google tag (gtag.js) - Google Ads -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17075496858"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'AW-17075496858');
+  </script>
+
+
   <style>
     :root{
       --bg:#06152e;
@@ -1246,21 +1257,26 @@
   <!-- Google Ads conversion tracking: clique no WhatsApp -->
   <script>
     function gtag_report_conversion(url) {
-      var callback = function () {
-        if (typeof url !== 'undefined') {
-          window.location = url;
-        }
-      };
+      var destinationUrl = typeof url !== 'undefined' ? url : '';
+      var redirected = false;
+
+      function redirectToWhatsApp() {
+        if (redirected || !destinationUrl) return;
+        redirected = true;
+        window.location.href = destinationUrl;
+      }
 
       if (typeof gtag === 'function') {
         gtag('event', 'conversion', {
           'send_to': 'AW-17075496858/mdbTCLiuxcsaEJrPnc4_',
           'value': 1.0,
           'currency': 'BRL',
-          'event_callback': callback
+          'event_callback': redirectToWhatsApp
         });
-      } else if (typeof url !== 'undefined') {
-        window.location = url;
+
+        setTimeout(redirectToWhatsApp, 900);
+      } else {
+        redirectToWhatsApp();
       }
 
       return false;
@@ -1274,16 +1290,13 @@
       var isWhatsAppLink =
         href.includes('wa.me') ||
         href.includes('api.whatsapp.com') ||
-        href.includes('web.whatsapp.com');
+        href.includes('web.whatsapp.com') ||
+        href.includes('whatsapp.com/send');
 
       if (!isWhatsAppLink) return;
 
       event.preventDefault();
       gtag_report_conversion(href);
-
-      setTimeout(function () {
-        window.location = href;
-      }, 900);
     });
   </script>
 
