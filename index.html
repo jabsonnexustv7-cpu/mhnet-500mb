@@ -2276,51 +2276,6 @@
     </svg>
   </a>
 
-  <!-- Google Ads conversion tracking -->
-  <script>
-    function gtag_report_conversion(url) {
-      var destinationUrl = typeof url !== 'undefined' ? url : '';
-      var redirected = false;
-
-      function redirectToWhatsApp() {
-        if (redirected || !destinationUrl) return;
-        redirected = true;
-        window.location.href = destinationUrl;
-      }
-
-      if (typeof gtag === 'function') {
-        gtag('event', 'conversion', {
-          'send_to': 'AW-17075496858/mdbTCLiuxcsaEJrPnc4_',
-          'value': 1.0,
-          'currency': 'BRL',
-          'event_callback': redirectToWhatsApp
-        });
-        setTimeout(redirectToWhatsApp, 900);
-      } else {
-        redirectToWhatsApp();
-      }
-
-      return false;
-    }
-
-    document.addEventListener('click', function (event) {
-      var link = event.target.closest('a');
-      if (!link) return;
-
-      var href = link.getAttribute('href') || '';
-      var isWhatsAppLink =
-        href.includes('wa.me') ||
-        href.includes('api.whatsapp.com') ||
-        href.includes('web.whatsapp.com') ||
-        href.includes('whatsapp.com/send');
-
-      if (!isWhatsAppLink) return;
-
-      event.preventDefault();
-      gtag_report_conversion(href);
-    });
-  </script>
-
   <script>
     const ENDPOINT = "https://script.google.com/macros/s/AKfycbxZGS3gyYjRE7VOWBWfy0HpOk7YfVgYmbTg1EC0R3yTU99-wQDDIQkvmd2I7Xjk-iJn/exec";
     const FIXED_RADIUS = 200;
@@ -2540,6 +2495,15 @@ Motivo: ${res.motivo || "-"}`;
       "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY": "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY — R$ 139,90/mês",
       "FIBRA 700MB + 1 PONTO EXTRA DE WI-FI": "FIBRA 700MB + 1 PONTO EXTRA DE WI-FI — R$ 149,90/mês",
       "FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI": "FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI — R$ 159,90/mês"
+    };
+
+    const PLAN_VALUES = {
+      "FIBRA 500MB": 99.90,
+      "FIBRA 500MB + GLOBOPLAY": 114.80,
+      "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": 119.90,
+      "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY": 139.90,
+      "FIBRA 700MB + 1 PONTO EXTRA DE WI-FI": 149.90,
+      "FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI": 159.90
     };
 
     function isValidCpf(cpf) {
@@ -2904,13 +2868,18 @@ Motivo: ${res.motivo || "-"}`;
         const data = await response.json().catch(() => ({}));
         if (response.ok && data.ok) {
           mostrarEtapa(6);
-          if (typeof gtag === "function") {
+
+          if (data.easyOk === true && typeof gtag === "function") {
+            const planoSelecionado = $("mPlano").value;
+            const valorConversao = PLAN_VALUES[planoSelecionado] || 1.0;
+
             gtag("event", "conversion", {
               send_to: "AW-17075496858/mdbTCLiuxcsaEJrPnc4_",
-              value: 1.0,
+              value: valorConversao,
               currency: "BRL"
             });
           }
+
           redirecionarWhatsAppFinal();
         } else {
           erroEl.textContent = data.message || "Erro ao enviar. Tente novamente.";
