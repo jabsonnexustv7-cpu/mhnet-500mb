@@ -17,7 +17,7 @@
   <meta property="og:description" content="Consulte cobertura, veja planos de internet fibra MhNet e contrate com atendimento comercial da WebTurbo, parceira de vendas autorizada." />
   <meta property="og:url" content="https://webturbo-internet.com.br/" />
   <meta property="og:site_name" content="WebTurbo Internet" />
-  <meta property="og:image" content="https://webturbo-internet.com.br/og-image.png" />
+  <meta property="og:image" content="https://webturbo-internet.com.br/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="WebTurbo Internet - Parceira de vendas autorizada MhNet. Planos de internet fibra a partir de R$ 99,90/mês." />
@@ -27,7 +27,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="WebTurbo | Parceira de Vendas Autorizada MhNet" />
   <meta name="twitter:description" content="Consulte cobertura, veja planos de internet fibra MhNet e contrate com atendimento comercial da WebTurbo." />
-  <meta name="twitter:image" content="https://webturbo-internet.com.br/og-image.png" />
+  <meta name="twitter:image" content="https://webturbo-internet.com.br/og-image.jpg" />
 
   <link rel="canonical" href="https://webturbo-internet.com.br/" />
   <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
@@ -207,6 +207,17 @@
       grid-template-columns:1.05fr .95fr;
       gap:34px;
       align-items:stretch;
+    }
+
+    .hero-fibra{
+      width:100%;
+      border-radius:20px;
+      margin-bottom:20px;
+      display:block;
+      max-height:220px;
+      object-fit:cover;
+      object-position:center;
+      opacity:.92;
     }
 
     .hero-left{
@@ -543,6 +554,36 @@
     }
 
     /* Por que WebTurbo */
+    .why-with-image{
+      display:grid;
+      grid-template-columns:1fr 1.15fr;
+      gap:40px;
+      align-items:center;
+      margin-bottom:40px;
+    }
+
+    .why-image-wrap{
+      border-radius:28px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+
+    .why-image-wrap img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      max-height:380px;
+    }
+
+    .author-avatar img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius:50%;
+      display:block;
+    }
+
     .why-grid{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
@@ -956,6 +997,7 @@
       .plan.featured:hover{transform:translateY(-4px);}
       .legal-grid{grid-template-columns:1fr;}
       .why-grid{grid-template-columns:1fr 1fr;}
+      .why-with-image{grid-template-columns:1fr;}
       .testimonials{grid-template-columns:1fr;}
       .stats-row{grid-template-columns:1fr 1fr 1fr;}
     }
@@ -1126,6 +1168,7 @@
     <section class="hero" aria-label="Apresentação e consulta de cobertura">
       <div class="container hero-grid">
         <div class="hero-left">
+          <img src="hero-fibra.png" alt="Cabos de fibra óptica iluminados em azul e verde" class="hero-fibra" width="700" height="220" loading="eager" />
           <div class="eyebrow">🤝 Parceira de vendas autorizada MhNet</div>
           <h1>Planos de internet fibra MhNet com atendimento comercial da WebTurbo.</h1>
           <p>
@@ -1195,6 +1238,17 @@
           <p>
             A WebTurbo é parceira de vendas autorizada MhNet especializada em atendimento comercial. Você conta com suporte dedicado desde a consulta de cobertura até a confirmação da contratação.
           </p>
+        </div>
+
+        <div class="why-with-image">
+          <div class="why-image-wrap">
+            <img src="atendimento.png" alt="Cliente satisfeita usando o WhatsApp para contratar internet fibra MhNet pela WebTurbo" width="560" height="380" loading="lazy" />
+          </div>
+          <div>
+            <h3 style="font-size:26px;font-weight:900;margin-bottom:14px;line-height:1.2;">Atendimento comercial humano, rápido e direto pelo WhatsApp</h3>
+            <p style="color:var(--muted);font-size:16px;line-height:1.75;margin-bottom:18px;">Desde a consulta de cobertura até a confirmação da contratação, nossa equipe acompanha você pelo WhatsApp com clareza, sem burocracia e sem enrolação.</p>
+            <a href="https://wa.me/555193187300?text=Olá!%20Quero%20falar%20sobre%20os%20planos%20MhNet%20com%20a%20WebTurbo." target="_blank" rel="noopener noreferrer" class="btn" style="display:inline-flex;text-decoration:none;">Falar no WhatsApp</a>
+          </div>
         </div>
 
         <div class="why-grid">
@@ -1354,7 +1408,9 @@
             <div class="stars" aria-label="5 estrelas">★★★★★</div>
             <p class="testimonial-text">"Fiz a consulta de CEP no site e em menos de 1 minuto já sabia se tinha cobertura. O pessoal do WhatsApp me ajudou a fechar tudo rápido, sem burocracia."</p>
             <div class="testimonial-author">
-              <div class="author-avatar" style="background:#dbeafe;color:#1e40af;" aria-hidden="true">LM</div>
+              <div class="author-avatar">
+                <img src="avatar-lucas.png" alt="Lucas M." />
+              </div>
               <div>
                 <div class="author-name">Lucas M.</div>
                 <div class="author-city">Alvorada, RS</div>
@@ -1366,7 +1422,9 @@
             <div class="stars" aria-label="5 estrelas">★★★★★</div>
             <p class="testimonial-text">"Estava com dúvida sobre qual plano escolher para minha casa. O atendimento via WhatsApp foi muito atencioso e me explicou tudo direitinho."</p>
             <div class="testimonial-author">
-              <div class="author-avatar" style="background:#dcfce7;color:#166534;" aria-hidden="true">CF</div>
+              <div class="author-avatar">
+                <img src="avatar-carla.png" alt="Carla F." />
+              </div>
               <div>
                 <div class="author-name">Carla F.</div>
                 <div class="author-city">Cascavel, PR</div>
@@ -1378,7 +1436,9 @@
             <div class="stars" aria-label="5 estrelas">★★★★★</div>
             <p class="testimonial-text">"Rápido, fácil e sem enrolação. Consultei o endereço, confirmei a cobertura e em poucos minutos estava com a contratação encaminhada."</p>
             <div class="testimonial-author">
-              <div class="author-avatar" style="background:#fef3c7;color:#92400e;" aria-hidden="true">RP</div>
+              <div class="author-avatar">
+                <img src="avatar-rafael.png" alt="Rafael P." />
+              </div>
               <div>
                 <div class="author-name">Rafael P.</div>
                 <div class="author-city">Balneário Camboriú, SC</div>
