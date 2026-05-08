@@ -2258,7 +2258,8 @@
       <div id="etapaSucesso" style="display:none;" class="modal-success">
         <div class="modal-success-icon">✅</div>
         <h3>Cadastro recebido com sucesso!</h3>
-        <p>Sua solicitação foi enviada para nossa equipe de agendamento. Entraremos em contato em horário comercial para confirmar os próximos passos da instalação.</p>
+        <p>Sua solicitação foi enviada para nossa equipe de agendamento.</p>
+        <p>Você será direcionado para o WhatsApp em <strong id="contadorWhats">3</strong> segundos para confirmar o pedido.</p>
       </div>
     </div>
   </div>
@@ -2526,7 +2527,7 @@ Motivo: ${res.motivo || "-"}`;
     setAddress("");
 
     // ── MODAL EM ETAPAS ──────────────────────────────────────────────
-    const CLOUD_RUN_URL = "https://modal-easy-964927461432.southamerica-east1.run.app";
+    const CLOUD_RUN_URL = "https://SEU_ENDPOINT_CLOUDRUN";
 
     let modalPlanoPreSelecionado = "";
     let modalCoverageValidated = false;
@@ -2858,6 +2859,27 @@ Motivo: ${res.motivo || "-"}`;
       };
     }
 
+    function redirecionarWhatsAppFinal() {
+      const cpf = onlyDigits($("mCpf").value);
+      const mensagem = `Acabei de concluir um pedido de internet, meu CPF: ${cpf}`;
+      const url = `https://wa.me/555193187300?text=${encodeURIComponent(mensagem)}`;
+
+      let segundos = 3;
+      const contador = $("contadorWhats");
+
+      if (contador) contador.textContent = segundos;
+
+      const intervalo = setInterval(() => {
+        segundos--;
+        if (contador) contador.textContent = segundos;
+
+        if (segundos <= 0) {
+          clearInterval(intervalo);
+          window.location.href = url;
+        }
+      }, 1000);
+    }
+
     async function enviarFormulario() {
       const erroEl = $("modalErro");
       erroEl.classList.remove("show");
@@ -2889,6 +2911,7 @@ Motivo: ${res.motivo || "-"}`;
               currency: "BRL"
             });
           }
+          redirecionarWhatsAppFinal();
         } else {
           erroEl.textContent = data.message || "Erro ao enviar. Tente novamente.";
           erroEl.classList.add("show");
