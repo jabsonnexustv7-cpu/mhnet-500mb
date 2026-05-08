@@ -954,6 +954,374 @@
       font-size:16px;
     }
 
+    .btn-contratar-plano{
+      width:100%;
+      min-height:54px;
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      background:#0c1732;
+      color:#fff;
+      border:none;
+      cursor:pointer;
+      font-size:16px;
+      transition:transform .22s ease, box-shadow .22s ease, filter .22s ease;
+      box-shadow:0 10px 22px rgba(12,23,50,.14);
+    }
+
+    .btn-contratar-plano:hover{
+      transform:translateY(-2px) scale(1.02);
+      box-shadow:0 18px 32px rgba(12,23,50,.20);
+      filter:brightness(1.08);
+    }
+
+    .plan.featured .btn-contratar-plano{
+      background:linear-gradient(180deg, #43da7a, var(--green));
+      color:#082a14;
+      box-shadow:0 12px 26px rgba(50,208,108,.18);
+    }
+
+    .plan.featured .btn-contratar-plano:hover{
+      box-shadow:0 18px 34px rgba(50,208,108,.24);
+    }
+
+    /* Modal */
+    .modal-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(4,16,34,.82);
+      backdrop-filter:blur(6px);
+      z-index:100;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .24s ease;
+    }
+
+    .modal-overlay.open{
+      opacity:1;
+      pointer-events:all;
+    }
+
+    .modal{
+      background:linear-gradient(180deg,#0e2550,#091c3e);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:30px;
+      width:100%;
+      max-width:560px;
+      max-height:90vh;
+      overflow-y:auto;
+      padding:32px;
+      position:relative;
+      box-shadow:0 32px 80px rgba(0,0,0,.5);
+      transform:translateY(20px);
+      transition:transform .24s ease;
+    }
+
+    .modal-overlay.open .modal{
+      transform:translateY(0);
+    }
+
+    .modal-close{
+      position:absolute;
+      top:16px;
+      right:16px;
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      background:rgba(255,255,255,.08);
+      border:none;
+      color:#fff;
+      font-size:20px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      line-height:1;
+      transition:background .18s;
+    }
+
+    .modal-close:hover{background:rgba(255,255,255,.14);}
+
+    .modal h2{
+      font-size:22px;
+      margin-bottom:6px;
+      padding-right:40px;
+    }
+
+    .modal-subtitle{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:22px;
+      line-height:1.55;
+    }
+
+    .modal-steps{
+      display:flex;
+      gap:8px;
+      margin-bottom:24px;
+    }
+
+    .modal-step{
+      flex:1;
+      height:4px;
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+      transition:background .3s;
+    }
+
+    .modal-step.active{background:var(--green);}
+
+    .modal-step-label{
+      font-size:11px;
+      font-weight:800;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.4px;
+      margin-bottom:16px;
+    }
+
+    .mfield{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-bottom:14px;
+    }
+
+    .mfield label{
+      font-size:12px;
+      font-weight:800;
+      color:#dce6f8;
+      letter-spacing:.2px;
+    }
+
+    .mfield input,
+    .mfield select{
+      width:100%;
+      height:50px;
+      border-radius:13px;
+      border:1px solid rgba(255,255,255,.10);
+      background:#f8fafc;
+      color:#111827;
+      padding:0 14px;
+      font-size:15px;
+      outline:none;
+      transition:.18s;
+    }
+
+    .mfield select{
+      cursor:pointer;
+      appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-position:right 14px center;
+      padding-right:36px;
+    }
+
+    .mfield input:focus,
+    .mfield select:focus{
+      border-color:#78adff;
+      box-shadow:0 0 0 3px rgba(96,165,250,.16);
+      background:#fff;
+      outline:none;
+    }
+
+    .mfield.has-error input,
+    .mfield.has-error select{
+      border-color:#f87171 !important;
+      box-shadow:0 0 0 3px rgba(248,113,113,.18) !important;
+      background:#fff5f5;
+    }
+
+    .mfield.has-error label{
+      color:#f87171;
+    }
+
+    .mfield-error-msg{
+      font-size:12px;
+      color:#f87171;
+      font-weight:700;
+      margin-top:-2px;
+      display:none;
+    }
+
+    .mfield.has-error .mfield-error-msg{
+      display:block;
+    }
+
+    .mfield.is-valid input,
+    .mfield.is-valid select{
+      border-color:#34d399 !important;
+      background:#f0fdf4;
+    }
+
+    .mfield input[readonly]{
+      background:#eef2f7;
+      color:#374151;
+      cursor:default;
+    }
+
+    .mgrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:0 14px;
+    }
+
+    .mgrid .mfield{grid-column:auto;}
+    .mgrid .mfield.full{grid-column:1/-1;}
+
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      margin-top:20px;
+    }
+
+    .btn-modal-next,
+    .btn-modal-back,
+    .btn-modal-submit{
+      min-height:50px;
+      border-radius:14px;
+      font-weight:900;
+      cursor:pointer;
+      border:none;
+      font-size:15px;
+      transition:transform .22s, box-shadow .22s, filter .22s;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+
+    .btn-modal-next,
+    .btn-modal-submit{
+      flex:1;
+      background:linear-gradient(180deg,#43da7a,var(--green));
+      color:#082a14;
+      box-shadow:0 10px 24px rgba(50,208,108,.18);
+    }
+
+    .btn-modal-next:hover,
+    .btn-modal-submit:hover{
+      filter:brightness(1.04);
+      transform:translateY(-2px);
+      box-shadow:0 16px 30px rgba(50,208,108,.24);
+    }
+
+    .btn-modal-submit:disabled{
+      opacity:.7;
+      cursor:not-allowed;
+      transform:none !important;
+    }
+
+    .btn-modal-back{
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.10);
+      padding:0 20px;
+    }
+
+    .btn-modal-back:hover{
+      background:rgba(255,255,255,.12);
+      transform:translateY(-2px);
+    }
+
+    .modal-success{
+      text-align:center;
+      padding:20px 0;
+    }
+
+    .modal-success-icon{
+      font-size:52px;
+      margin-bottom:16px;
+    }
+
+    .modal-success h3{
+      font-size:22px;
+      margin-bottom:10px;
+    }
+
+    .modal-success p{
+      color:var(--muted);
+      line-height:1.7;
+      font-size:15px;
+    }
+
+    .modal-error-msg{
+      background:rgba(255,80,80,.12);
+      border:1px solid rgba(255,80,80,.22);
+      border-radius:12px;
+      padding:12px 14px;
+      color:#ffb0b0;
+      font-size:14px;
+      margin-top:14px;
+      display:none;
+    }
+
+    .modal-error-msg.show{display:block;}
+
+    .modal-summary{
+      background:rgba(255,255,255,.055);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      padding:16px;
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .summary-row{
+      display:grid;
+      grid-template-columns:150px 1fr;
+      gap:10px;
+      font-size:14px;
+      line-height:1.45;
+      color:#e7eefc;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      padding-bottom:9px;
+    }
+
+    .summary-row:last-child{
+      border-bottom:none;
+      padding-bottom:0;
+    }
+
+    .summary-row strong{
+      color:#c8d5e8;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.35px;
+    }
+
+    .coverage-ok-box{
+      background:rgba(50,208,108,.12);
+      border:1px solid rgba(50,208,108,.24);
+      border-radius:14px;
+      padding:12px 14px;
+      color:#baf7cc;
+      font-size:14px;
+      line-height:1.55;
+      margin-bottom:16px;
+      display:none;
+    }
+
+    .coverage-ok-box.show{display:block;}
+
+    @media(max-width:560px){
+      .summary-row{grid-template-columns:1fr;gap:3px;}
+    }
+
+
+    @media(max-width:560px){
+      .modal{padding:22px 18px;}
+      .mgrid{grid-template-columns:1fr;}
+      .mgrid .mfield.full{grid-column:1/-1;}
+    }
+
     .footer{
       border-top:1px solid rgba(255,255,255,.05);
       padding:22px 0 36px;
@@ -1225,8 +1593,15 @@
 
             <div id="ctaViavel" class="cta-viavel" aria-live="polite">
               <strong>✅ Cobertura disponível</strong>
-              <p>Encontramos viabilidade para este endereço. Clique abaixo para falar com a WebTurbo, parceira de vendas autorizada MhNet.</p>
-              <a id="btnContratarCobertura" href="#" target="_blank" rel="noopener noreferrer">Contratar pelo WhatsApp</a>
+              <p>Encontramos viabilidade para este endereço. Por onde gostaria de contratar?</p>
+              <div style="background:rgba(50,208,108,.12);border:1px solid rgba(50,208,108,.2);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#c8f7d8;display:flex;gap:14px;flex-wrap:wrap;">
+                <span>⚡ Ativação gratuita</span>
+                <span>🔧 Instalação em até 24h</span>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <a id="btnContratarCobertura" href="#" target="_blank" rel="noopener noreferrer">Contratar no WhatsApp</a>
+                <button id="btnFormCobertura" onclick="abrirModalCobertura()" style="min-width:160px;min-height:48px;border-radius:999px;background:linear-gradient(180deg,#1a3a6e,#122a54);color:#fff;font-weight:900;border:1px solid rgba(100,160,255,.35);cursor:pointer;font-size:15px;box-shadow:0 8px 20px rgba(0,0,0,.25);transition:transform .22s ease,box-shadow .22s ease,filter .22s ease;" onmouseover="this.style.transform='translateY(-2px) scale(1.02)';this.style.boxShadow='0 14px 28px rgba(0,0,0,.35)';this.style.filter='brightness(1.12)';" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 20px rgba(0,0,0,.25)';this.style.filter='';">Contratar aqui</button>
+              </div>
             </div>
           </div>
         </aside>
@@ -1323,13 +1698,39 @@
               <li>Ideal para uso residencial</li>
             </ul>
 
-            <a href="https://wa.me/555193187300?text=Olá!%20Vi%20que%20a%20WebTurbo%20é%20parceira%20de%20vendas%20autorizada%20MhNet%20e%20quero%20contratar%20o%20plano%20de%20500%20Mega." target="_blank" rel="noopener noreferrer">Contratar</a>
+            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 500MB')">Contratar</button>
+          </article>
+
+          <article class="plan">
+            <div class="plan-badge">Com streaming</div>
+            <h3>500MB + Globoplay</h3>
+            <div class="subtitle">Internet fibra para o dia a dia com Globoplay incluso para aproveitar seus conteúdos favoritos.</div>
+
+            <div class="price">
+              <span class="value">R$ 114,80</span>
+              <small>/mês</small>
+            </div>
+
+            <div class="plan-info">
+              <span class="plan-tag">Sem fidelidade</span>
+              <span class="plan-tag">Instalação grátis</span>
+              <span class="plan-tag">Globoplay incluso</span>
+            </div>
+
+            <ul>
+              <li>500MB de internet fibra MhNet</li>
+              <li>Globoplay incluso</li>
+              <li>Wi-Fi incluso</li>
+              <li>Ideal para navegação e streaming</li>
+            </ul>
+
+            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 500MB + GLOBOPLAY')">Contratar</button>
           </article>
 
           <article class="plan featured">
             <div class="plan-badge">Mais vendido</div>
             <h3>500MB + 1 Ponto extra</h3>
-            <div class="subtitle">Mais velocidade e melhor alcance para famílias conectadas, streaming, trabalho remoto e vários aparelhos ao mesmo tempo.</div>
+            <div class="subtitle">Mais alcance dentro da casa com um segundo ponto de Wi-Fi cabeado em outro cômodo.</div>
 
             <div class="price">
               <span class="value">R$ 119,90</span>
@@ -1344,12 +1745,64 @@
 
             <ul>
               <li>500MB de internet fibra MhNet</li>
-              <li>1 ponto extra Wi-Fi</li>
+              <li>1 ponto extra de Wi-Fi cabeado</li>
               <li>Mais cobertura na casa</li>
               <li>Ideal para múltiplos dispositivos</li>
             </ul>
 
-            <a href="https://wa.me/555193187300?text=Olá!%20Vi%20que%20a%20WebTurbo%20é%20parceira%20de%20vendas%20autorizada%20MhNet%20e%20quero%20contratar%20o%20plano%20de%20500MB%20%2B%201%20Ponto%20extra." target="_blank" rel="noopener noreferrer">Contratar</a>
+            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 500MB + 1 PONTO EXTRA DE WI-FI')">Contratar</button>
+          </article>
+
+          <article class="plan">
+            <div class="plan-badge">Combo streaming</div>
+            <h3>600MB + Ponto extra + Globoplay</h3>
+            <div class="subtitle">Mais velocidade, segundo ponto de Wi-Fi cabeado e Globoplay no mesmo plano.</div>
+
+            <div class="price">
+              <span class="value">R$ 139,90</span>
+              <small>/mês</small>
+            </div>
+
+            <div class="plan-info">
+              <span class="plan-tag">Sem fidelidade</span>
+              <span class="plan-tag">Instalação grátis</span>
+              <span class="plan-tag">Globoplay incluso</span>
+            </div>
+
+            <ul>
+              <li>600MB de internet fibra MhNet</li>
+              <li>1 ponto extra de Wi-Fi cabeado</li>
+              <li>Globoplay incluso</li>
+              <li>Excelente para streaming e casa conectada</li>
+            </ul>
+
+            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY')">Contratar</button>
+          </article>
+
+          <article class="plan">
+            <div class="plan-badge">Alta performance</div>
+            <h3>700MB + 1 Ponto extra</h3>
+            <div class="subtitle">Mais velocidade e alcance para famílias conectadas, trabalho remoto e vários aparelhos ao mesmo tempo.</div>
+
+            <div class="price">
+              <span class="value">R$ 149,90</span>
+              <small>/mês</small>
+            </div>
+
+            <div class="plan-info">
+              <span class="plan-tag">Sem fidelidade</span>
+              <span class="plan-tag">Instalação grátis</span>
+              <span class="plan-tag">700MB de velocidade</span>
+            </div>
+
+            <ul>
+              <li>700MB de internet fibra MhNet</li>
+              <li>1 ponto extra de Wi-Fi cabeado</li>
+              <li>Mais alcance dentro da casa</li>
+              <li>Ideal para alta demanda</li>
+            </ul>
+
+            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 700MB + 1 PONTO EXTRA DE WI-FI')">Contratar</button>
           </article>
 
           <article class="plan">
@@ -1370,15 +1823,14 @@
 
             <ul>
               <li>1GB de internet fibra MhNet</li>
-              <li>1 ponto extra Wi-Fi</li>
+              <li>1 ponto extra de Wi-Fi cabeado</li>
               <li>Máxima performance no dia a dia</li>
               <li>Excelente opção para alta demanda</li>
             </ul>
 
-            <a href="https://wa.me/555193187300?text=Olá!%20Vi%20que%20a%20WebTurbo%20é%20parceira%20de%20vendas%20autorizada%20MhNet%20e%20quero%20contratar%20o%20plano%20de%201GB%20%2B%201%20Ponto%20extra." target="_blank" rel="noopener noreferrer">Contratar</a>
+            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI')">Contratar</button>
           </article>
-        </div>
-      </div>
+        </div>      </div>
     </section>
 
     <!-- Prova social -->
@@ -1569,6 +2021,247 @@
       </div>
     </div>
   </section>
+
+  <!-- Modal de contratação em etapas -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
+    <div class="modal">
+      <button class="modal-close" type="button" onclick="fecharModal()" aria-label="Fechar">×</button>
+
+      <!-- Etapa 1: Endereço e cobertura -->
+      <div id="etapa1">
+        <h2 id="modalTitulo">Verificar endereço</h2>
+        <p class="modal-subtitle">Informe o endereço de instalação. Antes de seguir, vamos validar se existe cobertura disponível.</p>
+
+        <div class="modal-steps">
+          <div class="modal-step active"></div>
+          <div class="modal-step"></div>
+          <div class="modal-step"></div>
+          <div class="modal-step"></div>
+          <div class="modal-step"></div>
+        </div>
+        <div class="modal-step-label">Etapa 1 de 5 — Endereço</div>
+
+        <div id="coverageOkBox" class="coverage-ok-box">✅ Cobertura validada para este endereço. Você pode continuar.</div>
+
+        <div class="mgrid">
+          <div class="mfield" id="field-mCep">
+            <label for="mCep">CEP *</label>
+            <input id="mCep" type="text" inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="postal-code" />
+            <span class="mfield-error-msg" id="err-mCep">Informe um CEP válido.</span>
+          </div>
+          <div class="mfield" id="field-mNumero">
+            <label for="mNumero">Número *</label>
+            <input id="mNumero" type="text" placeholder="Nº" autocomplete="address-line2" />
+            <span class="mfield-error-msg" id="err-mNumero">Informe o número.</span>
+          </div>
+          <div class="mfield full" id="field-mLogradouro">
+            <label for="mLogradouro">Logradouro *</label>
+            <input id="mLogradouro" type="text" placeholder="Rua / Avenida" />
+            <span class="mfield-error-msg" id="err-mLogradouro">Informe o logradouro.</span>
+          </div>
+          <div class="mfield" id="field-mBairro">
+            <label for="mBairro">Bairro *</label>
+            <input id="mBairro" type="text" placeholder="Bairro" />
+            <span class="mfield-error-msg" id="err-mBairro">Informe o bairro.</span>
+          </div>
+          <div class="mfield" id="field-mCidade">
+            <label for="mCidade">Cidade *</label>
+            <input id="mCidade" type="text" placeholder="Cidade" />
+            <span class="mfield-error-msg" id="err-mCidade">Informe a cidade.</span>
+          </div>
+          <div class="mfield" id="field-mUf">
+            <label for="mUf">UF *</label>
+            <input id="mUf" type="text" maxlength="2" placeholder="RS" />
+            <span class="mfield-error-msg" id="err-mUf">Informe a UF.</span>
+          </div>
+          <div class="mfield" id="field-mComplemento">
+            <label for="mComplemento">Complemento</label>
+            <input id="mComplemento" type="text" placeholder="Apto, bloco, casa fundos, etc." />
+            <span class="mfield-error-msg" id="err-mComplemento"></span>
+          </div>
+          <div class="mfield full" id="field-mPontoRef">
+            <label for="mPontoRef">Ponto de referência *</label>
+            <input id="mPontoRef" type="text" placeholder="Ex.: próximo ao mercado, portão azul..." />
+            <span class="mfield-error-msg" id="err-mPontoRef">Informe um ponto de referência.</span>
+          </div>
+        </div>
+
+        <div class="modal-error-msg" id="modalErro1">Não encontramos cobertura para este endereço.</div>
+
+        <div class="modal-actions">
+          <button class="btn-modal-next" type="button" onclick="validarEtapaEndereco()">Consultar cobertura e continuar →</button>
+        </div>
+      </div>
+
+      <!-- Etapa 2: Plano -->
+      <div id="etapa2" style="display:none;">
+        <h2>Confirme o plano</h2>
+        <p class="modal-subtitle">O plano selecionado no site já vem marcado, mas o cliente pode trocar antes de continuar.</p>
+
+        <div class="modal-steps">
+          <div class="modal-step active"></div>
+          <div class="modal-step active"></div>
+          <div class="modal-step"></div>
+          <div class="modal-step"></div>
+          <div class="modal-step"></div>
+        </div>
+        <div class="modal-step-label">Etapa 2 de 5 — Plano</div>
+
+        <div class="mgrid">
+          <div class="mfield full" id="field-mPlano">
+            <label for="mPlano">Plano desejado *</label>
+            <select id="mPlano">
+              <option value="">Selecione o plano...</option>
+              <option value="FIBRA 500MB">FIBRA 500MB — R$ 99,90/mês</option>
+              <option value="FIBRA 500MB + GLOBOPLAY">FIBRA 500MB + GLOBOPLAY — R$ 114,80/mês</option>
+              <option value="FIBRA 500MB + 1 PONTO EXTRA DE WI-FI">FIBRA 500MB + 1 PONTO EXTRA DE WI-FI — R$ 119,90/mês</option>
+              <option value="FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY">FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY — R$ 139,90/mês</option>
+              <option value="FIBRA 700MB + 1 PONTO EXTRA DE WI-FI">FIBRA 700MB + 1 PONTO EXTRA DE WI-FI — R$ 149,90/mês</option>
+              <option value="FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI">FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI — R$ 159,90/mês</option>
+            </select>
+            <span class="mfield-error-msg" id="err-mPlano">Selecione o plano desejado.</span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-modal-back" type="button" onclick="mostrarEtapa(1)">← Voltar</button>
+          <button class="btn-modal-next" type="button" onclick="validarEtapaPlano()">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- Etapa 3: Dados pessoais -->
+      <div id="etapa3" style="display:none;">
+        <h2>Dados do cliente</h2>
+        <p class="modal-subtitle">Cadastro sempre como Pessoa Física. O CPF é obrigatório para gerar a pré-venda.</p>
+
+        <div class="modal-steps">
+          <div class="modal-step active"></div>
+          <div class="modal-step active"></div>
+          <div class="modal-step active"></div>
+          <div class="modal-step"></div>
+          <div class="modal-step"></div>
+        </div>
+        <div class="modal-step-label">Etapa 3 de 5 — Dados pessoais</div>
+
+        <div class="mgrid">
+          <div class="mfield full" id="field-mNome">
+            <label for="mNome">Nome completo *</label>
+            <input id="mNome" type="text" placeholder="Seu nome completo" autocomplete="name" />
+            <span class="mfield-error-msg" id="err-mNome">Informe o nome completo.</span>
+          </div>
+          <div class="mfield" id="field-mCpf">
+            <label for="mCpf">CPF *</label>
+            <input id="mCpf" type="text" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" />
+            <span class="mfield-error-msg" id="err-mCpf">CPF inválido.</span>
+          </div>
+          <div class="mfield" id="field-mNascimento">
+            <label for="mNascimento">Data de nascimento *</label>
+            <input id="mNascimento" type="date" />
+            <span class="mfield-error-msg" id="err-mNascimento">Informe a data de nascimento.</span>
+          </div>
+          <div class="mfield full" id="field-mEmail">
+            <label for="mEmail">E-mail *</label>
+            <input id="mEmail" type="email" placeholder="seuemail@email.com" autocomplete="email" />
+            <span class="mfield-error-msg" id="err-mEmail">Informe um e-mail válido.</span>
+          </div>
+          <div class="mfield" id="field-mTelefone1">
+            <label for="mTelefone1">WhatsApp principal *</label>
+            <input id="mTelefone1" type="text" inputmode="numeric" placeholder="(51) 99999-9999" maxlength="15" autocomplete="tel" />
+            <span class="mfield-error-msg" id="err-mTelefone1">Informe um telefone válido.</span>
+          </div>
+          <div class="mfield" id="field-mTelefone2">
+            <label for="mTelefone2">Telefone secundário *</label>
+            <input id="mTelefone2" type="text" inputmode="numeric" placeholder="(51) 99999-9999" maxlength="15" />
+            <span class="mfield-error-msg" id="err-mTelefone2">Informe um segundo telefone válido.</span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-modal-back" type="button" onclick="mostrarEtapa(2)">← Voltar</button>
+          <button class="btn-modal-next" type="button" onclick="validarEtapaDados()">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- Etapa 4: Instalação -->
+      <div id="etapa4" style="display:none;">
+        <h2>Preferência de instalação</h2>
+        <p class="modal-subtitle">Escolha o vencimento da fatura, a data preferida para instalação e o turno preferido para a instalação.</p>
+
+        <div class="modal-steps">
+          <div class="modal-step active"></div>
+          <div class="modal-step active"></div>
+          <div class="modal-step active"></div>
+          <div class="modal-step active"></div>
+          <div class="modal-step"></div>
+        </div>
+        <div class="modal-step-label">Etapa 4 de 5 — Instalação</div>
+
+        <div class="mgrid">
+          <div class="mfield" id="field-mVencimento">
+            <label for="mVencimento">Dia de vencimento *</label>
+            <select id="mVencimento">
+              <option value="">Selecione...</option>
+              <option value="05">05</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
+              <option value="25">25</option>
+            </select>
+            <span class="mfield-error-msg" id="err-mVencimento">Selecione o dia de vencimento.</span>
+          </div>
+          <div class="mfield" id="field-mDataInstalacao">
+            <label for="mDataInstalacao">Data preferida para instalação *</label>
+            <input id="mDataInstalacao" type="date" />
+            <span class="mfield-error-msg" id="err-mDataInstalacao">Selecione a data preferida para instalação.</span>
+          </div>
+          <div class="mfield full" id="field-mTurnoInstalacao">
+            <label for="mTurnoInstalacao">Turno preferido para a instalação *</label>
+            <select id="mTurnoInstalacao">
+              <option value="">Selecione...</option>
+              <option value="Manhã">Manhã</option>
+              <option value="Tarde">Tarde</option>
+            </select>
+            <span class="mfield-error-msg" id="err-mTurnoInstalacao">Selecione o turno preferido para a instalação.</span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-modal-back" type="button" onclick="mostrarEtapa(3)">← Voltar</button>
+          <button class="btn-modal-next" type="button" onclick="validarEtapaInstalacao()">Revisar dados →</button>
+        </div>
+      </div>
+
+      <!-- Etapa 5: Confirmação -->
+      <div id="etapa5" style="display:none;">
+        <h2>Confirmar pré-cadastro</h2>
+        <p class="modal-subtitle">Confira as informações antes de enviar para nossa equipe de agendamento.</p>
+
+        <div class="modal-steps">
+          <div class="modal-step active"></div>
+          <div class="modal-step active"></div>
+          <div class="modal-step active"></div>
+          <div class="modal-step active"></div>
+          <div class="modal-step active"></div>
+        </div>
+        <div class="modal-step-label">Etapa 5 de 5 — Confirmação</div>
+
+        <div class="modal-summary" id="modalResumo"></div>
+        <div class="modal-error-msg" id="modalErro">Erro ao enviar. Verifique os campos e tente novamente.</div>
+
+        <div class="modal-actions">
+          <button class="btn-modal-back" type="button" onclick="mostrarEtapa(4)">← Voltar</button>
+          <button class="btn-modal-submit" id="btnSubmit" type="button" onclick="enviarFormulario()">Enviar pré-cadastro</button>
+        </div>
+      </div>
+
+      <!-- Sucesso -->
+      <div id="etapaSucesso" style="display:none;" class="modal-success">
+        <div class="modal-success-icon">✅</div>
+        <h3>Cadastro recebido com sucesso!</h3>
+        <p>Sua solicitação foi enviada para nossa equipe de agendamento. Entraremos em contato em horário comercial para confirmar os próximos passos da instalação.</p>
+      </div>
+    </div>
+  </div>
 
   <footer class="footer">
     <div class="container">
@@ -1822,7 +2515,6 @@ Motivo: ${res.motivo || "-"}`;
 
     $("btnConsultar").addEventListener("click", consultarCobertura);
     $("btnLimpar").addEventListener("click", clearForm);
-
     $("cep").addEventListener("keydown", (e) => {
       if (e.key === "Enter") { e.preventDefault(); consultarCobertura(); }
     });
@@ -1832,6 +2524,408 @@ Motivo: ${res.motivo || "-"}`;
     });
 
     setAddress("");
+
+    // ── MODAL EM ETAPAS ──────────────────────────────────────────────
+    const CLOUD_RUN_URL = "https://modal-easy-964927461432.southamerica-east1.run.app";
+
+    let modalPlanoPreSelecionado = "";
+    let modalCoverageValidated = false;
+    let modalCoverageData = null;
+
+    const PLAN_LABELS = {
+      "FIBRA 500MB": "FIBRA 500MB — R$ 99,90/mês",
+      "FIBRA 500MB + GLOBOPLAY": "FIBRA 500MB + GLOBOPLAY — R$ 114,80/mês",
+      "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI — R$ 119,90/mês",
+      "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY": "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY — R$ 139,90/mês",
+      "FIBRA 700MB + 1 PONTO EXTRA DE WI-FI": "FIBRA 700MB + 1 PONTO EXTRA DE WI-FI — R$ 149,90/mês",
+      "FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI": "FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI — R$ 159,90/mês"
+    };
+
+    function isValidCpf(cpf) {
+      const d = onlyDigits(cpf);
+      if (d.length !== 11 || /^(\d)\1+$/.test(d)) return false;
+      let s = 0;
+      for (let i = 0; i < 9; i++) s += parseInt(d[i], 10) * (10 - i);
+      let r = 11 - (s % 11); r = r >= 10 ? 0 : r;
+      if (r !== parseInt(d[9], 10)) return false;
+      s = 0;
+      for (let i = 0; i < 10; i++) s += parseInt(d[i], 10) * (11 - i);
+      r = 11 - (s % 11); r = r >= 10 ? 0 : r;
+      return r === parseInt(d[10], 10);
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
+    }
+
+    function tomorrowISO() {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    }
+
+    function formatPhoneInput(value) {
+      let v = String(value || "").replace(/\D/g, "").slice(0, 11);
+      if (v.length > 10) return "("+v.slice(0,2)+") "+v.slice(2,7)+"-"+v.slice(7);
+      if (v.length > 6) return "("+v.slice(0,2)+") "+v.slice(2,6)+"-"+v.slice(6);
+      if (v.length > 2) return "("+v.slice(0,2)+") "+v.slice(2);
+      return v;
+    }
+
+    function formatCpfInput(value) {
+      let v = String(value || "").replace(/\D/g, "").slice(0, 11);
+      if (v.length > 9) return v.slice(0,3)+"."+v.slice(3,6)+"."+v.slice(6,9)+"-"+v.slice(9);
+      if (v.length > 6) return v.slice(0,3)+"."+v.slice(3,6)+"."+v.slice(6);
+      if (v.length > 3) return v.slice(0,3)+"."+v.slice(3);
+      return v;
+    }
+
+    function fieldError(id, msg) {
+      const wrap = document.getElementById("field-" + id);
+      const errEl = document.getElementById("err-" + id);
+      if (!wrap) return;
+      wrap.classList.add("has-error");
+      wrap.classList.remove("is-valid");
+      if (errEl && msg) errEl.textContent = msg;
+    }
+
+    function fieldOk(id) {
+      const wrap = document.getElementById("field-" + id);
+      if (!wrap) return;
+      wrap.classList.remove("has-error");
+      wrap.classList.add("is-valid");
+    }
+
+    function fieldReset(id) {
+      const wrap = document.getElementById("field-" + id);
+      if (!wrap) return;
+      wrap.classList.remove("has-error", "is-valid");
+    }
+
+    function resetModalVisual() {
+      [
+        "mCep","mNumero","mLogradouro","mBairro","mCidade","mUf","mComplemento","mPontoRef",
+        "mPlano","mNome","mCpf","mNascimento","mEmail","mTelefone1","mTelefone2",
+        "mVencimento","mDataInstalacao","mTurnoInstalacao"
+      ].forEach(fieldReset);
+      ["modalErro1","modalErro"].forEach(id => {
+        const el = $(id);
+        if (el) el.classList.remove("show");
+      });
+      const box = $("coverageOkBox");
+      if (box) box.classList.remove("show");
+    }
+
+    function abrirModal(planoPreSelecionado) {
+      modalPlanoPreSelecionado = planoPreSelecionado || "";
+      modalCoverageValidated = false;
+      modalCoverageData = null;
+      resetModalVisual();
+
+      if ($("mDataInstalacao")) $("mDataInstalacao").min = tomorrowISO();
+      if ($("mPlano") && modalPlanoPreSelecionado) $("mPlano").value = modalPlanoPreSelecionado;
+
+      const cepAtual = $("cep").value.trim();
+      const numeroAtual = $("numero").value.trim();
+      if (cepAtual) $("mCep").value = cepAtual;
+      if (numeroAtual) $("mNumero").value = numeroAtual;
+
+      const enderecoTexto = $("logradouro") && !$("logradouro").classList.contains("empty") ? $("logradouro").textContent : "";
+      if (enderecoTexto && cepAtual) buscarCepModal(cepAtual);
+
+      $("modalOverlay").classList.add("open");
+      document.body.style.overflow = "hidden";
+      mostrarEtapa(1);
+      setTimeout(() => $("mCep").focus(), 120);
+    }
+
+    function abrirModalCobertura() {
+      abrirModal(modalPlanoPreSelecionado || "");
+    }
+
+    function fecharModal() {
+      $("modalOverlay").classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    $("modalOverlay").addEventListener("click", function(e) {
+      if (e.target === this) fecharModal();
+    });
+
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") fecharModal();
+    });
+
+    function mostrarEtapa(n) {
+      ["etapa1","etapa2","etapa3","etapa4","etapa5","etapaSucesso"].forEach((id, index) => {
+        const el = $(id);
+        if (!el) return;
+        if (id === "etapaSucesso") el.style.display = n === 6 ? "block" : "none";
+        else el.style.display = n === index + 1 ? "block" : "none";
+      });
+      ["modalErro1","modalErro"].forEach(id => {
+        const el = $(id);
+        if (el) el.classList.remove("show");
+      });
+    }
+
+    async function buscarCepModal(cep) {
+      const cepLimpo = onlyDigits(cep);
+      if (cepLimpo.length !== 8) return;
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+        const data = await res.json();
+        if (data.erro) { fieldError("mCep", "CEP não encontrado."); return; }
+        $("mLogradouro").value = data.logradouro || "";
+        $("mBairro").value = data.bairro || "";
+        $("mCidade").value = data.localidade || "";
+        $("mUf").value = data.uf || "";
+        fieldOk("mCep");
+        ["mLogradouro","mBairro","mCidade","mUf"].forEach(id => { if ($(id).value.trim()) fieldOk(id); });
+      } catch {
+        fieldError("mCep", "Erro ao buscar CEP. Preencha manualmente.");
+      }
+    }
+
+    function resetCoverageValidation() {
+      modalCoverageValidated = false;
+      modalCoverageData = null;
+      const box = $("coverageOkBox");
+      if (box) box.classList.remove("show");
+    }
+
+    function validarCamposEndereco() {
+      let hasError = false;
+      ["mCep","mNumero","mLogradouro","mBairro","mCidade","mUf","mPontoRef"].forEach(fieldReset);
+
+      if (onlyDigits($("mCep").value).length !== 8) { fieldError("mCep", "Informe um CEP válido."); hasError = true; } else fieldOk("mCep");
+      if (!$("mNumero").value.trim()) { fieldError("mNumero", "Informe o número."); hasError = true; } else fieldOk("mNumero");
+      if (!$("mLogradouro").value.trim()) { fieldError("mLogradouro", "Informe o logradouro."); hasError = true; } else fieldOk("mLogradouro");
+      if (!$("mBairro").value.trim()) { fieldError("mBairro", "Informe o bairro."); hasError = true; } else fieldOk("mBairro");
+      if (!$("mCidade").value.trim()) { fieldError("mCidade", "Informe a cidade."); hasError = true; } else fieldOk("mCidade");
+      if (!$("mUf").value.trim()) { fieldError("mUf", "Informe a UF."); hasError = true; } else fieldOk("mUf");
+      if (!$("mPontoRef").value.trim()) { fieldError("mPontoRef", "Informe um ponto de referência."); hasError = true; } else fieldOk("mPontoRef");
+      return !hasError;
+    }
+
+    async function validarEtapaEndereco() {
+      const erroEl = $("modalErro1");
+      erroEl.classList.remove("show");
+
+      if (!validarCamposEndereco()) {
+        const firstError = document.querySelector("#etapa1 .mfield.has-error input");
+        if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+
+      const btn = document.querySelector("#etapa1 .btn-modal-next");
+      const original = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="border-color:rgba(8,42,20,.3);border-top-color:#082a14;width:16px;height:16px;display:inline-block;border-radius:50%;border-width:2px;animation:spin .7s linear infinite;"></div> Consultando...';
+
+      try {
+        const payload = {
+          cep: onlyDigits($("mCep").value),
+          fachada: [$("mLogradouro").value.trim(), $("mNumero").value.trim()].filter(Boolean).join(", "),
+          radius: FIXED_RADIUS
+        };
+        const res = await jsonpRequest(payload);
+        if (res && res.ok === true && res.viavel === true) {
+          modalCoverageValidated = true;
+          modalCoverageData = res;
+          $("coverageOkBox").classList.add("show");
+          mostrarEtapa(2);
+        } else {
+          modalCoverageValidated = false;
+          erroEl.textContent = "Não encontramos cobertura para este endereço no momento." + (res && res.motivo ? " Motivo: " + res.motivo : "");
+          erroEl.classList.add("show");
+        }
+      } catch (err) {
+        erroEl.textContent = err.message || "Erro ao consultar cobertura. Tente novamente.";
+        erroEl.classList.add("show");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+    }
+
+    function validarEtapaPlano() {
+      fieldReset("mPlano");
+      if (!$("mPlano").value) { fieldError("mPlano", "Selecione o plano desejado."); return; }
+      fieldOk("mPlano");
+      mostrarEtapa(3);
+      setTimeout(() => $("mNome").focus(), 120);
+    }
+
+    function validarEtapaDados() {
+      let hasError = false;
+      ["mNome","mCpf","mNascimento","mEmail","mTelefone1","mTelefone2"].forEach(fieldReset);
+
+      const nome = $("mNome").value.trim();
+      if (!nome || nome.split(" ").length < 2) { fieldError("mNome", "Informe nome e sobrenome."); hasError = true; } else fieldOk("mNome");
+      if (!isValidCpf($("mCpf").value)) { fieldError("mCpf", "CPF inválido. Verifique os números."); hasError = true; } else fieldOk("mCpf");
+      if (!$("mNascimento").value) { fieldError("mNascimento", "Informe a data de nascimento."); hasError = true; } else fieldOk("mNascimento");
+      if (!isValidEmail($("mEmail").value)) { fieldError("mEmail", "Informe um e-mail válido."); hasError = true; } else fieldOk("mEmail");
+      const tel1 = onlyDigits($("mTelefone1").value);
+      const tel2 = onlyDigits($("mTelefone2").value);
+
+      if (tel1.length < 10) {
+        fieldError("mTelefone1", "Informe telefone com DDD.");
+        hasError = true;
+      } else {
+        fieldOk("mTelefone1");
+      }
+
+      if (tel2.length < 10) {
+        fieldError("mTelefone2", "Informe um segundo telefone com DDD.");
+        hasError = true;
+      } else if (tel1 && tel2 && tel1 === tel2) {
+        fieldError("mTelefone2", "O segundo contato precisa ser diferente do WhatsApp principal.");
+        hasError = true;
+      } else {
+        fieldOk("mTelefone2");
+      }
+
+      if (hasError) {
+        const firstError = document.querySelector("#etapa3 .mfield.has-error input");
+        if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+      mostrarEtapa(4);
+    }
+
+    function validarEtapaInstalacao() {
+      let hasError = false;
+      ["mVencimento","mDataInstalacao","mTurnoInstalacao"].forEach(fieldReset);
+      if (!$("mVencimento").value) { fieldError("mVencimento", "Selecione o vencimento."); hasError = true; } else fieldOk("mVencimento");
+      if (!$("mDataInstalacao").value) { fieldError("mDataInstalacao", "Selecione a data preferida para instalação."); hasError = true; } else fieldOk("mDataInstalacao");
+      if (!$("mTurnoInstalacao").value) { fieldError("mTurnoInstalacao", "Selecione o turno preferido para a instalação."); hasError = true; } else fieldOk("mTurnoInstalacao");
+      if (hasError) return;
+      montarResumo();
+      mostrarEtapa(5);
+    }
+
+    function escapeHtml(value) {
+      return String(value || "-").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+    }
+
+    function montarResumo() {
+      const rows = [
+        ["Endereço", `${$("mLogradouro").value}, ${$("mNumero").value} - ${$("mBairro").value} - ${$("mCidade").value}/${$("mUf").value}`],
+        ["Complemento", $("mComplemento").value || "-"],
+        ["Referência", $("mPontoRef").value],
+        ["Plano", PLAN_LABELS[$("mPlano").value] || $("mPlano").value],
+        ["Cliente", $("mNome").value],
+        ["CPF", $("mCpf").value],
+        ["E-mail", $("mEmail").value],
+        ["Telefones", `${$("mTelefone1").value} / ${$("mTelefone2").value}`],
+        ["Vencimento", $("mVencimento").value],
+        ["Preferência de instalação", `${formatDateBR($("mDataInstalacao").value)} - ${$("mTurnoInstalacao").value}`]
+      ];
+      $("modalResumo").innerHTML = rows.map(([label, value]) => `<div class="summary-row"><strong>${escapeHtml(label)}</strong><span>${escapeHtml(value)}</span></div>`).join("");
+    }
+
+    function formatDateBR(value) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) return value || "";
+      const [yyyy, mm, dd] = value.split("-");
+      return `${dd}/${mm}/${yyyy}`;
+    }
+
+    function buildModalPayload() {
+      return {
+        nomeCliente: $("mNome").value.trim(),
+        tipoCliente: "Pessoa Física",
+        documentoCliente: onlyDigits($("mCpf").value),
+        emailCliente: $("mEmail").value.trim(),
+        dataNascimentoCliente: $("mNascimento").value,
+        telefone1Cliente: onlyDigits($("mTelefone1").value),
+        telefone2Cliente: onlyDigits($("mTelefone2").value),
+        cep: onlyDigits($("mCep").value),
+        uf: $("mUf").value.trim().toUpperCase(),
+        nomeCidade: $("mCidade").value.trim(),
+        bairro: $("mBairro").value.trim(),
+        logradouro: $("mLogradouro").value.trim(),
+        numero: $("mNumero").value.trim(),
+        complemento: $("mComplemento").value.trim(),
+        pontoReferencia: $("mPontoRef").value.trim(),
+        planos: $("mPlano").value,
+        diaVencimentoFatura: $("mVencimento").value,
+        dataInstalacao1: $("mDataInstalacao").value,
+        turnoInstalacao1: $("mTurnoInstalacao").value,
+        linkLocalizacao: modalCoverageData && modalCoverageData.coords ? `https://www.google.com/maps?q=${modalCoverageData.coords}` : "",
+        urlAdicional: "",
+        obsEndereco: modalCoverageData && modalCoverageData.motivo ? `Cobertura validada pelo site. Motivo: ${modalCoverageData.motivo}` : "Cobertura validada pelo site."
+      };
+    }
+
+    async function enviarFormulario() {
+      const erroEl = $("modalErro");
+      erroEl.classList.remove("show");
+
+      if (!modalCoverageValidated) {
+        erroEl.textContent = "Volte para a etapa de endereço e valide a cobertura antes de enviar.";
+        erroEl.classList.add("show");
+        return;
+      }
+
+      const btn = $("btnSubmit");
+      const original = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="border-color:rgba(8,42,20,.3);border-top-color:#082a14;width:16px;height:16px;display:inline-block;border-radius:50%;border-width:2px;animation:spin .7s linear infinite;"></div> Enviando...';
+
+      try {
+        const response = await fetch(CLOUD_RUN_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(buildModalPayload())
+        });
+        const data = await response.json().catch(() => ({}));
+        if (response.ok && data.ok) {
+          mostrarEtapa(6);
+          if (typeof gtag === "function") {
+            gtag("event", "conversion", {
+              send_to: "AW-17075496858/mdbTCLiuxcsaEJrPnc4_",
+              value: 1.0,
+              currency: "BRL"
+            });
+          }
+        } else {
+          erroEl.textContent = data.message || "Erro ao enviar. Tente novamente.";
+          erroEl.classList.add("show");
+          btn.disabled = false;
+          btn.innerHTML = original;
+        }
+      } catch (err) {
+        erroEl.textContent = "Falha de conexão. Verifique o endpoint do Cloud Run ou tente novamente.";
+        erroEl.classList.add("show");
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+    }
+
+    // Máscaras e buscas automáticas
+    $("mCep").addEventListener("input", function() {
+      this.value = formatCep(this.value);
+      resetCoverageValidation();
+      if (onlyDigits(this.value).length === 8) buscarCepModal(this.value);
+    });
+    ["mNumero","mLogradouro","mBairro","mCidade","mUf"].forEach(id => {
+      $(id).addEventListener("input", resetCoverageValidation);
+    });
+    $("mCpf").addEventListener("input", function() {
+      this.value = formatCpfInput(this.value);
+      if (onlyDigits(this.value).length === 11) {
+        isValidCpf(this.value) ? fieldOk("mCpf") : fieldError("mCpf", "CPF inválido. Verifique os números.");
+      } else fieldReset("mCpf");
+    });
+    ["mTelefone1","mTelefone2"].forEach(id => {
+      $(id).addEventListener("input", function() { this.value = formatPhoneInput(this.value); });
+    });
+    $("mEmail").addEventListener("blur", function() {
+      if (!this.value.trim()) return;
+      isValidEmail(this.value) ? fieldOk("mEmail") : fieldError("mEmail", "E-mail inválido. Ex: nome@email.com");
+    });
+    if ($("mDataInstalacao")) $("mDataInstalacao").min = tomorrowISO();
   </script>
 </body>
 </html>
