@@ -1331,6 +1331,14 @@
     .mgrid .mfield { grid-column: auto; }
     .mgrid .mfield.full { grid-column: 1 / -1; }
 
+    .modal-extra-address {
+      display: none;
+    }
+
+    .modal-extra-address.show {
+      display: contents;
+    }
+
     .modal-actions {
       display: flex;
       gap: 10px;
@@ -1973,6 +1981,7 @@
               <input id="mNumero" type="text" placeholder="Nº" autocomplete="address-line2" />
               <span class="mfield-error-msg" id="err-mNumero">Informe o número.</span>
             </div>
+            <div id="modalEnderecoCompleto" class="modal-extra-address">
             <div class="mfield full" id="field-mLogradouro">
               <label for="mLogradouro">Logradouro *</label>
               <input id="mLogradouro" type="text" placeholder="Rua / Avenida" />
@@ -2003,12 +2012,13 @@
               <input id="mPontoRef" type="text" placeholder="Ex.: próximo ao mercado, portão azul..." />
               <span class="mfield-error-msg" id="err-mPontoRef">Informe um ponto de referência.</span>
             </div>
+            </div>
           </div>
 
           <div class="modal-error-msg" id="modalErro1">Não encontramos cobertura para este endereço.</div>
 
           <div class="modal-actions">
-            <button class="btn-modal-next" type="button" onclick="validarEtapaEndereco()">Consultar cobertura e continuar →</button>
+            <button class="btn-modal-next" type="button" onclick="validarEtapaEndereco()">Consultar cobertura</button>
           </div>
         </div>
       </div>
@@ -2281,6 +2291,7 @@
       setAddress("");
       $("ctaViavel").classList.remove("show");
       $("btnContratarCobertura").href = "#";
+      coberturaPaginaData = null;
       setStatus("Aguardando preenchimento.");
       setLoading(false);
     }
@@ -2354,6 +2365,17 @@
         if (res && res.ok === true) {
           if (res.viavel === true) {
             const mensagem = `Olá! Consultei a cobertura no site da WebTurbo, parceira de vendas autorizada MhNet, e quero contratar.\n\nCEP: ${cep}\nNúmero: ${numero}\nEndereço: ${enderecoCompleto}\nCoords: ${res.coords || "-"}\nMotivo: ${res.motivo || "-"}`;
+            coberturaPaginaData = {
+              cep,
+              numero,
+              logradouro: endereco.logradouro || "",
+              bairro: endereco.bairro || "",
+              cidade: endereco.cidade || "",
+              uf: endereco.uf || "",
+              enderecoCompleto,
+              fachada,
+              cobertura: res
+            };
             $("btnContratarCobertura").href = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(mensagem)}`;
             $("ctaViavel").classList.add("show");
             setStatus("Cobertura disponível para este endereço.", "ok");
@@ -2381,6 +2403,7 @@
     let modalPlanoPreSelecionado = "";
     let modalCoverageValidated = false;
     let modalCoverageData = null;
+    let coberturaPaginaData = null;
 
     const PLAN_LABELS = {
       "FIBRA 500MB": "FIBRA 500MB — R$ 99,90/mês",
@@ -2479,6 +2502,15 @@
       modalCoverageData = null;
       resetModalVisual();
 
+      const enderecoCompletoEl = $("modalEnderecoCompleto");
+      if (enderecoCompletoEl) enderecoCompletoEl.classList.remove("show");
+
+      const btnEndereco = document.querySelector("#etapa1 .btn-modal-next");
+      if (btnEndereco) {
+        btnEndereco.innerHTML = "Consultar cobertura";
+        btnEndereco.disabled = false;
+      }
+
       if ($("mDataInstalacao")) $("mDataInstalacao").min = tomorrowISO();
       if ($("mPlano") && modalPlanoPreSelecionado) $("mPlano").value = modalPlanoPreSelecionado;
 
@@ -2486,9 +2518,6 @@
       const numeroAtual = $("numero").value.trim();
       if (cepAtual)    $("mCep").value = cepAtual;
       if (numeroAtual) $("mNumero").value = numeroAtual;
-
-      const enderecoTexto = $("logradouro") && !$("logradouro").classList.contains("empty") ? $("logradouro").textContent : "";
-      if (enderecoTexto && cepAtual) buscarCepModal(cepAtual);
 
       $("modalOverlay").classList.add("open");
       document.body.style.overflow = "hidden";
@@ -2498,6 +2527,27 @@
 
     function abrirModalCobertura() {
       abrirModal(modalPlanoPreSelecionado || "");
+
+      if (!coberturaPaginaData || !coberturaPaginaData.cobertura || coberturaPaginaData.cobertura.viavel !== true) {
+        mostrarEtapa(1);
+        return;
+      }
+
+      $("mCep").value = coberturaPaginaData.cep || "";
+      $("mNumero").value = coberturaPaginaData.numero || "";
+      $("mLogradouro").value = coberturaPaginaData.logradouro || "";
+      $("mBairro").value = coberturaPaginaData.bairro || "";
+      $("mCidade").value = coberturaPaginaData.cidade || "";
+      $("mUf").value = coberturaPaginaData.uf || "";
+
+      const enderecoCompletoEl = $("modalEnderecoCompleto");
+      if (enderecoCompletoEl) enderecoCompletoEl.classList.add("show");
+
+      modalCoverageValidated = true;
+      modalCoverageData = coberturaPaginaData.cobertura;
+      $("coverageOkBox").classList.add("show");
+
+      mostrarEtapa(2);
     }
 
     function fecharModal() {
@@ -2523,20 +2573,24 @@
 
     async function buscarCepModal(cep) {
       const cepLimpo = onlyDigits(cep);
-      if (cepLimpo.length !== 8) return;
-      try {
-        const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
-        const data = await res.json();
-        if (data.erro) { fieldError("mCep", "CEP não encontrado."); return; }
-        $("mLogradouro").value = data.logradouro || "";
-        $("mBairro").value     = data.bairro || "";
-        $("mCidade").value     = data.localidade || "";
-        $("mUf").value         = data.uf || "";
-        fieldOk("mCep");
-        ["mLogradouro","mBairro","mCidade","mUf"].forEach(id => { if ($(id).value.trim()) fieldOk(id); });
-      } catch {
-        fieldError("mCep", "Erro ao buscar CEP. Preencha manualmente.");
-      }
+      if (cepLimpo.length !== 8) throw new Error("CEP inválido.");
+
+      const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+      const data = await res.json();
+
+      if (data.erro) throw new Error("CEP não encontrado.");
+
+      $("mLogradouro").value = data.logradouro || "";
+      $("mBairro").value     = data.bairro || "";
+      $("mCidade").value     = data.localidade || "";
+      $("mUf").value         = data.uf || "";
+
+      fieldOk("mCep");
+      ["mLogradouro","mBairro","mCidade","mUf"].forEach(id => {
+        if ($(id).value.trim()) fieldOk(id);
+      });
+
+      return data;
     }
 
     function resetCoverageValidation() {
@@ -2562,22 +2616,112 @@
     async function validarEtapaEndereco() {
       const erroEl = $("modalErro1");
       erroEl.classList.remove("show");
+
+      const enderecoCompletoEl = $("modalEnderecoCompleto");
+      const enderecoCompletoVisivel = enderecoCompletoEl && enderecoCompletoEl.classList.contains("show");
+
+      ["mCep", "mNumero", "mLogradouro", "mBairro", "mCidade", "mUf", "mPontoRef"].forEach(fieldReset);
+
+      const cep = onlyDigits($("mCep").value);
+      const numero = $("mNumero").value.trim();
+      const btn = document.querySelector("#etapa1 .btn-modal-next");
+
+      if (cep.length !== 8) {
+        fieldError("mCep", "Informe um CEP válido.");
+        return;
+      }
+
+      if (!numero) {
+        fieldError("mNumero", "Informe o número.");
+        return;
+      }
+
+      fieldOk("mCep");
+      fieldOk("mNumero");
+
+      if (!enderecoCompletoVisivel) {
+        btn.disabled = true;
+        btn.innerHTML = '<div class="spinner"></div> Buscando endereço...';
+
+        try {
+          await buscarCepModal(cep);
+        } catch {
+          fieldError("mCep", "Não conseguimos buscar o CEP automaticamente.");
+        }
+
+        if (enderecoCompletoEl) enderecoCompletoEl.classList.add("show");
+
+        btn.disabled = false;
+        btn.innerHTML = "Consultar cobertura e continuar →";
+
+        const logradouro = $("mLogradouro").value.trim();
+        const bairro = $("mBairro").value.trim();
+        const cidade = $("mCidade").value.trim();
+        const uf = $("mUf").value.trim();
+
+        if (!logradouro) fieldError("mLogradouro", "Informe a rua/avenida.");
+        else fieldOk("mLogradouro");
+
+        if (!bairro) fieldError("mBairro", "Informe o bairro.");
+        else fieldOk("mBairro");
+
+        if (!cidade) fieldError("mCidade", "Informe a cidade.");
+        else fieldOk("mCidade");
+
+        if (!uf) fieldError("mUf", "Informe a UF.");
+        else fieldOk("mUf");
+
+        if (!logradouro || !bairro || !cidade || !uf) {
+          erroEl.textContent = "Esse CEP parece ser geral. Complete os dados do endereço para consultar a cobertura.";
+          erroEl.classList.add("show");
+        } else {
+          erroEl.textContent = "Endereço carregado. Confira os dados e clique em consultar cobertura para continuar.";
+          erroEl.classList.add("show");
+        }
+
+        return;
+      }
+
       if (!validarCamposEndereco()) {
+        erroEl.textContent = "Complete os dados do endereço para consultar a cobertura.";
+        erroEl.classList.add("show");
         const firstError = document.querySelector("#etapa1 .mfield.has-error input");
         if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
         return;
       }
-      const btn = document.querySelector("#etapa1 .btn-modal-next");
-      const original = btn.innerHTML;
+
       btn.disabled = true;
-      btn.innerHTML = '<div class="spinner"></div> Consultando...';
+      btn.innerHTML = '<div class="spinner"></div> Consultando cobertura...';
+
       try {
+        const logradouro = $("mLogradouro").value.trim();
+        const bairro = $("mBairro").value.trim();
+        const cidade = $("mCidade").value.trim();
+        const uf = $("mUf").value.trim();
+
+        const fachada = [
+          logradouro,
+          numero,
+          bairro,
+          cidade,
+          uf
+        ].filter(Boolean).join(", ");
+
         const payload = {
-          cep: onlyDigits($("mCep").value),
-          fachada: [$("mLogradouro").value.trim(), $("mNumero").value.trim()].filter(Boolean).join(", "),
+          cep,
+          numero,
+          logradouro,
+          bairro,
+          cidade,
+          uf,
+          complemento: $("mComplemento").value.trim(),
+          ponto_referencia: $("mPontoRef").value.trim(),
+          fachada,
           radius: FIXED_RADIUS
         };
+
         const res = await consultarCoberturaCloudRun(payload);
+
         if (res && res.ok === true && res.viavel === true) {
           modalCoverageValidated = true;
           modalCoverageData = res;
@@ -2585,15 +2729,18 @@
           mostrarEtapa(2);
         } else {
           modalCoverageValidated = false;
+          modalCoverageData = null;
           erroEl.textContent = "Não encontramos cobertura para este endereço no momento." + (res && res.motivo ? " Motivo: " + res.motivo : "");
           erroEl.classList.add("show");
         }
       } catch (err) {
+        modalCoverageValidated = false;
+        modalCoverageData = null;
         erroEl.textContent = err.message || "Erro ao consultar cobertura. Tente novamente.";
         erroEl.classList.add("show");
       } finally {
         btn.disabled = false;
-        btn.innerHTML = original;
+        btn.innerHTML = "Consultar cobertura e continuar →";
       }
     }
 
