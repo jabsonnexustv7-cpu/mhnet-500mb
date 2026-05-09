@@ -1,12 +1,777 @@
 {
-  "totalCidades": 128,
-  "sitemap": "/sitemap.xml",
-  "cidadesAtendidas": "/cidades-atendidas/",
-  "exemplo": [
-    "/internet-mhnet-dourados/",
-    "/internet-mhnet-navirai/",
-    "/internet-mhnet-cascavel/",
-    "/internet-mhnet-castro/",
-    "/internet-mhnet-clevelandia/"
+  "ok": true,
+  "generatedAt": "2026-05-09T18:11:51.973Z",
+  "totalCities": 128,
+  "output": "C:\\Users\\jabso\\Downloads\\webturbo-seo-gerador\\webturbo-seo-gerador\\dist",
+  "baseUrl": "https://webturbo-internet.com.br",
+  "pages": [
+    {
+      "cidade": "Dourados",
+      "uf": "MS",
+      "slug": "dourados",
+      "url": "https://webturbo-internet.com.br/dourados/"
+    },
+    {
+      "cidade": "Naviraí",
+      "uf": "MS",
+      "slug": "navirai",
+      "url": "https://webturbo-internet.com.br/navirai/"
+    },
+    {
+      "cidade": "Cascavel",
+      "uf": "PR",
+      "slug": "cascavel",
+      "url": "https://webturbo-internet.com.br/cascavel/"
+    },
+    {
+      "cidade": "Castro",
+      "uf": "PR",
+      "slug": "castro",
+      "url": "https://webturbo-internet.com.br/castro/"
+    },
+    {
+      "cidade": "Clevelândia",
+      "uf": "PR",
+      "slug": "clevelandia",
+      "url": "https://webturbo-internet.com.br/clevelandia/"
+    },
+    {
+      "cidade": "Cruzeiro do Oeste",
+      "uf": "PR",
+      "slug": "cruzeiro-do-oeste",
+      "url": "https://webturbo-internet.com.br/cruzeiro-do-oeste/"
+    },
+    {
+      "cidade": "Goioerê",
+      "uf": "PR",
+      "slug": "goioere",
+      "url": "https://webturbo-internet.com.br/goioere/"
+    },
+    {
+      "cidade": "Guarapuava",
+      "uf": "PR",
+      "slug": "guarapuava",
+      "url": "https://webturbo-internet.com.br/guarapuava/"
+    },
+    {
+      "cidade": "Irati",
+      "uf": "PR",
+      "slug": "irati",
+      "url": "https://webturbo-internet.com.br/irati/"
+    },
+    {
+      "cidade": "Lovat",
+      "uf": "PR",
+      "slug": "lovat",
+      "url": "https://webturbo-internet.com.br/lovat/"
+    },
+    {
+      "cidade": "Marechal Cândido Rondon",
+      "uf": "PR",
+      "slug": "marechal-candido-rondon",
+      "url": "https://webturbo-internet.com.br/marechal-candido-rondon/"
+    },
+    {
+      "cidade": "Maria Helena",
+      "uf": "PR",
+      "slug": "maria-helena",
+      "url": "https://webturbo-internet.com.br/maria-helena/"
+    },
+    {
+      "cidade": "Mariluz",
+      "uf": "PR",
+      "slug": "mariluz",
+      "url": "https://webturbo-internet.com.br/mariluz/"
+    },
+    {
+      "cidade": "Nova Olímpia",
+      "uf": "PR",
+      "slug": "nova-olimpia",
+      "url": "https://webturbo-internet.com.br/nova-olimpia/"
+    },
+    {
+      "cidade": "Ouro Verde",
+      "uf": "PR",
+      "slug": "ouro-verde",
+      "url": "https://webturbo-internet.com.br/ouro-verde/"
+    },
+    {
+      "cidade": "Pato Branco",
+      "uf": "PR",
+      "slug": "pato-branco",
+      "url": "https://webturbo-internet.com.br/pato-branco/"
+    },
+    {
+      "cidade": "Perobal",
+      "uf": "PR",
+      "slug": "perobal",
+      "url": "https://webturbo-internet.com.br/perobal/"
+    },
+    {
+      "cidade": "Pérola",
+      "uf": "PR",
+      "slug": "perola",
+      "url": "https://webturbo-internet.com.br/perola/"
+    },
+    {
+      "cidade": "Ponta Grossa",
+      "uf": "PR",
+      "slug": "ponta-grossa",
+      "url": "https://webturbo-internet.com.br/ponta-grossa/"
+    },
+    {
+      "cidade": "Prudentópolis",
+      "uf": "PR",
+      "slug": "prudentopolis",
+      "url": "https://webturbo-internet.com.br/prudentopolis/"
+    },
+    {
+      "cidade": "Reserva",
+      "uf": "PR",
+      "slug": "reserva",
+      "url": "https://webturbo-internet.com.br/reserva/"
+    },
+    {
+      "cidade": "Santa Elizia",
+      "uf": "PR",
+      "slug": "santa-elizia",
+      "url": "https://webturbo-internet.com.br/santa-elizia/"
+    },
+    {
+      "cidade": "São José das Palmeiras",
+      "uf": "PR",
+      "slug": "sao-jose-das-palmeiras",
+      "url": "https://webturbo-internet.com.br/sao-jose-das-palmeiras/"
+    },
+    {
+      "cidade": "São Mateus",
+      "uf": "PR",
+      "slug": "sao-mateus",
+      "url": "https://webturbo-internet.com.br/sao-mateus/"
+    },
+    {
+      "cidade": "São Pedro do Iguaçu",
+      "uf": "PR",
+      "slug": "sao-pedro-do-iguacu",
+      "url": "https://webturbo-internet.com.br/sao-pedro-do-iguacu/"
+    },
+    {
+      "cidade": "Serra dos Dourados",
+      "uf": "PR",
+      "slug": "serra-dos-dourados",
+      "url": "https://webturbo-internet.com.br/serra-dos-dourados/"
+    },
+    {
+      "cidade": "Tapejara",
+      "uf": "PR",
+      "slug": "tapejara",
+      "url": "https://webturbo-internet.com.br/tapejara/"
+    },
+    {
+      "cidade": "Telêmaco Borba",
+      "uf": "PR",
+      "slug": "telemaco-borba",
+      "url": "https://webturbo-internet.com.br/telemaco-borba/"
+    },
+    {
+      "cidade": "Toledo",
+      "uf": "PR",
+      "slug": "toledo",
+      "url": "https://webturbo-internet.com.br/toledo/"
+    },
+    {
+      "cidade": "Tuneiras do Oeste",
+      "uf": "PR",
+      "slug": "tuneiras-do-oeste",
+      "url": "https://webturbo-internet.com.br/tuneiras-do-oeste/"
+    },
+    {
+      "cidade": "Turvo",
+      "uf": "PR",
+      "slug": "turvo",
+      "url": "https://webturbo-internet.com.br/turvo/"
+    },
+    {
+      "cidade": "Umuarama",
+      "uf": "PR",
+      "slug": "umuarama",
+      "url": "https://webturbo-internet.com.br/umuarama/"
+    },
+    {
+      "cidade": "Xambrê",
+      "uf": "PR",
+      "slug": "xambre",
+      "url": "https://webturbo-internet.com.br/xambre/"
+    },
+    {
+      "cidade": "Alvorada",
+      "uf": "RS",
+      "slug": "alvorada",
+      "url": "https://webturbo-internet.com.br/alvorada/"
+    },
+    {
+      "cidade": "Barra Funda",
+      "uf": "RS",
+      "slug": "barra-funda",
+      "url": "https://webturbo-internet.com.br/barra-funda/"
+    },
+    {
+      "cidade": "Barros Cassal",
+      "uf": "RS",
+      "slug": "barros-cassal",
+      "url": "https://webturbo-internet.com.br/barros-cassal/"
+    },
+    {
+      "cidade": "Bento Gonçalves",
+      "uf": "RS",
+      "slug": "bento-goncalves",
+      "url": "https://webturbo-internet.com.br/bento-goncalves/"
+    },
+    {
+      "cidade": "Cachoeirinha",
+      "uf": "RS",
+      "slug": "cachoeirinha",
+      "url": "https://webturbo-internet.com.br/cachoeirinha/"
+    },
+    {
+      "cidade": "Canoas",
+      "uf": "RS",
+      "slug": "canoas",
+      "url": "https://webturbo-internet.com.br/canoas/"
+    },
+    {
+      "cidade": "Capão da Canoa",
+      "uf": "RS",
+      "slug": "capao-da-canoa",
+      "url": "https://webturbo-internet.com.br/capao-da-canoa/"
+    },
+    {
+      "cidade": "Carazinho",
+      "uf": "RS",
+      "slug": "carazinho",
+      "url": "https://webturbo-internet.com.br/carazinho/"
+    },
+    {
+      "cidade": "Carlos Barbosa",
+      "uf": "RS",
+      "slug": "carlos-barbosa",
+      "url": "https://webturbo-internet.com.br/carlos-barbosa/"
+    },
+    {
+      "cidade": "Caxias do Sul",
+      "uf": "RS",
+      "slug": "caxias-do-sul",
+      "url": "https://webturbo-internet.com.br/caxias-do-sul/"
+    },
+    {
+      "cidade": "Erechim",
+      "uf": "RS",
+      "slug": "erechim",
+      "url": "https://webturbo-internet.com.br/erechim/"
+    },
+    {
+      "cidade": "Estrela",
+      "uf": "RS",
+      "slug": "estrela",
+      "url": "https://webturbo-internet.com.br/estrela/"
+    },
+    {
+      "cidade": "Farroupilha",
+      "uf": "RS",
+      "slug": "farroupilha",
+      "url": "https://webturbo-internet.com.br/farroupilha/"
+    },
+    {
+      "cidade": "Garibaldi",
+      "uf": "RS",
+      "slug": "garibaldi",
+      "url": "https://webturbo-internet.com.br/garibaldi/"
+    },
+    {
+      "cidade": "Gravataí",
+      "uf": "RS",
+      "slug": "gravatai",
+      "url": "https://webturbo-internet.com.br/gravatai/"
+    },
+    {
+      "cidade": "Lagoa Vermelha",
+      "uf": "RS",
+      "slug": "lagoa-vermelha",
+      "url": "https://webturbo-internet.com.br/lagoa-vermelha/"
+    },
+    {
+      "cidade": "Lajeado",
+      "uf": "RS",
+      "slug": "lajeado",
+      "url": "https://webturbo-internet.com.br/lajeado/"
+    },
+    {
+      "cidade": "Nova Santa Rita",
+      "uf": "RS",
+      "slug": "nova-santa-rita",
+      "url": "https://webturbo-internet.com.br/nova-santa-rita/"
+    },
+    {
+      "cidade": "Passo Fundo",
+      "uf": "RS",
+      "slug": "passo-fundo",
+      "url": "https://webturbo-internet.com.br/passo-fundo/"
+    },
+    {
+      "cidade": "Saldanha Marinho",
+      "uf": "RS",
+      "slug": "saldanha-marinho",
+      "url": "https://webturbo-internet.com.br/saldanha-marinho/"
+    },
+    {
+      "cidade": "Santa Bárbara do Sul",
+      "uf": "RS",
+      "slug": "santa-barbara-do-sul",
+      "url": "https://webturbo-internet.com.br/santa-barbara-do-sul/"
+    },
+    {
+      "cidade": "Santa Cruz",
+      "uf": "RS",
+      "slug": "santa-cruz",
+      "url": "https://webturbo-internet.com.br/santa-cruz/"
+    },
+    {
+      "cidade": "Santa Maria",
+      "uf": "RS",
+      "slug": "santa-maria",
+      "url": "https://webturbo-internet.com.br/santa-maria/"
+    },
+    {
+      "cidade": "Sarandi",
+      "uf": "RS",
+      "slug": "sarandi",
+      "url": "https://webturbo-internet.com.br/sarandi/"
+    },
+    {
+      "cidade": "Soledade",
+      "uf": "RS",
+      "slug": "soledade",
+      "url": "https://webturbo-internet.com.br/soledade/"
+    },
+    {
+      "cidade": "Vacaria",
+      "uf": "RS",
+      "slug": "vacaria",
+      "url": "https://webturbo-internet.com.br/vacaria/"
+    },
+    {
+      "cidade": "Venâncio Aires",
+      "uf": "RS",
+      "slug": "venancio-aires",
+      "url": "https://webturbo-internet.com.br/venancio-aires/"
+    },
+    {
+      "cidade": "Abelardo Luz",
+      "uf": "SC",
+      "slug": "abelardo-luz",
+      "url": "https://webturbo-internet.com.br/abelardo-luz/"
+    },
+    {
+      "cidade": "Águas de Chapecó",
+      "uf": "SC",
+      "slug": "aguas-de-chapeco",
+      "url": "https://webturbo-internet.com.br/aguas-de-chapeco/"
+    },
+    {
+      "cidade": "Águas Frias",
+      "uf": "SC",
+      "slug": "aguas-frias",
+      "url": "https://webturbo-internet.com.br/aguas-frias/"
+    },
+    {
+      "cidade": "Balneário Camboriú",
+      "uf": "SC",
+      "slug": "balneario-camboriu",
+      "url": "https://webturbo-internet.com.br/balneario-camboriu/"
+    },
+    {
+      "cidade": "Balneário Rincão",
+      "uf": "SC",
+      "slug": "balneario-rincao",
+      "url": "https://webturbo-internet.com.br/balneario-rincao/"
+    },
+    {
+      "cidade": "Biguaçu",
+      "uf": "SC",
+      "slug": "biguacu",
+      "url": "https://webturbo-internet.com.br/biguacu/"
+    },
+    {
+      "cidade": "Bom Jesus",
+      "uf": "SC",
+      "slug": "bom-jesus",
+      "url": "https://webturbo-internet.com.br/bom-jesus/"
+    },
+    {
+      "cidade": "Bom Jesus do Oeste",
+      "uf": "SC",
+      "slug": "bom-jesus-do-oeste",
+      "url": "https://webturbo-internet.com.br/bom-jesus-do-oeste/"
+    },
+    {
+      "cidade": "Caibi",
+      "uf": "SC",
+      "slug": "caibi",
+      "url": "https://webturbo-internet.com.br/caibi/"
+    },
+    {
+      "cidade": "Campo Erê",
+      "uf": "SC",
+      "slug": "campo-ere",
+      "url": "https://webturbo-internet.com.br/campo-ere/"
+    },
+    {
+      "cidade": "Chapecó",
+      "uf": "SC",
+      "slug": "chapeco",
+      "url": "https://webturbo-internet.com.br/chapeco/"
+    },
+    {
+      "cidade": "Concórdia",
+      "uf": "SC",
+      "slug": "concordia",
+      "url": "https://webturbo-internet.com.br/concordia/"
+    },
+    {
+      "cidade": "Cordilheira Alta",
+      "uf": "SC",
+      "slug": "cordilheira-alta",
+      "url": "https://webturbo-internet.com.br/cordilheira-alta/"
+    },
+    {
+      "cidade": "Correia Pinto",
+      "uf": "SC",
+      "slug": "correia-pinto",
+      "url": "https://webturbo-internet.com.br/correia-pinto/"
+    },
+    {
+      "cidade": "Criciúma",
+      "uf": "SC",
+      "slug": "criciuma",
+      "url": "https://webturbo-internet.com.br/criciuma/"
+    },
+    {
+      "cidade": "Cunha Porã",
+      "uf": "SC",
+      "slug": "cunha-pora",
+      "url": "https://webturbo-internet.com.br/cunha-pora/"
+    },
+    {
+      "cidade": "Cunhataí",
+      "uf": "SC",
+      "slug": "cunhatai",
+      "url": "https://webturbo-internet.com.br/cunhatai/"
+    },
+    {
+      "cidade": "Entre Rios",
+      "uf": "SC",
+      "slug": "entre-rios",
+      "url": "https://webturbo-internet.com.br/entre-rios/"
+    },
+    {
+      "cidade": "Flor do Sertão",
+      "uf": "SC",
+      "slug": "flor-do-sertao",
+      "url": "https://webturbo-internet.com.br/flor-do-sertao/"
+    },
+    {
+      "cidade": "Florianópolis",
+      "uf": "SC",
+      "slug": "florianopolis",
+      "url": "https://webturbo-internet.com.br/florianopolis/"
+    },
+    {
+      "cidade": "Galvão",
+      "uf": "SC",
+      "slug": "galvao",
+      "url": "https://webturbo-internet.com.br/galvao/"
+    },
+    {
+      "cidade": "Herval do Oeste",
+      "uf": "SC",
+      "slug": "herval-do-oeste",
+      "url": "https://webturbo-internet.com.br/herval-do-oeste/"
+    },
+    {
+      "cidade": "Içara",
+      "uf": "SC",
+      "slug": "icara",
+      "url": "https://webturbo-internet.com.br/icara/"
+    },
+    {
+      "cidade": "Ipira",
+      "uf": "SC",
+      "slug": "ipira",
+      "url": "https://webturbo-internet.com.br/ipira/"
+    },
+    {
+      "cidade": "Ipuaçu",
+      "uf": "SC",
+      "slug": "ipuacu",
+      "url": "https://webturbo-internet.com.br/ipuacu/"
+    },
+    {
+      "cidade": "Iraceminha",
+      "uf": "SC",
+      "slug": "iraceminha",
+      "url": "https://webturbo-internet.com.br/iraceminha/"
+    },
+    {
+      "cidade": "Irani",
+      "uf": "SC",
+      "slug": "irani",
+      "url": "https://webturbo-internet.com.br/irani/"
+    },
+    {
+      "cidade": "Itajaí",
+      "uf": "SC",
+      "slug": "itajai",
+      "url": "https://webturbo-internet.com.br/itajai/"
+    },
+    {
+      "cidade": "Joaçaba",
+      "uf": "SC",
+      "slug": "joacaba",
+      "url": "https://webturbo-internet.com.br/joacaba/"
+    },
+    {
+      "cidade": "Jupiá",
+      "uf": "SC",
+      "slug": "jupia",
+      "url": "https://webturbo-internet.com.br/jupia/"
+    },
+    {
+      "cidade": "Lageado Grande",
+      "uf": "SC",
+      "slug": "lageado-grande",
+      "url": "https://webturbo-internet.com.br/lageado-grande/"
+    },
+    {
+      "cidade": "Lages",
+      "uf": "SC",
+      "slug": "lages",
+      "url": "https://webturbo-internet.com.br/lages/"
+    },
+    {
+      "cidade": "Maravilha",
+      "uf": "SC",
+      "slug": "maravilha",
+      "url": "https://webturbo-internet.com.br/maravilha/"
+    },
+    {
+      "cidade": "Marema",
+      "uf": "SC",
+      "slug": "marema",
+      "url": "https://webturbo-internet.com.br/marema/"
+    },
+    {
+      "cidade": "Modelo",
+      "uf": "SC",
+      "slug": "modelo",
+      "url": "https://webturbo-internet.com.br/modelo/"
+    },
+    {
+      "cidade": "Navegantes",
+      "uf": "SC",
+      "slug": "navegantes",
+      "url": "https://webturbo-internet.com.br/navegantes/"
+    },
+    {
+      "cidade": "Nova Erechim",
+      "uf": "SC",
+      "slug": "nova-erechim",
+      "url": "https://webturbo-internet.com.br/nova-erechim/"
+    },
+    {
+      "cidade": "Nova Itaberaba",
+      "uf": "SC",
+      "slug": "nova-itaberaba",
+      "url": "https://webturbo-internet.com.br/nova-itaberaba/"
+    },
+    {
+      "cidade": "Ouro Verde",
+      "uf": "SC",
+      "slug": "ouro-verde",
+      "url": "https://webturbo-internet.com.br/ouro-verde/"
+    },
+    {
+      "cidade": "Palhoça",
+      "uf": "SC",
+      "slug": "palhoca",
+      "url": "https://webturbo-internet.com.br/palhoca/"
+    },
+    {
+      "cidade": "Palmitos",
+      "uf": "SC",
+      "slug": "palmitos",
+      "url": "https://webturbo-internet.com.br/palmitos/"
+    },
+    {
+      "cidade": "Passos Maia",
+      "uf": "SC",
+      "slug": "passos-maia",
+      "url": "https://webturbo-internet.com.br/passos-maia/"
+    },
+    {
+      "cidade": "Pinhalzinho",
+      "uf": "SC",
+      "slug": "pinhalzinho",
+      "url": "https://webturbo-internet.com.br/pinhalzinho/"
+    },
+    {
+      "cidade": "Piratuba",
+      "uf": "SC",
+      "slug": "piratuba",
+      "url": "https://webturbo-internet.com.br/piratuba/"
+    },
+    {
+      "cidade": "Ponte Serrada",
+      "uf": "SC",
+      "slug": "ponte-serrada",
+      "url": "https://webturbo-internet.com.br/ponte-serrada/"
+    },
+    {
+      "cidade": "Riqueza",
+      "uf": "SC",
+      "slug": "riqueza",
+      "url": "https://webturbo-internet.com.br/riqueza/"
+    },
+    {
+      "cidade": "Romelândia",
+      "uf": "SC",
+      "slug": "romelandia",
+      "url": "https://webturbo-internet.com.br/romelandia/"
+    },
+    {
+      "cidade": "Saltinho",
+      "uf": "SC",
+      "slug": "saltinho",
+      "url": "https://webturbo-internet.com.br/saltinho/"
+    },
+    {
+      "cidade": "Santa Terezinha do Progresso",
+      "uf": "SC",
+      "slug": "santa-terezinha-do-progresso",
+      "url": "https://webturbo-internet.com.br/santa-terezinha-do-progresso/"
+    },
+    {
+      "cidade": "São Carlos",
+      "uf": "SC",
+      "slug": "sao-carlos",
+      "url": "https://webturbo-internet.com.br/sao-carlos/"
+    },
+    {
+      "cidade": "São José",
+      "uf": "SC",
+      "slug": "sao-jose",
+      "url": "https://webturbo-internet.com.br/sao-jose/"
+    },
+    {
+      "cidade": "São Miguel da Boa Vista",
+      "uf": "SC",
+      "slug": "sao-miguel-da-boa-vista",
+      "url": "https://webturbo-internet.com.br/sao-miguel-da-boa-vista/"
+    },
+    {
+      "cidade": "Saudades",
+      "uf": "SC",
+      "slug": "saudades",
+      "url": "https://webturbo-internet.com.br/saudades/"
+    },
+    {
+      "cidade": "Seara",
+      "uf": "SC",
+      "slug": "seara",
+      "url": "https://webturbo-internet.com.br/seara/"
+    },
+    {
+      "cidade": "Serra Alta",
+      "uf": "SC",
+      "slug": "serra-alta",
+      "url": "https://webturbo-internet.com.br/serra-alta/"
+    },
+    {
+      "cidade": "Sul Brasil",
+      "uf": "SC",
+      "slug": "sul-brasil",
+      "url": "https://webturbo-internet.com.br/sul-brasil/"
+    },
+    {
+      "cidade": "Tigrinhos",
+      "uf": "SC",
+      "slug": "tigrinhos",
+      "url": "https://webturbo-internet.com.br/tigrinhos/"
+    },
+    {
+      "cidade": "Xanxerê",
+      "uf": "SC",
+      "slug": "xanxere",
+      "url": "https://webturbo-internet.com.br/xanxere/"
+    },
+    {
+      "cidade": "Xavantina",
+      "uf": "SC",
+      "slug": "xavantina",
+      "url": "https://webturbo-internet.com.br/xavantina/"
+    },
+    {
+      "cidade": "Xaxim",
+      "uf": "SC",
+      "slug": "xaxim",
+      "url": "https://webturbo-internet.com.br/xaxim/"
+    },
+    {
+      "cidade": "Alambari",
+      "uf": "SP",
+      "slug": "alambari",
+      "url": "https://webturbo-internet.com.br/alambari/"
+    },
+    {
+      "cidade": "Buri",
+      "uf": "SP",
+      "slug": "buri",
+      "url": "https://webturbo-internet.com.br/buri/"
+    },
+    {
+      "cidade": "Capão Bonito",
+      "uf": "SP",
+      "slug": "capao-bonito",
+      "url": "https://webturbo-internet.com.br/capao-bonito/"
+    },
+    {
+      "cidade": "Itapetininga",
+      "uf": "SP",
+      "slug": "itapetininga",
+      "url": "https://webturbo-internet.com.br/itapetininga/"
+    },
+    {
+      "cidade": "Ribeirão Grande",
+      "uf": "SP",
+      "slug": "ribeirao-grande",
+      "url": "https://webturbo-internet.com.br/ribeirao-grande/"
+    },
+    {
+      "cidade": "São Miguel Arcanjo",
+      "uf": "SP",
+      "slug": "sao-miguel-arcanjo",
+      "url": "https://webturbo-internet.com.br/sao-miguel-arcanjo/"
+    },
+    {
+      "cidade": "Sorocaba",
+      "uf": "SP",
+      "slug": "sorocaba",
+      "url": "https://webturbo-internet.com.br/sorocaba/"
+    },
+    {
+      "cidade": "Votorantim",
+      "uf": "SP",
+      "slug": "votorantim",
+      "url": "https://webturbo-internet.com.br/votorantim/"
+    }
   ]
 }
