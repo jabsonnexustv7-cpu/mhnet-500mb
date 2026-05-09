@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>WebTurbo | Parceira de Vendas Autorizada MhNet</title>
-  <meta name="description" content="A WebTurbo é parceira de vendas autorizada MhNet. Consulte cobertura, conheça os planos de internet fibra óptica e contrate pelo WhatsApp." />
+  <title>WebTurbo | Planos MhNet com Agente Autorizado</title>
+  <meta name="description" content="Consulte cobertura MhNet, veja planos de internet fibra e contrate com atendimento WebTurbo, agente autorizado." />
   <meta name="keywords" content="MhNet, parceiro autorizado MhNet, parceiro de vendas MhNet, internet fibra, internet fibra óptica, consultar cobertura, planos de internet, internet residencial, internet RS, internet SC, internet PR, internet SP, internet MS" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="WebTurbo Internet" />
@@ -16,8 +16,8 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="WebTurbo | Parceira de Vendas Autorizada MhNet" />
-  <meta property="og:description" content="Consulte cobertura, veja planos de internet fibra MhNet e contrate com atendimento comercial da WebTurbo, parceira de vendas autorizada." />
+  <meta property="og:title" content="WebTurbo | Planos MhNet com Agente Autorizado" />
+  <meta property="og:description" content="Consulte cobertura MhNet, veja planos de internet fibra e contrate com atendimento WebTurbo, agente autorizado." />
   <meta property="og:url" content="https://webturbo-internet.com.br/" />
   <meta property="og:site_name" content="WebTurbo Internet" />
   <meta property="og:image" content="https://webturbo-internet.com.br/og-image.jpg" />
@@ -28,8 +28,8 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="WebTurbo | Parceira de Vendas Autorizada MhNet" />
-  <meta name="twitter:description" content="Consulte cobertura, veja planos de internet fibra MhNet e contrate com atendimento comercial da WebTurbo." />
+  <meta name="twitter:title" content="WebTurbo | Planos MhNet com Agente Autorizado" />
+  <meta name="twitter:description" content="Consulte cobertura MhNet, veja planos de internet fibra e contrate com atendimento WebTurbo." />
   <meta name="twitter:image" content="https://webturbo-internet.com.br/og-image.jpg" />
 
   <link rel="canonical" href="https://webturbo-internet.com.br/" />
@@ -1688,10 +1688,55 @@
       }
     }
 
-  
-    /* Bloco SEO de cidades atendidas */
+    /* Ajustes de landing page compacta */
+    .compact-head{
+      margin-bottom:22px;
+    }
+
+    .compact-head p{
+      max-width:620px;
+    }
+
+    .compact-points .hero-point{
+      padding:13px 14px;
+      font-weight:800;
+    }
+
+    .benefits-strip{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .benefit-mini{
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:20px;
+      padding:18px;
+      min-height:142px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:8px;
+    }
+
+    .benefit-mini span{
+      font-size:28px;
+    }
+
+    .benefit-mini strong{
+      font-size:18px;
+      color:#fff;
+    }
+
+    .benefit-mini small{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+
     .cidades-seo{
-      padding:42px 0 56px;
+      padding-top:18px;
     }
 
     .cidades-seo-grid{
@@ -1704,14 +1749,13 @@
     .cidades-seo-text h2{
       font-size:34px;
       line-height:1.2;
-      margin-bottom:18px;
-      color:#ffffff;
-      letter-spacing:-.6px;
+      margin-bottom:14px;
+      color:#fff;
     }
 
     .cidades-seo-text p{
       color:var(--muted);
-      line-height:1.75;
+      line-height:1.65;
       font-size:16px;
       margin-bottom:16px;
     }
@@ -1738,7 +1782,7 @@
       border-radius:12px;
       background:rgba(255,255,255,.045);
       border:1px solid rgba(255,255,255,.09);
-      color:#ffffff;
+      color:#fff;
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -1755,42 +1799,39 @@
       border-color:rgba(50,208,108,.35);
     }
 
-    .cidade-link-left{
-      display:inline-flex;
-      align-items:center;
-      gap:9px;
-      min-width:0;
-    }
-
-    .cidade-pin{
-      color:var(--green);
-      font-size:18px;
-      line-height:1;
-      flex-shrink:0;
-    }
-
-    .cidade-arrow{
+    .cidades-seo-lista span{
       color:var(--green);
       font-size:26px;
       line-height:1;
-      flex-shrink:0;
     }
 
-    @media(max-width:768px){
+    @media(max-width:900px){
+      .benefits-strip{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+
       .cidades-seo-grid{
         grid-template-columns:1fr;
+      }
+    }
+
+    @media(max-width:640px){
+      .benefits-strip,
+      .cidades-seo-lista{
+        grid-template-columns:1fr;
+      }
+
+      .benefit-mini{
+        min-height:auto;
+        padding:16px;
       }
 
       .cidades-seo-text h2{
         font-size:28px;
       }
-
-      .cidades-seo-lista{
-        grid-template-columns:1fr;
-      }
     }
 
-</style>
+  </style>
 
   <script type="application/ld+json">
   {
@@ -1890,10 +1931,9 @@
       </div>
 
       <nav class="nav-actions" aria-label="Navegação principal">
-        <a href="#por-que-webturbo" class="btn-outline">Por que nós</a>
         <a href="#planos" class="btn-outline">Planos</a>
-        <a href="#cidades-atendidas-seo" class="btn-outline">Cidades</a>
-        <a href="#faq" class="btn-outline">FAQ</a>
+        <a href="#beneficios" class="btn-outline">Benefícios</a>
+        <a href="#cidades" class="btn-outline">Cidades</a>
         <a class="btn-whats" href="https://wa.me/555193187300?text=Olá!%20Quero%20falar%20sobre%20os%20planos%20MhNet%20com%20a%20WebTurbo." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp da WebTurbo">
           WhatsApp
         </a>
@@ -1908,9 +1948,9 @@
         <div class="hero-left">
           <img src="hero-fibra.png" alt="Cabos de fibra óptica iluminados em azul e verde" class="hero-fibra" width="700" height="220" loading="eager" />
           <div class="eyebrow">🤝 Parceira de vendas autorizada MhNet</div>
-          <h1>Planos de internet fibra MhNet com atendimento comercial da WebTurbo.</h1>
+          <h1>Internet fibra MhNet com contratação rápida.</h1>
           <p>
-            A WebTurbo é parceira de vendas autorizada MhNet. Consulte a cobertura no seu endereço, veja os planos de internet fibra disponíveis e siga para contratação pelo WhatsApp com atendimento simples, seguro e profissional.
+            Consulte cobertura, escolha seu plano e contrate pelo WhatsApp com a WebTurbo, agente autorizado MhNet.
           </p>
 
           <div class="hero-actions">
@@ -1918,17 +1958,17 @@
             <a href="#planos" class="btn-outline">Ver planos</a>
           </div>
 
-          <div class="hero-points">
-            <div class="hero-point">✅ Atendimento comercial WebTurbo como parceira de vendas autorizada MhNet.</div>
-            <div class="hero-point">✅ Consulta de cobertura com preenchimento automático por CEP.</div>
-            <div class="hero-point">✅ Planos de internet fibra conforme disponibilidade da MhNet na sua região.</div>
-            <div class="hero-point">✅ Contratação direcionada pelo WhatsApp de forma rápida e organizada.</div>
+          <div class="hero-points compact-points">
+            <div class="hero-point">✅ Consulta rápida por CEP</div>
+            <div class="hero-point">✅ Instalação grátis na oferta</div>
+            <div class="hero-point">✅ Planos a partir de R$ 99,90</div>
+            <div class="hero-point">✅ Atendimento pelo WhatsApp</div>
           </div>
         </div>
 
         <aside class="hero-card" id="consulta" aria-label="Consulta de cobertura">
           <h2>Consulte a cobertura</h2>
-          <p>Informe o CEP e o número para verificar a disponibilidade dos planos MhNet no endereço informado.</p>
+          <p>Digite CEP e número para consultar disponibilidade.</p>
 
           <div class="consult-box">
             <div class="consult-grid">
@@ -1975,77 +2015,52 @@
       </div>
     </section>
 
-    <!-- Por que WebTurbo -->
-    <section class="section" id="por-que-webturbo" aria-labelledby="titulo-por-que">
+    <!-- Benefícios compactos -->
+    <div class="section" id="beneficios" aria-labelledby="titulo-beneficios">
       <div class="container">
-        <div class="section-head">
-          <h2 id="titulo-por-que">Por que contratar pela WebTurbo?</h2>
-          <p>
-            A WebTurbo é parceira de vendas autorizada MhNet especializada em atendimento comercial. Você conta com suporte dedicado desde a consulta de cobertura até a confirmação da contratação.
-          </p>
+        <div class="section-head compact-head">
+          <h2 id="titulo-beneficios">Internet para tudo que importa</h2>
+          <p>Fibra, Wi-Fi incluso e planos para casa conectada.</p>
         </div>
 
-        <div class="why-with-image">
-          <div class="why-image-wrap">
-            <img src="atendimento.png" alt="Cliente satisfeita usando o WhatsApp para contratar internet fibra MhNet pela WebTurbo" width="560" height="380" loading="lazy" />
+        <div class="benefits-strip">
+          <div class="benefit-mini">
+            <span aria-hidden="true">📺</span>
+            <strong>Streaming</strong>
+            <small>Filmes e séries com estabilidade.</small>
           </div>
-          <div>
-            <h3 style="font-size:26px;font-weight:900;margin-bottom:14px;line-height:1.2;">Atendimento comercial humano, rápido e direto pelo WhatsApp</h3>
-            <p style="color:var(--muted);font-size:16px;line-height:1.75;margin-bottom:18px;">Desde a consulta de cobertura até a confirmação da contratação, nossa equipe acompanha você pelo WhatsApp com clareza, sem burocracia e sem enrolação.</p>
-            <a href="https://wa.me/555193187300?text=Olá!%20Quero%20falar%20sobre%20os%20planos%20MhNet%20com%20a%20WebTurbo." target="_blank" rel="noopener noreferrer" class="btn" style="display:inline-flex;text-decoration:none;">Falar no WhatsApp</a>
+          <div class="benefit-mini">
+            <span aria-hidden="true">🎮</span>
+            <strong>Jogos online</strong>
+            <small>Mais velocidade para jogar.</small>
           </div>
-        </div>
-
-        <div class="why-grid">
-          <div class="why-card">
-            <span class="why-icon" aria-hidden="true">🎯</span>
-            <h3>Atendimento especializado</h3>
-            <p>Nossa equipe conhece a fundo os planos MhNet e pode orientar sobre a melhor opção para o seu endereço e perfil de uso, sem enrolação.</p>
+          <div class="benefit-mini">
+            <span aria-hidden="true">💻</span>
+            <strong>Home office</strong>
+            <small>Conexão para trabalhar e estudar.</small>
           </div>
-          <div class="why-card">
-            <span class="why-icon" aria-hidden="true">⚡</span>
-            <h3>Processo rápido e simples</h3>
-            <p>Consulte a cobertura aqui, receba o resultado na hora e, se disponível, já siga para o WhatsApp para finalizar sua contratação em minutos.</p>
-          </div>
-          <div class="why-card">
-            <span class="why-icon" aria-hidden="true">🔒</span>
-            <h3>Parceria oficial e autorizada</h3>
-            <p>Somos parceiros de vendas oficiais da MhNet. Toda contratação realizada via WebTurbo segue os processos e garantias da operadora.</p>
-          </div>
-          <div class="why-card">
-            <span class="why-icon" aria-hidden="true">📍</span>
-            <h3>Cobertura em 5 estados</h3>
-            <p>Atendemos clientes em cidades do RS, SC, PR, SP e MS. Se a MhNet cobre seu endereço, a WebTurbo te atende.</p>
-          </div>
-          <div class="why-card">
-            <span class="why-icon" aria-hidden="true">💬</span>
-            <h3>Suporte pelo WhatsApp</h3>
-            <p>Tire dúvidas, acompanhe o processo e receba atendimento personalizado pelo WhatsApp, no seu horário.</p>
-          </div>
-          <div class="why-card">
-            <span class="why-icon" aria-hidden="true">📶</span>
-            <h3>Internet fibra óptica de verdade</h3>
-            <p>Os planos MhNet utilizam tecnologia fibra óptica, com mais estabilidade e velocidade do que internet via cabo ou rádio.</p>
+          <div class="benefit-mini">
+            <span aria-hidden="true">📶</span>
+            <strong>Casa conectada</strong>
+            <small>Wi-Fi para vários dispositivos.</small>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
     <!-- Planos -->
-    <section class="section" id="planos" aria-labelledby="titulo-planos">
+    <div class="section" id="planos" aria-labelledby="titulo-planos">
       <div class="container">
-        <div class="section-head">
-          <h2 id="titulo-planos">Escolha o plano ideal</h2>
-          <p>
-            A WebTurbo apresenta opções de planos MhNet conforme disponibilidade na sua região, com foco em estabilidade, boa experiência de navegação e contratação simplificada pelo WhatsApp.
-          </p>
+        <div class="section-head compact-head">
+          <h2 id="titulo-planos">Escolha seu plano</h2>
+          <p>Ofertas disponíveis conforme cobertura e viabilidade técnica.</p>
         </div>
 
         <div class="plans">
-          <article class="plan">
+          <div class="plan">
             <div class="plan-badge">Plano econômico</div>
             <h3>500 Mega</h3>
-            <div class="subtitle">Boa performance para navegação, vídeos, redes sociais e uso diário da casa.</div>
+            <div class="subtitle">Para redes sociais, vídeos e uso diário.</div>
 
             <div class="price">
               <span class="value">R$ 99,90</span>
@@ -2058,19 +2073,18 @@
             </div>
 
             <ul>
-              <li>Internet fibra óptica MhNet</li>
+              <li>100% fibra óptica</li>
               <li>Wi-Fi incluso</li>
               <li>Ótimo custo-benefício</li>
-              <li>Ideal para uso residencial</li>
             </ul>
 
             <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 500MB')">Contratar</button>
-          </article>
+          </div>
 
-          <article class="plan">
+          <div class="plan">
             <div class="plan-badge">Com streaming</div>
             <h3>500MB + Globoplay</h3>
-            <div class="subtitle">Internet fibra para o dia a dia com Globoplay incluso para aproveitar seus conteúdos favoritos.</div>
+            <div class="subtitle">Internet fibra com Globoplay incluso.</div>
 
             <div class="price">
               <span class="value">R$ 114,80</span>
@@ -2083,19 +2097,18 @@
             </div>
 
             <ul>
-              <li>500MB de internet fibra MhNet</li>
+              <li>500MB de internet fibra</li>
               <li>Globoplay incluso</li>
               <li>Wi-Fi incluso</li>
-              <li>Ideal para navegação e streaming</li>
             </ul>
 
             <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 500MB + GLOBOPLAY')">Contratar</button>
-          </article>
+          </div>
 
-          <article class="plan featured">
+          <div class="plan featured">
             <div class="plan-badge">Mais vendido</div>
             <h3>500MB + 1 Ponto extra</h3>
-            <div class="subtitle">Mais alcance dentro da casa com um segundo ponto de Wi-Fi cabeado em outro cômodo.</div>
+            <div class="subtitle">Mais alcance com segundo ponto cabeado.</div>
 
             <div class="price">
               <span class="value">R$ 119,90</span>
@@ -2108,19 +2121,18 @@
             </div>
 
             <ul>
-              <li>500MB de internet fibra MhNet</li>
+              <li>500MB de internet fibra</li>
               <li>1 ponto extra de Wi-Fi cabeado</li>
               <li>Mais cobertura na casa</li>
-              <li>Ideal para múltiplos dispositivos</li>
             </ul>
 
             <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 500MB + 1 PONTO EXTRA DE WI-FI')">Contratar</button>
-          </article>
+          </div>
 
-          <article class="plan">
+          <div class="plan">
             <div class="plan-badge">Combo streaming</div>
             <h3>600MB + Ponto extra + Globoplay</h3>
-            <div class="subtitle">Mais velocidade, segundo ponto de Wi-Fi cabeado e Globoplay no mesmo plano.</div>
+            <div class="subtitle">Velocidade, alcance e Globoplay.</div>
 
             <div class="price">
               <span class="value">R$ 139,90</span>
@@ -2133,19 +2145,18 @@
             </div>
 
             <ul>
-              <li>600MB de internet fibra MhNet</li>
+              <li>600MB de internet fibra</li>
               <li>1 ponto extra de Wi-Fi cabeado</li>
               <li>Globoplay incluso</li>
-              <li>Excelente para streaming e casa conectada</li>
             </ul>
 
             <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY')">Contratar</button>
-          </article>
+          </div>
 
-          <article class="plan">
+          <div class="plan">
             <div class="plan-badge">Alta performance</div>
             <h3>700MB + 1 Ponto extra</h3>
-            <div class="subtitle">Mais velocidade e alcance para famílias conectadas, trabalho remoto e vários aparelhos ao mesmo tempo.</div>
+            <div class="subtitle">Para vários aparelhos ao mesmo tempo.</div>
 
             <div class="price">
               <span class="value">R$ 149,90</span>
@@ -2154,23 +2165,22 @@
 
             <div class="plan-info">
               <span class="plan-tag">Instalação grátis</span>
-              <span class="plan-tag">700MB de velocidade</span>
+              <span class="plan-tag">700MB</span>
             </div>
 
             <ul>
-              <li>700MB de internet fibra MhNet</li>
+              <li>700MB de internet fibra</li>
               <li>1 ponto extra de Wi-Fi cabeado</li>
-              <li>Mais alcance dentro da casa</li>
               <li>Ideal para alta demanda</li>
             </ul>
 
             <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 700MB + 1 PONTO EXTRA DE WI-FI')">Contratar</button>
-          </article>
+          </div>
 
-          <article class="plan">
+          <div class="plan">
             <div class="plan-badge">Combo destaque</div>
             <h3>1GB + 1 Ponto extra</h3>
-            <div class="subtitle">Internet fibra de alta performance com mais alcance para casas com muitos dispositivos conectados.</div>
+            <div class="subtitle">Máxima performance para casa conectada.</div>
 
             <div class="price">
               <span class="value">R$ 159,90</span>
@@ -2179,153 +2189,44 @@
 
             <div class="plan-info">
               <span class="plan-tag">Instalação grátis</span>
-              <span class="plan-tag">1GB de velocidade</span>
+              <span class="plan-tag">1GB</span>
             </div>
 
             <ul>
-              <li>1GB de internet fibra MhNet</li>
+              <li>1GB de internet fibra</li>
               <li>1 ponto extra de Wi-Fi cabeado</li>
-              <li>Máxima performance no dia a dia</li>
-              <li>Excelente opção para alta demanda</li>
+              <li>Excelente para alta demanda</li>
             </ul>
 
             <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI')">Contratar</button>
-          </article>
-        </div>      </div>
-    </section>
-
-    <!-- Prova social -->
-    <section class="section" aria-labelledby="titulo-depoimentos">
-      <div class="container">
-        <div class="section-head">
-          <h2 id="titulo-depoimentos">O que nossos clientes dizem</h2>
-          <p>
-            Clientes atendidos pela WebTurbo em diferentes regiões do Brasil compartilham sua experiência com o processo de contratação.
-          </p>
-        </div>
-
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-number">+<span>2.400</span></div>
-            <div class="stat-desc">Clientes atendidos via WebTurbo</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number"><span>5</span> estados</div>
-            <div class="stat-desc">RS, SC, PR, SP e MS com cobertura MhNet</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number"><span>4.8</span>★</div>
-            <div class="stat-desc">Avaliação média dos clientes atendidos</div>
-          </div>
-        </div>
-
-        <div class="testimonials">
-          <div class="testimonial">
-            <div class="stars" aria-label="5 estrelas">★★★★★</div>
-            <p class="testimonial-text">"Fiz a consulta de CEP no site e em menos de 1 minuto já sabia se tinha cobertura. O pessoal do WhatsApp me ajudou a fechar tudo rápido, sem burocracia."</p>
-            <div class="testimonial-author">
-              <div class="author-avatar">
-                <img src="avatar-lucas.png" alt="Lucas M." />
-              </div>
-              <div>
-                <div class="author-name">Lucas M.</div>
-                <div class="author-city">Alvorada, RS</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="testimonial">
-            <div class="stars" aria-label="5 estrelas">★★★★★</div>
-            <p class="testimonial-text">"Estava com dúvida sobre qual plano escolher para minha casa. O atendimento via WhatsApp foi muito atencioso e me explicou tudo direitinho."</p>
-            <div class="testimonial-author">
-              <div class="author-avatar">
-                <img src="avatar-carla.png" alt="Carla F." />
-              </div>
-              <div>
-                <div class="author-name">Carla F.</div>
-                <div class="author-city">Cascavel, PR</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="testimonial">
-            <div class="stars" aria-label="5 estrelas">★★★★★</div>
-            <p class="testimonial-text">"Rápido, fácil e sem enrolação. Consultei o endereço, confirmei a cobertura e em poucos minutos estava com a contratação encaminhada."</p>
-            <div class="testimonial-author">
-              <div class="author-avatar">
-                <img src="avatar-rafael.png" alt="Rafael P." />
-              </div>
-              <div>
-                <div class="author-name">Rafael P.</div>
-                <div class="author-city">Balneário Camboriú, SC</div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
-
-    <!-- Cidades atendidas / links internos SEO -->
-    <section class="section cidades-seo" id="cidades-atendidas-seo" aria-labelledby="titulo-cidades-seo">
+    <!-- Cidades atendidas -->
+    <div class="section cidades-seo" id="cidades" aria-labelledby="titulo-cidades-seo">
       <div class="container cidades-seo-grid">
         <div class="cidades-seo-text">
           <h2 id="titulo-cidades-seo">Cidades atendidas pela MhNet</h2>
-          <p>
-            A WebTurbo realiza atendimento comercial como agente autorizado MhNet em diversas cidades.
-            Consulte a cobertura no seu endereço e veja os planos de internet fibra disponíveis na sua região.
-          </p>
-          <p>
-            Atendemos cidades nos estados do Rio Grande do Sul, Santa Catarina, Paraná, São Paulo e Mato Grosso do Sul,
-            sempre conforme disponibilidade e viabilidade técnica da MhNet no endereço informado.
-          </p>
+          <p>Atendimento WebTurbo em cidades com cobertura MhNet nos estados RS, SC, PR, SP e MS.</p>
           <a href="/cidades-atendidas/">Veja mais cidades atendidas</a>
         </div>
 
-        <div class="cidades-seo-lista" aria-label="Links para cidades atendidas">
-          <a href="/internet-mhnet-canoas/">
-            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Canoas</span>
-            <span class="cidade-arrow">›</span>
-          </a>
-          <a href="/internet-mhnet-gravatai/">
-            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Gravataí</span>
-            <span class="cidade-arrow">›</span>
-          </a>
-          <a href="/internet-mhnet-alvorada/">
-            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Alvorada</span>
-            <span class="cidade-arrow">›</span>
-          </a>
-          <a href="/internet-mhnet-cachoeirinha/">
-            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Cachoeirinha</span>
-            <span class="cidade-arrow">›</span>
-          </a>
-          <a href="/internet-mhnet-capao-da-canoa/">
-            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Capão da Canoa</span>
-            <span class="cidade-arrow">›</span>
-          </a>
-          <a href="/internet-mhnet-caxias-do-sul/">
-            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Caxias do Sul</span>
-            <span class="cidade-arrow">›</span>
-          </a>
-          <a href="/internet-mhnet-bento-goncalves/">
-            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Bento Gonçalves</span>
-            <span class="cidade-arrow">›</span>
-          </a>
-          <a href="/internet-mhnet-venancio-aires/">
-            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Venâncio Aires</span>
-            <span class="cidade-arrow">›</span>
-          </a>
-          <a href="/internet-mhnet-lajeado/">
-            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Lajeado</span>
-            <span class="cidade-arrow">›</span>
-          </a>
-          <a href="/internet-mhnet-santa-cruz/">
-            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Santa Cruz</span>
-            <span class="cidade-arrow">›</span>
-          </a>
+        <div class="cidades-seo-lista">
+          <a href="/internet-mhnet-canoas/">📍 Canoas <span>›</span></a>
+          <a href="/internet-mhnet-gravatai/">📍 Gravataí <span>›</span></a>
+          <a href="/internet-mhnet-alvorada/">📍 Alvorada <span>›</span></a>
+          <a href="/internet-mhnet-cachoeirinha/">📍 Cachoeirinha <span>›</span></a>
+          <a href="/internet-mhnet-capao-da-canoa/">📍 Capão da Canoa <span>›</span></a>
+          <a href="/internet-mhnet-caxias-do-sul/">📍 Caxias do Sul <span>›</span></a>
+          <a href="/internet-mhnet-bento-goncalves/">📍 Bento Gonçalves <span>›</span></a>
+          <a href="/internet-mhnet-venancio-aires/">📍 Venâncio Aires <span>›</span></a>
+          <a href="/internet-mhnet-lajeado/">📍 Lajeado <span>›</span></a>
+          <a href="/internet-mhnet-santa-cruz/">📍 Santa Cruz <span>›</span></a>
         </div>
       </div>
-    </section>
+    </div>
 
     <!-- FAQ -->
     <section class="section" id="faq" aria-labelledby="titulo-faq">
@@ -2333,7 +2234,7 @@
         <div class="section-head">
           <h2 id="titulo-faq">Perguntas frequentes</h2>
           <p>
-            Informações importantes sobre a WebTurbo, a parceria de vendas autorizada MhNet, a consulta de cobertura e o processo de contratação.
+            Tire as principais dúvidas antes de contratar.
           </p>
         </div>
 
@@ -2341,28 +2242,28 @@
           <details class="faq-item">
             <summary>A WebTurbo é a MhNet?</summary>
             <p>
-              A WebTurbo é uma <strong>parceira de vendas autorizada MhNet</strong>. Realizamos atendimento comercial, consulta de cobertura, apresentação dos planos disponíveis e direcionamento para contratação.
+              A WebTurbo é agente autorizado MhNet para consulta de cobertura, apresentação de planos e atendimento comercial.
             </p>
           </details>
 
           <details class="faq-item">
             <summary>Como consultar a cobertura?</summary>
             <p>
-              Basta informar o CEP e o número do endereço. O sistema busca o endereço automaticamente e consulta a viabilidade técnica. Quando houver cobertura disponível, você poderá seguir com a contratação.
+              Informe CEP e número. Se houver viabilidade, o botão de contratação será liberado.
             </p>
           </details>
 
           <details class="faq-item">
             <summary>Quais cidades atendemos?</summary>
             <p>
-              Realizamos atendimento comercial para consulta de cobertura e contratação em cidades dos estados <strong>RS, SC, PR, SP e MS</strong>, conforme disponibilidade e viabilidade técnica da MhNet.
+              Atendemos cidades dos estados <strong>RS, SC, PR, SP e MS</strong>, conforme viabilidade técnica.
             </p>
           </details>
 
           <details class="faq-item">
             <summary>Como funciona a contratação?</summary>
             <p>
-              Depois da confirmação de cobertura, você segue para atendimento comercial, confirma a oferta disponível e avança com a contratação.
+              Após confirmar cobertura, escolha o plano e siga com o atendimento comercial.
             </p>
           </details>
 
@@ -2376,7 +2277,7 @@
           <details class="faq-item">
             <summary>Os planos têm taxa de instalação?</summary>
             <p>
-              A instalação é gratuita conforme disponibilidade da oferta e viabilidade técnica do endereço informado. Confirme as condições exatas com nosso atendimento antes de contratar.
+              A instalação é grátis conforme oferta vigente, aprovação e viabilidade técnica.
             </p>
           </details>
         </div>
