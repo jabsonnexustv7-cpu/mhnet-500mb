@@ -621,10 +621,27 @@
 
     /* Planos */
     .plans{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:24px;
-      align-items:stretch;
+      display:flex;
+      gap:20px;
+      overflow-x:auto;
+      scroll-snap-type:x mandatory;
+      scroll-padding:16px;
+      padding:8px 4px 18px;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    .plans::-webkit-scrollbar{
+      height:8px;
+    }
+
+    .plans::-webkit-scrollbar-track{
+      background:rgba(255,255,255,.08);
+      border-radius:999px;
+    }
+
+    .plans::-webkit-scrollbar-thumb{
+      background:rgba(50,208,108,.65);
+      border-radius:999px;
     }
 
     .plan{
@@ -635,7 +652,9 @@
       box-shadow:var(--shadow-soft);
       display:flex;
       flex-direction:column;
+      flex:0 0 360px;
       min-height:100%;
+      scroll-snap-align:center;
       transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
     }
 
@@ -1363,7 +1382,7 @@
 
     @media (max-width: 1024px){
       .hero-grid{grid-template-columns:1fr;}
-      .plans{grid-template-columns:1fr;}
+      .plan{flex:0 0 360px;}
       .plan.featured{transform:none;}
       .plan.featured:hover{transform:translateY(-4px);}
       .legal-grid{grid-template-columns:1fr;}
@@ -1412,6 +1431,22 @@
       .price .value{font-size:48px;}
       .faq-item h3{font-size:19px;}
       .legal-head h2{font-size:28px;}
+      .plans{
+        margin-left:-16px;
+        margin-right:-16px;
+        padding-left:16px;
+        padding-right:16px;
+      }
+      .plan{
+        flex:0 0 86%;
+        max-width:86%;
+      }
+      .plan.featured{
+        transform:none;
+      }
+      .plan.featured:hover{
+        transform:translateY(-4px);
+      }
       .floating-wa{width:56px;height:56px;right:14px;bottom:14px;}
       .floating-wa svg{width:26px;height:26px;}
       .why-grid{grid-template-columns:1fr;}
@@ -1501,10 +1536,10 @@
       },
       {
         "@type":"Question",
-        "name":"Os planos têm fidelidade ou taxa de instalação?",
+        "name":"Os planos têm taxa de instalação?",
         "acceptedAnswer":{
           "@type":"Answer",
-          "text":"Os planos MhNet comercializados pela WebTurbo não possuem fidelidade e a instalação é gratuita, conforme disponibilidade. Confirme as condições exatas com nosso atendimento pelo WhatsApp antes de contratar."
+          "text":"A instalação é gratuita conforme disponibilidade da oferta e viabilidade técnica do endereço informado. Confirme as condições exatas com nosso atendimento pelo WhatsApp antes de contratar."
         }
       }
     ]
@@ -1686,7 +1721,6 @@
             </div>
 
             <div class="plan-info">
-              <span class="plan-tag">Sem fidelidade</span>
               <span class="plan-tag">Instalação grátis</span>
               <span class="plan-tag">Wi-Fi incluso</span>
             </div>
@@ -1712,7 +1746,6 @@
             </div>
 
             <div class="plan-info">
-              <span class="plan-tag">Sem fidelidade</span>
               <span class="plan-tag">Instalação grátis</span>
               <span class="plan-tag">Globoplay incluso</span>
             </div>
@@ -1738,7 +1771,6 @@
             </div>
 
             <div class="plan-info">
-              <span class="plan-tag">Sem fidelidade</span>
               <span class="plan-tag">Instalação grátis</span>
               <span class="plan-tag">Ponto extra incluso</span>
             </div>
@@ -1764,7 +1796,6 @@
             </div>
 
             <div class="plan-info">
-              <span class="plan-tag">Sem fidelidade</span>
               <span class="plan-tag">Instalação grátis</span>
               <span class="plan-tag">Globoplay incluso</span>
             </div>
@@ -1790,7 +1821,6 @@
             </div>
 
             <div class="plan-info">
-              <span class="plan-tag">Sem fidelidade</span>
               <span class="plan-tag">Instalação grátis</span>
               <span class="plan-tag">700MB de velocidade</span>
             </div>
@@ -1816,7 +1846,6 @@
             </div>
 
             <div class="plan-info">
-              <span class="plan-tag">Sem fidelidade</span>
               <span class="plan-tag">Instalação grátis</span>
               <span class="plan-tag">1GB de velocidade</span>
             </div>
@@ -1953,9 +1982,9 @@
           </div>
 
           <div class="faq-item">
-            <h3>Os planos têm fidelidade ou taxa de instalação?</h3>
+            <h3>Os planos têm taxa de instalação?</h3>
             <p>
-              Os planos MhNet comercializados pela WebTurbo não possuem fidelidade e a instalação é gratuita, conforme disponibilidade. Confirme as condições exatas com nosso atendimento pelo WhatsApp antes de contratar.
+              A instalação é gratuita conforme disponibilidade da oferta e viabilidade técnica do endereço informado. Confirme as condições exatas com nosso atendimento pelo WhatsApp antes de contratar.
             </p>
           </div>
         </div>
