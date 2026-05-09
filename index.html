@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>WebTurbo | Planos MhNet com Agente Autorizado</title>
-  <meta name="description" content="Consulte cobertura MhNet, veja planos de internet fibra e contrate com atendimento WebTurbo, agente autorizado." />
+  <title>Internet MhNet a partir de R$ 99,90 | WebTurbo</title>
+  <meta name="description" content="Consulte cobertura MhNet com a WebTurbo, agente autorizado. Veja planos de internet fibra a partir de R$ 99,90 e contrate online." />
   <meta name="keywords" content="MhNet, parceiro autorizado MhNet, parceiro de vendas MhNet, internet fibra, internet fibra óptica, consultar cobertura, planos de internet, internet residencial, internet RS, internet SC, internet PR, internet SP, internet MS" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="WebTurbo Internet" />
@@ -16,8 +16,8 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="WebTurbo | Planos MhNet com Agente Autorizado" />
-  <meta property="og:description" content="Consulte cobertura MhNet, veja planos de internet fibra e contrate com atendimento WebTurbo, agente autorizado." />
+  <meta property="og:title" content="Internet MhNet a partir de R$ 99,90 | WebTurbo" />
+  <meta property="og:description" content="Consulte cobertura MhNet com a WebTurbo, agente autorizado. Planos de internet fibra a partir de R$ 99,90 e contratação online." />
   <meta property="og:url" content="https://webturbo-internet.com.br/" />
   <meta property="og:site_name" content="WebTurbo Internet" />
   <meta property="og:image" content="https://webturbo-internet.com.br/og-image.jpg" />
@@ -28,8 +28,8 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="WebTurbo | Planos MhNet com Agente Autorizado" />
-  <meta name="twitter:description" content="Consulte cobertura MhNet, veja planos de internet fibra e contrate com atendimento WebTurbo." />
+  <meta name="twitter:title" content="Internet MhNet a partir de R$ 99,90 | WebTurbo" />
+  <meta name="twitter:description" content="Consulte cobertura, veja planos de internet fibra MhNet e contrate com atendimento comercial da WebTurbo." />
   <meta name="twitter:image" content="https://webturbo-internet.com.br/og-image.jpg" />
 
   <link rel="canonical" href="https://webturbo-internet.com.br/" />
@@ -1663,80 +1663,193 @@
       .floating-wa{
         right:14px;
         bottom:14px;
-        min-height:58px;
-        width:58px;
-        height:58px;
-        padding:0;
-        justify-content:center;
-        gap:0;
+        min-height:0;
+        width:auto;
+        height:auto;
+        padding:10px 12px;
+        border-radius:14px;
+        gap:10px;
+        justify-content:space-between;
+        align-items:center;
       }
 
       .floating-wa-text{
-        display:none;
-      }
-
-      .floating-wa-icon{
-        width:58px;
-        height:58px;
-        background:#25d366;
+        display:block;
+        white-space:normal;
+        font-size:13px;
+        line-height:1.1;
+        max-width:88px;
         color:#ffffff;
       }
 
+      .floating-wa-icon{
+        width:28px;
+        height:28px;
+        background:transparent;
+        color:#ffffff;
+        flex-shrink:0;
+      }
+
       .floating-wa-icon svg{
-        width:32px;
-        height:32px;
+        width:24px;
+        height:24px;
       }
     }
 
-    /* Ajustes de landing page compacta */
-    .compact-head{
+
+    /* Home direta - foco em conversão */
+    .hero-direct{
+      padding:42px 0 34px;
+    }
+
+    .hero-direct .hero-grid{
+      align-items:center;
+    }
+
+    .hero-price-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(50,208,108,.14);
+      border:1px solid rgba(50,208,108,.28);
+      color:#baf7cc;
+      font-size:13px;
+      font-weight:900;
+      margin-bottom:16px;
+    }
+
+    .hero-direct h1{
+      font-size:clamp(38px, 5.4vw, 68px);
+      line-height:1.02;
+      letter-spacing:-1.8px;
+      max-width:680px;
+      margin-bottom:14px;
+    }
+
+    .hero-direct h1 strong{
+      color:var(--green);
+    }
+
+    .hero-direct .hero-subtitle{
+      font-size:18px;
+      line-height:1.55;
+      color:var(--muted);
+      max-width:570px;
       margin-bottom:22px;
     }
 
-    .compact-head p{
-      max-width:620px;
-    }
-
-    .compact-points .hero-point{
-      padding:13px 14px;
-      font-weight:800;
-    }
-
-    .benefits-strip{
+    .hero-offers{
       display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:14px;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      max-width:690px;
+      margin:0 0 18px;
     }
 
-    .benefit-mini{
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:20px;
-      padding:18px;
-      min-height:142px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      gap:8px;
+    .hero-offer{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      padding:15px 14px;
+      box-shadow:0 10px 24px rgba(0,0,0,.12);
     }
 
-    .benefit-mini span{
+    .hero-offer strong{
+      display:block;
+      font-size:19px;
+      color:#fff;
+      margin-bottom:4px;
+    }
+
+    .hero-offer span{
+      color:#b8c7de;
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    .hero-card.direct-form{
+      padding:26px;
+      border:1px solid rgba(50,208,108,.18);
+    }
+
+    .hero-card.direct-form h2{
       font-size:28px;
     }
 
-    .benefit-mini strong{
-      font-size:18px;
+    .mini-benefits{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
+      margin-top:18px;
+    }
+
+    .mini-benefit{
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:18px;
+      min-height:118px;
+    }
+
+    .mini-benefit span{
+      display:block;
+      font-size:25px;
+      margin-bottom:10px;
+    }
+
+    .mini-benefit h3{
+      font-size:17px;
+      margin-bottom:6px;
       color:#fff;
     }
 
-    .benefit-mini small{
+    .mini-benefit p{
       color:var(--muted);
-      font-size:14px;
       line-height:1.45;
+      font-size:14px;
+    }
+
+    .steps-row{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:18px;
+    }
+
+    .step-card{
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:22px;
+      padding:22px;
+    }
+
+    .step-card strong{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      background:var(--green);
+      color:#082a14;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      margin-bottom:14px;
+    }
+
+    .step-card h3{
+      font-size:19px;
+      margin-bottom:8px;
+    }
+
+    .step-card p{
+      color:var(--muted);
+      line-height:1.55;
+      font-size:15px;
     }
 
     .cidades-seo{
-      padding-top:18px;
+      padding:42px 0 56px;
     }
 
     .cidades-seo-grid{
@@ -1750,14 +1863,14 @@
       font-size:34px;
       line-height:1.2;
       margin-bottom:14px;
-      color:#fff;
+      color:#ffffff;
     }
 
     .cidades-seo-text p{
       color:var(--muted);
-      line-height:1.65;
+      line-height:1.62;
       font-size:16px;
-      margin-bottom:16px;
+      margin-bottom:14px;
     }
 
     .cidades-seo-text a{
@@ -1766,9 +1879,7 @@
       text-decoration:none;
     }
 
-    .cidades-seo-text a:hover{
-      text-decoration:underline;
-    }
+    .cidades-seo-text a:hover{text-decoration:underline;}
 
     .cidades-seo-lista{
       display:grid;
@@ -1779,10 +1890,10 @@
     .cidades-seo-lista a{
       min-height:50px;
       padding:0 16px;
-      border-radius:12px;
+      border-radius:14px;
       background:rgba(255,255,255,.045);
       border:1px solid rgba(255,255,255,.09);
-      color:#fff;
+      color:#ffffff;
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -1806,29 +1917,17 @@
     }
 
     @media(max-width:900px){
-      .benefits-strip{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-      }
-
-      .cidades-seo-grid{
-        grid-template-columns:1fr;
-      }
+      .hero-offers,.mini-benefits,.steps-row{grid-template-columns:1fr;}
+      .cidades-seo-grid{grid-template-columns:1fr;}
+      .cidades-seo-lista{grid-template-columns:1fr;}
     }
 
     @media(max-width:640px){
-      .benefits-strip,
-      .cidades-seo-lista{
-        grid-template-columns:1fr;
-      }
 
-      .benefit-mini{
-        min-height:auto;
-        padding:16px;
-      }
-
-      .cidades-seo-text h2{
-        font-size:28px;
-      }
+      .mini-benefits{gap:10px;}
+      .mini-benefit{min-height:auto;padding:16px;}
+      .steps-row{gap:12px;}
+      .cidades-seo-text h2{font-size:28px;}
     }
 
   </style>
@@ -1903,7 +2002,7 @@
         "name":"Os planos podem variar por região?",
         "acceptedAnswer":{
           "@type":"Answer",
-          "text":"Sim. A disponibilidade dos planos e das ofertas pode variar conforme a cidade, a cobertura local e a viabilidade técnica do endereço informado."
+          "text":"Sim. Planos e ofertas podem variar conforme cidade e viabilidade do endereço."
         }
       },
       {
@@ -1927,12 +2026,12 @@
     <div class="container topbar-inner">
       <div class="brand">
         <strong>WebTurbo</strong>
-        <span>Parceira de vendas autorizada MhNet</span>
+        <span>Agente autorizado MhNet</span>
       </div>
 
       <nav class="nav-actions" aria-label="Navegação principal">
+        <a href="#consulta" class="btn-outline">Cobertura</a>
         <a href="#planos" class="btn-outline">Planos</a>
-        <a href="#beneficios" class="btn-outline">Benefícios</a>
         <a href="#cidades" class="btn-outline">Cidades</a>
         <a class="btn-whats" href="https://wa.me/555193187300?text=Olá!%20Quero%20falar%20sobre%20os%20planos%20MhNet%20com%20a%20WebTurbo." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp da WebTurbo">
           WhatsApp
@@ -1943,32 +2042,193 @@
 
   <main id="conteudo-principal">
 
-    <section class="hero" aria-label="Apresentação e consulta de cobertura">
+    <!-- Planos em destaque logo no topo -->
+
+    <!-- Planos -->
+    <section class="section" id="planos" aria-labelledby="titulo-planos">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="titulo-planos">Escolha seu plano MhNet</h2>
+          <p>Veja os planos primeiro e depois consulte a disponibilidade no seu endereço.</p>
+        </div>
+
+        <div class="plans">
+          <article class="plan">
+            <div class="plan-badge">Plano econômico</div>
+            <h3>500 Mega</h3>
+            <div class="subtitle">Boa performance para navegação, vídeos, redes sociais e uso diário da casa.</div>
+
+            <div class="price">
+              <span class="value">R$ 99,90</span>
+              <small>/mês</small>
+            </div>
+
+            <div class="plan-info">
+              <span class="plan-tag">Instalação grátis</span>
+              <span class="plan-tag">Wi-Fi incluso</span>
+            </div>
+
+            <ul>
+              <li>Internet fibra óptica MhNet</li>
+              <li>Wi-Fi incluso</li>
+              <li>Ótimo custo-benefício</li>
+              <li>Ideal para uso residencial</li>
+            </ul>
+
+            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 500MB')">Contratar</button>
+          </article>
+
+          <article class="plan">
+            <div class="plan-badge">Com streaming</div>
+            <h3>500MB + Globoplay</h3>
+            <div class="subtitle">Internet fibra para o dia a dia com Globoplay incluso para aproveitar seus conteúdos favoritos.</div>
+
+            <div class="price">
+              <span class="value">R$ 114,80</span>
+              <small>/mês</small>
+            </div>
+
+            <div class="plan-info">
+              <span class="plan-tag">Instalação grátis</span>
+              <span class="plan-tag">Globoplay incluso</span>
+            </div>
+
+            <ul>
+              <li>500MB de internet fibra MhNet</li>
+              <li>Globoplay incluso</li>
+              <li>Wi-Fi incluso</li>
+              <li>Ideal para navegação e streaming</li>
+            </ul>
+
+            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 500MB + GLOBOPLAY')">Contratar</button>
+          </article>
+
+          <article class="plan featured">
+            <div class="plan-badge">Mais vendido</div>
+            <h3>500MB + 1 Ponto extra</h3>
+            <div class="subtitle">Mais alcance dentro da casa com um segundo ponto de Wi-Fi cabeado em outro cômodo.</div>
+
+            <div class="price">
+              <span class="value">R$ 119,90</span>
+              <small>/mês</small>
+            </div>
+
+            <div class="plan-info">
+              <span class="plan-tag">Instalação grátis</span>
+              <span class="plan-tag">Ponto extra incluso</span>
+            </div>
+
+            <ul>
+              <li>500MB de internet fibra MhNet</li>
+              <li>1 ponto extra de Wi-Fi cabeado</li>
+              <li>Mais cobertura na casa</li>
+              <li>Ideal para múltiplos dispositivos</li>
+            </ul>
+
+            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 500MB + 1 PONTO EXTRA DE WI-FI')">Contratar</button>
+          </article>
+
+          <article class="plan">
+            <div class="plan-badge">Combo streaming</div>
+            <h3>600MB + Ponto extra + Globoplay</h3>
+            <div class="subtitle">Mais velocidade, segundo ponto de Wi-Fi cabeado e Globoplay no mesmo plano.</div>
+
+            <div class="price">
+              <span class="value">R$ 139,90</span>
+              <small>/mês</small>
+            </div>
+
+            <div class="plan-info">
+              <span class="plan-tag">Instalação grátis</span>
+              <span class="plan-tag">Globoplay incluso</span>
+            </div>
+
+            <ul>
+              <li>600MB de internet fibra MhNet</li>
+              <li>1 ponto extra de Wi-Fi cabeado</li>
+              <li>Globoplay incluso</li>
+              <li>Excelente para streaming e casa conectada</li>
+            </ul>
+
+            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY')">Contratar</button>
+          </article>
+
+          <article class="plan">
+            <div class="plan-badge">Alta performance</div>
+            <h3>700MB + 1 Ponto extra</h3>
+            <div class="subtitle">Mais velocidade e alcance para famílias conectadas, trabalho remoto e vários aparelhos ao mesmo tempo.</div>
+
+            <div class="price">
+              <span class="value">R$ 149,90</span>
+              <small>/mês</small>
+            </div>
+
+            <div class="plan-info">
+              <span class="plan-tag">Instalação grátis</span>
+              <span class="plan-tag">700MB de velocidade</span>
+            </div>
+
+            <ul>
+              <li>700MB de internet fibra MhNet</li>
+              <li>1 ponto extra de Wi-Fi cabeado</li>
+              <li>Mais alcance dentro da casa</li>
+              <li>Ideal para alta demanda</li>
+            </ul>
+
+            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 700MB + 1 PONTO EXTRA DE WI-FI')">Contratar</button>
+          </article>
+
+          <article class="plan">
+            <div class="plan-badge">Combo destaque</div>
+            <h3>1GB + 1 Ponto extra</h3>
+            <div class="subtitle">Internet fibra de alta performance com mais alcance para casas com muitos dispositivos conectados.</div>
+
+            <div class="price">
+              <span class="value">R$ 159,90</span>
+              <small>/mês</small>
+            </div>
+
+            <div class="plan-info">
+              <span class="plan-tag">Instalação grátis</span>
+              <span class="plan-tag">1GB de velocidade</span>
+            </div>
+
+            <ul>
+              <li>1GB de internet fibra MhNet</li>
+              <li>1 ponto extra de Wi-Fi cabeado</li>
+              <li>Máxima performance no dia a dia</li>
+              <li>Excelente opção para alta demanda</li>
+            </ul>
+
+            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI')">Contratar</button>
+          </article>
+        </div>      </div>
+    </section>
+
+
+
+    <section class="hero hero-direct" aria-label="Consulta de cobertura MhNet">
+      </div>
+
       <div class="container hero-grid">
         <div class="hero-left">
-          <img src="hero-fibra.png" alt="Cabos de fibra óptica iluminados em azul e verde" class="hero-fibra" width="700" height="220" loading="eager" />
-          <div class="eyebrow">🤝 Parceira de vendas autorizada MhNet</div>
-          <h1>Internet fibra MhNet com contratação rápida.</h1>
-          <p>
-            Consulte cobertura, escolha seu plano e contrate pelo WhatsApp com a WebTurbo, agente autorizado MhNet.
+          <div class="hero-price-badge">⚡ Internet fibra MhNet</div>
+
+
+          <h1>Internet MhNet a partir de <strong>R$ 99,90</strong></h1>
+          <p class="hero-subtitle">
+            Consulte a cobertura no seu endereço e veja os planos disponíveis para contratar com atendimento WebTurbo.
           </p>
 
           <div class="hero-actions">
             <a href="#consulta" class="btn">Consultar cobertura</a>
             <a href="#planos" class="btn-outline">Ver planos</a>
           </div>
-
-          <div class="hero-points compact-points">
-            <div class="hero-point">✅ Consulta rápida por CEP</div>
-            <div class="hero-point">✅ Instalação grátis na oferta</div>
-            <div class="hero-point">✅ Planos a partir de R$ 99,90</div>
-            <div class="hero-point">✅ Atendimento pelo WhatsApp</div>
-          </div>
         </div>
 
-        <aside class="hero-card" id="consulta" aria-label="Consulta de cobertura">
-          <h2>Consulte a cobertura</h2>
-          <p>Digite CEP e número para consultar disponibilidade.</p>
+        <aside class="hero-card direct-form" id="consulta" aria-label="Consulta de cobertura">
+          <h2>Consulte sua cobertura</h2>
+          <p>Digite o CEP e o número do imóvel para verificar disponibilidade.</p>
 
           <div class="consult-box">
             <div class="consult-grid">
@@ -1979,7 +2239,7 @@
 
               <div class="field">
                 <label for="numero">Número</label>
-                <input id="numero" type="text" inputmode="numeric" placeholder="Número da casa" autocomplete="address-line2" />
+                <input id="numero" type="text" inputmode="numeric" placeholder="Número" autocomplete="address-line2" />
               </div>
 
               <div class="field full">
@@ -2000,7 +2260,7 @@
 
             <div id="ctaViavel" class="cta-viavel" aria-live="polite">
               <strong>✅ Cobertura disponível</strong>
-              <p>Encontramos viabilidade para este endereço. Por onde gostaria de contratar?</p>
+              <p>Encontramos viabilidade para este endereço. Escolha como deseja contratar.</p>
               <div style="background:rgba(50,208,108,.12);border:1px solid rgba(50,208,108,.2);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#c8f7d8;display:flex;gap:14px;flex-wrap:wrap;">
                 <span>⚡ Ativação gratuita</span>
                 <span>🔧 Instalação em até 24h</span>
@@ -2015,201 +2275,74 @@
       </div>
     </section>
 
-    <!-- Benefícios compactos -->
-    <div class="section" id="beneficios" aria-labelledby="titulo-beneficios">
+    <!-- Benefícios rápidos -->
+    <section class="section" id="por-que-webturbo" aria-labelledby="titulo-beneficios">
       <div class="container">
-        <div class="section-head compact-head">
-          <h2 id="titulo-beneficios">Internet para tudo que importa</h2>
-          <p>Fibra, Wi-Fi incluso e planos para casa conectada.</p>
+        <div class="section-head">
+          <h2 id="titulo-beneficios">Contratação simples, rápida e online</h2>
+          <p>Atendimento WebTurbo como agente autorizado MhNet, com consulta de cobertura e pré-cadastro em poucos passos.</p>
         </div>
 
-        <div class="benefits-strip">
-          <div class="benefit-mini">
-            <span aria-hidden="true">📺</span>
-            <strong>Streaming</strong>
-            <small>Filmes e séries com estabilidade.</small>
+        <div class="mini-benefits">
+          <div class="mini-benefit">
+            <span aria-hidden="true">📍</span>
+            <h3>Cobertura por endereço</h3>
+            <p>Consulte CEP e número antes de contratar.</p>
           </div>
-          <div class="benefit-mini">
-            <span aria-hidden="true">🎮</span>
-            <strong>Jogos online</strong>
-            <small>Mais velocidade para jogar.</small>
+          <div class="mini-benefit">
+            <span aria-hidden="true">⚡</span>
+            <h3>Planos de fibra</h3>
+            <p>Opções a partir de R$ 99,90/mês.</p>
           </div>
-          <div class="benefit-mini">
-            <span aria-hidden="true">💻</span>
-            <strong>Home office</strong>
-            <small>Conexão para trabalhar e estudar.</small>
+          <div class="mini-benefit">
+            <span aria-hidden="true">💬</span>
+            <h3>WhatsApp</h3>
+            <p>Atendimento comercial direto e organizado.</p>
           </div>
-          <div class="benefit-mini">
-            <span aria-hidden="true">📶</span>
-            <strong>Casa conectada</strong>
-            <small>Wi-Fi para vários dispositivos.</small>
+          <div class="mini-benefit">
+            <span aria-hidden="true">✅</span>
+            <h3>Pré-cadastro online</h3>
+            <p>Contrate pelo site quando houver cobertura.</p>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Planos -->
-    <div class="section" id="planos" aria-labelledby="titulo-planos">
+    <!-- Como contratar -->
+    <section class="section" aria-labelledby="titulo-como-contratar">
       <div class="container">
-        <div class="section-head compact-head">
-          <h2 id="titulo-planos">Escolha seu plano</h2>
-          <p>Ofertas disponíveis conforme cobertura e viabilidade técnica.</p>
+        <div class="section-head">
+          <h2 id="titulo-como-contratar">Como contratar</h2>
+          <p>Faça a consulta e siga com a contratação quando houver cobertura disponível.</p>
         </div>
 
-        <div class="plans">
-          <div class="plan">
-            <div class="plan-badge">Plano econômico</div>
-            <h3>500 Mega</h3>
-            <div class="subtitle">Para redes sociais, vídeos e uso diário.</div>
-
-            <div class="price">
-              <span class="value">R$ 99,90</span>
-              <small>/mês</small>
-            </div>
-
-            <div class="plan-info">
-              <span class="plan-tag">Instalação grátis</span>
-              <span class="plan-tag">Wi-Fi incluso</span>
-            </div>
-
-            <ul>
-              <li>100% fibra óptica</li>
-              <li>Wi-Fi incluso</li>
-              <li>Ótimo custo-benefício</li>
-            </ul>
-
-            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 500MB')">Contratar</button>
+        <div class="steps-row">
+          <div class="step-card">
+            <strong>1</strong>
+            <h3>Informe seu endereço</h3>
+            <p>Digite CEP e número para validar a cobertura.</p>
           </div>
-
-          <div class="plan">
-            <div class="plan-badge">Com streaming</div>
-            <h3>500MB + Globoplay</h3>
-            <div class="subtitle">Internet fibra com Globoplay incluso.</div>
-
-            <div class="price">
-              <span class="value">R$ 114,80</span>
-              <small>/mês</small>
-            </div>
-
-            <div class="plan-info">
-              <span class="plan-tag">Instalação grátis</span>
-              <span class="plan-tag">Globoplay incluso</span>
-            </div>
-
-            <ul>
-              <li>500MB de internet fibra</li>
-              <li>Globoplay incluso</li>
-              <li>Wi-Fi incluso</li>
-            </ul>
-
-            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 500MB + GLOBOPLAY')">Contratar</button>
+          <div class="step-card">
+            <strong>2</strong>
+            <h3>Escolha o plano</h3>
+            <p>Veja as opções disponíveis e avance no pré-cadastro.</p>
           </div>
-
-          <div class="plan featured">
-            <div class="plan-badge">Mais vendido</div>
-            <h3>500MB + 1 Ponto extra</h3>
-            <div class="subtitle">Mais alcance com segundo ponto cabeado.</div>
-
-            <div class="price">
-              <span class="value">R$ 119,90</span>
-              <small>/mês</small>
-            </div>
-
-            <div class="plan-info">
-              <span class="plan-tag">Instalação grátis</span>
-              <span class="plan-tag">Ponto extra incluso</span>
-            </div>
-
-            <ul>
-              <li>500MB de internet fibra</li>
-              <li>1 ponto extra de Wi-Fi cabeado</li>
-              <li>Mais cobertura na casa</li>
-            </ul>
-
-            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 500MB + 1 PONTO EXTRA DE WI-FI')">Contratar</button>
-          </div>
-
-          <div class="plan">
-            <div class="plan-badge">Combo streaming</div>
-            <h3>600MB + Ponto extra + Globoplay</h3>
-            <div class="subtitle">Velocidade, alcance e Globoplay.</div>
-
-            <div class="price">
-              <span class="value">R$ 139,90</span>
-              <small>/mês</small>
-            </div>
-
-            <div class="plan-info">
-              <span class="plan-tag">Instalação grátis</span>
-              <span class="plan-tag">Globoplay incluso</span>
-            </div>
-
-            <ul>
-              <li>600MB de internet fibra</li>
-              <li>1 ponto extra de Wi-Fi cabeado</li>
-              <li>Globoplay incluso</li>
-            </ul>
-
-            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY')">Contratar</button>
-          </div>
-
-          <div class="plan">
-            <div class="plan-badge">Alta performance</div>
-            <h3>700MB + 1 Ponto extra</h3>
-            <div class="subtitle">Para vários aparelhos ao mesmo tempo.</div>
-
-            <div class="price">
-              <span class="value">R$ 149,90</span>
-              <small>/mês</small>
-            </div>
-
-            <div class="plan-info">
-              <span class="plan-tag">Instalação grátis</span>
-              <span class="plan-tag">700MB</span>
-            </div>
-
-            <ul>
-              <li>700MB de internet fibra</li>
-              <li>1 ponto extra de Wi-Fi cabeado</li>
-              <li>Ideal para alta demanda</li>
-            </ul>
-
-            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 700MB + 1 PONTO EXTRA DE WI-FI')">Contratar</button>
-          </div>
-
-          <div class="plan">
-            <div class="plan-badge">Combo destaque</div>
-            <h3>1GB + 1 Ponto extra</h3>
-            <div class="subtitle">Máxima performance para casa conectada.</div>
-
-            <div class="price">
-              <span class="value">R$ 159,90</span>
-              <small>/mês</small>
-            </div>
-
-            <div class="plan-info">
-              <span class="plan-tag">Instalação grátis</span>
-              <span class="plan-tag">1GB</span>
-            </div>
-
-            <ul>
-              <li>1GB de internet fibra</li>
-              <li>1 ponto extra de Wi-Fi cabeado</li>
-              <li>Excelente para alta demanda</li>
-            </ul>
-
-            <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI')">Contratar</button>
+          <div class="step-card">
+            <strong>3</strong>
+            <h3>Finalize o atendimento</h3>
+            <p>Conclua pelo site ou siga com nossa equipe no WhatsApp.</p>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- Cidades atendidas -->
-    <div class="section cidades-seo" id="cidades" aria-labelledby="titulo-cidades-seo">
+    <section class="section cidades-seo" id="cidades" aria-labelledby="titulo-cidades-seo">
       <div class="container cidades-seo-grid">
         <div class="cidades-seo-text">
           <h2 id="titulo-cidades-seo">Cidades atendidas pela MhNet</h2>
-          <p>Atendimento WebTurbo em cidades com cobertura MhNet nos estados RS, SC, PR, SP e MS.</p>
+          <p>A WebTurbo realiza atendimento comercial como agente autorizado MhNet em diversas cidades.</p>
+          <p>Consulte a cobertura no seu endereço e veja os planos de internet fibra disponíveis na sua região.</p>
           <a href="/cidades-atendidas/">Veja mais cidades atendidas</a>
         </div>
 
@@ -2226,58 +2359,56 @@
           <a href="/internet-mhnet-santa-cruz/">📍 Santa Cruz <span>›</span></a>
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- FAQ -->
     <section class="section" id="faq" aria-labelledby="titulo-faq">
       <div class="container">
         <div class="section-head">
           <h2 id="titulo-faq">Perguntas frequentes</h2>
-          <p>
-            Tire as principais dúvidas antes de contratar.
-          </p>
+          <p>Dúvidas rápidas sobre cobertura, planos e contratação.</p>
         </div>
 
         <div class="faq">
           <details class="faq-item">
             <summary>A WebTurbo é a MhNet?</summary>
             <p>
-              A WebTurbo é agente autorizado MhNet para consulta de cobertura, apresentação de planos e atendimento comercial.
+              A WebTurbo é agente autorizado MhNet para atendimento comercial, consulta de cobertura e contratação.
             </p>
           </details>
 
           <details class="faq-item">
             <summary>Como consultar a cobertura?</summary>
             <p>
-              Informe CEP e número. Se houver viabilidade, o botão de contratação será liberado.
+              Informe CEP e número. Se houver cobertura, o site libera as opções de contratação.
             </p>
           </details>
 
           <details class="faq-item">
             <summary>Quais cidades atendemos?</summary>
             <p>
-              Atendemos cidades dos estados <strong>RS, SC, PR, SP e MS</strong>, conforme viabilidade técnica.
+              Atendemos cidades dos estados <strong>RS, SC, PR, SP e MS</strong>, conforme disponibilidade técnica.
             </p>
           </details>
 
           <details class="faq-item">
             <summary>Como funciona a contratação?</summary>
             <p>
-              Após confirmar cobertura, escolha o plano e siga com o atendimento comercial.
+              Após confirmar cobertura, escolha o plano e avance pelo site ou WhatsApp.
             </p>
           </details>
 
           <details class="faq-item">
             <summary>Os planos podem variar por região?</summary>
             <p>
-              Sim. A disponibilidade dos planos e das ofertas pode variar conforme a cidade, a cobertura local e a viabilidade técnica do endereço informado.
+              Sim. Planos e ofertas podem variar conforme cidade e viabilidade do endereço.
             </p>
           </details>
 
           <details class="faq-item">
             <summary>Os planos têm taxa de instalação?</summary>
             <p>
-              A instalação é grátis conforme oferta vigente, aprovação e viabilidade técnica.
+              A instalação pode ser gratuita conforme oferta vigente e viabilidade técnica.
             </p>
           </details>
         </div>
@@ -2540,7 +2671,7 @@
   </footer>
 
   <a class="floating-wa" href="https://wa.me/555193187300?text=Olá!%20Quero%20consultar%20os%20planos%20MhNet%20com%20a%20WebTurbo." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp">
-    <span class="floating-wa-text">Contrate pelo WhatsApp</span>
+    <span class="floating-wa-text">Assine pelo WhatsApp</span>
     <span class="floating-wa-icon">
       <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
         <path fill="currentColor" d="M16.04 3C8.86 3 3.03 8.82 3.03 16c0 2.29.6 4.53 1.74 6.5L3 29l6.67-1.75A12.9 12.9 0 0 0 16.04 29C23.22 29 29 23.18 29 16S23.22 3 16.04 3Zm0 23.8c-2.03 0-4.02-.55-5.75-1.6l-.41-.24-3.96 1.04 1.06-3.86-.27-.43A10.74 10.74 0 0 1 5.23 16c0-5.96 4.85-10.8 10.81-10.8 5.95 0 10.76 4.84 10.76 10.8 0 5.96-4.81 10.8-10.76 10.8Zm5.92-8.09c-.32-.16-1.9-.94-2.2-1.05-.3-.11-.52-.16-.74.16-.21.32-.85 1.05-1.04 1.27-.19.21-.38.24-.7.08-.32-.16-1.36-.5-2.59-1.6-.96-.86-1.61-1.92-1.8-2.24-.19-.32-.02-.49.14-.65.14-.14.32-.38.48-.57.16-.19.21-.32.32-.54.11-.21.05-.4-.03-.57-.08-.16-.74-1.78-1.01-2.43-.27-.64-.54-.55-.74-.56h-.63c-.21 0-.57.08-.86.4-.3.32-1.13 1.1-1.13 2.68s1.16 3.11 1.32 3.32c.16.21 2.28 3.48 5.53 4.88.77.33 1.37.53 1.84.68.77.24 1.47.21 2.02.13.62-.09 1.9-.78 2.17-1.53.27-.75.27-1.39.19-1.53-.08-.13-.29-.21-.61-.37Z"/>
