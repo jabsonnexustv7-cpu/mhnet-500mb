@@ -1436,16 +1436,51 @@
         margin-right:-16px;
         padding-left:16px;
         padding-right:16px;
+        gap:14px;
       }
       .plan{
-        flex:0 0 86%;
-        max-width:86%;
+        flex:0 0 78%;
+        max-width:78%;
+        padding:22px 20px;
+        border-radius:24px;
       }
       .plan.featured{
         transform:none;
       }
       .plan.featured:hover{
         transform:translateY(-4px);
+      }
+      .plan h3{
+        font-size:24px;
+      }
+      .subtitle{
+        font-size:14px;
+        line-height:1.55;
+        margin-bottom:14px;
+      }
+      .price .value{
+        font-size:38px;
+        letter-spacing:-1px;
+      }
+      .price small{
+        font-size:14px;
+        padding-bottom:5px;
+      }
+      .plan-info{
+        margin-bottom:14px;
+      }
+      .plan ul{
+        gap:9px;
+        margin-bottom:18px;
+      }
+      .plan ul li{
+        font-size:14px;
+        line-height:1.45;
+      }
+      .btn-contratar-plano{
+        min-height:48px;
+        border-radius:15px;
+        font-size:15px;
       }
       .floating-wa{width:56px;height:56px;right:14px;bottom:14px;}
       .floating-wa svg{width:26px;height:26px;}
@@ -2306,7 +2341,7 @@
   </a>
 
   <script>
-    const ENDPOINT = "https://script.google.com/macros/s/AKfycbxZGS3gyYjRE7VOWBWfy0HpOk7YfVgYmbTg1EC0R3yTU99-wQDDIQkvmd2I7Xjk-iJn/exec";
+    const ENDPOINT = "https://consulta-cobertura-mhnet-br-964927461432.southamerica-east1.run.app";
     const FIXED_RADIUS = 200;
     const WHATS_NUMBER = "555193187300";
     const TIMEOUT_MS = 8000;
@@ -2378,43 +2413,36 @@
       }
     }
 
-    function jsonpRequest(payload) {
-      return new Promise((resolve, reject) => {
-        const cbName = "cb_" + Date.now() + "_" + Math.random().toString(16).slice(2);
-        let script;
+    async function consultarCoberturaCloudRun(payload) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-        const timer = setTimeout(() => {
-          cleanup();
-          reject(new Error("Consulta demorou mais que o esperado. Tente novamente."));
-        }, TIMEOUT_MS);
+      try {
+        const response = await fetch(ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
 
-        function cleanup() {
-          clearTimeout(timer);
-          try { delete window[cbName]; } catch(e) { window[cbName] = undefined; }
-          if (script && script.parentNode) script.parentNode.removeChild(script);
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(data.message || data.motivo || "Erro ao consultar cobertura.");
         }
 
-        window[cbName] = (data) => {
-          cleanup();
-          resolve(data);
-        };
+        return data;
+      } catch (error) {
+        if (error.name === "AbortError") {
+          throw new Error("Consulta demorou mais que o esperado. Tente novamente.");
+        }
 
-        const url =
-          ENDPOINT +
-          "?data=" + encodeURIComponent(JSON.stringify(payload)) +
-          "&callback=" + encodeURIComponent(cbName);
-
-        script = document.createElement("script");
-        script.src = url;
-        script.async = true;
-
-        script.onerror = () => {
-          cleanup();
-          reject(new Error("Falha ao chamar o WebApp."));
-        };
-
-        document.body.appendChild(script);
-      });
+        throw error;
+      } finally {
+        clearTimeout(timer);
+      }
     }
 
     async function consultarCobertura() {
@@ -2464,7 +2492,7 @@
           radius: FIXED_RADIUS
         };
 
-        const res = await jsonpRequest(payload);
+        const res = await consultarCoberturaCloudRun(payload);
 
         if (res && res.ok === true) {
           if (res.viavel === true) {
@@ -2723,7 +2751,7 @@ Motivo: ${res.motivo || "-"}`;
           fachada: [$("mLogradouro").value.trim(), $("mNumero").value.trim()].filter(Boolean).join(", "),
           radius: FIXED_RADIUS
         };
-        const res = await jsonpRequest(payload);
+        const res = await consultarCoberturaCloudRun(payload);
         if (res && res.ok === true && res.viavel === true) {
           modalCoverageValidated = true;
           modalCoverageData = res;
