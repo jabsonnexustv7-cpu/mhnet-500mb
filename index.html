@@ -979,6 +979,19 @@
 
     .cities-list a .arrow { color: var(--blue-light); font-size: 18px; }
 
+    .city-pin {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      color: var(--blue-light);
+    }
+
+    .city-pin svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
     /* ── FAQ ── */
     .faq-section {
       background: var(--gray-bg);
@@ -1042,6 +1055,56 @@
       line-height: 1.75;
       font-size: 15px;
       padding: 0 20px 20px;
+    }
+
+    /* ── JÁ É CLIENTE ── */
+    .client-section {
+      background: var(--white);
+      padding: 64px 0 72px;
+      border-top: 1px solid var(--gray-line);
+      text-align: center;
+    }
+
+    .client-inner h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 800;
+      color: var(--blue-light);
+      margin-bottom: 12px;
+      letter-spacing: -.3px;
+    }
+
+    .client-inner p {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 28px;
+      line-height: 1.7;
+    }
+
+    .btn-client {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 54px;
+      padding: 0 36px;
+      border-radius: 999px;
+      background: #f5c800;
+      color: #1a1a00;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: filter .18s, transform .18s, box-shadow .18s;
+      box-shadow: 0 6px 20px rgba(245,200,0,.30);
+    }
+
+    .btn-client:hover {
+      filter: brightness(1.07);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(245,200,0,.40);
     }
 
     /* ── FOOTER ── */
@@ -1336,6 +1399,14 @@
     }
 
     .modal-extra-address.show {
+      display: contents;
+    }
+
+    .consult-extra-address {
+      display: none;
+    }
+
+    .consult-extra-address.show {
       display: contents;
     }
 
@@ -1780,10 +1851,39 @@
                 <label for="cep">CEP</label>
                 <input id="cep" type="text" inputmode="numeric" placeholder="00000-000" maxlength="9" autocomplete="postal-code" />
               </div>
+
               <div class="field">
                 <label for="numero">Número</label>
                 <input id="numero" type="text" inputmode="numeric" placeholder="Número" autocomplete="address-line2" />
               </div>
+
+              <div id="consultaEnderecoCompleto" class="consult-extra-address">
+                <div class="field full">
+                  <label for="consultaLogradouro">Logradouro</label>
+                  <input id="consultaLogradouro" type="text" placeholder="Rua / Avenida" autocomplete="address-line1" />
+                </div>
+
+                <div class="field">
+                  <label for="consultaBairro">Bairro</label>
+                  <input id="consultaBairro" type="text" placeholder="Bairro" />
+                </div>
+
+                <div class="field">
+                  <label for="consultaCidade">Cidade</label>
+                  <input id="consultaCidade" type="text" placeholder="Cidade" />
+                </div>
+
+                <div class="field">
+                  <label for="consultaUf">UF</label>
+                  <input id="consultaUf" type="text" maxlength="2" placeholder="RS" />
+                </div>
+
+                <div class="field full">
+                  <label for="consultaComplemento">Complemento</label>
+                  <input id="consultaComplemento" type="text" placeholder="Apto, bloco, casa fundos..." />
+                </div>
+              </div>
+
               <div class="field full">
                 <label for="logradouro">Endereço encontrado</label>
                 <div id="logradouro" class="address-display empty" role="status" aria-live="polite">Será preenchido automaticamente</div>
@@ -1831,22 +1931,42 @@
 
         <div class="mini-benefits">
           <div class="mini-benefit">
-            <div class="icon-wrap" aria-hidden="true">📍</div>
+            <div class="icon-wrap" aria-hidden="true">
+              <!-- Localização / Cobertura -->
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="white"/>
+              </svg>
+            </div>
             <h3>Consulte cobertura</h3>
             <p>Verifique seu endereço em segundos e saiba se há fibra disponível.</p>
           </div>
           <div class="mini-benefit">
-            <div class="icon-wrap" aria-hidden="true">⚡</div>
+            <div class="icon-wrap" aria-hidden="true">
+              <!-- Raio / Fibra óptica -->
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 2v11h3v9l7-12h-4l4-8z" fill="white"/>
+              </svg>
+            </div>
             <h3>100% fibra óptica</h3>
             <p>Velocidade e estabilidade para toda a família.</p>
           </div>
           <div class="mini-benefit">
-            <div class="icon-wrap" aria-hidden="true">💬</div>
+            <div class="icon-wrap" aria-hidden="true">
+              <!-- Balão de chat / Atendimento -->
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" fill="white"/>
+              </svg>
+            </div>
             <h3>Atendimento online</h3>
             <p>Contrate pelo site ou diretamente pelo WhatsApp.</p>
           </div>
           <div class="mini-benefit">
-            <div class="icon-wrap" aria-hidden="true">✅</div>
+            <div class="icon-wrap" aria-hidden="true">
+              <!-- Ferramenta / Instalação -->
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z" fill="white"/>
+              </svg>
+            </div>
             <h3>Instalação grátis</h3>
             <p>Sem taxa de instalação, conforme oferta e aprovação.</p>
           </div>
@@ -1895,16 +2015,46 @@
         </div>
 
         <div class="cities-list">
-          <a href="/internet-mhnet-canoas/">📍 Canoas <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-gravatai/">📍 Gravataí <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-alvorada/">📍 Alvorada <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-cachoeirinha/">📍 Cachoeirinha <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-capao-da-canoa/">📍 Capão da Canoa <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-caxias-do-sul/">📍 Caxias do Sul <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-bento-goncalves/">📍 Bento Gonçalves <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-venancio-aires/">📍 Venâncio Aires <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-lajeado/">📍 Lajeado <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-santa-cruz/">📍 Santa Cruz <span class="arrow">›</span></a>
+          <a href="/internet-mhnet-canoas/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Canoas <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-gravatai/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Gravataí <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-alvorada/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Alvorada <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-cachoeirinha/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Cachoeirinha <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-capao-da-canoa/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Capão da Canoa <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-caxias-do-sul/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Caxias do Sul <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-bento-goncalves/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Bento Gonçalves <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-venancio-aires/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Venâncio Aires <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-lajeado/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Lajeado <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-santa-cruz/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Santa Cruz <span class="arrow">›</span>
+          </a>
         </div>
       </div>
     </section>
@@ -1943,6 +2093,17 @@
             <p>A instalação pode ser gratuita conforme a oferta vigente e a viabilidade técnica. Confirme as condições com nosso atendimento pelo WhatsApp antes de contratar.</p>
           </details>
         </div>
+      </div>
+    </section>
+
+    <!-- ── JÁ É CLIENTE ── -->
+    <section class="client-section" aria-labelledby="titulo-cliente">
+      <div class="container client-inner">
+        <h2 id="titulo-cliente">Já é cliente MhNet?</h2>
+        <p>Acesse a central do assinante para gerenciar seu plano, emitir segunda via de fatura e muito mais.</p>
+        <a href="https://portal.mhnet.com.br/login" target="_blank" rel="noopener noreferrer" class="btn-client">
+          Central do assinante
+        </a>
       </div>
     </section>
 
@@ -2288,6 +2449,16 @@
     function clearForm() {
       $("cep").value = "";
       $("numero").value = "";
+
+      if ($("consultaLogradouro")) $("consultaLogradouro").value = "";
+      if ($("consultaBairro")) $("consultaBairro").value = "";
+      if ($("consultaCidade")) $("consultaCidade").value = "";
+      if ($("consultaUf")) $("consultaUf").value = "";
+      if ($("consultaComplemento")) $("consultaComplemento").value = "";
+
+      const extraBox = $("consultaEnderecoCompleto");
+      if (extraBox) extraBox.classList.remove("show");
+
       setAddress("");
       $("ctaViavel").classList.remove("show");
       $("btnContratarCobertura").href = "#";
@@ -2334,60 +2505,180 @@
     async function consultarCobertura() {
       const cep = $("cep").value.trim();
       const numero = $("numero").value.trim();
+      const cepLimpo = onlyDigits(cep);
+
+      const extraBox = $("consultaEnderecoCompleto");
+      const extraVisivel = extraBox && extraBox.classList.contains("show");
 
       $("ctaViavel").classList.remove("show");
       $("btnContratarCobertura").href = "#";
 
-      if (onlyDigits(cep).length !== 8) { setStatus("Informe um CEP válido.", "bad"); return; }
-      if (!numero) { setStatus("Informe o número do endereço.", "bad"); return; }
-
-      setLoading(true);
-      setStatus("Buscando endereço...");
-
-      const endereco = await buscarEnderecoPorCep(cep);
-      if (!endereco || !endereco.logradouro) {
-        setAddress("");
-        setStatus("Não foi possível localizar esse CEP.", "bad");
-        setLoading(false);
+      if (cepLimpo.length !== 8) {
+        setStatus("Informe um CEP válido.", "bad");
         return;
       }
 
-      const fachada = [endereco.logradouro, numero].filter(Boolean).join(", ");
-      const enderecoCompleto = [endereco.logradouro, numero, endereco.bairro, `${endereco.cidade} - ${endereco.uf}`].filter(Boolean).join(" | ");
+      if (!numero) {
+        setStatus("Informe o número do endereço.", "bad");
+        return;
+      }
+
+      /*
+        PRIMEIRO CLIQUE:
+        busca o CEP e abre os campos completos.
+        Se for CEP geral, o cliente completa rua e bairro.
+      */
+      if (!extraVisivel) {
+        setLoading(true);
+        setStatus("Buscando endereço...");
+
+        try {
+          const endereco = await buscarEnderecoPorCep(cep);
+
+          if (!endereco) {
+            if (extraBox) extraBox.classList.add("show");
+            setAddress("Complete o endereço para consultar a cobertura.");
+            setStatus("Não conseguimos localizar esse CEP automaticamente. Preencha o endereço para consultar a cobertura.", "bad");
+            return;
+          }
+
+          $("consultaLogradouro").value = endereco.logradouro || "";
+          $("consultaBairro").value = endereco.bairro || "";
+          $("consultaCidade").value = endereco.cidade || "";
+          $("consultaUf").value = endereco.uf || "";
+
+          if (extraBox) extraBox.classList.add("show");
+
+          const enderecoCompleto = [
+            endereco.logradouro,
+            numero,
+            endereco.bairro,
+            endereco.cidade && endereco.uf ? `${endereco.cidade} - ${endereco.uf}` : ""
+          ].filter(Boolean).join(" | ");
+
+          setAddress(enderecoCompleto || "Complete os dados do endereço abaixo.");
+
+          if (!endereco.logradouro || !endereco.bairro) {
+            setStatus("Esse CEP parece ser geral. Complete rua e bairro para consultar a cobertura.", "bad");
+          } else {
+            setStatus("Endereço localizado. Confira os dados e clique novamente para consultar a cobertura.");
+          }
+
+          return;
+
+        } catch {
+          if (extraBox) extraBox.classList.add("show");
+          setAddress("Complete o endereço para consultar a cobertura.");
+          setStatus("Não conseguimos buscar o CEP automaticamente. Preencha o endereço para consultar a cobertura.", "bad");
+          return;
+
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      /*
+        SEGUNDO CLIQUE:
+        valida endereço completo e consulta cobertura.
+      */
+      const logradouro = $("consultaLogradouro").value.trim();
+      const bairro = $("consultaBairro").value.trim();
+      const cidade = $("consultaCidade").value.trim();
+      const uf = $("consultaUf").value.trim().toUpperCase();
+      const complemento = $("consultaComplemento").value.trim();
+
+      if (!logradouro) {
+        setStatus("Informe a rua ou avenida para consultar a cobertura.", "bad");
+        $("consultaLogradouro").focus();
+        return;
+      }
+
+      if (!bairro) {
+        setStatus("Informe o bairro para consultar a cobertura.", "bad");
+        $("consultaBairro").focus();
+        return;
+      }
+
+      if (!cidade) {
+        setStatus("Informe a cidade para consultar a cobertura.", "bad");
+        $("consultaCidade").focus();
+        return;
+      }
+
+      if (!uf || uf.length !== 2) {
+        setStatus("Informe a UF para consultar a cobertura.", "bad");
+        $("consultaUf").focus();
+        return;
+      }
+
+      $("consultaUf").value = uf;
+
+      const fachada = [
+        logradouro,
+        numero,
+        bairro,
+        cidade,
+        uf
+      ].filter(Boolean).join(", ");
+
+      const enderecoCompleto = [
+        logradouro,
+        numero,
+        bairro,
+        complemento,
+        `${cidade} - ${uf}`
+      ].filter(Boolean).join(" | ");
 
       setAddress(enderecoCompleto);
-      setStatus("Consultando cobertura MhNet...");
+      setLoading(true);
+      setStatus("Consultando cobertura...");
 
       try {
-        const payload = { cep: onlyDigits(cep), fachada: fachada, radius: FIXED_RADIUS };
+        const payload = {
+          cep: cepLimpo,
+          numero,
+          logradouro,
+          bairro,
+          cidade,
+          uf,
+          complemento,
+          fachada,
+          radius: FIXED_RADIUS
+        };
+
         const res = await consultarCoberturaCloudRun(payload);
 
-        if (res && res.ok === true) {
-          if (res.viavel === true) {
-            const mensagem = `Olá! Consultei a cobertura no site da WebTurbo, parceira de vendas autorizada MhNet, e quero contratar.\n\nCEP: ${cep}\nNúmero: ${numero}\nEndereço: ${enderecoCompleto}\nCoords: ${res.coords || "-"}\nMotivo: ${res.motivo || "-"}`;
-            coberturaPaginaData = {
-              cep,
-              numero,
-              logradouro: endereco.logradouro || "",
-              bairro: endereco.bairro || "",
-              cidade: endereco.cidade || "",
-              uf: endereco.uf || "",
-              enderecoCompleto,
-              fachada,
-              cobertura: res
-            };
-            $("btnContratarCobertura").href = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(mensagem)}`;
-            $("ctaViavel").classList.add("show");
-            setStatus("Cobertura disponível para este endereço.", "ok");
-          } else {
-            setStatus(`Sem cobertura no momento. ${res.motivo ? "Motivo: " + res.motivo : ""}`, "bad");
-          }
+        if (res && res.ok === true && res.viavel === true) {
+          const mensagem = `Olá! Consultei a cobertura no site da WebTurbo, parceira de vendas autorizada MhNet, e quero contratar.\n\nCEP: ${cep}\nNúmero: ${numero}\nEndereço: ${enderecoCompleto}\nCoords: ${res.coords || "-"}\nMotivo: ${res.motivo || "-"}`;
+
+          coberturaPaginaData = {
+            cep,
+            numero,
+            logradouro,
+            bairro,
+            cidade,
+            uf,
+            complemento,
+            enderecoCompleto,
+            fachada,
+            cobertura: res
+          };
+
+          $("btnContratarCobertura").href = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(mensagem)}`;
+          $("ctaViavel").classList.add("show");
+
+          setStatus("Cobertura disponível para este endereço.", "ok");
         } else {
-          setStatus(`Erro na consulta. ${res && res.motivo ? res.motivo : "Resposta inválida."}`, "bad");
+          coberturaPaginaData = null;
+          setStatus("Ainda não temos cobertura disponível para este endereço. Fale com nosso atendimento para verificarmos outras possibilidades.", "bad");
         }
-      } catch (error) {
-        setStatus(`${error.message || "Erro ao consultar cobertura."}`, "bad");
-      } finally { setLoading(false); }
+
+      } catch {
+        coberturaPaginaData = null;
+        setStatus("Erro ao consultar cobertura. Tente novamente ou fale com nosso atendimento.", "bad");
+      } finally {
+        setLoading(false);
+      }
     }
 
     $("cep").addEventListener("input", (e) => { e.target.value = formatCep(e.target.value); });
