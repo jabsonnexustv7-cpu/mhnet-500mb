@@ -1688,7 +1688,109 @@
       }
     }
 
-  </style>
+  
+    /* Bloco SEO de cidades atendidas */
+    .cidades-seo{
+      padding:42px 0 56px;
+    }
+
+    .cidades-seo-grid{
+      display:grid;
+      grid-template-columns:.9fr 1.4fr;
+      gap:34px;
+      align-items:center;
+    }
+
+    .cidades-seo-text h2{
+      font-size:34px;
+      line-height:1.2;
+      margin-bottom:18px;
+      color:#ffffff;
+      letter-spacing:-.6px;
+    }
+
+    .cidades-seo-text p{
+      color:var(--muted);
+      line-height:1.75;
+      font-size:16px;
+      margin-bottom:16px;
+    }
+
+    .cidades-seo-text a{
+      color:var(--green);
+      font-weight:900;
+      text-decoration:none;
+    }
+
+    .cidades-seo-text a:hover{
+      text-decoration:underline;
+    }
+
+    .cidades-seo-lista{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px 16px;
+    }
+
+    .cidades-seo-lista a{
+      min-height:50px;
+      padding:0 16px;
+      border-radius:12px;
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.09);
+      color:#ffffff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      text-decoration:none;
+      font-size:16px;
+      font-weight:900;
+      transition:transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .cidades-seo-lista a:hover{
+      transform:translateY(-2px);
+      background:rgba(255,255,255,.075);
+      border-color:rgba(50,208,108,.35);
+    }
+
+    .cidade-link-left{
+      display:inline-flex;
+      align-items:center;
+      gap:9px;
+      min-width:0;
+    }
+
+    .cidade-pin{
+      color:var(--green);
+      font-size:18px;
+      line-height:1;
+      flex-shrink:0;
+    }
+
+    .cidade-arrow{
+      color:var(--green);
+      font-size:26px;
+      line-height:1;
+      flex-shrink:0;
+    }
+
+    @media(max-width:768px){
+      .cidades-seo-grid{
+        grid-template-columns:1fr;
+      }
+
+      .cidades-seo-text h2{
+        font-size:28px;
+      }
+
+      .cidades-seo-lista{
+        grid-template-columns:1fr;
+      }
+    }
+
+</style>
 
   <script type="application/ld+json">
   {
@@ -1790,6 +1892,7 @@
       <nav class="nav-actions" aria-label="Navegação principal">
         <a href="#por-que-webturbo" class="btn-outline">Por que nós</a>
         <a href="#planos" class="btn-outline">Planos</a>
+        <a href="#cidades-atendidas-seo" class="btn-outline">Cidades</a>
         <a href="#faq" class="btn-outline">FAQ</a>
         <a class="btn-whats" href="https://wa.me/555193187300?text=Olá!%20Quero%20falar%20sobre%20os%20planos%20MhNet%20com%20a%20WebTurbo." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp da WebTurbo">
           WhatsApp
@@ -2158,6 +2261,68 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Cidades atendidas / links internos SEO -->
+    <section class="section cidades-seo" id="cidades-atendidas-seo" aria-labelledby="titulo-cidades-seo">
+      <div class="container cidades-seo-grid">
+        <div class="cidades-seo-text">
+          <h2 id="titulo-cidades-seo">Cidades atendidas pela MhNet</h2>
+          <p>
+            A WebTurbo realiza atendimento comercial como agente autorizado MhNet em diversas cidades.
+            Consulte a cobertura no seu endereço e veja os planos de internet fibra disponíveis na sua região.
+          </p>
+          <p>
+            Atendemos cidades nos estados do Rio Grande do Sul, Santa Catarina, Paraná, São Paulo e Mato Grosso do Sul,
+            sempre conforme disponibilidade e viabilidade técnica da MhNet no endereço informado.
+          </p>
+          <a href="/cidades-atendidas/">Veja mais cidades atendidas</a>
+        </div>
+
+        <div class="cidades-seo-lista" aria-label="Links para cidades atendidas">
+          <a href="/internet-mhnet-canoas/">
+            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Canoas</span>
+            <span class="cidade-arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-gravatai/">
+            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Gravataí</span>
+            <span class="cidade-arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-alvorada/">
+            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Alvorada</span>
+            <span class="cidade-arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-cachoeirinha/">
+            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Cachoeirinha</span>
+            <span class="cidade-arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-capao-da-canoa/">
+            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Capão da Canoa</span>
+            <span class="cidade-arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-caxias-do-sul/">
+            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Caxias do Sul</span>
+            <span class="cidade-arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-bento-goncalves/">
+            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Bento Gonçalves</span>
+            <span class="cidade-arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-venancio-aires/">
+            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Venâncio Aires</span>
+            <span class="cidade-arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-lajeado/">
+            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Lajeado</span>
+            <span class="cidade-arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-santa-cruz/">
+            <span class="cidade-link-left"><span class="cidade-pin">📍</span> Santa Cruz</span>
+            <span class="cidade-arrow">›</span>
+          </a>
         </div>
       </div>
     </section>
