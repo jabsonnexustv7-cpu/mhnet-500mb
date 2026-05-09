@@ -1494,6 +1494,200 @@
       .nav-actions .btn-outline,
       .nav-actions .btn-whats{min-height:34px;padding:0 10px;font-size:12px;}
     }
+
+    /* Ajustes finais: FAQ em acordeão, rodapé simples e WhatsApp destacado */
+    .faq{
+      display:grid;
+      gap:14px;
+      max-width:960px;
+      margin:0 auto;
+    }
+
+    .faq-item{
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
+      border-radius:18px;
+      overflow:hidden;
+      padding:0;
+    }
+
+    .faq-item summary{
+      list-style:none;
+      cursor:pointer;
+      padding:18px 20px;
+      font-size:18px;
+      font-weight:900;
+      color:#ffffff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    .faq-item summary::-webkit-details-marker{
+      display:none;
+    }
+
+    .faq-item summary::after{
+      content:"+";
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      background:rgba(50,208,108,.14);
+      color:var(--green);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+      line-height:1;
+      flex-shrink:0;
+      transition:transform .2s ease, background .2s ease;
+    }
+
+    .faq-item[open] summary::after{
+      content:"−";
+      background:rgba(50,208,108,.22);
+    }
+
+    .faq-item p{
+      color:var(--muted);
+      line-height:1.75;
+      font-size:16px;
+      padding:0 20px 20px;
+    }
+
+    .footer{
+      border-top:1px solid rgba(255,255,255,.08);
+      padding:26px 0 34px;
+      color:#c8d5e8;
+      font-size:14px;
+      text-align:center;
+    }
+
+    .footer-simple{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      flex-wrap:wrap;
+      text-align:center;
+    }
+
+    .footer-brand{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .footer-brand strong{
+      color:#ffffff;
+      font-size:18px;
+      font-weight:900;
+    }
+
+    .footer-brand span{
+      color:#c8d5e8;
+      font-size:14px;
+    }
+
+    .footer a{
+      color:#c8d5e8;
+      text-decoration:none;
+      font-weight:700;
+    }
+
+    .footer a:hover{
+      color:#ffffff;
+    }
+
+    .floating-wa{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      z-index:40;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      width:auto;
+      height:auto;
+      min-height:56px;
+      padding:0 10px 0 20px;
+      border-radius:999px;
+      background:#25d366;
+      color:#062914;
+      text-decoration:none;
+      font-weight:900;
+      box-shadow:0 14px 30px rgba(37,211,102,.32);
+      border:2px solid rgba(255,255,255,.18);
+      transition:transform .22s ease, box-shadow .22s ease, filter .22s ease;
+    }
+
+    .floating-wa:hover{
+      transform:translateY(-2px) scale(1.03);
+      box-shadow:0 20px 38px rgba(37,211,102,.38);
+      filter:brightness(1.03);
+    }
+
+    .floating-wa-text{
+      font-size:15px;
+      white-space:nowrap;
+    }
+
+    .floating-wa-icon{
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      background:#ffffff;
+      color:#25d366;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .floating-wa-icon svg{
+      width:28px;
+      height:28px;
+      display:block;
+    }
+
+    @media(max-width:640px){
+      .faq-item summary{
+        font-size:16px;
+        padding:16px 18px;
+      }
+
+      .floating-wa{
+        right:14px;
+        bottom:14px;
+        min-height:58px;
+        width:58px;
+        height:58px;
+        padding:0;
+        justify-content:center;
+        gap:0;
+      }
+
+      .floating-wa-text{
+        display:none;
+      }
+
+      .floating-wa-icon{
+        width:58px;
+        height:58px;
+        background:#25d366;
+        color:#ffffff;
+      }
+
+      .floating-wa-icon svg{
+        width:32px;
+        height:32px;
+      }
+    }
+
   </style>
 
   <script type="application/ld+json">
@@ -1979,112 +2173,52 @@
         </div>
 
         <div class="faq">
-          <div class="faq-item">
-            <h3>A WebTurbo é a MhNet?</h3>
+          <details class="faq-item">
+            <summary>A WebTurbo é a MhNet?</summary>
             <p>
-              A WebTurbo é uma <strong>parceira de vendas autorizada MhNet</strong>. Isso significa que realizamos o atendimento comercial, ajudamos na consulta de cobertura, apresentamos os planos disponíveis e direcionamos o cliente para a contratação.
+              A WebTurbo é uma <strong>parceira de vendas autorizada MhNet</strong>. Realizamos atendimento comercial, consulta de cobertura, apresentação dos planos disponíveis e direcionamento para contratação.
             </p>
-          </div>
+          </details>
 
-          <div class="faq-item">
-            <h3>Como consultar a cobertura?</h3>
+          <details class="faq-item">
+            <summary>Como consultar a cobertura?</summary>
             <p>
-              Basta informar o CEP e o número do endereço. O sistema busca o endereço automaticamente e consulta a viabilidade técnica. Quando houver cobertura disponível, o botão para falar no WhatsApp será liberado.
+              Basta informar o CEP e o número do endereço. O sistema busca o endereço automaticamente e consulta a viabilidade técnica. Quando houver cobertura disponível, você poderá seguir com a contratação.
             </p>
-          </div>
+          </details>
 
-          <div class="faq-item">
-            <h3>Quais cidades atendemos?</h3>
+          <details class="faq-item">
+            <summary>Quais cidades atendemos?</summary>
             <p>
               Realizamos atendimento comercial para consulta de cobertura e contratação em cidades dos estados <strong>RS, SC, PR, SP e MS</strong>, conforme disponibilidade e viabilidade técnica da MhNet.
-              Entre as cidades atendidas estão:
-              <strong>Alvorada, Aratiba, Áurea, Cachoeirinha, Bento Gonçalves, Sarandi, Venâncio Aires, Vacaria, Abelardo Luz, Águas de Chapecó, Balneário Camboriú, Biguaçu, São José, Xanxerê, Xaxim, Cascavel, Castro, Cruzeiro do Oeste, Guarapuava, Irati, Toledo, Itapetininga, São Miguel Arcanjo, Buri e Dourados</strong>.
             </p>
-          </div>
+          </details>
 
-          <div class="faq-item">
-            <h3>Como funciona a contratação?</h3>
+          <details class="faq-item">
+            <summary>Como funciona a contratação?</summary>
             <p>
-              Depois da confirmação de cobertura, o cliente segue para o WhatsApp da WebTurbo, parceira de vendas autorizada MhNet, para receber atendimento comercial, confirmar a oferta disponível e avançar com a contratação.
+              Depois da confirmação de cobertura, você segue para atendimento comercial, confirma a oferta disponível e avança com a contratação.
             </p>
-          </div>
+          </details>
 
-          <div class="faq-item">
-            <h3>Os planos podem variar por região?</h3>
+          <details class="faq-item">
+            <summary>Os planos podem variar por região?</summary>
             <p>
               Sim. A disponibilidade dos planos e das ofertas pode variar conforme a cidade, a cobertura local e a viabilidade técnica do endereço informado.
             </p>
-          </div>
+          </details>
 
-          <div class="faq-item">
-            <h3>Os planos têm taxa de instalação?</h3>
+          <details class="faq-item">
+            <summary>Os planos têm taxa de instalação?</summary>
             <p>
-              A instalação é gratuita conforme disponibilidade da oferta e viabilidade técnica do endereço informado. Confirme as condições exatas com nosso atendimento pelo WhatsApp antes de contratar.
+              A instalação é gratuita conforme disponibilidade da oferta e viabilidade técnica do endereço informado. Confirme as condições exatas com nosso atendimento antes de contratar.
             </p>
-          </div>
+          </details>
         </div>
       </div>
     </section>
 
   </main>
-
-  <!-- Informações legais -->
-  <section class="legal" aria-label="Informações da empresa">
-    <div class="container">
-      <div class="legal-box">
-        <div class="legal-head">
-          <h2>Informações da empresa</h2>
-          <p>
-            A WebTurbo atua como parceira de vendas autorizada MhNet, oferecendo atendimento comercial online para consulta de cobertura, apresentação de planos e direcionamento de contratação pelo WhatsApp.
-          </p>
-        </div>
-
-        <div class="legal-grid">
-          <div class="legal-item">
-            <strong>Nome comercial</strong>
-            <span>WebTurbo Internet</span>
-          </div>
-
-          <div class="legal-item">
-            <strong>Atuação comercial</strong>
-            <span>Parceira de vendas autorizada MhNet</span>
-          </div>
-
-          <div class="legal-item">
-            <strong>CNPJ</strong>
-            <!-- TODO: substituir pelo CNPJ real antes de publicar -->
-            <span>00.000.000/0001-00</span>
-          </div>
-
-          <div class="legal-item">
-            <strong>Endereço</strong>
-            <!-- TODO: substituir pelo endereço real antes de publicar -->
-            <span>Brasil</span>
-          </div>
-
-          <div class="legal-item">
-            <strong>Telefone / WhatsApp</strong>
-            <a href="https://wa.me/555193187300" target="_blank" rel="noopener noreferrer">(51) 9318-7300</a>
-          </div>
-
-          <div class="legal-item">
-            <strong>E-mail</strong>
-            <a href="mailto:contato@webturbo-internet.com.br">contato@webturbo-internet.com.br</a>
-          </div>
-
-          <div class="legal-item">
-            <strong>Atendimento</strong>
-            <span>Consulta de cobertura, planos residenciais MhNet e atendimento comercial online.</span>
-          </div>
-
-          <div class="legal-item">
-            <strong>Observação</strong>
-            <span>A disponibilidade dos planos depende da cobertura e da viabilidade técnica no endereço informado.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- Modal de contratação em etapas -->
   <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
@@ -2329,15 +2463,23 @@
   </div>
 
   <footer class="footer">
-    <div class="container">
-      © 2026 WebTurbo Internet - Parceira de vendas autorizada MhNet. Todos os direitos reservados.
+    <div class="container footer-simple">
+      <div class="footer-brand">
+        <strong>WebTurbo</strong>
+        <span>Agente autorizado MhNet</span>
+      </div>
+
+      <a href="/politica-de-privacidade.html">Política de Privacidade</a>
     </div>
   </footer>
 
-  <a class="floating-wa" href="https://wa.me/555193187300?text=Olá!%20Vi%20que%20a%20WebTurbo%20é%20parceira%20de%20vendas%20autorizada%20MhNet%20e%20quero%20falar%20sobre%20os%20planos." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp da WebTurbo">
-    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-      <path fill="currentColor" d="M19.11 17.19c-.27-.14-1.58-.78-1.82-.87-.24-.09-.42-.14-.6.14-.18.27-.69.87-.85 1.05-.16.18-.31.2-.58.07-.27-.14-1.12-.41-2.13-1.31-.79-.7-1.32-1.57-1.47-1.84-.16-.27-.02-.42.12-.56.12-.12.27-.31.4-.47.13-.15.18-.26.27-.44.09-.18.04-.33-.02-.47-.07-.14-.6-1.44-.82-1.97-.21-.5-.43-.43-.6-.44h-.51c-.18 0-.47.07-.71.33-.24.27-.93.91-.93 2.21 0 1.3.96 2.55 1.09 2.72.13.18 1.86 2.98 4.6 4.05 2.75 1.08 2.75.72 3.24.68.49-.04 1.58-.64 1.8-1.27.22-.62.22-1.15.16-1.27-.07-.12-.24-.19-.51-.33zM16.01 4.01c-6.61 0-11.98 5.36-11.98 11.95 0 2.11.55 4.17 1.59 5.99L4 28l6.23-1.62a12 12 0 0 0 5.78 1.47h.01c6.61 0 11.99-5.36 11.99-11.95 0-3.19-1.24-6.19-3.5-8.44a11.9 11.9 0 0 0-8.5-3.45zm0 21.87h-.01a10.02 10.02 0 0 1-5.1-1.4l-.36-.21-3.69.96.99-3.6-.23-.37a9.94 9.94 0 0 1-1.55-5.3c0-5.5 4.49-9.97 10.01-9.97 2.67 0 5.17 1.03 7.06 2.91a9.91 9.91 0 0 1 2.94 7.05c0 5.5-4.5 9.93-10.06 9.93z"/>
-    </svg>
+  <a class="floating-wa" href="https://wa.me/555193187300?text=Olá!%20Quero%20consultar%20os%20planos%20MhNet%20com%20a%20WebTurbo." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp">
+    <span class="floating-wa-text">Contrate pelo WhatsApp</span>
+    <span class="floating-wa-icon">
+      <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path fill="currentColor" d="M16.04 3C8.86 3 3.03 8.82 3.03 16c0 2.29.6 4.53 1.74 6.5L3 29l6.67-1.75A12.9 12.9 0 0 0 16.04 29C23.22 29 29 23.18 29 16S23.22 3 16.04 3Zm0 23.8c-2.03 0-4.02-.55-5.75-1.6l-.41-.24-3.96 1.04 1.06-3.86-.27-.43A10.74 10.74 0 0 1 5.23 16c0-5.96 4.85-10.8 10.81-10.8 5.95 0 10.76 4.84 10.76 10.8 0 5.96-4.81 10.8-10.76 10.8Zm5.92-8.09c-.32-.16-1.9-.94-2.2-1.05-.3-.11-.52-.16-.74.16-.21.32-.85 1.05-1.04 1.27-.19.21-.38.24-.7.08-.32-.16-1.36-.5-2.59-1.6-.96-.86-1.61-1.92-1.8-2.24-.19-.32-.02-.49.14-.65.14-.14.32-.38.48-.57.16-.19.21-.32.32-.54.11-.21.05-.4-.03-.57-.08-.16-.74-1.78-1.01-2.43-.27-.64-.54-.55-.74-.56h-.63c-.21 0-.57.08-.86.4-.3.32-1.13 1.1-1.13 2.68s1.16 3.11 1.32 3.32c.16.21 2.28 3.48 5.53 4.88.77.33 1.37.53 1.84.68.77.24 1.47.21 2.02.13.62-.09 1.9-.78 2.17-1.53.27-.75.27-1.39.19-1.53-.08-.13-.29-.21-.61-.37Z"/>
+      </svg>
+    </span>
   </a>
 
   <script>
