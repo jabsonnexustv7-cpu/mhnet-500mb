@@ -1,0 +1,12 @@
+{
+  "totalCidades": 128,
+  "sitemap": "/sitemap.xml",
+  "cidadesAtendidas": "/cidades-atendidas/",
+  "exemplo": [
+    "/internet-mhnet-dourados/",
+    "/internet-mhnet-navirai/",
+    "/internet-mhnet-cascavel/",
+    "/internet-mhnet-castro/",
+    "/internet-mhnet-clevelandia/"
+  ]
+}
