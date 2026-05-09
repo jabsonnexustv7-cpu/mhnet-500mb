@@ -2405,6 +2405,7 @@
   <script>
     /* ── CONFIGURAÇÕES ── */
     const ENDPOINT     = "https://consulta-cobertura-mhnet-br-964927461432.southamerica-east1.run.app";
+    const NOTIFY_URL   = "https://modal-easy-964927461432.southamerica-east1.run.app/notifyConsulta";
     const FIXED_RADIUS = 200;
     const WHATS_NUMBER = "555193187300";
     const TIMEOUT_MS   = 8000;
@@ -2666,8 +2667,20 @@
 
           $("btnContratarCobertura").href = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(mensagem)}`;
           $("ctaViavel").classList.add("show");
-
           setStatus("Cobertura disponível para este endereço.", "ok");
+
+          // Notificação silenciosa — avisa por e-mail a cada consulta viável
+          fetch(NOTIFY_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              cep: cepLimpo,
+              fachada,
+              nomeCidade: cidade,
+              uf,
+              cobertura: { motivo: res.motivo || "-", coords: res.coords || "" }
+            })
+          }).catch(() => {}); // silencioso, nunca bloqueia o usuário
         } else {
           coberturaPaginaData = null;
           setStatus("Ainda não temos cobertura disponível para este endereço. Fale com nosso atendimento para verificarmos outras possibilidades.", "bad");
