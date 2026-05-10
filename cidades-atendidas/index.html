@@ -16,8 +16,11 @@
   <style>
     :root{
       --blue:#0a2463;
+      --blue-dark:#061a44;
+      --blue-deep:#081f5c;
       --blue-light:#1a56db;
       --green:#00c853;
+      --green-hover:#00b84b;
       --white:#fff;
       --gray-bg:#f4f7fc;
       --gray-line:#dde4ef;
@@ -27,44 +30,320 @@
       --shadow:0 8px 32px rgba(10,36,99,.12);
       --shadow-lg:0 20px 60px rgba(10,36,99,.18);
     }
+
     *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'Open Sans',system-ui,sans-serif;color:var(--text);background:var(--gray-bg);line-height:1.6;}
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:'Open Sans',system-ui,sans-serif;
+      color:var(--text);
+      background:var(--gray-bg);
+      line-height:1.6;
+    }
     a{text-decoration:none;color:inherit;}
     .container{max-width:var(--max);margin:0 auto;padding:0 24px;}
-    .topbar{background:var(--blue);position:sticky;top:0;z-index:10;box-shadow:0 2px 16px rgba(10,36,99,.25);}
-    .topbar-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
-    .brand strong{display:block;font-family:'Montserrat',sans-serif;font-size:22px;font-weight:900;color:#fff;line-height:1.1;}
-    .brand span{font-size:11px;font-weight:700;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.4px;}
+
+    .topbar{
+      background:var(--blue);
+      position:sticky;
+      top:0;
+      z-index:10;
+      box-shadow:0 2px 16px rgba(10,36,99,.25);
+    }
+    .topbar-inner{
+      min-height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .brand strong{
+      display:block;
+      font-family:'Montserrat',sans-serif;
+      font-size:22px;
+      font-weight:900;
+      color:#fff;
+      line-height:1.1;
+      letter-spacing:-.3px;
+    }
+    .brand span{
+      font-size:11px;
+      font-weight:700;
+      color:rgba(255,255,255,.65);
+      text-transform:uppercase;
+      letter-spacing:.4px;
+    }
     .nav-actions{display:flex;align-items:center;gap:8px;}
-    .nav-actions a{height:40px;display:inline-flex;align-items:center;padding:0 16px;border-radius:6px;color:rgba(255,255,255,.84);font-weight:700;font-size:14px;}
-    .nav-actions a:hover{background:rgba(255,255,255,.12);color:#fff;}
-    .nav-actions .wa{background:var(--green);color:#fff;height:44px;border-radius:8px;padding:0 20px;}
-    .hero{background:#fff;padding:62px 0 42px;border-bottom:1px solid var(--gray-line);}
-    .eyebrow{display:inline-block;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--blue-light);background:rgba(26,86,219,.09);border:1px solid rgba(26,86,219,.18);padding:5px 14px;border-radius:999px;margin-bottom:14px;}
-    .hero h1{font-family:'Montserrat',sans-serif;font-size:clamp(30px,4vw,48px);font-weight:900;color:var(--blue);line-height:1.08;letter-spacing:-.6px;margin-bottom:12px;max-width:850px;}
-    .hero p{font-size:17px;color:var(--muted);max-width:760px;margin-bottom:22px;}
-    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
-    .btn-primary{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 24px;border-radius:10px;background:var(--blue);color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;}
-    .btn-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:10px;border:2px solid var(--blue);color:var(--blue);font-family:'Montserrat',sans-serif;font-weight:800;}
-    .cities-section{padding:54px 0 72px;background:var(--gray-bg);}
-    .section-head{text-align:center;margin-bottom:32px;}
-    .section-head h2{font-family:'Montserrat',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:900;color:var(--blue);line-height:1.1;margin-bottom:10px;}
-    .section-head p{font-size:16px;color:var(--muted);max-width:720px;margin:0 auto;}
-    .city-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;}
-    .city-card{min-height:64px;background:#fff;border:1px solid var(--gray-line);border-radius:14px;box-shadow:var(--shadow);display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;padding:14px 16px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;}
-    .city-card:hover{transform:translateY(-3px);border-color:var(--blue-light);box-shadow:var(--shadow-lg);}
-    .city-pin{font-size:18px;line-height:1;}
-    .city-name{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:800;color:var(--blue);line-height:1.2;}
-    .city-uf{font-size:11px;font-weight:900;color:var(--blue-light);background:rgba(26,86,219,.08);border:1px solid rgba(26,86,219,.14);border-radius:999px;padding:3px 8px;}
-    .city-arrow{font-size:22px;font-weight:900;color:var(--blue-light);line-height:1;}
-    .footer{background:var(--blue);padding:28px 0;color:#fff;}
-    .footer-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
-    .footer strong{font-family:'Montserrat',sans-serif;font-size:20px;font-weight:900;}
-    .footer span{display:block;font-size:12px;color:rgba(255,255,255,.62);}
-    .floating-wa{position:fixed;right:18px;bottom:18px;z-index:20;display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 20px;border-radius:999px;background:#25d366;color:#fff;font-weight:900;box-shadow:0 8px 28px rgba(37,211,102,.36);}
-    @media(max-width:1024px){.city-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
-    @media(max-width:768px){.city-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.nav-actions a:not(.wa){display:none;}}
-    @media(max-width:520px){.container{padding:0 16px}.topbar-inner{min-height:62px}.brand strong{font-size:18px}.city-grid{grid-template-columns:1fr}.hero{padding:42px 0 32px}.floating-wa{right:12px;bottom:12px;min-height:48px;padding:0 16px;font-size:13px}.footer-inner{flex-direction:column;text-align:center}}
+    .nav-actions a{
+      height:40px;
+      display:inline-flex;
+      align-items:center;
+      padding:0 16px;
+      border-radius:6px;
+      color:rgba(255,255,255,.84);
+      font-weight:700;
+      font-size:14px;
+      transition:background .18s,color .18s,transform .18s;
+    }
+    .nav-actions a:hover{
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      transform:translateY(-1px);
+    }
+    .nav-actions .wa{
+      background:var(--green);
+      color:#fff;
+      height:44px;
+      border-radius:8px;
+      padding:0 20px;
+    }
+    .nav-actions .wa:hover{background:var(--green-hover);}
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      background:
+        radial-gradient(ellipse at top right, rgba(0,180,216,.20), transparent 52%),
+        radial-gradient(ellipse at bottom left, rgba(0,200,83,.12), transparent 48%),
+        linear-gradient(105deg, var(--blue-dark) 0%, #1039a8 55%, #1a56db 100%);
+      padding:76px 0 82px;
+      color:#fff;
+      text-align:center;
+    }
+    .hero::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0));
+      pointer-events:none;
+    }
+    .hero .container{position:relative;z-index:1;}
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      color:#eaf2ff;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.20);
+      padding:7px 16px;
+      border-radius:999px;
+      margin-bottom:18px;
+    }
+    .hero h1{
+      font-family:'Montserrat',sans-serif;
+      font-size:clamp(34px,5vw,64px);
+      font-weight:900;
+      color:#fff;
+      line-height:1.05;
+      letter-spacing:-1.1px;
+      margin:0 auto 16px;
+      max-width:900px;
+    }
+    .hero p{
+      font-size:18px;
+      color:rgba(255,255,255,.82);
+      max-width:760px;
+      margin:0 auto 28px;
+      line-height:1.7;
+    }
+    .hero-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    .btn-primary,.btn-secondary{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:52px;
+      padding:0 26px;
+      border-radius:10px;
+      font-family:'Montserrat',sans-serif;
+      font-weight:800;
+      transition:filter .18s,transform .18s,box-shadow .18s,background .18s;
+    }
+    .btn-primary{
+      background:var(--green);
+      color:#fff;
+      box-shadow:0 8px 24px rgba(0,200,83,.22);
+    }
+    .btn-primary:hover{
+      background:var(--green-hover);
+      transform:translateY(-2px);
+      box-shadow:0 12px 30px rgba(0,200,83,.30);
+    }
+    .btn-secondary{
+      border:2px solid rgba(255,255,255,.72);
+      color:#fff;
+      background:rgba(255,255,255,.04);
+    }
+    .btn-secondary:hover{
+      background:rgba(255,255,255,.10);
+      transform:translateY(-2px);
+    }
+
+    .cities-section{
+      padding:58px 0 76px;
+      background:var(--gray-bg);
+    }
+    .section-head{
+      text-align:center;
+      margin-bottom:34px;
+    }
+    .section-head .eyebrow{
+      color:var(--blue-light);
+      background:rgba(26,86,219,.09);
+      border:1px solid rgba(26,86,219,.18);
+      margin-bottom:12px;
+    }
+    .section-head h2{
+      font-family:'Montserrat',sans-serif;
+      font-size:clamp(28px,4vw,42px);
+      font-weight:900;
+      color:var(--blue);
+      line-height:1.1;
+      margin-bottom:10px;
+      letter-spacing:-.5px;
+    }
+    .section-head p{
+      font-size:16px;
+      color:var(--muted);
+      max-width:720px;
+      margin:0 auto;
+    }
+    .city-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
+    }
+    .city-card{
+      min-height:66px;
+      background:#fff;
+      border:1px solid var(--gray-line);
+      border-radius:16px;
+      box-shadow:var(--shadow);
+      display:grid;
+      grid-template-columns:auto 1fr auto auto;
+      align-items:center;
+      gap:10px;
+      padding:15px 16px;
+      transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
+    }
+    .city-card:hover{
+      transform:translateY(-3px);
+      border-color:var(--blue-light);
+      box-shadow:var(--shadow-lg);
+      background:#fbfdff;
+    }
+    .city-pin{
+      width:30px;
+      height:30px;
+      border-radius:999px;
+      background:rgba(26,86,219,.09);
+      border:1px solid rgba(26,86,219,.14);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+    .city-pin svg{
+      width:17px;
+      height:17px;
+      fill:var(--blue-light);
+      display:block;
+    }
+    .city-name{
+      font-family:'Montserrat',sans-serif;
+      font-size:15px;
+      font-weight:800;
+      color:var(--blue);
+      line-height:1.2;
+    }
+    .city-uf{
+      font-size:11px;
+      font-weight:900;
+      color:var(--blue-light);
+      background:rgba(26,86,219,.08);
+      border:1px solid rgba(26,86,219,.14);
+      border-radius:999px;
+      padding:3px 8px;
+    }
+    .city-arrow{
+      font-size:22px;
+      font-weight:900;
+      color:var(--blue-light);
+      line-height:1;
+    }
+
+    .footer{
+      background:var(--blue);
+      padding:28px 0;
+      color:#fff;
+    }
+    .footer-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .footer strong{
+      font-family:'Montserrat',sans-serif;
+      font-size:20px;
+      font-weight:900;
+    }
+    .footer span{
+      display:block;
+      font-size:12px;
+      color:rgba(255,255,255,.62);
+    }
+    .floating-wa{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      z-index:20;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:54px;
+      padding:0 20px;
+      border-radius:999px;
+      background:#25d366;
+      color:#fff;
+      font-weight:900;
+      box-shadow:0 8px 28px rgba(37,211,102,.36);
+      transition:transform .18s,filter .18s;
+    }
+    .floating-wa:hover{
+      transform:translateY(-2px);
+      filter:brightness(1.05);
+    }
+
+    @media(max-width:1024px){
+      .city-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+    }
+    @media(max-width:768px){
+      .city-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .nav-actions a:not(.wa){display:none;}
+      .hero{padding:58px 0 64px;}
+    }
+    @media(max-width:520px){
+      .container{padding:0 16px}
+      .topbar-inner{min-height:62px}
+      .brand strong{font-size:18px}
+      .city-grid{grid-template-columns:1fr}
+      .hero{padding:48px 0 56px}
+      .hero h1{font-size:34px;}
+      .hero-actions{flex-direction:column;}
+      .btn-primary,.btn-secondary{width:100%;}
+      .floating-wa{right:12px;bottom:12px;min-height:48px;padding:0 16px;font-size:13px}
+      .footer-inner{flex-direction:column;text-align:center}
+    }
   </style>
 </head>
 <body>
@@ -87,8 +366,8 @@
     <section class="hero">
       <div class="container">
         <span class="eyebrow">📍 Cidades atendidas</span>
-        <h1>Cidades com atendimento WebTurbo para planos MhNet</h1>
-        <p>Consulte cobertura MhNet por cidade, veja planos de internet fibra e siga para atendimento comercial com a WebTurbo.</p>
+        <h1>Internet fibra MhNet com atendimento WebTurbo</h1>
+        <p>Escolha sua cidade, consulte a cobertura no endereço e veja os planos de internet disponíveis para contratação online.</p>
         <div class="hero-actions">
           <a class="btn-primary" href="/#consulta">Consultar cobertura</a>
           <a class="btn-secondary" href="/#planos">Ver planos</a>
@@ -105,897 +384,1409 @@
         </div>
         <div class="city-grid">
           
-    <a class="city-card" href="/abelardo-luz/" aria-label="Ver planos MhNet em Abelardo Luz - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-abelardo-luz/" aria-label="Ver planos MhNet em Abelardo Luz - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Abelardo Luz</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/aguas-de-chapeco/" aria-label="Ver planos MhNet em Águas de Chapecó - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-aguas-de-chapeco/" aria-label="Ver planos MhNet em Águas de Chapecó - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Águas de Chapecó</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/aguas-frias/" aria-label="Ver planos MhNet em Águas Frias - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-aguas-frias/" aria-label="Ver planos MhNet em Águas Frias - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Águas Frias</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/alambari/" aria-label="Ver planos MhNet em Alambari - SP">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-alambari/" aria-label="Ver planos MhNet em Alambari - SP">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Alambari</span>
       <span class="city-uf">SP</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/alvorada/" aria-label="Ver planos MhNet em Alvorada - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-alvorada/" aria-label="Ver planos MhNet em Alvorada - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Alvorada</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/balneario-camboriu/" aria-label="Ver planos MhNet em Balneário Camboriú - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-balneario-camboriu/" aria-label="Ver planos MhNet em Balneário Camboriú - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Balneário Camboriú</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/balneario-rincao/" aria-label="Ver planos MhNet em Balneário Rincão - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-balneario-rincao/" aria-label="Ver planos MhNet em Balneário Rincão - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Balneário Rincão</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/barra-funda/" aria-label="Ver planos MhNet em Barra Funda - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-barra-funda/" aria-label="Ver planos MhNet em Barra Funda - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Barra Funda</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/barros-cassal/" aria-label="Ver planos MhNet em Barros Cassal - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-barros-cassal/" aria-label="Ver planos MhNet em Barros Cassal - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Barros Cassal</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/bento-goncalves/" aria-label="Ver planos MhNet em Bento Gonçalves - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-bento-goncalves/" aria-label="Ver planos MhNet em Bento Gonçalves - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Bento Gonçalves</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/biguacu/" aria-label="Ver planos MhNet em Biguaçu - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-biguacu/" aria-label="Ver planos MhNet em Biguaçu - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Biguaçu</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/bom-jesus/" aria-label="Ver planos MhNet em Bom Jesus - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-bom-jesus/" aria-label="Ver planos MhNet em Bom Jesus - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Bom Jesus</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/bom-jesus-do-oeste/" aria-label="Ver planos MhNet em Bom Jesus do Oeste - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-bom-jesus-do-oeste/" aria-label="Ver planos MhNet em Bom Jesus do Oeste - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Bom Jesus do Oeste</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/buri/" aria-label="Ver planos MhNet em Buri - SP">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-buri/" aria-label="Ver planos MhNet em Buri - SP">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Buri</span>
       <span class="city-uf">SP</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/cachoeirinha/" aria-label="Ver planos MhNet em Cachoeirinha - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-cachoeirinha/" aria-label="Ver planos MhNet em Cachoeirinha - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Cachoeirinha</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/caibi/" aria-label="Ver planos MhNet em Caibi - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-caibi/" aria-label="Ver planos MhNet em Caibi - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Caibi</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/campo-ere/" aria-label="Ver planos MhNet em Campo Erê - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-campo-ere/" aria-label="Ver planos MhNet em Campo Erê - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Campo Erê</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/canoas/" aria-label="Ver planos MhNet em Canoas - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-canoas/" aria-label="Ver planos MhNet em Canoas - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Canoas</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/capao-bonito/" aria-label="Ver planos MhNet em Capão Bonito - SP">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-capao-bonito/" aria-label="Ver planos MhNet em Capão Bonito - SP">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Capão Bonito</span>
       <span class="city-uf">SP</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/capao-da-canoa/" aria-label="Ver planos MhNet em Capão da Canoa - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-capao-da-canoa/" aria-label="Ver planos MhNet em Capão da Canoa - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Capão da Canoa</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/carazinho/" aria-label="Ver planos MhNet em Carazinho - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-carazinho/" aria-label="Ver planos MhNet em Carazinho - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Carazinho</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/carlos-barbosa/" aria-label="Ver planos MhNet em Carlos Barbosa - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-carlos-barbosa/" aria-label="Ver planos MhNet em Carlos Barbosa - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Carlos Barbosa</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/cascavel/" aria-label="Ver planos MhNet em Cascavel - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-cascavel/" aria-label="Ver planos MhNet em Cascavel - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Cascavel</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/castro/" aria-label="Ver planos MhNet em Castro - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-castro/" aria-label="Ver planos MhNet em Castro - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Castro</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/caxias-do-sul/" aria-label="Ver planos MhNet em Caxias do Sul - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-caxias-do-sul/" aria-label="Ver planos MhNet em Caxias do Sul - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Caxias do Sul</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/chapeco/" aria-label="Ver planos MhNet em Chapecó - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-chapeco/" aria-label="Ver planos MhNet em Chapecó - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Chapecó</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/clevelandia/" aria-label="Ver planos MhNet em Clevelândia - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-clevelandia/" aria-label="Ver planos MhNet em Clevelândia - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Clevelândia</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/concordia/" aria-label="Ver planos MhNet em Concórdia - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-concordia/" aria-label="Ver planos MhNet em Concórdia - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Concórdia</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/cordilheira-alta/" aria-label="Ver planos MhNet em Cordilheira Alta - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-cordilheira-alta/" aria-label="Ver planos MhNet em Cordilheira Alta - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Cordilheira Alta</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/correia-pinto/" aria-label="Ver planos MhNet em Correia Pinto - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-correia-pinto/" aria-label="Ver planos MhNet em Correia Pinto - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Correia Pinto</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/criciuma/" aria-label="Ver planos MhNet em Criciúma - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-criciuma/" aria-label="Ver planos MhNet em Criciúma - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Criciúma</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/cruzeiro-do-oeste/" aria-label="Ver planos MhNet em Cruzeiro do Oeste - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-cruzeiro-do-oeste/" aria-label="Ver planos MhNet em Cruzeiro do Oeste - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Cruzeiro do Oeste</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/cunha-pora/" aria-label="Ver planos MhNet em Cunha Porã - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-cunha-pora/" aria-label="Ver planos MhNet em Cunha Porã - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Cunha Porã</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/cunhatai/" aria-label="Ver planos MhNet em Cunhataí - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-cunhatai/" aria-label="Ver planos MhNet em Cunhataí - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Cunhataí</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/dourados/" aria-label="Ver planos MhNet em Dourados - MS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-dourados/" aria-label="Ver planos MhNet em Dourados - MS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Dourados</span>
       <span class="city-uf">MS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/entre-rios/" aria-label="Ver planos MhNet em Entre Rios - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-entre-rios/" aria-label="Ver planos MhNet em Entre Rios - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Entre Rios</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/erechim/" aria-label="Ver planos MhNet em Erechim - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-erechim/" aria-label="Ver planos MhNet em Erechim - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Erechim</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/estrela/" aria-label="Ver planos MhNet em Estrela - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-estrela/" aria-label="Ver planos MhNet em Estrela - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Estrela</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/farroupilha/" aria-label="Ver planos MhNet em Farroupilha - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-farroupilha/" aria-label="Ver planos MhNet em Farroupilha - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Farroupilha</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/flor-do-sertao/" aria-label="Ver planos MhNet em Flor do Sertão - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-flor-do-sertao/" aria-label="Ver planos MhNet em Flor do Sertão - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Flor do Sertão</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/florianopolis/" aria-label="Ver planos MhNet em Florianópolis - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-florianopolis/" aria-label="Ver planos MhNet em Florianópolis - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Florianópolis</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/galvao/" aria-label="Ver planos MhNet em Galvão - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-galvao/" aria-label="Ver planos MhNet em Galvão - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Galvão</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/garibaldi/" aria-label="Ver planos MhNet em Garibaldi - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-garibaldi/" aria-label="Ver planos MhNet em Garibaldi - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Garibaldi</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/goioere/" aria-label="Ver planos MhNet em Goioerê - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-goioere/" aria-label="Ver planos MhNet em Goioerê - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Goioerê</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/gravatai/" aria-label="Ver planos MhNet em Gravataí - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-gravatai/" aria-label="Ver planos MhNet em Gravataí - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Gravataí</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/guarapuava/" aria-label="Ver planos MhNet em Guarapuava - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-guarapuava/" aria-label="Ver planos MhNet em Guarapuava - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Guarapuava</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/herval-do-oeste/" aria-label="Ver planos MhNet em Herval do Oeste - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-herval-do-oeste/" aria-label="Ver planos MhNet em Herval do Oeste - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Herval do Oeste</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/icara/" aria-label="Ver planos MhNet em Içara - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-icara/" aria-label="Ver planos MhNet em Içara - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Içara</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/ipira/" aria-label="Ver planos MhNet em Ipira - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-ipira/" aria-label="Ver planos MhNet em Ipira - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Ipira</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/ipuacu/" aria-label="Ver planos MhNet em Ipuaçu - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-ipuacu/" aria-label="Ver planos MhNet em Ipuaçu - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Ipuaçu</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/iraceminha/" aria-label="Ver planos MhNet em Iraceminha - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-iraceminha/" aria-label="Ver planos MhNet em Iraceminha - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Iraceminha</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/irani/" aria-label="Ver planos MhNet em Irani - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-irani/" aria-label="Ver planos MhNet em Irani - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Irani</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/irati/" aria-label="Ver planos MhNet em Irati - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-irati/" aria-label="Ver planos MhNet em Irati - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Irati</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/itajai/" aria-label="Ver planos MhNet em Itajaí - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-itajai/" aria-label="Ver planos MhNet em Itajaí - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Itajaí</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/itapetininga/" aria-label="Ver planos MhNet em Itapetininga - SP">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-itapetininga/" aria-label="Ver planos MhNet em Itapetininga - SP">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Itapetininga</span>
       <span class="city-uf">SP</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/joacaba/" aria-label="Ver planos MhNet em Joaçaba - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-joacaba/" aria-label="Ver planos MhNet em Joaçaba - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Joaçaba</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/jupia/" aria-label="Ver planos MhNet em Jupiá - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-jupia/" aria-label="Ver planos MhNet em Jupiá - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Jupiá</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/lageado-grande/" aria-label="Ver planos MhNet em Lageado Grande - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-lageado-grande/" aria-label="Ver planos MhNet em Lageado Grande - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Lageado Grande</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/lages/" aria-label="Ver planos MhNet em Lages - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-lages/" aria-label="Ver planos MhNet em Lages - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Lages</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/lagoa-vermelha/" aria-label="Ver planos MhNet em Lagoa Vermelha - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-lagoa-vermelha/" aria-label="Ver planos MhNet em Lagoa Vermelha - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Lagoa Vermelha</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/lajeado/" aria-label="Ver planos MhNet em Lajeado - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-lajeado/" aria-label="Ver planos MhNet em Lajeado - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Lajeado</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/lovat/" aria-label="Ver planos MhNet em Lovat - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-lovat/" aria-label="Ver planos MhNet em Lovat - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Lovat</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/maravilha/" aria-label="Ver planos MhNet em Maravilha - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-maravilha/" aria-label="Ver planos MhNet em Maravilha - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Maravilha</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/marechal-candido-rondon/" aria-label="Ver planos MhNet em Marechal Cândido Rondon - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-marechal-candido-rondon/" aria-label="Ver planos MhNet em Marechal Cândido Rondon - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Marechal Cândido Rondon</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/marema/" aria-label="Ver planos MhNet em Marema - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-marema/" aria-label="Ver planos MhNet em Marema - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Marema</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/maria-helena/" aria-label="Ver planos MhNet em Maria Helena - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-maria-helena/" aria-label="Ver planos MhNet em Maria Helena - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Maria Helena</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/mariluz/" aria-label="Ver planos MhNet em Mariluz - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-mariluz/" aria-label="Ver planos MhNet em Mariluz - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Mariluz</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/modelo/" aria-label="Ver planos MhNet em Modelo - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-modelo/" aria-label="Ver planos MhNet em Modelo - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Modelo</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/navegantes/" aria-label="Ver planos MhNet em Navegantes - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-navegantes/" aria-label="Ver planos MhNet em Navegantes - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Navegantes</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/navirai/" aria-label="Ver planos MhNet em Naviraí - MS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-navirai/" aria-label="Ver planos MhNet em Naviraí - MS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Naviraí</span>
       <span class="city-uf">MS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/nova-erechim/" aria-label="Ver planos MhNet em Nova Erechim - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-nova-erechim/" aria-label="Ver planos MhNet em Nova Erechim - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Nova Erechim</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/nova-itaberaba/" aria-label="Ver planos MhNet em Nova Itaberaba - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-nova-itaberaba/" aria-label="Ver planos MhNet em Nova Itaberaba - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Nova Itaberaba</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/nova-olimpia/" aria-label="Ver planos MhNet em Nova Olímpia - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-nova-olimpia/" aria-label="Ver planos MhNet em Nova Olímpia - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Nova Olímpia</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/nova-santa-rita/" aria-label="Ver planos MhNet em Nova Santa Rita - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-nova-santa-rita/" aria-label="Ver planos MhNet em Nova Santa Rita - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Nova Santa Rita</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/ouro-verde/" aria-label="Ver planos MhNet em Ouro Verde - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-ouro-verde/" aria-label="Ver planos MhNet em Ouro Verde - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Ouro Verde</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/ouro-verde/" aria-label="Ver planos MhNet em Ouro Verde - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-ouro-verde/" aria-label="Ver planos MhNet em Ouro Verde - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Ouro Verde</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/palhoca/" aria-label="Ver planos MhNet em Palhoça - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-palhoca/" aria-label="Ver planos MhNet em Palhoça - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Palhoça</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/palmitos/" aria-label="Ver planos MhNet em Palmitos - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-palmitos/" aria-label="Ver planos MhNet em Palmitos - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Palmitos</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/passo-fundo/" aria-label="Ver planos MhNet em Passo Fundo - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-passo-fundo/" aria-label="Ver planos MhNet em Passo Fundo - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Passo Fundo</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/passos-maia/" aria-label="Ver planos MhNet em Passos Maia - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-passos-maia/" aria-label="Ver planos MhNet em Passos Maia - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Passos Maia</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/pato-branco/" aria-label="Ver planos MhNet em Pato Branco - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-pato-branco/" aria-label="Ver planos MhNet em Pato Branco - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Pato Branco</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/perobal/" aria-label="Ver planos MhNet em Perobal - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-perobal/" aria-label="Ver planos MhNet em Perobal - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Perobal</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/perola/" aria-label="Ver planos MhNet em Pérola - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-perola/" aria-label="Ver planos MhNet em Pérola - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Pérola</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/pinhalzinho/" aria-label="Ver planos MhNet em Pinhalzinho - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-pinhalzinho/" aria-label="Ver planos MhNet em Pinhalzinho - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Pinhalzinho</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/piratuba/" aria-label="Ver planos MhNet em Piratuba - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-piratuba/" aria-label="Ver planos MhNet em Piratuba - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Piratuba</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/ponta-grossa/" aria-label="Ver planos MhNet em Ponta Grossa - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-ponta-grossa/" aria-label="Ver planos MhNet em Ponta Grossa - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Ponta Grossa</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/ponte-serrada/" aria-label="Ver planos MhNet em Ponte Serrada - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-ponte-serrada/" aria-label="Ver planos MhNet em Ponte Serrada - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Ponte Serrada</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/prudentopolis/" aria-label="Ver planos MhNet em Prudentópolis - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-prudentopolis/" aria-label="Ver planos MhNet em Prudentópolis - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Prudentópolis</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/reserva/" aria-label="Ver planos MhNet em Reserva - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-reserva/" aria-label="Ver planos MhNet em Reserva - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Reserva</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/ribeirao-grande/" aria-label="Ver planos MhNet em Ribeirão Grande - SP">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-ribeirao-grande/" aria-label="Ver planos MhNet em Ribeirão Grande - SP">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Ribeirão Grande</span>
       <span class="city-uf">SP</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/riqueza/" aria-label="Ver planos MhNet em Riqueza - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-riqueza/" aria-label="Ver planos MhNet em Riqueza - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Riqueza</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/romelandia/" aria-label="Ver planos MhNet em Romelândia - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-romelandia/" aria-label="Ver planos MhNet em Romelândia - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Romelândia</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/saldanha-marinho/" aria-label="Ver planos MhNet em Saldanha Marinho - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-saldanha-marinho/" aria-label="Ver planos MhNet em Saldanha Marinho - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Saldanha Marinho</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/saltinho/" aria-label="Ver planos MhNet em Saltinho - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-saltinho/" aria-label="Ver planos MhNet em Saltinho - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Saltinho</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/santa-barbara-do-sul/" aria-label="Ver planos MhNet em Santa Bárbara do Sul - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-santa-barbara-do-sul/" aria-label="Ver planos MhNet em Santa Bárbara do Sul - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Santa Bárbara do Sul</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/santa-cruz/" aria-label="Ver planos MhNet em Santa Cruz - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-santa-cruz/" aria-label="Ver planos MhNet em Santa Cruz - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Santa Cruz</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/santa-elizia/" aria-label="Ver planos MhNet em Santa Elizia - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-santa-elizia/" aria-label="Ver planos MhNet em Santa Elizia - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Santa Elizia</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/santa-maria/" aria-label="Ver planos MhNet em Santa Maria - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-santa-maria/" aria-label="Ver planos MhNet em Santa Maria - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Santa Maria</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/santa-terezinha-do-progresso/" aria-label="Ver planos MhNet em Santa Terezinha do Progresso - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-santa-terezinha-do-progresso/" aria-label="Ver planos MhNet em Santa Terezinha do Progresso - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Santa Terezinha do Progresso</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/sao-carlos/" aria-label="Ver planos MhNet em São Carlos - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-sao-carlos/" aria-label="Ver planos MhNet em São Carlos - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">São Carlos</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/sao-jose/" aria-label="Ver planos MhNet em São José - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-sao-jose/" aria-label="Ver planos MhNet em São José - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">São José</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/sao-jose-das-palmeiras/" aria-label="Ver planos MhNet em São José das Palmeiras - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-sao-jose-das-palmeiras/" aria-label="Ver planos MhNet em São José das Palmeiras - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">São José das Palmeiras</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/sao-mateus/" aria-label="Ver planos MhNet em São Mateus - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-sao-mateus/" aria-label="Ver planos MhNet em São Mateus - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">São Mateus</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/sao-miguel-arcanjo/" aria-label="Ver planos MhNet em São Miguel Arcanjo - SP">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-sao-miguel-arcanjo/" aria-label="Ver planos MhNet em São Miguel Arcanjo - SP">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">São Miguel Arcanjo</span>
       <span class="city-uf">SP</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/sao-miguel-da-boa-vista/" aria-label="Ver planos MhNet em São Miguel da Boa Vista - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-sao-miguel-da-boa-vista/" aria-label="Ver planos MhNet em São Miguel da Boa Vista - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">São Miguel da Boa Vista</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/sao-pedro-do-iguacu/" aria-label="Ver planos MhNet em São Pedro do Iguaçu - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-sao-pedro-do-iguacu/" aria-label="Ver planos MhNet em São Pedro do Iguaçu - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">São Pedro do Iguaçu</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/sarandi/" aria-label="Ver planos MhNet em Sarandi - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-sarandi/" aria-label="Ver planos MhNet em Sarandi - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Sarandi</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/saudades/" aria-label="Ver planos MhNet em Saudades - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-saudades/" aria-label="Ver planos MhNet em Saudades - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Saudades</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/seara/" aria-label="Ver planos MhNet em Seara - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-seara/" aria-label="Ver planos MhNet em Seara - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Seara</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/serra-alta/" aria-label="Ver planos MhNet em Serra Alta - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-serra-alta/" aria-label="Ver planos MhNet em Serra Alta - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Serra Alta</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/serra-dos-dourados/" aria-label="Ver planos MhNet em Serra dos Dourados - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-serra-dos-dourados/" aria-label="Ver planos MhNet em Serra dos Dourados - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Serra dos Dourados</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/soledade/" aria-label="Ver planos MhNet em Soledade - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-soledade/" aria-label="Ver planos MhNet em Soledade - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Soledade</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/sorocaba/" aria-label="Ver planos MhNet em Sorocaba - SP">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-sorocaba/" aria-label="Ver planos MhNet em Sorocaba - SP">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Sorocaba</span>
       <span class="city-uf">SP</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/sul-brasil/" aria-label="Ver planos MhNet em Sul Brasil - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-sul-brasil/" aria-label="Ver planos MhNet em Sul Brasil - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Sul Brasil</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/tapejara/" aria-label="Ver planos MhNet em Tapejara - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-tapejara/" aria-label="Ver planos MhNet em Tapejara - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Tapejara</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/telemaco-borba/" aria-label="Ver planos MhNet em Telêmaco Borba - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-telemaco-borba/" aria-label="Ver planos MhNet em Telêmaco Borba - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Telêmaco Borba</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/tigrinhos/" aria-label="Ver planos MhNet em Tigrinhos - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-tigrinhos/" aria-label="Ver planos MhNet em Tigrinhos - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Tigrinhos</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/toledo/" aria-label="Ver planos MhNet em Toledo - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-toledo/" aria-label="Ver planos MhNet em Toledo - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Toledo</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/tuneiras-do-oeste/" aria-label="Ver planos MhNet em Tuneiras do Oeste - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-tuneiras-do-oeste/" aria-label="Ver planos MhNet em Tuneiras do Oeste - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Tuneiras do Oeste</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/turvo/" aria-label="Ver planos MhNet em Turvo - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-turvo/" aria-label="Ver planos MhNet em Turvo - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Turvo</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/umuarama/" aria-label="Ver planos MhNet em Umuarama - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-umuarama/" aria-label="Ver planos MhNet em Umuarama - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Umuarama</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/vacaria/" aria-label="Ver planos MhNet em Vacaria - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-vacaria/" aria-label="Ver planos MhNet em Vacaria - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Vacaria</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/venancio-aires/" aria-label="Ver planos MhNet em Venâncio Aires - RS">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-venancio-aires/" aria-label="Ver planos MhNet em Venâncio Aires - RS">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Venâncio Aires</span>
       <span class="city-uf">RS</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/votorantim/" aria-label="Ver planos MhNet em Votorantim - SP">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-votorantim/" aria-label="Ver planos MhNet em Votorantim - SP">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Votorantim</span>
       <span class="city-uf">SP</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/xambre/" aria-label="Ver planos MhNet em Xambrê - PR">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-xambre/" aria-label="Ver planos MhNet em Xambrê - PR">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Xambrê</span>
       <span class="city-uf">PR</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/xanxere/" aria-label="Ver planos MhNet em Xanxerê - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-xanxere/" aria-label="Ver planos MhNet em Xanxerê - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Xanxerê</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/xavantina/" aria-label="Ver planos MhNet em Xavantina - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-xavantina/" aria-label="Ver planos MhNet em Xavantina - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Xavantina</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
     </a>
 
-    <a class="city-card" href="/xaxim/" aria-label="Ver planos MhNet em Xaxim - SC">
-      <span class="city-pin">📍</span>
+    <a class="city-card" href="/internet-mhnet-xaxim/" aria-label="Ver planos MhNet em Xaxim - SC">
+      <span class="city-pin" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M12 2.25c-3.73 0-6.75 3.02-6.75 6.75 0 5.06 6.75 12.75 6.75 12.75S18.75 14.06 18.75 9c0-3.73-3.02-6.75-6.75-6.75Zm0 9.75a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+        </svg>
+      </span>
       <span class="city-name">Xaxim</span>
       <span class="city-uf">SC</span>
       <span class="city-arrow">›</span>
