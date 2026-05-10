@@ -59,8 +59,8 @@ jobs:
 
           const base = fs.readFileSync(sourcePath, "utf8");
 
-          function setOrReplaceTag(html, regex, replacement) {
-            return html.replace(regex, replacement);
+          function replaceTag(html, pattern, replacement) {
+            return html.replace(pattern, replacement);
           }
 
           function gerar(city) {
@@ -70,17 +70,15 @@ jobs:
 
             let html = base;
 
-            // SEO local, mantendo o visual e toda a estrutura do index principal.
-            html = setOrReplaceTag(html, /<title>.*?<\/title>/, `<title>${title}</title>`);
-            html = setOrReplaceTag(html, /<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${desc}" />`);
-            html = setOrReplaceTag(html, /<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${title}" />`);
-            html = setOrReplaceTag(html, /<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${desc}" />`);
-            html = setOrReplaceTag(html, /<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${url}" />`);
-            html = setOrReplaceTag(html, /<meta name="twitter:title" content="[^"]*" \/>/, `<meta name="twitter:title" content="${title}" />`);
-            html = setOrReplaceTag(html, /<meta name="twitter:description" content="[^"]*" \/>/, `<meta name="twitter:description" content="${desc}" />`);
-            html = setOrReplaceTag(html, /<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${url}" />`);
+            html = replaceTag(html, /<title>[\s\S]*?<\/title>/, `<title>${title}</title>`);
+            html = replaceTag(html, /<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${desc}" />`);
+            html = replaceTag(html, /<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${title}" />`);
+            html = replaceTag(html, /<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${desc}" />`);
+            html = replaceTag(html, /<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${url}" />`);
+            html = replaceTag(html, /<meta name="twitter:title" content="[^"]*" \/>/, `<meta name="twitter:title" content="${title}" />`);
+            html = replaceTag(html, /<meta name="twitter:description" content="[^"]*" \/>/, `<meta name="twitter:description" content="${desc}" />`);
+            html = replaceTag(html, /<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${url}" />`);
 
-            // Pequena marcação local sem mexer no layout visual: inclui cidade em schema, se não existir.
             const localJsonLd = `
   <script type="application/ld+json">
   {
