@@ -14,7 +14,7 @@ jobs:
       - name: Baixar repositório
         uses: actions/checkout@v4
 
-      - name: Gerar páginas de cidades usando o index principal
+      - name: Gerar páginas e sitemap usando o index principal
         run: |
           node <<'NODE'
           const fs = require("fs");
@@ -103,6 +103,22 @@ jobs:
             return removePlansArrows(html);
           }
 
+          function gerarSitemap(dirs) {
+            const lastmod = new Date().toISOString();
+            const urls = [
+              { loc: "https://webturbo-internet.com.br/", priority: "1.0" },
+              { loc: "https://webturbo-internet.com.br/cidades-atendidas/", priority: "0.9" },
+              ...dirs.map((dirName) => ({
+                loc: `https://webturbo-internet.com.br/${dirName}/`,
+                priority: "0.8"
+              }))
+            ];
+
+            const body = urls.map((item) => `  <url>\n    <loc>${item.loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>${item.priority}</priority>\n  </url>`).join("\n");
+
+            return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+          }
+
           const dirs = fs.readdirSync(root, { withFileTypes: true })
             .filter((entry) => entry.isDirectory() && entry.name.startsWith("internet-mhnet-"))
             .map((entry) => entry.name)
@@ -124,9 +140,12 @@ jobs:
             updated.push(`${dirName}/index.html`);
           }
 
+          fs.writeFileSync(path.join(root, "sitemap.xml"), gerarSitemap(dirs), "utf8");
+
           console.log("Páginas atualizadas usando o index.html principal como base:");
           for (const item of updated) console.log("- " + item);
-          console.log("Total atualizado:", updated.length);
+          console.log("Total de páginas atualizado:", updated.length);
+          console.log("Sitemap refeito com URLs oficiais internet-mhnet-:", dirs.length + 2);
           NODE
 
       - name: Commitar alterações
@@ -140,5 +159,5 @@ jobs:
           fi
 
           git add .
-          git commit -m "Padroniza cidades com nome local e remove setas dos planos"
+          git commit -m "Padroniza cidades e refaz sitemap oficial"
           git push
