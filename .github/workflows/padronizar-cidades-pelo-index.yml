@@ -79,31 +79,6 @@ jobs:
             html = replaceTag(html, /<meta name="twitter:description" content="[^"]*" \/>/, `<meta name="twitter:description" content="${desc}" />`);
             html = replaceTag(html, /<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${url}" />`);
 
-            const localJsonLd = `
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "Internet MhNet em ${city.cidade}",
-    "areaServed": {
-      "@type": "City",
-      "name": "${city.cidade}",
-      "addressRegion": "${city.uf}",
-      "addressCountry": "BR"
-    },
-    "provider": {
-      "@type": "Organization",
-      "name": "WebTurbo Internet",
-      "url": "https://webturbo-internet.com.br/"
-    },
-    "url": "${url}"
-  }
-  </script>`;
-
-            if (!html.includes(`"Internet MhNet em ${city.cidade}"`)) {
-              html = html.replace("</head>", `${localJsonLd}\n</head>`);
-            }
-
             return html;
           }
 
