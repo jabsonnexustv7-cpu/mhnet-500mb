@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>MhNet Marechal Cândido Rondon | Internet Fibra com Agente Autorizado</title>
-  <meta name="description" content="Consulte cobertura MhNet em Marechal Cândido Rondon - PR com a WebTurbo, agente autorizado. Veja planos de internet fibra disponíveis e contrate pelo WhatsApp." />
+  <title>Internet MhNet em Marechal Cândido Rondon | WebTurbo</title>
+  <meta name="description" content="Consulte cobertura MhNet em Marechal Cândido Rondon - PR com a WebTurbo, agente autorizado. Veja planos de internet fibra e contrate online." />
   <meta name="keywords" content="MhNet, parceiro autorizado MhNet, parceiro de vendas MhNet, internet fibra, internet fibra óptica, consultar cobertura, planos de internet, internet residencial, internet RS, internet SC, internet PR, internet SP, internet MS" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="WebTurbo Internet" />
@@ -16,8 +16,8 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="MhNet Marechal Cândido Rondon | Internet Fibra com Agente Autorizado" />
-  <meta property="og:description" content="Consulte cobertura MhNet em Marechal Cândido Rondon - PR com a WebTurbo, agente autorizado. Veja planos de internet fibra disponíveis e contrate pelo WhatsApp." />
+  <meta property="og:title" content="Internet MhNet em Marechal Cândido Rondon | WebTurbo" />
+  <meta property="og:description" content="Consulte cobertura MhNet em Marechal Cândido Rondon - PR com a WebTurbo, agente autorizado. Veja planos de internet fibra e contrate online." />
   <meta property="og:url" content="https://webturbo-internet.com.br/internet-mhnet-marechal-candido-rondon/" />
   <meta property="og:site_name" content="WebTurbo Internet" />
   <meta property="og:image" content="https://webturbo-internet.com.br/og-image.jpg" />
@@ -28,8 +28,8 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="MhNet Marechal Cândido Rondon | Internet Fibra com Agente Autorizado" />
-  <meta name="twitter:description" content="Consulte cobertura MhNet em Marechal Cândido Rondon - PR com a WebTurbo, agente autorizado. Veja planos de internet fibra disponíveis e contrate pelo WhatsApp." />
+  <meta name="twitter:title" content="Internet MhNet em Marechal Cândido Rondon | WebTurbo" />
+  <meta name="twitter:description" content="Consulte cobertura MhNet em Marechal Cândido Rondon - PR com a WebTurbo, agente autorizado. Veja planos de internet fibra e contrate online." />
   <meta name="twitter:image" content="https://webturbo-internet.com.br/og-image.jpg" />
 
   <link rel="canonical" href="https://webturbo-internet.com.br/internet-mhnet-marechal-candido-rondon/" />
@@ -288,54 +288,6 @@
     .plans::-webkit-scrollbar { height: 6px; }
     .plans::-webkit-scrollbar-track { background: var(--gray-line); border-radius: 999px; }
     .plans::-webkit-scrollbar-thumb { background: var(--blue-light); border-radius: 999px; }
-
-    .plans-carousel {
-      position: relative;
-    }
-
-    .plans {
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      scroll-behavior: smooth;
-      padding-left: 58px;
-      padding-right: 58px;
-    }
-
-    .plans::-webkit-scrollbar {
-      display: none;
-      width: 0;
-      height: 0;
-    }
-
-    .plans-arrow {
-      position: absolute;
-      top: 50%;
-      z-index: 5;
-      width: 42px;
-      height: 42px;
-      border-radius: 999px;
-      border: 1px solid rgba(10,36,99,.14);
-      background: rgba(255,255,255,.92);
-      color: var(--blue);
-      box-shadow: 0 8px 24px rgba(10,36,99,.14);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      line-height: 1;
-      cursor: pointer;
-      transform: translateY(-50%);
-      transition: background .18s, transform .18s, box-shadow .18s, opacity .18s;
-    }
-
-    .plans-arrow:hover {
-      background: var(--white);
-      transform: translateY(-50%) scale(1.04);
-      box-shadow: 0 12px 30px rgba(10,36,99,.18);
-    }
-
-    .plans-arrow-left { left: 4px; }
-    .plans-arrow-right { right: 4px; }
 
     .plan {
       background: var(--white);
@@ -1027,6 +979,19 @@
 
     .cities-list a .arrow { color: var(--blue-light); font-size: 18px; }
 
+    .city-pin {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      color: var(--blue-light);
+    }
+
+    .city-pin svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
     /* ── FAQ ── */
     .faq-section {
       background: var(--gray-bg);
@@ -1090,6 +1055,56 @@
       line-height: 1.75;
       font-size: 15px;
       padding: 0 20px 20px;
+    }
+
+    /* ── JÁ É CLIENTE ── */
+    .client-section {
+      background: var(--white);
+      padding: 64px 0 72px;
+      border-top: 1px solid var(--gray-line);
+      text-align: center;
+    }
+
+    .client-inner h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 800;
+      color: var(--blue-light);
+      margin-bottom: 12px;
+      letter-spacing: -.3px;
+    }
+
+    .client-inner p {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 28px;
+      line-height: 1.7;
+    }
+
+    .btn-client {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 54px;
+      padding: 0 36px;
+      border-radius: 999px;
+      background: #f5c800;
+      color: #1a1a00;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: filter .18s, transform .18s, box-shadow .18s;
+      box-shadow: 0 6px 20px rgba(245,200,0,.30);
+    }
+
+    .btn-client:hover {
+      filter: brightness(1.07);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(245,200,0,.40);
     }
 
     /* ── FOOTER ── */
@@ -1379,6 +1394,22 @@
     .mgrid .mfield { grid-column: auto; }
     .mgrid .mfield.full { grid-column: 1 / -1; }
 
+    .modal-extra-address {
+      display: none;
+    }
+
+    .modal-extra-address.show {
+      display: contents;
+    }
+
+    .consult-extra-address {
+      display: none;
+    }
+
+    .consult-extra-address.show {
+      display: contents;
+    }
+
     .modal-actions {
       display: flex;
       gap: 10px;
@@ -1534,18 +1565,7 @@
       .btn-whats { font-size: 13px; height: 40px; padding: 0 14px; }
 
       .plans-section { padding: 36px 0 44px; }
-      .plans {
-        gap: 14px;
-        padding-left: 42px;
-        padding-right: 42px;
-      }
-      .plans-arrow {
-        width: 34px;
-        height: 34px;
-        font-size: 20px;
-      }
-      .plans-arrow-left { left: 0; }
-      .plans-arrow-right { right: 0; }
+      .plans { gap: 14px; }
       .plan { flex: 0 0 80%; max-width: 80%; }
       .plan.featured { transform: none; }
 
@@ -1586,176 +1606,33 @@
     @media (max-width: 390px) {
       .btn-whats { font-size: 12px; height: 38px; padding: 0 12px; }
     }
-  
-    .local-seo-section{
-      padding-top:18px;
-      padding-bottom:42px;
-    }
-
-    .local-seo-box{
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:26px;
-      padding:28px;
-      box-shadow:var(--shadow-soft);
-    }
-
-    .local-seo-box h2{
-      font-size:32px;
-      line-height:1.15;
-      margin-bottom:12px;
-      letter-spacing:-.5px;
-    }
-
-    .local-seo-box p{
-      color:var(--muted);
-      font-size:16px;
-      line-height:1.75;
-      margin-bottom:12px;
-    }
-
-    .local-note{
-      background:rgba(50,208,108,.09);
-      border:1px solid rgba(50,208,108,.18);
-      border-radius:16px;
-      padding:12px 14px;
-      color:#dfffea !important;
-    }
-
-    .local-links{
-      margin-top:18px;
-      display:grid;
-      gap:10px;
-    }
-
-    .local-links strong{
-      color:#fff;
-      font-size:15px;
-    }
-
-    .local-links div{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .local-links a{
-      display:inline-flex;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.08);
-      color:#e7eefc;
-      text-decoration:none;
-      font-weight:800;
-      font-size:13px;
-    }
-
-    .local-links a:hover{
-      background:rgba(255,255,255,.12);
-    }
-
-    .cities-list{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-      margin-top:24px;
-    }
-
-    .cities-list a{
-      background:rgba(255,255,255,.045);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:16px;
-      padding:13px 14px;
-      text-decoration:none;
-      color:#fff;
-      font-weight:800;
-    }
-
-    .cities-list a span{
-      display:block;
-      color:var(--muted);
-      font-size:12px;
-      margin-top:3px;
-      font-weight:700;
-    }
-
-    @media(max-width:768px){
-      .cities-list{
-        grid-template-columns:1fr;
-      }
-
-      .local-seo-box{
-        padding:22px;
-        border-radius:22px;
-      }
-
-      .local-seo-box h2{
-        font-size:26px;
-      }
-    }
   </style>
 
   <!-- Schema.org JSON-LD -->
-  
-
   <script type="application/ld+json">
   {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "WebTurbo Internet",
-  "url": "https://webturbo-internet.com.br",
-  "description": "Agente autorizado MhNet para consulta de cobertura, planos de internet fibra e atendimento comercial em Marechal Cândido Rondon - PR.",
-  "brand": {
-    "@type": "Brand",
-    "name": "WebTurbo Internet"
-  },
-  "areaServed": {
-    "@type": "City",
-    "name": "Marechal Cândido Rondon"
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "WebTurbo Internet",
+    "description": "Agente autorizado MhNet para consulta de cobertura e contratação de internet fibra óptica.",
+    "url": "https://webturbo-internet.com.br/",
+    "telephone": "+555193187300",
+    "areaServed": ["RS","SC","PR","SP","MS"],
+    "priceRange": "R$ 99,90 – R$ 159,90/mês"
   }
-}
   </script>
-
   <script type="application/ld+json">
   {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "A MhNet tem cobertura em Marechal Cândido Rondon?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "A cobertura pode variar conforme o bairro e o endereço. Informe CEP e número para verificar a viabilidade técnica da internet fibra MhNet em Marechal Cândido Rondon - PR."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Quais planos MhNet estão disponíveis em Marechal Cândido Rondon?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "A disponibilidade dos planos pode variar por região e viabilidade técnica. A WebTurbo apresenta as opções disponíveis após a consulta de cobertura."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Como contratar internet MhNet em Marechal Cândido Rondon?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Consulte a cobertura pelo site. Se houver disponibilidade, continue pelo formulário de contratação ou fale com a equipe comercial da WebTurbo pelo WhatsApp."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "A instalação é gratuita em Marechal Cândido Rondon?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "A instalação pode ser gratuita conforme a oferta vigente, aprovação cadastral e viabilidade técnica do endereço. Confirme as condições antes de contratar."
-      }
-    }
-  ]
-}
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"A WebTurbo é a MhNet?","acceptedAnswer":{"@type":"Answer","text":"A WebTurbo é agente autorizado MhNet para atendimento comercial, consulta de cobertura e contratação."}},
+      {"@type":"Question","name":"Como consultar a cobertura?","acceptedAnswer":{"@type":"Answer","text":"Informe CEP e número. Se houver cobertura, o site libera as opções de contratação."}},
+      {"@type":"Question","name":"Quais cidades a WebTurbo atende?","acceptedAnswer":{"@type":"Answer","text":"A WebTurbo realiza atendimento comercial para consulta de cobertura e contratação em cidades dos estados RS, SC, PR, SP e MS."}},
+      {"@type":"Question","name":"Como funciona a contratação?","acceptedAnswer":{"@type":"Answer","text":"Após confirmar cobertura, escolha o plano e avance pelo site ou WhatsApp."}},
+      {"@type":"Question","name":"Os planos têm taxa de instalação?","acceptedAnswer":{"@type":"Answer","text":"A instalação pode ser gratuita conforme oferta vigente e viabilidade técnica."}}
+    ]
+  }
   </script>
 </head>
 <body>
@@ -1808,13 +1685,11 @@
       <div class="container">
         <div class="section-head">
           <span class="section-eyebrow">Planos disponíveis</span>
-          <h2 id="titulo-planos">Planos MhNet Internet</h2>
-          <p>Ofertas disponíveis conforme cobertura e viabilidade técnica no seu endereço.</p>
+          <h2 id="titulo-planos">Planos MhNet Internet em Marechal Cândido Rondon</h2>
+          <p>Ofertas disponíveis em Marechal Cândido Rondon - PR, conforme cobertura e viabilidade técnica no seu endereço.</p>
         </div>
 
-        <div class="plans-carousel">
-          <button class="plans-arrow plans-arrow-left" type="button" onclick="scrollPlanos(-1)" aria-label="Ver planos anteriores">‹</button>
-          <div class="plans" id="plansCarousel">
+        <div class="plans">
           <article class="plan">
             <div class="plan-badge">Plano econômico</div>
             <h3>500 Mega</h3>
@@ -1940,8 +1815,6 @@
             </ul>
             <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI')">Contratar agora</button>
           </article>
-          </div>
-          <button class="plans-arrow plans-arrow-right" type="button" onclick="scrollPlanos(1)" aria-label="Ver próximos planos">›</button>
         </div>
       </div>
     </section>
@@ -1957,6 +1830,7 @@
           <div class="coverage-trust">
             <span class="trust-chip">✓ 100% fibra óptica</span>
             <span class="trust-chip">✓ Instalação gratuita</span>
+            <span class="trust-chip">✓ Contratação facilitada</span>
           </div>
 
           <div class="coverage-cta-row">
@@ -1977,10 +1851,39 @@
                 <label for="cep">CEP</label>
                 <input id="cep" type="text" inputmode="numeric" placeholder="00000-000" maxlength="9" autocomplete="postal-code" />
               </div>
+
               <div class="field">
                 <label for="numero">Número</label>
                 <input id="numero" type="text" inputmode="numeric" placeholder="Número" autocomplete="address-line2" />
               </div>
+
+              <div id="consultaEnderecoCompleto" class="consult-extra-address">
+                <div class="field full">
+                  <label for="consultaLogradouro">Logradouro</label>
+                  <input id="consultaLogradouro" type="text" placeholder="Rua / Avenida" autocomplete="address-line1" />
+                </div>
+
+                <div class="field">
+                  <label for="consultaBairro">Bairro</label>
+                  <input id="consultaBairro" type="text" placeholder="Bairro" />
+                </div>
+
+                <div class="field">
+                  <label for="consultaCidade">Cidade</label>
+                  <input id="consultaCidade" type="text" placeholder="Cidade" />
+                </div>
+
+                <div class="field">
+                  <label for="consultaUf">UF</label>
+                  <input id="consultaUf" type="text" maxlength="2" placeholder="RS" />
+                </div>
+
+                <div class="field full">
+                  <label for="consultaComplemento">Complemento</label>
+                  <input id="consultaComplemento" type="text" placeholder="Apto, bloco, casa fundos..." />
+                </div>
+              </div>
+
               <div class="field full">
                 <label for="logradouro">Endereço encontrado</label>
                 <div id="logradouro" class="address-display empty" role="status" aria-live="polite">Será preenchido automaticamente</div>
@@ -2028,22 +1931,42 @@
 
         <div class="mini-benefits">
           <div class="mini-benefit">
-            <div class="icon-wrap" aria-hidden="true">📍</div>
+            <div class="icon-wrap" aria-hidden="true">
+              <!-- Localização / Cobertura -->
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="white"/>
+              </svg>
+            </div>
             <h3>Consulte cobertura</h3>
             <p>Verifique seu endereço em segundos e saiba se há fibra disponível.</p>
           </div>
           <div class="mini-benefit">
-            <div class="icon-wrap" aria-hidden="true">⚡</div>
+            <div class="icon-wrap" aria-hidden="true">
+              <!-- Raio / Fibra óptica -->
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 2v11h3v9l7-12h-4l4-8z" fill="white"/>
+              </svg>
+            </div>
             <h3>100% fibra óptica</h3>
             <p>Velocidade e estabilidade para toda a família.</p>
           </div>
           <div class="mini-benefit">
-            <div class="icon-wrap" aria-hidden="true">💬</div>
+            <div class="icon-wrap" aria-hidden="true">
+              <!-- Balão de chat / Atendimento -->
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" fill="white"/>
+              </svg>
+            </div>
             <h3>Atendimento online</h3>
             <p>Contrate pelo site ou diretamente pelo WhatsApp.</p>
           </div>
           <div class="mini-benefit">
-            <div class="icon-wrap" aria-hidden="true">✅</div>
+            <div class="icon-wrap" aria-hidden="true">
+              <!-- Ferramenta / Instalação -->
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z" fill="white"/>
+              </svg>
+            </div>
             <h3>Instalação grátis</h3>
             <p>Sem taxa de instalação, conforme oferta e aprovação.</p>
           </div>
@@ -2092,16 +2015,46 @@
         </div>
 
         <div class="cities-list">
-          <a href="/internet-mhnet-canoas/">📍 Canoas <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-gravatai/">📍 Gravataí <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-alvorada/">📍 Alvorada <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-cachoeirinha/">📍 Cachoeirinha <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-capao-da-canoa/">📍 Capão da Canoa <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-caxias-do-sul/">📍 Caxias do Sul <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-bento-goncalves/">📍 Bento Gonçalves <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-venancio-aires/">📍 Venâncio Aires <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-lajeado/">📍 Lajeado <span class="arrow">›</span></a>
-          <a href="/internet-mhnet-santa-cruz/">📍 Santa Cruz <span class="arrow">›</span></a>
+          <a href="/internet-mhnet-canoas/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Canoas <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-gravatai/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Gravataí <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-alvorada/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Alvorada <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-cachoeirinha/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Cachoeirinha <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-capao-da-canoa/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Capão da Canoa <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-caxias-do-sul/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Caxias do Sul <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-bento-goncalves/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Bento Gonçalves <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-venancio-aires/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Venâncio Aires <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-lajeado/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Lajeado <span class="arrow">›</span>
+          </a>
+          <a href="/internet-mhnet-santa-cruz/">
+            <span class="city-pin"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" fill="currentColor"/></svg></span>
+            Santa Cruz <span class="arrow">›</span>
+          </a>
         </div>
       </div>
     </section>
@@ -2143,6 +2096,17 @@
       </div>
     </section>
 
+    <!-- ── JÁ É CLIENTE ── -->
+    <section class="client-section" aria-labelledby="titulo-cliente">
+      <div class="container client-inner">
+        <h2 id="titulo-cliente">Já é cliente MhNet?</h2>
+        <p>Acesse a central do assinante para gerenciar seu plano, emitir segunda via de fatura e muito mais.</p>
+        <a href="https://portal.mhnet.com.br/login" target="_blank" rel="noopener noreferrer" class="btn-client">
+          Central do assinante
+        </a>
+      </div>
+    </section>
+
   </main>
 
   <!-- ── MODAL DE CONTRATAÇÃO ── -->
@@ -2178,6 +2142,7 @@
               <input id="mNumero" type="text" placeholder="Nº" autocomplete="address-line2" />
               <span class="mfield-error-msg" id="err-mNumero">Informe o número.</span>
             </div>
+            <div id="modalEnderecoCompleto" class="modal-extra-address">
             <div class="mfield full" id="field-mLogradouro">
               <label for="mLogradouro">Logradouro *</label>
               <input id="mLogradouro" type="text" placeholder="Rua / Avenida" />
@@ -2208,12 +2173,13 @@
               <input id="mPontoRef" type="text" placeholder="Ex.: próximo ao mercado, portão azul..." />
               <span class="mfield-error-msg" id="err-mPontoRef">Informe um ponto de referência.</span>
             </div>
+            </div>
           </div>
 
           <div class="modal-error-msg" id="modalErro1">Não encontramos cobertura para este endereço.</div>
 
           <div class="modal-actions">
-            <button class="btn-modal-next" type="button" onclick="validarEtapaEndereco()">Consultar cobertura e continuar →</button>
+            <button class="btn-modal-next" type="button" onclick="validarEtapaEndereco()">Consultar cobertura</button>
           </div>
         </div>
       </div>
@@ -2439,6 +2405,7 @@
   <script>
     /* ── CONFIGURAÇÕES ── */
     const ENDPOINT     = "https://consulta-cobertura-mhnet-br-964927461432.southamerica-east1.run.app";
+    const CLOUD_RUN_URL = "https://modal-easy-964927461432.southamerica-east1.run.app";
     const FIXED_RADIUS = 200;
     const WHATS_NUMBER = "555193187300";
     const TIMEOUT_MS   = 8000;
@@ -2451,6 +2418,69 @@
     };
 
     const onlyDigits = (value) => String(value || "").replace(/\D/g, "");
+
+    const TRAFFIC_STORAGE_KEY = "webturbo_origem_trafego";
+
+    function getTrafficParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return (params.get(name) || "").trim();
+    }
+
+    function salvarOrigemTrafego() {
+      const params = new URLSearchParams(window.location.search);
+      const atual = lerOrigemTrafego();
+
+      const origem = {
+        ...atual,
+        landing_page: atual.landing_page || window.location.href,
+        page_url: window.location.href,
+        referrer: document.referrer || atual.referrer || "",
+        gclid: getTrafficParam("gclid") || atual.gclid || "",
+        gbraid: getTrafficParam("gbraid") || atual.gbraid || "",
+        wbraid: getTrafficParam("wbraid") || atual.wbraid || "",
+        fbclid: getTrafficParam("fbclid") || atual.fbclid || "",
+        utm_source: getTrafficParam("utm_source") || atual.utm_source || "",
+        utm_medium: getTrafficParam("utm_medium") || atual.utm_medium || "",
+        utm_campaign: getTrafficParam("utm_campaign") || atual.utm_campaign || "",
+        utm_content: getTrafficParam("utm_content") || atual.utm_content || "",
+        utm_term: getTrafficParam("utm_term") || atual.utm_term || "",
+        first_seen_at: atual.first_seen_at || new Date().toISOString(),
+        last_seen_at: new Date().toISOString()
+      };
+
+      localStorage.setItem(TRAFFIC_STORAGE_KEY, JSON.stringify(origem));
+    }
+
+    function lerOrigemTrafego() {
+      try {
+        return JSON.parse(localStorage.getItem(TRAFFIC_STORAGE_KEY) || "{}");
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function getCookieValue(name) {
+      const match = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/[.$?*|{}()\[\]\\\/\+^]/g, "\\$&") + "=([^;]*)"));
+      return match ? decodeURIComponent(match[1]) : "";
+    }
+
+    function vendaVeioDoGoogleSite() {
+      const origem = lerOrigemTrafego();
+      const utmSource = String(origem.utm_source || "").toLowerCase();
+      const utmMedium = String(origem.utm_medium || "").toLowerCase();
+
+      return Boolean(
+        origem.gclid ||
+        origem.gbraid ||
+        origem.wbraid ||
+        utmSource.includes("google") ||
+        utmMedium.includes("cpc") ||
+        utmMedium.includes("ppc") ||
+        utmMedium.includes("paidsearch")
+      );
+    }
+
+    salvarOrigemTrafego();
 
     function setStatus(text, type = "") {
       const el = $("status");
@@ -2483,9 +2513,20 @@
     function clearForm() {
       $("cep").value = "";
       $("numero").value = "";
+
+      if ($("consultaLogradouro")) $("consultaLogradouro").value = "";
+      if ($("consultaBairro")) $("consultaBairro").value = "";
+      if ($("consultaCidade")) $("consultaCidade").value = "";
+      if ($("consultaUf")) $("consultaUf").value = "";
+      if ($("consultaComplemento")) $("consultaComplemento").value = "";
+
+      const extraBox = $("consultaEnderecoCompleto");
+      if (extraBox) extraBox.classList.remove("show");
+
       setAddress("");
       $("ctaViavel").classList.remove("show");
       $("btnContratarCobertura").href = "#";
+      coberturaPaginaData = null;
       setStatus("Aguardando preenchimento.");
       setLoading(false);
     }
@@ -2528,49 +2569,193 @@
     async function consultarCobertura() {
       const cep = $("cep").value.trim();
       const numero = $("numero").value.trim();
+      const cepLimpo = onlyDigits(cep);
+
+      const extraBox = $("consultaEnderecoCompleto");
+      const extraVisivel = extraBox && extraBox.classList.contains("show");
 
       $("ctaViavel").classList.remove("show");
       $("btnContratarCobertura").href = "#";
 
-      if (onlyDigits(cep).length !== 8) { setStatus("Informe um CEP válido.", "bad"); return; }
-      if (!numero) { setStatus("Informe o número do endereço.", "bad"); return; }
-
-      setLoading(true);
-      setStatus("Buscando endereço...");
-
-      const endereco = await buscarEnderecoPorCep(cep);
-      if (!endereco || !endereco.logradouro) {
-        setAddress("");
-        setStatus("Não foi possível localizar esse CEP.", "bad");
-        setLoading(false);
+      if (cepLimpo.length !== 8) {
+        setStatus("Informe um CEP válido.", "bad");
         return;
       }
 
-      const fachada = [endereco.logradouro, numero].filter(Boolean).join(", ");
-      const enderecoCompleto = [endereco.logradouro, numero, endereco.bairro, `${endereco.cidade} - ${endereco.uf}`].filter(Boolean).join(" | ");
+      if (!numero) {
+        setStatus("Informe o número do endereço.", "bad");
+        return;
+      }
+
+      /*
+        PRIMEIRO CLIQUE:
+        busca o CEP e abre os campos completos.
+        Se for CEP geral, o cliente completa rua e bairro.
+      */
+      if (!extraVisivel) {
+        setLoading(true);
+        setStatus("Buscando endereço...");
+
+        try {
+          const endereco = await buscarEnderecoPorCep(cep);
+
+          if (!endereco) {
+            if (extraBox) extraBox.classList.add("show");
+            setAddress("Complete o endereço para consultar a cobertura.");
+            setStatus("Não conseguimos localizar esse CEP automaticamente. Preencha o endereço para consultar a cobertura.", "bad");
+            return;
+          }
+
+          $("consultaLogradouro").value = endereco.logradouro || "";
+          $("consultaBairro").value = endereco.bairro || "";
+          $("consultaCidade").value = endereco.cidade || "";
+          $("consultaUf").value = endereco.uf || "";
+
+          if (extraBox) extraBox.classList.add("show");
+
+          const enderecoCompleto = [
+            endereco.logradouro,
+            numero,
+            endereco.bairro,
+            endereco.cidade && endereco.uf ? `${endereco.cidade} - ${endereco.uf}` : ""
+          ].filter(Boolean).join(" | ");
+
+          setAddress(enderecoCompleto || "Complete os dados do endereço abaixo.");
+
+          if (!endereco.logradouro || !endereco.bairro) {
+            setStatus("Esse CEP parece ser geral. Complete rua e bairro para consultar a cobertura.", "bad");
+          } else {
+            setStatus("Endereço localizado. Confira os dados e clique novamente para consultar a cobertura.");
+          }
+
+          return;
+
+        } catch {
+          if (extraBox) extraBox.classList.add("show");
+          setAddress("Complete o endereço para consultar a cobertura.");
+          setStatus("Não conseguimos buscar o CEP automaticamente. Preencha o endereço para consultar a cobertura.", "bad");
+          return;
+
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      /*
+        SEGUNDO CLIQUE:
+        valida endereço completo e consulta cobertura.
+      */
+      const logradouro = $("consultaLogradouro").value.trim();
+      const bairro = $("consultaBairro").value.trim();
+      const cidade = $("consultaCidade").value.trim();
+      const uf = $("consultaUf").value.trim().toUpperCase();
+      const complemento = $("consultaComplemento").value.trim();
+
+      if (!logradouro) {
+        setStatus("Informe a rua ou avenida para consultar a cobertura.", "bad");
+        $("consultaLogradouro").focus();
+        return;
+      }
+
+      if (!bairro) {
+        setStatus("Informe o bairro para consultar a cobertura.", "bad");
+        $("consultaBairro").focus();
+        return;
+      }
+
+      if (!cidade) {
+        setStatus("Informe a cidade para consultar a cobertura.", "bad");
+        $("consultaCidade").focus();
+        return;
+      }
+
+      if (!uf || uf.length !== 2) {
+        setStatus("Informe a UF para consultar a cobertura.", "bad");
+        $("consultaUf").focus();
+        return;
+      }
+
+      $("consultaUf").value = uf;
+
+      const fachada = [
+        logradouro,
+        numero,
+        bairro,
+        cidade,
+        uf
+      ].filter(Boolean).join(", ");
+
+      const enderecoCompleto = [
+        logradouro,
+        numero,
+        bairro,
+        complemento,
+        `${cidade} - ${uf}`
+      ].filter(Boolean).join(" | ");
 
       setAddress(enderecoCompleto);
-      setStatus("Consultando cobertura MhNet...");
+      setLoading(true);
+      setStatus("Consultando cobertura...");
 
       try {
-        const payload = { cep: onlyDigits(cep), fachada: fachada, radius: FIXED_RADIUS };
+        const payload = {
+          cep: cepLimpo,
+          numero,
+          logradouro,
+          bairro,
+          cidade,
+          uf,
+          complemento,
+          fachada,
+          radius: FIXED_RADIUS
+        };
+
         const res = await consultarCoberturaCloudRun(payload);
 
-        if (res && res.ok === true) {
-          if (res.viavel === true) {
-            const mensagem = `Olá! Consultei a cobertura no site da WebTurbo, parceira de vendas autorizada MhNet, e quero contratar.\n\nCEP: ${cep}\nNúmero: ${numero}\nEndereço: ${enderecoCompleto}\nCoords: ${res.coords || "-"}\nMotivo: ${res.motivo || "-"}`;
-            $("btnContratarCobertura").href = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(mensagem)}`;
-            $("ctaViavel").classList.add("show");
-            setStatus("Cobertura disponível para este endereço.", "ok");
-          } else {
-            setStatus(`Sem cobertura no momento. ${res.motivo ? "Motivo: " + res.motivo : ""}`, "bad");
-          }
+        if (res && res.ok === true && res.viavel === true) {
+          const mensagem = `Olá! Consultei a cobertura no site da WebTurbo, parceira de vendas autorizada MhNet, e quero contratar.\n\nCEP: ${cep}\nNúmero: ${numero}\nEndereço: ${enderecoCompleto}\nCoords: ${res.coords || "-"}\nMotivo: ${res.motivo || "-"}`;
+
+          coberturaPaginaData = {
+            cep,
+            numero,
+            logradouro,
+            bairro,
+            cidade,
+            uf,
+            complemento,
+            enderecoCompleto,
+            fachada,
+            cobertura: res
+          };
+
+          $("btnContratarCobertura").href = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(mensagem)}`;
+          $("ctaViavel").classList.add("show");
+          setStatus("Cobertura disponível para este endereço.", "ok");
+
+          // Notificação silenciosa — avisa por e-mail a cada consulta viável
+          fetch(CLOUD_RUN_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              action: "notifyConsulta",
+              cep: cepLimpo,
+              fachada,
+              nomeCidade: cidade,
+              uf,
+              cobertura: { motivo: res.motivo || "-", coords: res.coords || "" }
+            })
+          }).catch(() => {}); // silencioso, nunca bloqueia o usuário
         } else {
-          setStatus(`Erro na consulta. ${res && res.motivo ? res.motivo : "Resposta inválida."}`, "bad");
+          coberturaPaginaData = null;
+          setStatus("Ainda não temos cobertura disponível para este endereço. Fale com nosso atendimento para verificarmos outras possibilidades.", "bad");
         }
-      } catch (error) {
-        setStatus(`${error.message || "Erro ao consultar cobertura."}`, "bad");
-      } finally { setLoading(false); }
+
+      } catch {
+        coberturaPaginaData = null;
+        setStatus("Erro ao consultar cobertura. Tente novamente ou fale com nosso atendimento.", "bad");
+      } finally {
+        setLoading(false);
+      }
     }
 
     $("cep").addEventListener("input", (e) => { e.target.value = formatCep(e.target.value); });
@@ -2581,11 +2766,10 @@
     setAddress("");
 
     /* ── MODAL EM ETAPAS ── */
-    const CLOUD_RUN_URL = "https://modal-easy-964927461432.southamerica-east1.run.app";
-
     let modalPlanoPreSelecionado = "";
     let modalCoverageValidated = false;
     let modalCoverageData = null;
+    let coberturaPaginaData = null;
 
     const PLAN_LABELS = {
       "FIBRA 500MB": "FIBRA 500MB — R$ 99,90/mês",
@@ -2684,6 +2868,15 @@
       modalCoverageData = null;
       resetModalVisual();
 
+      const enderecoCompletoEl = $("modalEnderecoCompleto");
+      if (enderecoCompletoEl) enderecoCompletoEl.classList.remove("show");
+
+      const btnEndereco = document.querySelector("#etapa1 .btn-modal-next");
+      if (btnEndereco) {
+        btnEndereco.innerHTML = "Consultar cobertura";
+        btnEndereco.disabled = false;
+      }
+
       if ($("mDataInstalacao")) $("mDataInstalacao").min = tomorrowISO();
       if ($("mPlano") && modalPlanoPreSelecionado) $("mPlano").value = modalPlanoPreSelecionado;
 
@@ -2691,9 +2884,6 @@
       const numeroAtual = $("numero").value.trim();
       if (cepAtual)    $("mCep").value = cepAtual;
       if (numeroAtual) $("mNumero").value = numeroAtual;
-
-      const enderecoTexto = $("logradouro") && !$("logradouro").classList.contains("empty") ? $("logradouro").textContent : "";
-      if (enderecoTexto && cepAtual) buscarCepModal(cepAtual);
 
       $("modalOverlay").classList.add("open");
       document.body.style.overflow = "hidden";
@@ -2703,6 +2893,27 @@
 
     function abrirModalCobertura() {
       abrirModal(modalPlanoPreSelecionado || "");
+
+      if (!coberturaPaginaData || !coberturaPaginaData.cobertura || coberturaPaginaData.cobertura.viavel !== true) {
+        mostrarEtapa(1);
+        return;
+      }
+
+      $("mCep").value = coberturaPaginaData.cep || "";
+      $("mNumero").value = coberturaPaginaData.numero || "";
+      $("mLogradouro").value = coberturaPaginaData.logradouro || "";
+      $("mBairro").value = coberturaPaginaData.bairro || "";
+      $("mCidade").value = coberturaPaginaData.cidade || "";
+      $("mUf").value = coberturaPaginaData.uf || "";
+
+      const enderecoCompletoEl = $("modalEnderecoCompleto");
+      if (enderecoCompletoEl) enderecoCompletoEl.classList.add("show");
+
+      modalCoverageValidated = true;
+      modalCoverageData = coberturaPaginaData.cobertura;
+      $("coverageOkBox").classList.add("show");
+
+      mostrarEtapa(2);
     }
 
     function fecharModal() {
@@ -2728,20 +2939,24 @@
 
     async function buscarCepModal(cep) {
       const cepLimpo = onlyDigits(cep);
-      if (cepLimpo.length !== 8) return;
-      try {
-        const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
-        const data = await res.json();
-        if (data.erro) { fieldError("mCep", "CEP não encontrado."); return; }
-        $("mLogradouro").value = data.logradouro || "";
-        $("mBairro").value     = data.bairro || "";
-        $("mCidade").value     = data.localidade || "";
-        $("mUf").value         = data.uf || "";
-        fieldOk("mCep");
-        ["mLogradouro","mBairro","mCidade","mUf"].forEach(id => { if ($(id).value.trim()) fieldOk(id); });
-      } catch {
-        fieldError("mCep", "Erro ao buscar CEP. Preencha manualmente.");
-      }
+      if (cepLimpo.length !== 8) throw new Error("CEP inválido.");
+
+      const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+      const data = await res.json();
+
+      if (data.erro) throw new Error("CEP não encontrado.");
+
+      $("mLogradouro").value = data.logradouro || "";
+      $("mBairro").value     = data.bairro || "";
+      $("mCidade").value     = data.localidade || "";
+      $("mUf").value         = data.uf || "";
+
+      fieldOk("mCep");
+      ["mLogradouro","mBairro","mCidade","mUf"].forEach(id => {
+        if ($(id).value.trim()) fieldOk(id);
+      });
+
+      return data;
     }
 
     function resetCoverageValidation() {
@@ -2767,22 +2982,112 @@
     async function validarEtapaEndereco() {
       const erroEl = $("modalErro1");
       erroEl.classList.remove("show");
+
+      const enderecoCompletoEl = $("modalEnderecoCompleto");
+      const enderecoCompletoVisivel = enderecoCompletoEl && enderecoCompletoEl.classList.contains("show");
+
+      ["mCep", "mNumero", "mLogradouro", "mBairro", "mCidade", "mUf", "mPontoRef"].forEach(fieldReset);
+
+      const cep = onlyDigits($("mCep").value);
+      const numero = $("mNumero").value.trim();
+      const btn = document.querySelector("#etapa1 .btn-modal-next");
+
+      if (cep.length !== 8) {
+        fieldError("mCep", "Informe um CEP válido.");
+        return;
+      }
+
+      if (!numero) {
+        fieldError("mNumero", "Informe o número.");
+        return;
+      }
+
+      fieldOk("mCep");
+      fieldOk("mNumero");
+
+      if (!enderecoCompletoVisivel) {
+        btn.disabled = true;
+        btn.innerHTML = '<div class="spinner"></div> Buscando endereço...';
+
+        try {
+          await buscarCepModal(cep);
+        } catch {
+          fieldError("mCep", "Não conseguimos buscar o CEP automaticamente.");
+        }
+
+        if (enderecoCompletoEl) enderecoCompletoEl.classList.add("show");
+
+        btn.disabled = false;
+        btn.innerHTML = "Consultar cobertura e continuar →";
+
+        const logradouro = $("mLogradouro").value.trim();
+        const bairro = $("mBairro").value.trim();
+        const cidade = $("mCidade").value.trim();
+        const uf = $("mUf").value.trim();
+
+        if (!logradouro) fieldError("mLogradouro", "Informe a rua/avenida.");
+        else fieldOk("mLogradouro");
+
+        if (!bairro) fieldError("mBairro", "Informe o bairro.");
+        else fieldOk("mBairro");
+
+        if (!cidade) fieldError("mCidade", "Informe a cidade.");
+        else fieldOk("mCidade");
+
+        if (!uf) fieldError("mUf", "Informe a UF.");
+        else fieldOk("mUf");
+
+        if (!logradouro || !bairro || !cidade || !uf) {
+          erroEl.textContent = "Esse CEP parece ser geral. Complete os dados do endereço para consultar a cobertura.";
+          erroEl.classList.add("show");
+        } else {
+          erroEl.textContent = "Endereço carregado. Confira os dados e clique em consultar cobertura para continuar.";
+          erroEl.classList.add("show");
+        }
+
+        return;
+      }
+
       if (!validarCamposEndereco()) {
+        erroEl.textContent = "Complete os dados do endereço para consultar a cobertura.";
+        erroEl.classList.add("show");
         const firstError = document.querySelector("#etapa1 .mfield.has-error input");
         if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
         return;
       }
-      const btn = document.querySelector("#etapa1 .btn-modal-next");
-      const original = btn.innerHTML;
+
       btn.disabled = true;
-      btn.innerHTML = '<div class="spinner"></div> Consultando...';
+      btn.innerHTML = '<div class="spinner"></div> Consultando cobertura...';
+
       try {
+        const logradouro = $("mLogradouro").value.trim();
+        const bairro = $("mBairro").value.trim();
+        const cidade = $("mCidade").value.trim();
+        const uf = $("mUf").value.trim();
+
+        const fachada = [
+          logradouro,
+          numero,
+          bairro,
+          cidade,
+          uf
+        ].filter(Boolean).join(", ");
+
         const payload = {
-          cep: onlyDigits($("mCep").value),
-          fachada: [$("mLogradouro").value.trim(), $("mNumero").value.trim()].filter(Boolean).join(", "),
+          cep,
+          numero,
+          logradouro,
+          bairro,
+          cidade,
+          uf,
+          complemento: $("mComplemento").value.trim(),
+          ponto_referencia: $("mPontoRef").value.trim(),
+          fachada,
           radius: FIXED_RADIUS
         };
+
         const res = await consultarCoberturaCloudRun(payload);
+
         if (res && res.ok === true && res.viavel === true) {
           modalCoverageValidated = true;
           modalCoverageData = res;
@@ -2790,15 +3095,18 @@
           mostrarEtapa(2);
         } else {
           modalCoverageValidated = false;
+          modalCoverageData = null;
           erroEl.textContent = "Não encontramos cobertura para este endereço no momento." + (res && res.motivo ? " Motivo: " + res.motivo : "");
           erroEl.classList.add("show");
         }
       } catch (err) {
+        modalCoverageValidated = false;
+        modalCoverageData = null;
         erroEl.textContent = err.message || "Erro ao consultar cobertura. Tente novamente.";
         erroEl.classList.add("show");
       } finally {
         btn.disabled = false;
-        btn.innerHTML = original;
+        btn.innerHTML = "Consultar cobertura e continuar →";
       }
     }
 
@@ -2897,7 +3205,24 @@
         turnoInstalacao1:        $("mTurnoInstalacao").value,
         linkLocalizacao:         modalCoverageData && modalCoverageData.coords ? `https://www.google.com/maps?q=${modalCoverageData.coords}` : "",
         urlAdicional:            "",
-        obsEndereco:             modalCoverageData && modalCoverageData.motivo ? `Cobertura validada pelo site. Motivo: ${modalCoverageData.motivo}` : "Cobertura validada pelo site."
+        obsEndereco:             modalCoverageData && modalCoverageData.motivo ? `Cobertura validada pelo site. Motivo: ${modalCoverageData.motivo}` : "Cobertura validada pelo site.",
+
+        page_url:                window.location.href,
+        landing_page:            lerOrigemTrafego().landing_page || window.location.href,
+        referrer:                document.referrer || lerOrigemTrafego().referrer || "",
+        user_agent:              navigator.userAgent,
+        fbp:                     getCookieValue("_fbp"),
+        fbc:                     getCookieValue("_fbc"),
+        gclid:                   lerOrigemTrafego().gclid || "",
+        gbraid:                  lerOrigemTrafego().gbraid || "",
+        wbraid:                  lerOrigemTrafego().wbraid || "",
+        fbclid:                  lerOrigemTrafego().fbclid || "",
+        utm_source:              lerOrigemTrafego().utm_source || "",
+        utm_medium:              lerOrigemTrafego().utm_medium || "",
+        utm_campaign:            lerOrigemTrafego().utm_campaign || "",
+        utm_content:             lerOrigemTrafego().utm_content || "",
+        utm_term:                lerOrigemTrafego().utm_term || "",
+        event_id:                `site_${Date.now()}_${Math.random().toString(36).slice(2)}`
       };
     }
 
@@ -2936,7 +3261,7 @@
         const data = await response.json().catch(() => ({}));
         if (response.ok && data.ok) {
           mostrarEtapa(6);
-          if (data.easyOk === true && typeof gtag === "function") {
+          if (data.easyOk === true && vendaVeioDoGoogleSite() && typeof gtag === "function") {
             const planoSelecionado = $("mPlano").value;
             const valorConversao = PLAN_VALUES[planoSelecionado] || 1.0;
             gtag("event", "conversion", {
@@ -2958,15 +3283,6 @@
         btn.disabled = false;
         btn.innerHTML = original;
       }
-    }
-
-    function scrollPlanos(direction) {
-      const carousel = document.getElementById("plansCarousel");
-      if (!carousel) return;
-      const card = carousel.querySelector(".plan");
-      const gap = 20;
-      const step = card ? card.getBoundingClientRect().width + gap : Math.min(340, carousel.clientWidth * 0.82);
-      carousel.scrollBy({ left: direction * step, behavior: "smooth" });
     }
 
     /* Máscaras */
