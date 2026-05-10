@@ -1,0 +1,133 @@
+name: Padronizar layout das cidades
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  padronizar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Padronizar páginas com base em Canoas
+        run: |
+          node <<'NODE'
+          const fs = require("fs");
+          const path = require("path");
+
+          const cities = [
+            { cidade: "Santa Maria", uf: "RS", slug: "santa-maria" },
+            { cidade: "Santa Terezinha do Progresso", uf: "SC", slug: "santa-terezinha-do-progresso" },
+            { cidade: "São Carlos", uf: "SC", slug: "sao-carlos" },
+            { cidade: "São José", uf: "SC", slug: "sao-jose" },
+            { cidade: "São Miguel Arcanjo", uf: "SP", slug: "sao-miguel-arcanjo" },
+            { cidade: "São Miguel da Boa Vista", uf: "SC", slug: "sao-miguel-da-boa-vista" },
+            { cidade: "São Pedro do Iguaçu", uf: "PR", slug: "sao-pedro-do-iguacu" },
+            { cidade: "Sarandi", uf: "RS", slug: "sarandi" },
+            { cidade: "Saudades", uf: "SC", slug: "saudades" },
+            { cidade: "Seara", uf: "SC", slug: "seara" },
+            { cidade: "Serra Alta", uf: "SC", slug: "serra-alta" },
+            { cidade: "Serra dos Dourados", uf: "PR", slug: "serra-dos-dourados" },
+            { cidade: "Soledade", uf: "RS", slug: "soledade" },
+            { cidade: "Sorocaba", uf: "SP", slug: "sorocaba" },
+            { cidade: "Sul Brasil", uf: "SC", slug: "sul-brasil" },
+            { cidade: "Tapejara", uf: "PR", slug: "tapejara" },
+            { cidade: "Telêmaco Borba", uf: "PR", slug: "telemaco-borba" },
+            { cidade: "Tigrinhos", uf: "SC", slug: "tigrinhos" },
+            { cidade: "Toledo", uf: "PR", slug: "toledo" },
+            { cidade: "Tuneiras do Oeste", uf: "PR", slug: "tuneiras-do-oeste" },
+            { cidade: "Turvo", uf: "PR", slug: "turvo" },
+            { cidade: "Umuarama", uf: "PR", slug: "umuarama" },
+            { cidade: "Vacaria", uf: "RS", slug: "vacaria" },
+            { cidade: "Venâncio Aires", uf: "RS", slug: "venancio-aires" },
+            { cidade: "Votorantim", uf: "SP", slug: "votorantim" },
+            { cidade: "Xambrê", uf: "PR", slug: "xambre" }
+          ];
+
+          const sourcePath = path.join(process.cwd(), "internet-mhnet-canoas", "index.html");
+
+          if (!fs.existsSync(sourcePath)) {
+            console.error("Arquivo base não encontrado:", sourcePath);
+            process.exit(1);
+          }
+
+          const base = fs.readFileSync(sourcePath, "utf8");
+
+          function replaceAll(content, from, to) {
+            return content.split(from).join(to);
+          }
+
+          function generatePage(city) {
+            let html = base;
+
+            html = replaceAll(html, "Canoas", city.cidade);
+            html = replaceAll(html, "canoas", city.slug);
+
+            html = replaceAll(html, " - RS", ` - ${city.uf}`);
+
+            html = html.replace(
+              /Consulte cobertura MhNet em (.*?) - [A-Z]{2} com a WebTurbo, agente autorizado\./g,
+              `Consulte cobertura MhNet em ${city.cidade} - ${city.uf} com a WebTurbo, agente autorizado.`
+            );
+
+            html = html.replace(
+              /Consulte cobertura MhNet em (.*?) - [A-Z]{2} com atendimento comercial da WebTurbo\./g,
+              `Consulte cobertura MhNet em ${city.cidade} - ${city.uf} com atendimento comercial da WebTurbo.`
+            );
+
+            html = html.replace(
+              /https:\/\/webturbo-internet\.com\.br\/internet-mhnet-[^\/]+\//g,
+              `https://webturbo-internet.com.br/internet-mhnet-${city.slug}/`
+            );
+
+            html = html.replace(
+              /<title>MhNet .*? \| Internet Fibra com Agente Autorizado<\/title>/,
+              `<title>MhNet ${city.cidade} | Internet Fibra com Agente Autorizado</title>`
+            );
+
+            html = html.replace(
+              /<meta property="og:title" content="MhNet .*? \| Internet Fibra com Agente Autorizado" \/>/,
+              `<meta property="og:title" content="MhNet ${city.cidade} | Internet Fibra com Agente Autorizado" />`
+            );
+
+            html = html.replace(
+              /<meta name="twitter:title" content="MhNet .*? \| Internet Fibra com Agente Autorizado" \/>/,
+              `<meta name="twitter:title" content="MhNet ${city.cidade} | Internet Fibra com Agente Autorizado" />`
+            );
+
+            return html;
+          }
+
+          const updated = [];
+
+          for (const city of cities) {
+            const dir = path.join(process.cwd(), `internet-mhnet-${city.slug}`);
+            const target = path.join(dir, "index.html");
+
+            fs.mkdirSync(dir, { recursive: true });
+            fs.writeFileSync(target, generatePage(city), "utf8");
+            updated.push(`internet-mhnet-${city.slug}/index.html`);
+          }
+
+          console.log("Páginas atualizadas:");
+          for (const item of updated) console.log("- " + item);
+          NODE
+
+      - name: Commitar alterações
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet; then
+            echo "Nenhuma alteração encontrada."
+            exit 0
+          fi
+
+          git add .
+          git commit -m "Padroniza layout das páginas de cidades"
+          git push
