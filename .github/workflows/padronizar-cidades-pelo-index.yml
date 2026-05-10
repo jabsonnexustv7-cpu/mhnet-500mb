@@ -1,4 +1,4 @@
-name: Padronizar cidades pelo index principal
+name: Padronizar todas as cidades pelo index principal
 
 on:
   workflow_dispatch:
@@ -14,40 +14,649 @@ jobs:
       - name: Baixar repositório
         uses: actions/checkout@v4
 
-      - name: Gerar páginas de cidades usando o index principal como base visual
+      - name: Gerar todas as páginas de cidades usando o index principal
         run: |
           node <<'NODE'
           const fs = require("fs");
           const path = require("path");
 
           const cities = [
-            { cidade: "Santa Maria", uf: "RS", slug: "santa-maria" },
-            { cidade: "Santa Terezinha do Progresso", uf: "SC", slug: "santa-terezinha-do-progresso" },
-            { cidade: "São Carlos", uf: "SC", slug: "sao-carlos" },
-            { cidade: "São José", uf: "SC", slug: "sao-jose" },
-            { cidade: "São Miguel Arcanjo", uf: "SP", slug: "sao-miguel-arcanjo" },
-            { cidade: "São Miguel da Boa Vista", uf: "SC", slug: "sao-miguel-da-boa-vista" },
-            { cidade: "São Pedro do Iguaçu", uf: "PR", slug: "sao-pedro-do-iguacu" },
-            { cidade: "Sarandi", uf: "RS", slug: "sarandi" },
-            { cidade: "Saudades", uf: "SC", slug: "saudades" },
-            { cidade: "Seara", uf: "SC", slug: "seara" },
-            { cidade: "Serra Alta", uf: "SC", slug: "serra-alta" },
-            { cidade: "Serra dos Dourados", uf: "PR", slug: "serra-dos-dourados" },
-            { cidade: "Soledade", uf: "RS", slug: "soledade" },
-            { cidade: "Sorocaba", uf: "SP", slug: "sorocaba" },
-            { cidade: "Sul Brasil", uf: "SC", slug: "sul-brasil" },
-            { cidade: "Tapejara", uf: "PR", slug: "tapejara" },
-            { cidade: "Telêmaco Borba", uf: "PR", slug: "telemaco-borba" },
-            { cidade: "Tigrinhos", uf: "SC", slug: "tigrinhos" },
-            { cidade: "Toledo", uf: "PR", slug: "toledo" },
-            { cidade: "Tuneiras do Oeste", uf: "PR", slug: "tuneiras-do-oeste" },
-            { cidade: "Turvo", uf: "PR", slug: "turvo" },
-            { cidade: "Umuarama", uf: "PR", slug: "umuarama" },
-            { cidade: "Vacaria", uf: "RS", slug: "vacaria" },
-            { cidade: "Venâncio Aires", uf: "RS", slug: "venancio-aires" },
-            { cidade: "Votorantim", uf: "SP", slug: "votorantim" },
-            { cidade: "Xambrê", uf: "PR", slug: "xambre" }
-          ];
+            {
+                        "cidade": "Abelardo Luz",
+                        "uf": "SC",
+                        "slug": "abelardo-luz"
+            },
+            {
+                        "cidade": "Águas de Chapecó",
+                        "uf": "SC",
+                        "slug": "aguas-de-chapeco"
+            },
+            {
+                        "cidade": "Águas Frias",
+                        "uf": "SC",
+                        "slug": "aguas-frias"
+            },
+            {
+                        "cidade": "Alambari",
+                        "uf": "SP",
+                        "slug": "alambari"
+            },
+            {
+                        "cidade": "Alvorada",
+                        "uf": "RS",
+                        "slug": "alvorada"
+            },
+            {
+                        "cidade": "Balneário Camboriú",
+                        "uf": "SC",
+                        "slug": "balneario-camboriu"
+            },
+            {
+                        "cidade": "Balneário Rincão",
+                        "uf": "SC",
+                        "slug": "balneario-rincao"
+            },
+            {
+                        "cidade": "Barra Funda",
+                        "uf": "RS",
+                        "slug": "barra-funda"
+            },
+            {
+                        "cidade": "Barros Cassal",
+                        "uf": "RS",
+                        "slug": "barros-cassal"
+            },
+            {
+                        "cidade": "Bento Gonçalves",
+                        "uf": "RS",
+                        "slug": "bento-goncalves"
+            },
+            {
+                        "cidade": "Biguaçu",
+                        "uf": "SC",
+                        "slug": "biguacu"
+            },
+            {
+                        "cidade": "Bom Jesus",
+                        "uf": "SC",
+                        "slug": "bom-jesus"
+            },
+            {
+                        "cidade": "Bom Jesus do Oeste",
+                        "uf": "SC",
+                        "slug": "bom-jesus-do-oeste"
+            },
+            {
+                        "cidade": "Buri",
+                        "uf": "SP",
+                        "slug": "buri"
+            },
+            {
+                        "cidade": "Cachoeirinha",
+                        "uf": "RS",
+                        "slug": "cachoeirinha"
+            },
+            {
+                        "cidade": "Caibi",
+                        "uf": "SC",
+                        "slug": "caibi"
+            },
+            {
+                        "cidade": "Campo Erê",
+                        "uf": "SC",
+                        "slug": "campo-ere"
+            },
+            {
+                        "cidade": "Canoas",
+                        "uf": "RS",
+                        "slug": "canoas"
+            },
+            {
+                        "cidade": "Capão Bonito",
+                        "uf": "SP",
+                        "slug": "capao-bonito"
+            },
+            {
+                        "cidade": "Capão da Canoa",
+                        "uf": "RS",
+                        "slug": "capao-da-canoa"
+            },
+            {
+                        "cidade": "Carazinho",
+                        "uf": "RS",
+                        "slug": "carazinho"
+            },
+            {
+                        "cidade": "Carlos Barbosa",
+                        "uf": "RS",
+                        "slug": "carlos-barbosa"
+            },
+            {
+                        "cidade": "Cascavel",
+                        "uf": "PR",
+                        "slug": "cascavel"
+            },
+            {
+                        "cidade": "Castro",
+                        "uf": "PR",
+                        "slug": "castro"
+            },
+            {
+                        "cidade": "Caxias do Sul",
+                        "uf": "RS",
+                        "slug": "caxias-do-sul"
+            },
+            {
+                        "cidade": "Chapecó",
+                        "uf": "SC",
+                        "slug": "chapeco"
+            },
+            {
+                        "cidade": "Clevelândia",
+                        "uf": "PR",
+                        "slug": "clevelandia"
+            },
+            {
+                        "cidade": "Concórdia",
+                        "uf": "SC",
+                        "slug": "concordia"
+            },
+            {
+                        "cidade": "Cordilheira Alta",
+                        "uf": "SC",
+                        "slug": "cordilheira-alta"
+            },
+            {
+                        "cidade": "Correia Pinto",
+                        "uf": "SC",
+                        "slug": "correia-pinto"
+            },
+            {
+                        "cidade": "Criciúma",
+                        "uf": "SC",
+                        "slug": "criciuma"
+            },
+            {
+                        "cidade": "Cruzeiro do Oeste",
+                        "uf": "PR",
+                        "slug": "cruzeiro-do-oeste"
+            },
+            {
+                        "cidade": "Cunha Porã",
+                        "uf": "SC",
+                        "slug": "cunha-pora"
+            },
+            {
+                        "cidade": "Cunhataí",
+                        "uf": "SC",
+                        "slug": "cunhatai"
+            },
+            {
+                        "cidade": "Dourados",
+                        "uf": "MS",
+                        "slug": "dourados"
+            },
+            {
+                        "cidade": "Entre Rios",
+                        "uf": "SC",
+                        "slug": "entre-rios"
+            },
+            {
+                        "cidade": "Erechim",
+                        "uf": "RS",
+                        "slug": "erechim"
+            },
+            {
+                        "cidade": "Estrela",
+                        "uf": "RS",
+                        "slug": "estrela"
+            },
+            {
+                        "cidade": "Farroupilha",
+                        "uf": "RS",
+                        "slug": "farroupilha"
+            },
+            {
+                        "cidade": "Flor do Sertão",
+                        "uf": "SC",
+                        "slug": "flor-do-sertao"
+            },
+            {
+                        "cidade": "Florianópolis",
+                        "uf": "SC",
+                        "slug": "florianopolis"
+            },
+            {
+                        "cidade": "Galvão",
+                        "uf": "SC",
+                        "slug": "galvao"
+            },
+            {
+                        "cidade": "Garibaldi",
+                        "uf": "RS",
+                        "slug": "garibaldi"
+            },
+            {
+                        "cidade": "Goioerê",
+                        "uf": "PR",
+                        "slug": "goioere"
+            },
+            {
+                        "cidade": "Gravataí",
+                        "uf": "RS",
+                        "slug": "gravatai"
+            },
+            {
+                        "cidade": "Guarapuava",
+                        "uf": "PR",
+                        "slug": "guarapuava"
+            },
+            {
+                        "cidade": "Herval do Oeste",
+                        "uf": "SC",
+                        "slug": "herval-do-oeste"
+            },
+            {
+                        "cidade": "Içara",
+                        "uf": "SC",
+                        "slug": "icara"
+            },
+            {
+                        "cidade": "Ipira",
+                        "uf": "SC",
+                        "slug": "ipira"
+            },
+            {
+                        "cidade": "Ipuaçu",
+                        "uf": "SC",
+                        "slug": "ipuacu"
+            },
+            {
+                        "cidade": "Iraceminha",
+                        "uf": "SC",
+                        "slug": "iraceminha"
+            },
+            {
+                        "cidade": "Irani",
+                        "uf": "SC",
+                        "slug": "irani"
+            },
+            {
+                        "cidade": "Irati",
+                        "uf": "PR",
+                        "slug": "irati"
+            },
+            {
+                        "cidade": "Itajaí",
+                        "uf": "SC",
+                        "slug": "itajai"
+            },
+            {
+                        "cidade": "Itapetininga",
+                        "uf": "SP",
+                        "slug": "itapetininga"
+            },
+            {
+                        "cidade": "Joaçaba",
+                        "uf": "SC",
+                        "slug": "joacaba"
+            },
+            {
+                        "cidade": "Jupiá",
+                        "uf": "SC",
+                        "slug": "jupia"
+            },
+            {
+                        "cidade": "Lageado Grande",
+                        "uf": "SC",
+                        "slug": "lageado-grande"
+            },
+            {
+                        "cidade": "Lages",
+                        "uf": "SC",
+                        "slug": "lages"
+            },
+            {
+                        "cidade": "Lagoa Vermelha",
+                        "uf": "RS",
+                        "slug": "lagoa-vermelha"
+            },
+            {
+                        "cidade": "Lajeado",
+                        "uf": "RS",
+                        "slug": "lajeado"
+            },
+            {
+                        "cidade": "Lovat",
+                        "uf": "PR",
+                        "slug": "lovat"
+            },
+            {
+                        "cidade": "Maravilha",
+                        "uf": "SC",
+                        "slug": "maravilha"
+            },
+            {
+                        "cidade": "Marechal Cândido Rondon",
+                        "uf": "PR",
+                        "slug": "marechal-candido-rondon"
+            },
+            {
+                        "cidade": "Marema",
+                        "uf": "SC",
+                        "slug": "marema"
+            },
+            {
+                        "cidade": "Maria Helena",
+                        "uf": "PR",
+                        "slug": "maria-helena"
+            },
+            {
+                        "cidade": "Mariluz",
+                        "uf": "PR",
+                        "slug": "mariluz"
+            },
+            {
+                        "cidade": "Modelo",
+                        "uf": "SC",
+                        "slug": "modelo"
+            },
+            {
+                        "cidade": "Navegantes",
+                        "uf": "SC",
+                        "slug": "navegantes"
+            },
+            {
+                        "cidade": "Naviraí",
+                        "uf": "MS",
+                        "slug": "navirai"
+            },
+            {
+                        "cidade": "Nova Erechim",
+                        "uf": "SC",
+                        "slug": "nova-erechim"
+            },
+            {
+                        "cidade": "Nova Itaberaba",
+                        "uf": "SC",
+                        "slug": "nova-itaberaba"
+            },
+            {
+                        "cidade": "Nova Olímpia",
+                        "uf": "PR",
+                        "slug": "nova-olimpia"
+            },
+            {
+                        "cidade": "Nova Santa Rita",
+                        "uf": "RS",
+                        "slug": "nova-santa-rita"
+            },
+            {
+                        "cidade": "Ouro Verde",
+                        "uf": "PR",
+                        "slug": "ouro-verde"
+            },
+            {
+                        "cidade": "Palhoça",
+                        "uf": "SC",
+                        "slug": "palhoca"
+            },
+            {
+                        "cidade": "Palmitos",
+                        "uf": "SC",
+                        "slug": "palmitos"
+            },
+            {
+                        "cidade": "Passo Fundo",
+                        "uf": "RS",
+                        "slug": "passo-fundo"
+            },
+            {
+                        "cidade": "Passos Maia",
+                        "uf": "SC",
+                        "slug": "passos-maia"
+            },
+            {
+                        "cidade": "Pato Branco",
+                        "uf": "PR",
+                        "slug": "pato-branco"
+            },
+            {
+                        "cidade": "Perobal",
+                        "uf": "PR",
+                        "slug": "perobal"
+            },
+            {
+                        "cidade": "Pérola",
+                        "uf": "PR",
+                        "slug": "perola"
+            },
+            {
+                        "cidade": "Pinhalzinho",
+                        "uf": "SC",
+                        "slug": "pinhalzinho"
+            },
+            {
+                        "cidade": "Piratuba",
+                        "uf": "SC",
+                        "slug": "piratuba"
+            },
+            {
+                        "cidade": "Ponta Grossa",
+                        "uf": "PR",
+                        "slug": "ponta-grossa"
+            },
+            {
+                        "cidade": "Ponte Serrada",
+                        "uf": "SC",
+                        "slug": "ponte-serrada"
+            },
+            {
+                        "cidade": "Prudentópolis",
+                        "uf": "PR",
+                        "slug": "prudentopolis"
+            },
+            {
+                        "cidade": "Reserva",
+                        "uf": "PR",
+                        "slug": "reserva"
+            },
+            {
+                        "cidade": "Ribeirão Grande",
+                        "uf": "SP",
+                        "slug": "ribeirao-grande"
+            },
+            {
+                        "cidade": "Riqueza",
+                        "uf": "SC",
+                        "slug": "riqueza"
+            },
+            {
+                        "cidade": "Romelândia",
+                        "uf": "SC",
+                        "slug": "romelandia"
+            },
+            {
+                        "cidade": "Saldanha Marinho",
+                        "uf": "RS",
+                        "slug": "saldanha-marinho"
+            },
+            {
+                        "cidade": "Saltinho",
+                        "uf": "SC",
+                        "slug": "saltinho"
+            },
+            {
+                        "cidade": "Santa Bárbara do Sul",
+                        "uf": "RS",
+                        "slug": "santa-barbara-do-sul"
+            },
+            {
+                        "cidade": "Santa Cruz",
+                        "uf": "RS",
+                        "slug": "santa-cruz"
+            },
+            {
+                        "cidade": "Santa Elizia",
+                        "uf": "PR",
+                        "slug": "santa-elizia"
+            },
+            {
+                        "cidade": "Santa Maria",
+                        "uf": "RS",
+                        "slug": "santa-maria"
+            },
+            {
+                        "cidade": "Santa Terezinha do Progresso",
+                        "uf": "SC",
+                        "slug": "santa-terezinha-do-progresso"
+            },
+            {
+                        "cidade": "São Carlos",
+                        "uf": "SC",
+                        "slug": "sao-carlos"
+            },
+            {
+                        "cidade": "São José",
+                        "uf": "SC",
+                        "slug": "sao-jose"
+            },
+            {
+                        "cidade": "São José das Palmeiras",
+                        "uf": "PR",
+                        "slug": "sao-jose-das-palmeiras"
+            },
+            {
+                        "cidade": "São Mateus",
+                        "uf": "PR",
+                        "slug": "sao-mateus"
+            },
+            {
+                        "cidade": "São Miguel Arcanjo",
+                        "uf": "SP",
+                        "slug": "sao-miguel-arcanjo"
+            },
+            {
+                        "cidade": "São Miguel da Boa Vista",
+                        "uf": "SC",
+                        "slug": "sao-miguel-da-boa-vista"
+            },
+            {
+                        "cidade": "São Pedro do Iguaçu",
+                        "uf": "PR",
+                        "slug": "sao-pedro-do-iguacu"
+            },
+            {
+                        "cidade": "Sarandi",
+                        "uf": "RS",
+                        "slug": "sarandi"
+            },
+            {
+                        "cidade": "Saudades",
+                        "uf": "SC",
+                        "slug": "saudades"
+            },
+            {
+                        "cidade": "Seara",
+                        "uf": "SC",
+                        "slug": "seara"
+            },
+            {
+                        "cidade": "Serra Alta",
+                        "uf": "SC",
+                        "slug": "serra-alta"
+            },
+            {
+                        "cidade": "Serra dos Dourados",
+                        "uf": "PR",
+                        "slug": "serra-dos-dourados"
+            },
+            {
+                        "cidade": "Soledade",
+                        "uf": "RS",
+                        "slug": "soledade"
+            },
+            {
+                        "cidade": "Sorocaba",
+                        "uf": "SP",
+                        "slug": "sorocaba"
+            },
+            {
+                        "cidade": "Sul Brasil",
+                        "uf": "SC",
+                        "slug": "sul-brasil"
+            },
+            {
+                        "cidade": "Tapejara",
+                        "uf": "PR",
+                        "slug": "tapejara"
+            },
+            {
+                        "cidade": "Telêmaco Borba",
+                        "uf": "PR",
+                        "slug": "telemaco-borba"
+            },
+            {
+                        "cidade": "Tigrinhos",
+                        "uf": "SC",
+                        "slug": "tigrinhos"
+            },
+            {
+                        "cidade": "Toledo",
+                        "uf": "PR",
+                        "slug": "toledo"
+            },
+            {
+                        "cidade": "Tuneiras do Oeste",
+                        "uf": "PR",
+                        "slug": "tuneiras-do-oeste"
+            },
+            {
+                        "cidade": "Turvo",
+                        "uf": "PR",
+                        "slug": "turvo"
+            },
+            {
+                        "cidade": "Umuarama",
+                        "uf": "PR",
+                        "slug": "umuarama"
+            },
+            {
+                        "cidade": "Vacaria",
+                        "uf": "RS",
+                        "slug": "vacaria"
+            },
+            {
+                        "cidade": "Venâncio Aires",
+                        "uf": "RS",
+                        "slug": "venancio-aires"
+            },
+            {
+                        "cidade": "Votorantim",
+                        "uf": "SP",
+                        "slug": "votorantim"
+            },
+            {
+                        "cidade": "Xambrê",
+                        "uf": "PR",
+                        "slug": "xambre"
+            },
+            {
+                        "cidade": "Xanxerê",
+                        "uf": "SC",
+                        "slug": "xanxere"
+            },
+            {
+                        "cidade": "Xavantina",
+                        "uf": "SC",
+                        "slug": "xavantina"
+            },
+            {
+                        "cidade": "Xaxim",
+                        "uf": "SC",
+                        "slug": "xaxim"
+            }
+];
 
           const root = process.cwd();
           const sourcePath = path.join(root, "index.html");
@@ -63,6 +672,22 @@ jobs:
             return html.replace(pattern, replacement);
           }
 
+          function removePlansArrows(html) {
+            // Remove botões/setas do carrossel de planos, caso existam em alguma base antiga.
+            html = html.replace(/<button[^>]*class="[^"]*plans-arrow[^"]*"[^>]*>[\s\S]*?<\/button>/g, "");
+
+            // Remove CSS específico das setas.
+            html = html.replace(/\.plans-arrow[\s\S]*?\}\s*/g, "");
+            html = html.replace(/\.plans-arrow-left[\s\S]*?\}\s*/g, "");
+            html = html.replace(/\.plans-arrow-right[\s\S]*?\}\s*/g, "");
+
+            // Remove padding extra que havia sido criado para acomodar setas laterais.
+            html = html.replace(/padding-left:\s*58px;\s*/g, "");
+            html = html.replace(/padding-right:\s*58px;\s*/g, "");
+
+            return html;
+          }
+
           function gerar(city) {
             const url = `https://webturbo-internet.com.br/internet-mhnet-${city.slug}/`;
             const title = `Internet MhNet em ${city.cidade} | WebTurbo`;
@@ -70,6 +695,7 @@ jobs:
 
             let html = base;
 
+            // SEO local
             html = replaceTag(html, /<title>[\s\S]*?<\/title>/, `<title>${title}</title>`);
             html = replaceTag(html, /<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${desc}" />`);
             html = replaceTag(html, /<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${title}" />`);
@@ -78,6 +704,24 @@ jobs:
             html = replaceTag(html, /<meta name="twitter:title" content="[^"]*" \/>/, `<meta name="twitter:title" content="${title}" />`);
             html = replaceTag(html, /<meta name="twitter:description" content="[^"]*" \/>/, `<meta name="twitter:description" content="${desc}" />`);
             html = replaceTag(html, /<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${url}" />`);
+
+            // Personalização visível na seção de planos
+            html = html.replace(/Planos MhNet Internet/g, `Planos MhNet Internet em ${city.cidade}`);
+
+            // Personalização do texto de apoio logo abaixo do título de planos
+            html = html.replace(
+              /Ofertas disponíveis conforme cobertura e viabilidade técnica no seu endereço\./g,
+              `Ofertas disponíveis em ${city.cidade} - ${city.uf}, conforme cobertura e viabilidade técnica no seu endereço.`
+            );
+
+            // Personalização do bloco de cobertura, quando existir no index principal
+            html = html.replace(
+              /Consulte cobertura MhNet com a WebTurbo, agente autorizado\./g,
+              `Consulte cobertura MhNet em ${city.cidade} - ${city.uf} com a WebTurbo, agente autorizado.`
+            );
+
+            // Garante que os cards de planos fiquem sem setas laterais no mobile/desktop.
+            html = removePlansArrows(html);
 
             return html;
           }
@@ -94,6 +738,7 @@ jobs:
 
           console.log("Páginas atualizadas usando o index.html principal como base:");
           for (const item of updated) console.log("- " + item);
+          console.log("Total atualizado:", updated.length);
           NODE
 
       - name: Commitar alterações
@@ -107,5 +752,5 @@ jobs:
           fi
 
           git add .
-          git commit -m "Padroniza páginas de cidades pelo index principal"
+          git commit -m "Padroniza cidades com nome local e remove setas dos planos"
           git push
