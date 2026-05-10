@@ -1,0 +1,138 @@
+name: Padronizar cidades pelo index principal
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  padronizar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Gerar páginas de cidades usando o index principal como base visual
+        run: |
+          node <<'NODE'
+          const fs = require("fs");
+          const path = require("path");
+
+          const cities = [
+            { cidade: "Santa Maria", uf: "RS", slug: "santa-maria" },
+            { cidade: "Santa Terezinha do Progresso", uf: "SC", slug: "santa-terezinha-do-progresso" },
+            { cidade: "São Carlos", uf: "SC", slug: "sao-carlos" },
+            { cidade: "São José", uf: "SC", slug: "sao-jose" },
+            { cidade: "São Miguel Arcanjo", uf: "SP", slug: "sao-miguel-arcanjo" },
+            { cidade: "São Miguel da Boa Vista", uf: "SC", slug: "sao-miguel-da-boa-vista" },
+            { cidade: "São Pedro do Iguaçu", uf: "PR", slug: "sao-pedro-do-iguacu" },
+            { cidade: "Sarandi", uf: "RS", slug: "sarandi" },
+            { cidade: "Saudades", uf: "SC", slug: "saudades" },
+            { cidade: "Seara", uf: "SC", slug: "seara" },
+            { cidade: "Serra Alta", uf: "SC", slug: "serra-alta" },
+            { cidade: "Serra dos Dourados", uf: "PR", slug: "serra-dos-dourados" },
+            { cidade: "Soledade", uf: "RS", slug: "soledade" },
+            { cidade: "Sorocaba", uf: "SP", slug: "sorocaba" },
+            { cidade: "Sul Brasil", uf: "SC", slug: "sul-brasil" },
+            { cidade: "Tapejara", uf: "PR", slug: "tapejara" },
+            { cidade: "Telêmaco Borba", uf: "PR", slug: "telemaco-borba" },
+            { cidade: "Tigrinhos", uf: "SC", slug: "tigrinhos" },
+            { cidade: "Toledo", uf: "PR", slug: "toledo" },
+            { cidade: "Tuneiras do Oeste", uf: "PR", slug: "tuneiras-do-oeste" },
+            { cidade: "Turvo", uf: "PR", slug: "turvo" },
+            { cidade: "Umuarama", uf: "PR", slug: "umuarama" },
+            { cidade: "Vacaria", uf: "RS", slug: "vacaria" },
+            { cidade: "Venâncio Aires", uf: "RS", slug: "venancio-aires" },
+            { cidade: "Votorantim", uf: "SP", slug: "votorantim" },
+            { cidade: "Xambrê", uf: "PR", slug: "xambre" }
+          ];
+
+          const root = process.cwd();
+          const sourcePath = path.join(root, "index.html");
+
+          if (!fs.existsSync(sourcePath)) {
+            console.error("index.html principal não encontrado.");
+            process.exit(1);
+          }
+
+          const base = fs.readFileSync(sourcePath, "utf8");
+
+          function setOrReplaceTag(html, regex, replacement) {
+            return html.replace(regex, replacement);
+          }
+
+          function gerar(city) {
+            const url = `https://webturbo-internet.com.br/internet-mhnet-${city.slug}/`;
+            const title = `Internet MhNet em ${city.cidade} | WebTurbo`;
+            const desc = `Consulte cobertura MhNet em ${city.cidade} - ${city.uf} com a WebTurbo, agente autorizado. Veja planos de internet fibra e contrate online.`;
+
+            let html = base;
+
+            // SEO local, mantendo o visual e toda a estrutura do index principal.
+            html = setOrReplaceTag(html, /<title>.*?<\/title>/, `<title>${title}</title>`);
+            html = setOrReplaceTag(html, /<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${desc}" />`);
+            html = setOrReplaceTag(html, /<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${title}" />`);
+            html = setOrReplaceTag(html, /<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${desc}" />`);
+            html = setOrReplaceTag(html, /<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${url}" />`);
+            html = setOrReplaceTag(html, /<meta name="twitter:title" content="[^"]*" \/>/, `<meta name="twitter:title" content="${title}" />`);
+            html = setOrReplaceTag(html, /<meta name="twitter:description" content="[^"]*" \/>/, `<meta name="twitter:description" content="${desc}" />`);
+            html = setOrReplaceTag(html, /<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${url}" />`);
+
+            // Pequena marcação local sem mexer no layout visual: inclui cidade em schema, se não existir.
+            const localJsonLd = `
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Internet MhNet em ${city.cidade}",
+    "areaServed": {
+      "@type": "City",
+      "name": "${city.cidade}",
+      "addressRegion": "${city.uf}",
+      "addressCountry": "BR"
+    },
+    "provider": {
+      "@type": "Organization",
+      "name": "WebTurbo Internet",
+      "url": "https://webturbo-internet.com.br/"
+    },
+    "url": "${url}"
+  }
+  </script>`;
+
+            if (!html.includes(`"Internet MhNet em ${city.cidade}"`)) {
+              html = html.replace("</head>", `${localJsonLd}\n</head>`);
+            }
+
+            return html;
+          }
+
+          const updated = [];
+
+          for (const city of cities) {
+            const dir = path.join(root, `internet-mhnet-${city.slug}`);
+            const target = path.join(dir, "index.html");
+            fs.mkdirSync(dir, { recursive: true });
+            fs.writeFileSync(target, gerar(city), "utf8");
+            updated.push(`internet-mhnet-${city.slug}/index.html`);
+          }
+
+          console.log("Páginas atualizadas usando o index.html principal como base:");
+          for (const item of updated) console.log("- " + item);
+          NODE
+
+      - name: Commitar alterações
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet; then
+            echo "Nenhuma alteração encontrada."
+            exit 0
+          fi
+
+          git add .
+          git commit -m "Padroniza páginas de cidades pelo index principal"
+          git push
