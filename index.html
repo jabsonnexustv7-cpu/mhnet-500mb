@@ -2419,6 +2419,69 @@
 
     const onlyDigits = (value) => String(value || "").replace(/\D/g, "");
 
+    const TRAFFIC_STORAGE_KEY = "webturbo_origem_trafego";
+
+    function getTrafficParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return (params.get(name) || "").trim();
+    }
+
+    function salvarOrigemTrafego() {
+      const params = new URLSearchParams(window.location.search);
+      const atual = lerOrigemTrafego();
+
+      const origem = {
+        ...atual,
+        landing_page: atual.landing_page || window.location.href,
+        page_url: window.location.href,
+        referrer: document.referrer || atual.referrer || "",
+        gclid: getTrafficParam("gclid") || atual.gclid || "",
+        gbraid: getTrafficParam("gbraid") || atual.gbraid || "",
+        wbraid: getTrafficParam("wbraid") || atual.wbraid || "",
+        fbclid: getTrafficParam("fbclid") || atual.fbclid || "",
+        utm_source: getTrafficParam("utm_source") || atual.utm_source || "",
+        utm_medium: getTrafficParam("utm_medium") || atual.utm_medium || "",
+        utm_campaign: getTrafficParam("utm_campaign") || atual.utm_campaign || "",
+        utm_content: getTrafficParam("utm_content") || atual.utm_content || "",
+        utm_term: getTrafficParam("utm_term") || atual.utm_term || "",
+        first_seen_at: atual.first_seen_at || new Date().toISOString(),
+        last_seen_at: new Date().toISOString()
+      };
+
+      localStorage.setItem(TRAFFIC_STORAGE_KEY, JSON.stringify(origem));
+    }
+
+    function lerOrigemTrafego() {
+      try {
+        return JSON.parse(localStorage.getItem(TRAFFIC_STORAGE_KEY) || "{}");
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function getCookieValue(name) {
+      const match = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/[.$?*|{}()\[\]\\\/\+^]/g, "\\$&") + "=([^;]*)"));
+      return match ? decodeURIComponent(match[1]) : "";
+    }
+
+    function vendaVeioDoGoogleSite() {
+      const origem = lerOrigemTrafego();
+      const utmSource = String(origem.utm_source || "").toLowerCase();
+      const utmMedium = String(origem.utm_medium || "").toLowerCase();
+
+      return Boolean(
+        origem.gclid ||
+        origem.gbraid ||
+        origem.wbraid ||
+        utmSource.includes("google") ||
+        utmMedium.includes("cpc") ||
+        utmMedium.includes("ppc") ||
+        utmMedium.includes("paidsearch")
+      );
+    }
+
+    salvarOrigemTrafego();
+
     function setStatus(text, type = "") {
       const el = $("status");
       el.textContent = text;
@@ -3142,7 +3205,24 @@
         turnoInstalacao1:        $("mTurnoInstalacao").value,
         linkLocalizacao:         modalCoverageData && modalCoverageData.coords ? `https://www.google.com/maps?q=${modalCoverageData.coords}` : "",
         urlAdicional:            "",
-        obsEndereco:             modalCoverageData && modalCoverageData.motivo ? `Cobertura validada pelo site. Motivo: ${modalCoverageData.motivo}` : "Cobertura validada pelo site."
+        obsEndereco:             modalCoverageData && modalCoverageData.motivo ? `Cobertura validada pelo site. Motivo: ${modalCoverageData.motivo}` : "Cobertura validada pelo site.",
+
+        page_url:                window.location.href,
+        landing_page:            lerOrigemTrafego().landing_page || window.location.href,
+        referrer:                document.referrer || lerOrigemTrafego().referrer || "",
+        user_agent:              navigator.userAgent,
+        fbp:                     getCookieValue("_fbp"),
+        fbc:                     getCookieValue("_fbc"),
+        gclid:                   lerOrigemTrafego().gclid || "",
+        gbraid:                  lerOrigemTrafego().gbraid || "",
+        wbraid:                  lerOrigemTrafego().wbraid || "",
+        fbclid:                  lerOrigemTrafego().fbclid || "",
+        utm_source:              lerOrigemTrafego().utm_source || "",
+        utm_medium:              lerOrigemTrafego().utm_medium || "",
+        utm_campaign:            lerOrigemTrafego().utm_campaign || "",
+        utm_content:             lerOrigemTrafego().utm_content || "",
+        utm_term:                lerOrigemTrafego().utm_term || "",
+        event_id:                `site_${Date.now()}_${Math.random().toString(36).slice(2)}`
       };
     }
 
@@ -3181,7 +3261,7 @@
         const data = await response.json().catch(() => ({}));
         if (response.ok && data.ok) {
           mostrarEtapa(6);
-          if (data.easyOk === true && typeof gtag === "function") {
+          if (data.easyOk === true && vendaVeioDoGoogleSite() && typeof gtag === "function") {
             const planoSelecionado = $("mPlano").value;
             const valorConversao = PLAN_VALUES[planoSelecionado] || 1.0;
             gtag("event", "conversion", {
