@@ -2624,6 +2624,36 @@
     const WHATS_NUMBER = "555193187300";
     const TIMEOUT_MS   = 8000;
 
+    /* ── EVENTOS GOOGLE / GA4 ──
+       Funil do site WebTurbo:
+       - clicou_consultar_cobertura
+       - consulta_cobertura_viavel
+       - consulta_cobertura_inviavel
+       - abriu_modal_contratacao
+       - enviou_formulario_easy
+       - erro_envio_formulario
+       - clique_whatsapp
+    */
+    function trackGA4(eventName, params = {}) {
+      try {
+        const cleanParams = { origem: "site_webturbo", ...params };
+
+        Object.keys(cleanParams).forEach((key) => {
+          if (cleanParams[key] === undefined || cleanParams[key] === null) cleanParams[key] = "";
+          if (typeof cleanParams[key] === "string") cleanParams[key] = cleanParams[key].slice(0, 100);
+        });
+
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: eventName, ...cleanParams });
+
+        if (typeof gtag === "function") {
+          gtag("event", eventName, cleanParams);
+        }
+      } catch (e) {
+        console.warn("Erro ao enviar evento GA4:", eventName, e);
+      }
+    }
+
 
     /* ── Consulta do botão flutuante antes do WhatsApp ── */
     const wtId = (id) => document.getElementById(id);
@@ -2643,6 +2673,7 @@
     }
 
     function wtAbrirModal() {
+      trackGA4("abriu_modal_whatsapp", { origem_botao: "botao_whatsapp_site" });
       const modal = wtId("modalConsultaWhats");
       if (!modal) return;
       modal.classList.add("open");
@@ -2693,6 +2724,12 @@
       const numero = wtId("numeroModalWhats")?.value.trim() || "";
       const btn = wtId("consultarModalWhats");
 
+      trackGA4("clicou_consultar_cobertura", {
+        origem_consulta: "modal_whatsapp",
+        cep_preenchido: cep.length === 8 ? "sim" : "nao",
+        numero_preenchido: numero ? "sim" : "nao"
+      });
+
       if (cep.length !== 8) { wtSetStatus("Informe um CEP válido.", "bad"); return; }
       if (!numero) { wtSetStatus("Informe o número do imóvel.", "bad"); return; }
 
@@ -2742,8 +2779,20 @@
         const coords = data && data.coords ? data.coords : "";
 
         if (wtIsViavel(data)) {
+          trackGA4("consulta_cobertura_viavel", {
+            origem_consulta: "modal_whatsapp",
+            cidade: end.localidade || "",
+            uf: end.uf || "",
+            cep
+          });
           wtSetStatus("Cobertura disponível! Encaminhando para nossa equipe...", "ok");
           setTimeout(() => {
+            trackGA4("clique_whatsapp", {
+              origem_botao: "modal_whatsapp_cobertura_viavel",
+              cidade: end.localidade || "",
+              uf: end.uf || "",
+              cep
+            });
             window.location.href = wtMontarWhatsapp(
               wtFormatCep(wtId("cepModalWhats").value),
               numero,
@@ -2752,9 +2801,17 @@
             );
           }, 650);
         } else {
+          trackGA4("consulta_cobertura_inviavel", {
+            origem_consulta: "modal_whatsapp",
+            cidade: end.localidade || "",
+            uf: end.uf || "",
+            cep,
+            motivo: data && data.motivo ? data.motivo : "sem_viabilidade"
+          });
           wtSetStatus("No momento ainda não identificamos cobertura disponível para esse endereço. Fale com nossa equipe para verificarmos outras possibilidades.", "bad");
         }
       } catch (e) {
+        trackGA4("erro_consulta_cobertura", { origem_consulta: "modal_whatsapp", erro: e && e.message ? e.message : "erro_consulta" });
         wtSetStatus("Não foi possível consultar agora. Tente novamente em instantes.", "bad");
       } finally {
         if (btn) {
@@ -2947,6 +3004,13 @@
       $("ctaViavel").classList.remove("show");
       $("btnContratarCobertura").href = "#";
 
+      trackGA4("clicou_consultar_cobertura", {
+        origem_consulta: "box_principal",
+        etapa_consulta: extraVisivel ? "consulta_cobertura" : "busca_endereco",
+        cep_preenchido: cepLimpo.length === 8 ? "sim" : "nao",
+        numero_preenchido: numero ? "sim" : "nao"
+      });
+
       if (cepLimpo.length !== 8) {
         setStatus("Informe um CEP válido.", "bad");
         return;
@@ -3083,6 +3147,13 @@
         const res = await consultarCoberturaCloudRun(payload);
 
         if (res && res.ok === true && res.viavel === true) {
+          trackGA4("consulta_cobertura_viavel", {
+            origem_consulta: "box_principal",
+            cidade,
+            uf,
+            cep: cepLimpo
+          });
+
           const mensagem = `Olá! Consultei a cobertura no site da WebTurbo, parceira de vendas autorizada MhNet, e quero contratar.\n\nCEP: ${cep}\nNúmero: ${numero}\nEndereço: ${enderecoCompleto}\nCoords: ${res.coords || "-"}\nMotivo: ${res.motivo || "-"}`;
 
           coberturaPaginaData = {
@@ -3116,11 +3187,19 @@
             })
           }).catch(() => {}); // silencioso, nunca bloqueia o usuário
         } else {
+          trackGA4("consulta_cobertura_inviavel", {
+            origem_consulta: "box_principal",
+            cidade,
+            uf,
+            cep: cepLimpo,
+            motivo: res && res.motivo ? res.motivo : "sem_viabilidade"
+          });
           coberturaPaginaData = null;
           setStatus("Ainda não temos cobertura disponível para este endereço. Fale com nosso atendimento para verificarmos outras possibilidades.", "bad");
         }
 
-      } catch {
+      } catch (err) {
+        trackGA4("erro_consulta_cobertura", { origem_consulta: "box_principal", erro: err && err.message ? err.message : "erro_consulta" });
         coberturaPaginaData = null;
         setStatus("Erro ao consultar cobertura. Tente novamente ou fale com nosso atendimento.", "bad");
       } finally {
@@ -3131,6 +3210,14 @@
     $("cep").addEventListener("input", (e) => { e.target.value = formatCep(e.target.value); });
     $("btnConsultar").addEventListener("click", consultarCobertura);
     $("btnLimpar").addEventListener("click", clearForm);
+    $("btnContratarCobertura").addEventListener("click", function() {
+      trackGA4("clique_whatsapp", {
+        origem_botao: "box_principal_cobertura_viavel",
+        cidade: coberturaPaginaData && coberturaPaginaData.cidade ? coberturaPaginaData.cidade : "",
+        uf: coberturaPaginaData && coberturaPaginaData.uf ? coberturaPaginaData.uf : "",
+        cep: coberturaPaginaData && coberturaPaginaData.cep ? onlyDigits(coberturaPaginaData.cep) : ""
+      });
+    });
     $("cep").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); consultarCobertura(); } });
     $("numero").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); consultarCobertura(); } });
     setAddress("");
@@ -3234,6 +3321,10 @@
 
     function abrirModal(planoPreSelecionado) {
       modalPlanoPreSelecionado = planoPreSelecionado || "";
+      trackGA4("abriu_modal_contratacao", {
+        plano: modalPlanoPreSelecionado,
+        origem_modal: coberturaPaginaData && coberturaPaginaData.cobertura && coberturaPaginaData.cobertura.viavel === true ? "consulta_cobertura" : "card_plano"
+      });
       modalCoverageValidated = false;
       modalCoverageData = null;
       resetModalVisual();
@@ -3362,6 +3453,13 @@
       const numero = $("mNumero").value.trim();
       const btn = document.querySelector("#etapa1 .btn-modal-next");
 
+      trackGA4("clicou_consultar_cobertura", {
+        origem_consulta: "modal_contratacao",
+        etapa_consulta: enderecoCompletoVisivel ? "consulta_cobertura" : "busca_endereco",
+        cep_preenchido: cep.length === 8 ? "sim" : "nao",
+        numero_preenchido: numero ? "sim" : "nao"
+      });
+
       if (cep.length !== 8) {
         fieldError("mCep", "Informe um CEP válido.");
         return;
@@ -3459,17 +3557,31 @@
         const res = await consultarCoberturaCloudRun(payload);
 
         if (res && res.ok === true && res.viavel === true) {
+          trackGA4("consulta_cobertura_viavel", {
+            origem_consulta: "modal_contratacao",
+            cidade,
+            uf,
+            cep
+          });
           modalCoverageValidated = true;
           modalCoverageData = res;
           $("coverageOkBox").classList.add("show");
           mostrarEtapa(2);
         } else {
+          trackGA4("consulta_cobertura_inviavel", {
+            origem_consulta: "modal_contratacao",
+            cidade,
+            uf,
+            cep,
+            motivo: res && res.motivo ? res.motivo : "sem_viabilidade"
+          });
           modalCoverageValidated = false;
           modalCoverageData = null;
           erroEl.textContent = "Não encontramos cobertura para este endereço no momento." + (res && res.motivo ? " Motivo: " + res.motivo : "");
           erroEl.classList.add("show");
         }
       } catch (err) {
+        trackGA4("erro_consulta_cobertura", { origem_consulta: "modal_contratacao", erro: err && err.message ? err.message : "erro_consulta" });
         modalCoverageValidated = false;
         modalCoverageData = null;
         erroEl.textContent = err.message || "Erro ao consultar cobertura. Tente novamente.";
@@ -3606,13 +3718,27 @@
       const intervalo = setInterval(() => {
         segundos--;
         if (contador) contador.textContent = segundos;
-        if (segundos <= 0) { clearInterval(intervalo); window.location.href = url; }
+        if (segundos <= 0) {
+          clearInterval(intervalo);
+          trackGA4("clique_whatsapp", {
+            origem_botao: "pos_envio_formulario_easy",
+            plano: $("mPlano") ? $("mPlano").value : "",
+            cidade: $("mCidade") ? $("mCidade").value.trim() : "",
+            uf: $("mUf") ? $("mUf").value.trim().toUpperCase() : ""
+          });
+          window.location.href = url;
+        }
       }, 1000);
     }
 
     async function enviarFormulario() {
       const erroEl = $("modalErro");
       erroEl.classList.remove("show");
+      trackGA4("tentou_enviar_formulario_easy", {
+        plano: $("mPlano") ? $("mPlano").value : "",
+        cidade: $("mCidade") ? $("mCidade").value.trim() : "",
+        uf: $("mUf") ? $("mUf").value.trim().toUpperCase() : ""
+      });
       if (!modalCoverageValidated) {
         erroEl.textContent = "Volte para a etapa de endereço e valide a cobertura antes de enviar.";
         erroEl.classList.add("show");
@@ -3630,6 +3756,14 @@
         });
         const data = await response.json().catch(() => ({}));
         if (response.ok && data.ok) {
+          const planoSelecionadoEvento = $("mPlano").value;
+          trackGA4("enviou_formulario_easy", {
+            plano: planoSelecionadoEvento,
+            valor: PLAN_VALUES[planoSelecionadoEvento] || 0,
+            cidade: $("mCidade").value.trim(),
+            uf: $("mUf").value.trim().toUpperCase(),
+            easy_ok: data.easyOk === true ? "sim" : "nao"
+          });
           mostrarEtapa(6);
           if (data.easyOk === true && vendaVeioDoGoogleSite() && typeof gtag === "function") {
             const planoSelecionado = $("mPlano").value;
@@ -3642,12 +3776,24 @@
           }
           redirecionarWhatsAppFinal();
         } else {
+          trackGA4("erro_envio_formulario", {
+            plano: $("mPlano").value,
+            cidade: $("mCidade").value.trim(),
+            uf: $("mUf").value.trim().toUpperCase(),
+            erro: data.message || data.motivo || "erro_envio"
+          });
           erroEl.textContent = data.message || "Erro ao enviar. Tente novamente.";
           erroEl.classList.add("show");
           btn.disabled = false;
           btn.innerHTML = original;
         }
       } catch (err) {
+        trackGA4("erro_envio_formulario", {
+          plano: $("mPlano").value,
+          cidade: $("mCidade").value.trim(),
+          uf: $("mUf").value.trim().toUpperCase(),
+          erro: err && err.message ? err.message : "falha_conexao"
+        });
         erroEl.textContent = "Falha de conexão. Verifique o endpoint do Cloud Run ou tente novamente.";
         erroEl.classList.add("show");
         btn.disabled = false;
