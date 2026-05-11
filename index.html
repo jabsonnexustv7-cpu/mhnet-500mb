@@ -2654,6 +2654,35 @@
       }
     }
 
+    function notificarConsultaViavel({ cep, fachada, cidade, uf, motivo, coords, origem }) {
+      const cepLimpo = String(cep || "").replace(/\D+/g, "");
+
+      if (cepLimpo.length !== 8) {
+        console.warn("Notificação de consulta viável ignorada: CEP inválido.", { cep, origem });
+        return Promise.resolve(false);
+      }
+
+      return fetch(CLOUD_RUN_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "notifyConsulta",
+          cep: cepLimpo,
+          fachada: fachada || "-",
+          nomeCidade: cidade || "",
+          uf: uf || "",
+          origemConsulta: origem || "",
+          cobertura: {
+            motivo: motivo || "-",
+            coords: coords || ""
+          }
+        })
+      }).catch((err) => {
+        console.warn("Falha ao enviar notificação de consulta viável:", { origem, err });
+        return false;
+      });
+    }
+
 
     /* ── Consulta do botão flutuante antes do WhatsApp ── */
     const wtId = (id) => document.getElementById(id);
@@ -2785,6 +2814,17 @@
             uf: end.uf || "",
             cep
           });
+
+          notificarConsultaViavel({
+            cep,
+            fachada,
+            cidade: end.localidade || "",
+            uf: end.uf || "",
+            motivo: data && data.motivo ? data.motivo : "-",
+            coords,
+            origem: "modal_whatsapp"
+          });
+
           wtSetStatus("Cobertura disponível! Encaminhando para nossa equipe...", "ok");
           setTimeout(() => {
             trackGA4("clique_whatsapp", {
@@ -3173,19 +3213,16 @@
           $("ctaViavel").classList.add("show");
           setStatus("Cobertura disponível para este endereço.", "ok");
 
-          // Notificação silenciosa — avisa por e-mail a cada consulta viável
-          fetch(CLOUD_RUN_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              action: "notifyConsulta",
-              cep: cepLimpo,
-              fachada,
-              nomeCidade: cidade,
-              uf,
-              cobertura: { motivo: res.motivo || "-", coords: res.coords || "" }
-            })
-          }).catch(() => {}); // silencioso, nunca bloqueia o usuário
+          // Notificação silenciosa — consulta viável da dobra principal
+          notificarConsultaViavel({
+            cep: cepLimpo,
+            fachada,
+            cidade,
+            uf,
+            motivo: res.motivo || "-",
+            coords: res.coords || "",
+            origem: "box_principal"
+          });
         } else {
           trackGA4("consulta_cobertura_inviavel", {
             origem_consulta: "box_principal",
@@ -3563,6 +3600,17 @@
             uf,
             cep
           });
+
+          notificarConsultaViavel({
+            cep,
+            fachada,
+            cidade,
+            uf,
+            motivo: res && res.motivo ? res.motivo : "-",
+            coords: res && res.coords ? res.coords : "",
+            origem: "modal_contratacao"
+          });
+
           modalCoverageValidated = true;
           modalCoverageData = res;
           $("coverageOkBox").classList.add("show");
