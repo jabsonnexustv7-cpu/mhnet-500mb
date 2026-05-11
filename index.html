@@ -171,10 +171,13 @@
       height: 44px;
       padding: 0 20px;
       border-radius: 8px;
+      border: none;
       background: var(--green);
       color: var(--white);
+      font-family: 'Montserrat', sans-serif;
       font-weight: 700;
       font-size: 14px;
+      cursor: pointer;
       transition: filter .18s, transform .18s;
       white-space: nowrap;
     }
@@ -1835,12 +1838,9 @@
         <a href="#consulta" class="btn-nav-link">Cobertura</a>
         <a href="#planos" class="btn-nav-link">Planos</a>
         <a href="#cidades" class="btn-nav-link">Cidades</a>
-        <a class="btn-whats"
-           href="https://wa.me/555193187300?text=Olá!%20Quero%20falar%20sobre%20os%20planos%20MhNet%20com%20a%20WebTurbo."
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Falar no WhatsApp da WebTurbo">
+        <button class="btn-whats" type="button" id="botaoWhatsTopo" aria-label="Consultar cobertura">
           Atendimento online
-        </a>
+        </button>
       </nav>
     </div>
   </header>
@@ -2766,6 +2766,7 @@
 
     document.addEventListener("DOMContentLoaded", function() {
       wtId("botaoWhats")?.addEventListener("click", wtAbrirModal);
+      wtId("botaoWhatsTopo")?.addEventListener("click", wtAbrirModal);
       wtId("fecharModalWhats")?.addEventListener("click", wtFecharModal);
       wtId("modalConsultaWhats")?.addEventListener("click", function(e) {
         if (e.target && e.target.id === "modalConsultaWhats") wtFecharModal();
