@@ -3688,12 +3688,74 @@
       return String(value || "-").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
     }
 
+    function nomeMesFatura(i) {
+      return [
+        "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+        "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+      ][i];
+    }
+
+    function round2(n) {
+      return Math.round(Number(n || 0) * 100) / 100;
+    }
+
+    function formatReais(n) {
+      return "R$ " + Number(n || 0).toFixed(2).replace(".", ",");
+    }
+
+    function calcularFaturamentoResumo() {
+      const planoSelecionado = $("mPlano") ? $("mPlano").value : "";
+      const valorPlano = PLAN_VALUES[planoSelecionado] || 0;
+      const vencimentoDia = $("mVencimento") ? $("mVencimento").value : "";
+
+      if (!valorPlano || !vencimentoDia) {
+        return {
+          proporcional: "-",
+          cheia: "-"
+        };
+      }
+
+      // Mesma regra usada no ManyChat: instalação estimada em D+2
+      const hoje = new Date();
+      const dataInstalacao = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+      dataInstalacao.setDate(dataInstalacao.getDate() + 2);
+
+      const anoInst = dataInstalacao.getFullYear();
+      const mesInst = dataInstalacao.getMonth();
+      const diaInst = dataInstalacao.getDate();
+      const diasMesInst = new Date(anoInst, mesInst + 1, 0).getDate();
+      const diasUso = Math.max(1, diasMesInst - diaInst + 1);
+      const valorProporcional = round2((valorPlano / diasMesInst) * diasUso);
+
+      const mesPropMes = (mesInst + 1) % 12;
+      const mesPropAno = anoInst + (mesInst === 11 ? 1 : 0);
+      const mesCheiaMes = (mesInst + 2) % 12;
+      const mesCheiaAno = anoInst + (mesInst >= 10 ? 1 : 0);
+
+      const mesFaturaPropStr = nomeMesFatura(mesPropMes) + "/" + mesPropAno;
+      const mesFaturaCheiaStr = nomeMesFatura(mesCheiaMes) + "/" + mesCheiaAno;
+      const valorPlanoStr = formatReais(valorPlano);
+      const valorPropStr = formatReais(valorProporcional);
+      const percentual = valorProporcional / valorPlano;
+      const usarMensagemEspecial = (diaInst <= 5) || (percentual >= 0.90);
+
+      return {
+        proporcional: usarMensagemEspecial
+          ? `A fatura de ${mesFaturaPropStr} será referente aos dias utilizados em ${nomeMesFatura(mesInst)}.`
+          : `Em ${mesFaturaPropStr} você receberá um valor proporcional referente aos dias de uso — em torno de ${valorPropStr}.`,
+        cheia: `${valorPlanoStr} no dia ${vencimentoDia} de ${mesFaturaCheiaStr}.`
+      };
+    }
+
     function montarResumo() {
+      const faturamento = calcularFaturamentoResumo();
       const rows = [
         ["Endereço", `${$("mLogradouro").value}, ${$("mNumero").value} - ${$("mBairro").value} - ${$("mCidade").value}/${$("mUf").value}`],
         ["Complemento", $("mComplemento").value || "-"],
         ["Referência", $("mPontoRef").value],
         ["Plano", PLAN_LABELS[$("mPlano").value] || $("mPlano").value],
+        ["Fatura proporcional", faturamento.proporcional],
+        ["Primeira fatura cheia", faturamento.cheia],
         ["Cliente", $("mNome").value],
         ["CPF", $("mCpf").value],
         ["E-mail", $("mEmail").value],
