@@ -1203,6 +1203,184 @@
 
     .floating-wa-icon svg { width: 24px; height: 24px; display: block; }
 
+
+
+    /* ── MODAL CONSULTA WHATSAPP FLUTUANTE ── */
+    .floating-wa {
+      font-family: 'Montserrat', sans-serif;
+      cursor: pointer;
+    }
+
+    .wt-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5,15,40,.8);
+      backdrop-filter: blur(6px);
+      z-index: 110;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .wt-modal-overlay.open { display: flex; }
+
+    .wt-modal {
+      width: 100%;
+      max-width: 500px;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(10,36,99,.35);
+      border: 1px solid var(--gray-line);
+    }
+
+    .wt-modal-head {
+      background: var(--blue);
+      color: #fff;
+      padding: 22px 24px;
+      position: relative;
+    }
+
+    .wt-modal-head h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      margin: 0 0 8px;
+      color: #fff;
+      padding-right: 34px;
+    }
+
+    .wt-modal-head p {
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255,255,255,.9);
+      max-width: 390px;
+      margin: 0;
+    }
+
+    .wt-close {
+      position: absolute;
+      right: 14px;
+      top: 13px;
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .18s;
+    }
+
+    .wt-close:hover { background: rgba(255,255,255,.24); }
+
+    .wt-modal-body { padding: 24px; background: var(--white); }
+
+    .wt-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .wt-field.full { grid-column: 1 / -1; }
+
+    .wt-field label {
+      display: block;
+      color: var(--blue);
+      font-size: 12px;
+      letter-spacing: .03em;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .wt-field input {
+      width: 100%;
+      height: 50px;
+      border: 1.5px solid var(--gray-line);
+      border-radius: 8px;
+      background: var(--gray-bg);
+      padding: 0 14px;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+      font-family: 'Open Sans', sans-serif;
+      transition: border-color .18s, box-shadow .18s, background .18s;
+    }
+
+    .wt-field input:focus {
+      border-color: var(--blue-light);
+      box-shadow: 0 0 0 3px rgba(26,86,219,.14);
+      background: var(--white);
+    }
+
+    .wt-field input[readonly] {
+      background: #eef2f7;
+      color: var(--muted);
+    }
+
+    .wt-field input::placeholder { color: #9aabbb; }
+
+    .wt-modal-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .wt-btn-modal {
+      height: 50px;
+      padding: 0 28px;
+      border-radius: 8px;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      transition: filter .18s, transform .18s;
+    }
+
+    .wt-btn-modal:hover {
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+    }
+
+    .wt-btn-modal:disabled { opacity: .7; cursor: not-allowed; transform: none; }
+
+    .wt-status {
+      margin-top: 12px;
+      border: 1px solid var(--gray-line);
+      border-radius: 8px;
+      background: var(--gray-bg);
+      padding: 14px;
+      color: var(--text);
+      font-size: 14px;
+      min-height: 68px;
+      line-height: 1.5;
+    }
+
+    .wt-status small {
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      font-weight: 800;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+
+    .wt-status.ok  { background: #effdf5; border-color: #b7efcc; color: #0f7a3a; }
+    .wt-status.bad { background: #fff5f5; border-color: #ffcaca; color: #b42318; }
+
     /* ── MODAL ── */
     .modal-overlay {
       position: fixed;
@@ -1592,6 +1770,12 @@
       .floating-wa-text { font-size: 13px; white-space: normal; max-width: 88px; line-height: 1.1; }
       .floating-wa-icon { width: 28px; height: 28px; background: transparent; }
       .floating-wa-icon svg { width: 22px; height: 22px; }
+
+
+      .wt-modal-body { padding: 20px; }
+      .wt-modal-head { padding: 21px 20px; }
+      .wt-modal-head h3 { font-size: 20px; }
+      .wt-form-grid { grid-template-columns: 1fr; }
 
       .footer-simple { flex-direction: column; text-align: center; gap: 12px; }
       .footer-copy { text-align: center; }
@@ -2389,18 +2573,48 @@
     </div>
   </footer>
 
-  <!-- ── FLOATING WHATSAPP ── -->
-  <a class="floating-wa"
-     href="https://wa.me/555193187300?text=Olá!%20Quero%20consultar%20os%20planos%20MhNet%20com%20a%20WebTurbo."
-     target="_blank" rel="noopener noreferrer"
-     aria-label="Falar no WhatsApp">
+  <!-- ── FLOATING WHATSAPP: consulta cobertura antes do WhatsApp ── -->
+  <button class="floating-wa" type="button" id="botaoWhats" aria-label="Assine pelo WhatsApp">
     <span class="floating-wa-text">Assine pelo WhatsApp</span>
-    <span class="floating-wa-icon">
+    <span class="floating-wa-icon" aria-hidden="true">
       <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
         <path fill="currentColor" d="M16.04 3C8.86 3 3.03 8.82 3.03 16c0 2.29.6 4.53 1.74 6.5L3 29l6.67-1.75A12.9 12.9 0 0 0 16.04 29C23.22 29 29 23.18 29 16S23.22 3 16.04 3Zm0 23.8c-2.03 0-4.02-.55-5.75-1.6l-.41-.24-3.96 1.04 1.06-3.86-.27-.43A10.74 10.74 0 0 1 5.23 16c0-5.96 4.85-10.8 10.81-10.8 5.95 0 10.76 4.84 10.76 10.8 0 5.96-4.81 10.8-10.76 10.8Zm5.92-8.09c-.32-.16-1.9-.94-2.2-1.05-.3-.11-.52-.16-.74.16-.21.32-.85 1.05-1.04 1.27-.19.21-.38.24-.7.08-.32-.16-1.36-.5-2.59-1.6-.96-.86-1.61-1.92-1.8-2.24-.19-.32-.02-.49.14-.65.14-.14.32-.38.48-.57.16-.19.21-.32.32-.54.11-.21.05-.4-.03-.57-.08-.16-.74-1.78-1.01-2.43-.27-.64-.54-.55-.74-.56h-.63c-.21 0-.57.08-.86.4-.3.32-1.13 1.1-1.13 2.68s1.16 3.11 1.32 3.32c.16.21 2.28 3.48 5.53 4.88.77.33 1.37.53 1.84.68.77.24 1.47.21 2.02.13.62-.09 1.9-.78 2.17-1.53.27-.75.27-1.39.19-1.53-.08-.13-.29-.21-.61-.37Z"/>
       </svg>
     </span>
-  </a>
+  </button>
+
+  <div class="wt-modal-overlay" id="modalConsultaWhats" aria-hidden="true">
+    <div class="wt-modal" role="dialog" aria-modal="true" aria-labelledby="tituloModalWhats">
+      <div class="wt-modal-head">
+        <button class="wt-close" type="button" id="fecharModalWhats" aria-label="Fechar">×</button>
+        <h3 id="tituloModalWhats">Consultar cobertura</h3>
+        <p>Antes de encaminhar para nossa equipe, vamos verificar se temos cobertura no seu endereço.</p>
+      </div>
+      <div class="wt-modal-body">
+        <div class="wt-form-grid">
+          <div class="wt-field">
+            <label for="cepModalWhats">CEP</label>
+            <input id="cepModalWhats" inputmode="numeric" placeholder="00000-000" maxlength="9" />
+          </div>
+          <div class="wt-field">
+            <label for="numeroModalWhats">Número</label>
+            <input id="numeroModalWhats" placeholder="Ex: 322" />
+          </div>
+          <div class="wt-field full">
+            <label for="enderecoModalWhats">Endereço encontrado</label>
+            <input id="enderecoModalWhats" placeholder="Será preenchido automaticamente" readonly />
+          </div>
+        </div>
+        <div class="wt-modal-actions">
+          <button class="wt-btn-modal" id="consultarModalWhats" type="button">Consultar cobertura</button>
+        </div>
+        <div class="wt-status" id="statusModalWhats">
+          <small>Status da consulta</small>
+          Informe o CEP e número para continuar.
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
     /* ── CONFIGURAÇÕES ── */
@@ -2409,6 +2623,161 @@
     const FIXED_RADIUS = 200;
     const WHATS_NUMBER = "555193187300";
     const TIMEOUT_MS   = 8000;
+
+
+    /* ── Consulta do botão flutuante antes do WhatsApp ── */
+    const wtId = (id) => document.getElementById(id);
+
+    function wtOnlyDigits(v) { return String(v || "").replace(/\D+/g, ""); }
+
+    function wtFormatCep(v) {
+      const d = wtOnlyDigits(v).slice(0, 8);
+      return d.length > 5 ? d.slice(0, 5) + "-" + d.slice(5) : d;
+    }
+
+    function wtSetStatus(msg, type = "") {
+      const el = wtId("statusModalWhats");
+      if (!el) return;
+      el.className = "wt-status" + (type ? " " + type : "");
+      el.innerHTML = `<small>Status da consulta</small>${msg}`;
+    }
+
+    function wtAbrirModal() {
+      const modal = wtId("modalConsultaWhats");
+      if (!modal) return;
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      setTimeout(() => wtId("cepModalWhats")?.focus(), 80);
+    }
+
+    function wtFecharModal() {
+      const modal = wtId("modalConsultaWhats");
+      if (!modal) return;
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
+
+    function wtMontarWhatsapp(cep, numero, fachada, coords) {
+      const msg =
+        `Olá! Consultei a cobertura no site da WebTurbo e quero contratar.\n\n` +
+        `CEP: ${cep}\nNúmero: ${numero}\nEndereço: ${fachada}` +
+        (coords ? `\nCoords: ${coords}` : "");
+      return `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`;
+    }
+
+    function wtIsViavel(data) {
+      return data && data.ok === true && data.viavel === true;
+    }
+
+    async function wtFetchTimeout(url, options = {}, timeout = 14000) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+      try {
+        return await fetch(url, { ...options, signal: controller.signal });
+      } finally {
+        clearTimeout(id);
+      }
+    }
+
+    async function wtBuscarCep(cep) {
+      const r = await wtFetchTimeout(`https://viacep.com.br/ws/${cep}/json/`, {}, 9000);
+      const data = await r.json();
+      if (data.erro) return null;
+      return data;
+    }
+
+    async function wtConsultarCobertura() {
+      const cep = wtOnlyDigits(wtId("cepModalWhats")?.value);
+      const numero = wtId("numeroModalWhats")?.value.trim() || "";
+      const btn = wtId("consultarModalWhats");
+
+      if (cep.length !== 8) { wtSetStatus("Informe um CEP válido.", "bad"); return; }
+      if (!numero) { wtSetStatus("Informe o número do imóvel.", "bad"); return; }
+
+      wtSetStatus("Localizando endereço...");
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Consultando...";
+      }
+
+      try {
+        const end = await wtBuscarCep(cep);
+
+        if (!end || !end.localidade || !end.uf) {
+          wtSetStatus("Não conseguimos localizar este CEP. Confira os dados e tente novamente.", "bad");
+          return;
+        }
+
+        const fachada = [
+          end.logradouro || "",
+          numero,
+          end.bairro || "",
+          end.localidade && end.uf ? `${end.localidade} - ${end.uf}` : ""
+        ].filter(Boolean).join(", ");
+
+        wtId("enderecoModalWhats").value = fachada;
+        wtSetStatus("Verificando cobertura...");
+
+        const payload = {
+          cep,
+          numero,
+          logradouro: end.logradouro || "",
+          bairro: end.bairro || "",
+          cidade: end.localidade || "",
+          uf: end.uf || "",
+          fachada,
+          radius: FIXED_RADIUS,
+          origem: "botao_floating_whatsapp_site"
+        };
+
+        const r = await wtFetchTimeout(ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }, 18000);
+
+        const data = await r.json().catch(() => ({}));
+        const coords = data && data.coords ? data.coords : "";
+
+        if (wtIsViavel(data)) {
+          wtSetStatus("Cobertura disponível! Encaminhando para nossa equipe...", "ok");
+          setTimeout(() => {
+            window.location.href = wtMontarWhatsapp(
+              wtFormatCep(wtId("cepModalWhats").value),
+              numero,
+              fachada,
+              coords
+            );
+          }, 650);
+        } else {
+          wtSetStatus("No momento ainda não identificamos cobertura disponível para esse endereço. Fale com nossa equipe para verificarmos outras possibilidades.", "bad");
+        }
+      } catch (e) {
+        wtSetStatus("Não foi possível consultar agora. Tente novamente em instantes.", "bad");
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "Consultar cobertura";
+        }
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      wtId("botaoWhats")?.addEventListener("click", wtAbrirModal);
+      wtId("fecharModalWhats")?.addEventListener("click", wtFecharModal);
+      wtId("modalConsultaWhats")?.addEventListener("click", function(e) {
+        if (e.target && e.target.id === "modalConsultaWhats") wtFecharModal();
+      });
+      wtId("cepModalWhats")?.addEventListener("input", function(e) {
+        e.target.value = wtFormatCep(e.target.value);
+      });
+      wtId("consultarModalWhats")?.addEventListener("click", wtConsultarCobertura);
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") wtFecharModal();
+      });
+    });
 
     const $ = (id) => document.getElementById(id);
 
