@@ -1793,6 +1793,60 @@
     @media (max-width: 390px) {
       .btn-whats { font-size: 12px; height: 38px; padding: 0 12px; }
     }
+
+
+    /* ── LOADING GLOBAL ── */
+    .global-loading {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(5,15,40,.72);
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      cursor: wait;
+    }
+
+    .global-loading.show { display: flex; }
+
+    .global-loading-card {
+      width: 100%;
+      max-width: 320px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: 0 30px 90px rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.18);
+    }
+
+    .global-loading-spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(10,36,99,.16);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 1.15s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    .global-loading-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 6px;
+    }
+
+    .global-loading-text {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    body.global-loading-active { overflow: hidden; }
   </style>
 
   <!-- Schema.org JSON-LD -->
@@ -1823,6 +1877,15 @@
   </script>
 </head>
 <body>
+
+  <div id="globalLoading" class="global-loading" aria-hidden="true">
+    <div class="global-loading-card" role="status" aria-live="polite">
+      <div class="global-loading-spinner"></div>
+      <div id="globalLoadingTitle" class="global-loading-title">Carregando...</div>
+      <div id="globalLoadingText" class="global-loading-text">Aguarde, estamos processando sua solicitação.</div>
+    </div>
+  </div>
+
 
   <a class="skip-nav" href="#conteudo-principal">Pular para o conteúdo principal</a>
 
@@ -2763,10 +2826,8 @@
       if (!numero) { wtSetStatus("Informe o número do imóvel.", "bad"); return; }
 
       wtSetStatus("Localizando endereço...");
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = "Consultando...";
-      }
+      if (btn) btn.disabled = true;
+      showGlobalLoading("Consultando cobertura antes de abrir o atendimento...");
 
       try {
         const end = await wtBuscarCep(cep);
@@ -2858,6 +2919,7 @@
           btn.disabled = false;
           btn.textContent = "Consultar cobertura";
         }
+        hideGlobalLoading();
       }
     }
 
@@ -2878,6 +2940,40 @@
     });
 
     const $ = (id) => document.getElementById(id);
+
+    let globalLoadingCount = 0;
+
+    function showGlobalLoading(message = "Aguarde, estamos processando sua solicitação.", title = "Carregando...") {
+      globalLoadingCount++;
+
+      const overlay = document.getElementById("globalLoading");
+      const titleEl = document.getElementById("globalLoadingTitle");
+      const textEl = document.getElementById("globalLoadingText");
+
+      if (titleEl) titleEl.textContent = title;
+      if (textEl) textEl.textContent = message;
+
+      if (overlay) {
+        overlay.classList.add("show");
+        overlay.setAttribute("aria-hidden", "false");
+      }
+
+      document.body.classList.add("global-loading-active");
+    }
+
+    function hideGlobalLoading() {
+      globalLoadingCount = Math.max(0, globalLoadingCount - 1);
+      if (globalLoadingCount > 0) return;
+
+      const overlay = document.getElementById("globalLoading");
+      if (overlay) {
+        overlay.classList.remove("show");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+
+      document.body.classList.remove("global-loading-active");
+    }
+
 
     const formatCep = (value) => {
       const digits = String(value || "").replace(/\D/g, "").slice(0, 8);
@@ -2968,13 +3064,9 @@
 
     function setLoading(loading) {
       const btn = $("btnConsultar");
-      if (loading) {
-        btn.innerHTML = '<div class="spinner"></div> Consultando...';
-        btn.disabled = true;
-      } else {
-        btn.innerHTML = 'Consultar cobertura';
-        btn.disabled = false;
-      }
+      if (!btn) return;
+      btn.innerHTML = "Consultar cobertura";
+      btn.disabled = !!loading;
     }
 
     function clearForm() {
@@ -3069,6 +3161,7 @@
       if (!extraVisivel) {
         setLoading(true);
         setStatus("Buscando endereço...");
+        showGlobalLoading("Buscando endereço pelo CEP...");
 
         try {
           const endereco = await buscarEnderecoPorCep(cep);
@@ -3112,6 +3205,7 @@
 
         } finally {
           setLoading(false);
+          hideGlobalLoading();
         }
       }
 
@@ -3170,6 +3264,7 @@
       setAddress(enderecoCompleto);
       setLoading(true);
       setStatus("Consultando cobertura...");
+      showGlobalLoading("Consultando cobertura no seu endereço...");
 
       try {
         const payload = {
@@ -3241,6 +3336,7 @@
         setStatus("Erro ao consultar cobertura. Tente novamente ou fale com nosso atendimento.", "bad");
       } finally {
         setLoading(false);
+        hideGlobalLoading();
       }
     }
 
@@ -3512,7 +3608,7 @@
 
       if (!enderecoCompletoVisivel) {
         btn.disabled = true;
-        btn.innerHTML = '<div class="spinner"></div> Buscando endereço...';
+        showGlobalLoading("Buscando endereço pelo CEP...");
 
         try {
           await buscarCepModal(cep);
@@ -3524,6 +3620,7 @@
 
         btn.disabled = false;
         btn.innerHTML = "Consultar cobertura e continuar →";
+        hideGlobalLoading();
 
         const logradouro = $("mLogradouro").value.trim();
         const bairro = $("mBairro").value.trim();
@@ -3562,7 +3659,7 @@
       }
 
       btn.disabled = true;
-      btn.innerHTML = '<div class="spinner"></div> Consultando cobertura...';
+      showGlobalLoading("Consultando cobertura no endereço informado...");
 
       try {
         const logradouro = $("mLogradouro").value.trim();
@@ -3637,6 +3734,7 @@
       } finally {
         btn.disabled = false;
         btn.innerHTML = "Consultar cobertura e continuar →";
+        hideGlobalLoading();
       }
     }
 
@@ -3857,7 +3955,7 @@
       const btn = $("btnSubmit");
       const original = btn.innerHTML;
       btn.disabled = true;
-      btn.innerHTML = '<div class="spinner"></div> Enviando...';
+      showGlobalLoading("Estamos enviando sua solicitação. Aguarde a confirmação na tela antes de sair.", "Finalizando sua solicitação...");
       try {
         const response = await fetch(CLOUD_RUN_URL, {
           method: "POST",
@@ -3884,6 +3982,7 @@
               currency: "BRL"
             });
           }
+          hideGlobalLoading();
           redirecionarWhatsAppFinal();
         } else {
           trackGA4("erro_envio_formulario", {
@@ -3896,6 +3995,7 @@
           erroEl.classList.add("show");
           btn.disabled = false;
           btn.innerHTML = original;
+          hideGlobalLoading();
         }
       } catch (err) {
         trackGA4("erro_envio_formulario", {
@@ -3908,6 +4008,7 @@
         erroEl.classList.add("show");
         btn.disabled = false;
         btn.innerHTML = original;
+        hideGlobalLoading();
       }
     }
 
