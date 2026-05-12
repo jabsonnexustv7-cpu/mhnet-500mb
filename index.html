@@ -4036,5 +4036,580 @@
     });
     if ($("mDataInstalacao")) $("mDataInstalacao").min = tomorrowISO();
   </script>
+  <!-- =========================================================
+       WEBTURBO — FASE 1 RECUPERAÇÃO DE LEADS
+       Estratégias aplicadas com ressalvas:
+       1) Sticky bar de CEP apenas mobile
+       2) Toast de abandono do modal somente após cobertura validada
+       Observação: sem popup idle, sem prova social simulada e sem scroll/exit-intent nesta fase.
+  ========================================================== -->
+
+  <div id="wt-s1-sticky-cep" class="wt-s1-sticky-cep" aria-hidden="true">
+    <div class="wt-s1-row">
+      <label class="wt-s1-field" for="wt-s1-cep">
+        <span>CEP</span>
+        <input id="wt-s1-cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" maxlength="9" />
+      </label>
+      <label class="wt-s1-field wt-s1-numero" for="wt-s1-numero">
+        <span>Nº</span>
+        <input id="wt-s1-numero" autocomplete="address-line2" placeholder="Nº" />
+      </label>
+      <button id="wt-s1-btn" type="button">Verificar</button>
+    </div>
+    <div id="wt-s1-status" class="wt-s1-status">Consulte cobertura no seu endereço.</div>
+  </div>
+
+  <div id="wt-s2-toast-abandono" class="wt-s2-toast-abandono" aria-hidden="true">
+    <button id="wt-s2-close" type="button" aria-label="Fechar aviso">×</button>
+    <div class="wt-s2-dot" aria-hidden="true">✓</div>
+    <div class="wt-s2-content">
+      <strong>Endereço verificado</strong>
+      <span>Seu endereço já foi verificado. Continue a contratação pelo WhatsApp.</span>
+    </div>
+    <a id="wt-s2-wa" href="#" target="_blank" rel="noopener">Continuar</a>
+  </div>
+
+  <style>
+    .wt-s1-sticky-cep {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 60px;
+      z-index: 49;
+      background: var(--blue, #0a2463);
+      color: #fff;
+      padding: 9px 12px 8px;
+      border: 2px solid rgba(255,255,255,.72);
+      border-left: 0;
+      border-right: 0;
+      box-shadow: 0 10px 26px rgba(10,36,99,.34), 0 0 0 3px rgba(0,200,83,.28);
+      transform: translateY(-120%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .22s ease, opacity .22s ease;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .wt-s1-sticky-cep.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .wt-s1-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) 72px 96px;
+      gap: 8px;
+      align-items: end;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .wt-s1-field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .wt-s1-field span {
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.82);
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .wt-s1-field input {
+      width: 100%;
+      height: 38px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.24);
+      background: rgba(255,255,255,.1);
+      color: #fff;
+      padding: 0 10px;
+      font-size: 13px;
+      font-weight: 700;
+      outline: none;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .wt-s1-field input::placeholder { color: rgba(255,255,255,.65); }
+    .wt-s1-field input:focus { border-color: var(--green, #00c853); background: rgba(255,255,255,.16); }
+
+    #wt-s1-btn {
+      height: 38px;
+      border-radius: 8px;
+      border: none;
+      background: var(--green, #00c853);
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    #wt-s1-btn:disabled { opacity: .75; cursor: wait; }
+
+    .wt-s1-status {
+      display: none;
+      max-width: 560px;
+      margin: 6px auto 0;
+      font-size: 11px;
+      line-height: 1.35;
+      font-weight: 700;
+      color: rgba(255,255,255,.84);
+    }
+
+    .wt-s1-status.show { display: block; }
+    .wt-s1-status.ok { color: #bfffd8; }
+    .wt-s1-status.bad { color: #ffd0d0; }
+
+    .wt-s2-toast-abandono {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      z-index: 120;
+      width: min(560px, calc(100% - 28px));
+      background: var(--blue, #0a2463);
+      color: #fff;
+      border-radius: 14px;
+      box-shadow: 0 18px 46px rgba(10,36,99,.32);
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 13px 14px 13px 42px;
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      transform: translate(-50%, 24px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .22s ease, opacity .22s ease;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .wt-s2-toast-abandono.show {
+      transform: translate(-50%, 0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #wt-s2-close {
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .wt-s2-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--green, #00c853);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .wt-s2-content { min-width: 0; }
+    .wt-s2-content strong {
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+    .wt-s2-content span {
+      display: block;
+      font-size: 12px;
+      line-height: 1.35;
+      color: rgba(255,255,255,.84);
+    }
+
+    #wt-s2-wa {
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 8px;
+      background: var(--green, #00c853);
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    @media (min-width: 769px) {
+      .wt-s1-sticky-cep { display: none !important; }
+    }
+
+    @media (max-width: 430px) {
+      .wt-s1-sticky-cep { top: 60px; padding-left: 10px; padding-right: 10px; }
+      .wt-s1-row { grid-template-columns: minmax(0, 1fr) 58px 86px; gap: 6px; }
+      #wt-s1-btn { font-size: 11px; }
+      .wt-s2-toast-abandono {
+        bottom: 88px;
+        grid-template-columns: 24px minmax(0, 1fr);
+        padding-right: 12px;
+      }
+      #wt-s2-wa { grid-column: 1 / -1; width: 100%; }
+    }
+  </style>
+
+  <script>
+    (function wtLeadRecoveryFase1() {
+      const S1_FLAG = "wt_s1_sticky_impression";
+      const S2_FLAG = "wt_s2_toast_abandono_shown";
+      // Usa o mesmo endpoint Cloud Run já configurado no index principal.
+      // O backend deve tratar a action "notifyAbandonoModal" e disparar no Telegram.
+      const TELEGRAM_ABANDONO_ENDPOINT = CLOUD_RUN_URL;
+      let wtPopupAtivo = false;
+      let wtS1LastVisible = false;
+      let wtS2Timer = null;
+
+      function safeTrack(eventName, params = {}) {
+        if (typeof trackGA4 === "function") trackGA4(eventName, params);
+      }
+
+      function cepDigits(v) { return String(v || "").replace(/\D+/g, "").slice(0, 8); }
+      function maskCep(v) {
+        const d = cepDigits(v);
+        return d.length > 5 ? d.slice(0, 5) + "-" + d.slice(5) : d;
+      }
+
+      function modalAberto() {
+        return Boolean(document.querySelector(".modal-overlay.open, .wt-modal-overlay.open"));
+      }
+
+      function podeInterromper() {
+        return !coberturaPaginaData && !modalAberto() && !wtPopupAtivo;
+      }
+
+      function setS1Status(msg, type = "") {
+        const el = document.getElementById("wt-s1-status");
+        if (!el) return;
+        el.textContent = msg || "";
+        el.className = "wt-s1-status" + (msg ? " show" : "") + (type ? " " + type : "");
+      }
+
+      function setS1Visible(visible) {
+        const bar = document.getElementById("wt-s1-sticky-cep");
+        if (!bar) return;
+
+        const show = Boolean(visible && window.innerWidth <= 768 && podeInterromper());
+        bar.classList.toggle("show", show);
+        bar.setAttribute("aria-hidden", show ? "false" : "true");
+
+        if (show && !wtS1LastVisible) {
+          if (!sessionStorage.getItem(S1_FLAG)) {
+            sessionStorage.setItem(S1_FLAG, "1");
+            safeTrack("sticky_bar_impressao", { estrategia: "fase1_mobile" });
+          }
+        }
+        wtS1LastVisible = show;
+      }
+
+      async function consultarStickyCep() {
+        const cepInput = document.getElementById("wt-s1-cep");
+        const numeroInput = document.getElementById("wt-s1-numero");
+        const btn = document.getElementById("wt-s1-btn");
+        const cep = cepDigits(cepInput && cepInput.value);
+        const numero = String(numeroInput && numeroInput.value || "").trim();
+
+        safeTrack("sticky_bar_consulta_clicada", {
+          cep_preenchido: cep.length === 8 ? "sim" : "nao",
+          numero_preenchido: numero ? "sim" : "nao"
+        });
+
+        if (cep.length !== 8) { setS1Status("Informe um CEP válido.", "bad"); return; }
+        if (!numero) { setS1Status("Informe o número do imóvel.", "bad"); return; }
+
+        if (btn) { btn.disabled = true; btn.textContent = "..."; }
+        setS1Status("Buscando endereço...");
+        if (typeof showGlobalLoading === "function") showGlobalLoading("Consultando cobertura no seu endereço...");
+
+        try {
+          const endereco = typeof buscarEnderecoPorCep === "function" ? await buscarEnderecoPorCep(cep) : null;
+          if (!endereco || !endereco.cidade || !endereco.uf) {
+            setS1Status("Não conseguimos localizar este CEP. Confira e tente novamente.", "bad");
+            return;
+          }
+
+          const fachada = [
+            endereco.logradouro || "",
+            numero,
+            endereco.bairro || "",
+            endereco.cidade && endereco.uf ? `${endereco.cidade} - ${endereco.uf}` : ""
+          ].filter(Boolean).join(", ");
+
+          const payload = {
+            cep,
+            numero,
+            logradouro: endereco.logradouro || "",
+            bairro: endereco.bairro || "",
+            cidade: endereco.cidade || "",
+            uf: endereco.uf || "",
+            fachada,
+            radius: typeof FIXED_RADIUS !== "undefined" ? FIXED_RADIUS : 200,
+            origem: "sticky_bar_mobile"
+          };
+
+          setS1Status("Verificando disponibilidade...");
+          const data = await consultarCoberturaCloudRun(payload);
+          const viavel = data && data.ok === true && data.viavel === true;
+          const coords = data && data.coords ? data.coords : "";
+
+          if (viavel) {
+            coberturaPaginaData = {
+              cep: maskCep(cep),
+              numero,
+              logradouro: endereco.logradouro || "",
+              bairro: endereco.bairro || "",
+              cidade: endereco.cidade || "",
+              uf: endereco.uf || "",
+              complemento: "",
+              fachada,
+              cobertura: data
+            };
+
+            safeTrack("sticky_bar_cobertura_viavel", { cidade: endereco.cidade || "", uf: endereco.uf || "", cep });
+
+            if (typeof notificarConsultaViavel === "function") {
+              notificarConsultaViavel({
+                cep,
+                fachada,
+                cidade: endereco.cidade || "",
+                uf: endereco.uf || "",
+                motivo: data && data.motivo ? data.motivo : "-",
+                coords,
+                origem: "sticky_bar_mobile"
+              });
+            }
+
+            setS1Status("Cobertura disponível. Abrindo contratação...", "ok");
+            setS1Visible(false);
+            setTimeout(() => {
+              if (typeof abrirModalCobertura === "function") abrirModalCobertura();
+              else if (typeof abrirModal === "function") abrirModal("");
+            }, 450);
+          } else {
+            safeTrack("sticky_bar_cobertura_inviavel", {
+              cidade: endereco.cidade || "",
+              uf: endereco.uf || "",
+              cep,
+              motivo: data && data.motivo ? data.motivo : "sem_viabilidade"
+            });
+            setS1Status("Ainda não identificamos cobertura neste endereço. Nossa equipe pode conferir manualmente.", "bad");
+          }
+        } catch (err) {
+          setS1Status("Não foi possível consultar agora. Tente novamente em instantes.", "bad");
+        } finally {
+          if (btn) { btn.disabled = false; btn.textContent = "Verificar"; }
+          if (typeof hideGlobalLoading === "function") hideGlobalLoading();
+        }
+      }
+
+      function iniciarStickyMobile() {
+        const dobraAlvo = document.querySelector(".benefits-section");
+        const bar = document.getElementById("wt-s1-sticky-cep");
+        if (!dobraAlvo || !bar) return;
+
+        document.getElementById("wt-s1-cep")?.addEventListener("input", function(e) {
+          e.target.value = maskCep(e.target.value);
+        });
+        document.getElementById("wt-s1-btn")?.addEventListener("click", consultarStickyCep);
+
+        // Regra ajustada: a sticky só aparece na dobra abaixo da consulta de cobertura
+        // (.benefits-section), evitando redundância nas dobras que já têm consulta.
+        // O contorno branco/verde destaca a barra mesmo em seção com fundo azul.
+        function avaliarDobraSticky() {
+          if (coberturaPaginaData) { setS1Visible(false); return; }
+          const topbar = document.querySelector(".topbar");
+          const topbarH = topbar ? topbar.getBoundingClientRect().height : 60;
+          const rect = dobraAlvo.getBoundingClientRect();
+          const chegouNaDobra = rect.top <= topbarH + 8;
+          setS1Visible(chegouNaDobra);
+        }
+
+        window.addEventListener("scroll", avaliarDobraSticky, { passive: true });
+        window.addEventListener("resize", avaliarDobraSticky, { passive: true });
+        avaliarDobraSticky();
+      }
+
+      function montarWaAbandono() {
+        const nome = document.getElementById("mNome")?.value || "";
+        const cep = document.getElementById("mCep")?.value || "";
+        const plano = document.getElementById("mPlano")?.value || modalPlanoPreSelecionado || "";
+        const cidade = document.getElementById("mCidade")?.value || "";
+        const msg = [
+          "Olá, já verifiquei meu endereço no site da WebTurbo e quero continuar minha contratação.",
+          nome ? `Nome: ${nome}` : "",
+          plano ? `Plano: ${plano}` : "",
+          cep ? `CEP: ${cep}` : "",
+          cidade ? `Cidade: ${cidade}` : ""
+        ].filter(Boolean).join("\n");
+        return `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(msg)}`;
+      }
+
+      function coletarDadosAbandono(etapa) {
+        const get = (id) => document.getElementById(id)?.value?.trim() || "";
+        const cobertura = modalCoverageData || (coberturaPaginaData && coberturaPaginaData.cobertura) || {};
+        return {
+          evento: "abandono_modal_com_cobertura",
+          etapa_abandono: etapa || "",
+          origem: "site_webturbo_modal_contratacao",
+          horario_site: new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }),
+          nome: get("mNome"),
+          cpf: get("mCpf"),
+          nascimento: get("mNascimento"),
+          email: get("mEmail"),
+          telefone1: get("mTelefone1"),
+          telefone2: get("mTelefone2"),
+          plano: get("mPlano") || modalPlanoPreSelecionado || "",
+          cep: get("mCep"),
+          numero: get("mNumero"),
+          logradouro: get("mLogradouro"),
+          bairro: get("mBairro"),
+          cidade: get("mCidade"),
+          uf: get("mUf"),
+          complemento: get("mComplemento"),
+          ponto_referencia: get("mPontoRef"),
+          vencimento: get("mVencimento"),
+          data_instalacao: get("mDataInstalacao"),
+          turno_instalacao: get("mTurnoInstalacao"),
+          cobertura_validada: modalCoverageValidated === true,
+          cobertura_motivo: cobertura && cobertura.motivo ? cobertura.motivo : "",
+          cobertura_coords: cobertura && cobertura.coords ? cobertura.coords : "",
+          url_pagina: location.href,
+          user_agent: navigator.userAgent
+        };
+      }
+
+      async function dispararTelegramAbandono(etapa) {
+        if (!TELEGRAM_ABANDONO_ENDPOINT) {
+          console.warn("Endpoint do Telegram de abandono não encontrado.");
+          return;
+        }
+
+        const payload = {
+          action: "notifyAbandonoModal",
+          ...coletarDadosAbandono(etapa)
+        };
+
+        try {
+          await fetch(TELEGRAM_ABANDONO_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            keepalive: true
+          });
+          safeTrack("telegram_abandono_modal_enviado", {
+            etapa_abandono: etapa || "",
+            plano: payload.plano || "",
+            cidade: payload.cidade || ""
+          });
+        } catch (err) {
+          safeTrack("telegram_abandono_modal_erro", {
+            etapa_abandono: etapa || "",
+            erro: err && err.message ? err.message : "erro_fetch"
+          });
+        }
+      }
+
+      function esconderToastAbandono(manual = false) {
+        const toast = document.getElementById("wt-s2-toast-abandono");
+        if (!toast) return;
+        toast.classList.remove("show");
+        toast.setAttribute("aria-hidden", "true");
+        wtPopupAtivo = false;
+        clearTimeout(wtS2Timer);
+        if (manual) safeTrack("toast_abandono_fechou");
+      }
+
+      function mostrarToastAbandono(etapa) {
+        if (sessionStorage.getItem(S2_FLAG)) return;
+        if (wtPopupAtivo) return;
+
+        const toast = document.getElementById("wt-s2-toast-abandono");
+        const wa = document.getElementById("wt-s2-wa");
+        if (!toast || !wa) return;
+
+        const plano = document.getElementById("mPlano")?.value || modalPlanoPreSelecionado || "";
+        const cidade = document.getElementById("mCidade")?.value || "";
+
+        sessionStorage.setItem(S2_FLAG, "1");
+        wa.href = montarWaAbandono();
+        toast.classList.add("show");
+        toast.setAttribute("aria-hidden", "false");
+        wtPopupAtivo = true;
+
+        safeTrack("toast_abandono_exibido", { etapa_abandono: etapa || "", plano, cidade });
+        // Dispara Telegram no momento em que o toast aparece.
+        // Assim o lead pode ser recuperado depois mesmo que não clique no WhatsApp.
+        dispararTelegramAbandono(etapa);
+
+        wtS2Timer = setTimeout(() => esconderToastAbandono(false), 30000);
+      }
+
+      function patchFecharModal() {
+        if (typeof window.fecharModal !== "function") return;
+        const originalFecharModal = window.fecharModal;
+
+        window.fecharModal = function fecharModalPatchWebTurbo() {
+          const overlay = document.getElementById("modalOverlay");
+          const modalEstaAberto = overlay && overlay.classList.contains("open");
+          const etapaAtiva = ["etapa1", "etapa2", "etapa3", "etapa4", "etapa5", "etapaSucesso"]
+            .find((id) => {
+              const el = document.getElementById(id);
+              return el && el.style.display !== "none";
+            });
+
+          originalFecharModal.apply(this, arguments);
+
+          if (
+            modalEstaAberto &&
+            ["etapa3", "etapa4", "etapa5"].includes(etapaAtiva) &&
+            modalCoverageValidated === true
+          ) {
+            setTimeout(() => mostrarToastAbandono(etapaAtiva), 120);
+          }
+        };
+      }
+
+      document.addEventListener("DOMContentLoaded", function() {
+        iniciarStickyMobile();
+        patchFecharModal();
+
+        document.getElementById("wt-s2-close")?.addEventListener("click", () => esconderToastAbandono(true));
+        document.getElementById("wt-s2-wa")?.addEventListener("click", function() {
+          safeTrack("toast_abandono_clicou_whatsapp");
+          esconderToastAbandono(false);
+        });
+
+        document.addEventListener("keydown", function(e) {
+          if (e.key === "Escape") esconderToastAbandono(true);
+        });
+      });
+    })();
+  </script>
+
+
 </body>
 </html>
