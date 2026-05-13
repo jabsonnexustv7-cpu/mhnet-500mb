@@ -1231,9 +1231,11 @@
     .wt-modal {
       width: 100%;
       max-width: 500px;
+      max-height: calc(100dvh - 32px);
       background: var(--white);
       border-radius: var(--radius-lg);
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
       box-shadow: 0 40px 100px rgba(10,36,99,.35);
       border: 1px solid var(--gray-line);
     }
@@ -1391,6 +1393,48 @@
 
     .wt-status.ok  { background: #effdf5; border-color: #b7efcc; color: #0f7a3a; }
     .wt-status.bad { background: #fff5f5; border-color: #ffcaca; color: #b42318; }
+
+    .wt-modal-choice {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 12px;
+      padding-bottom: 4px;
+    }
+
+    .wt-modal-choice p {
+      margin: 8px 0 4px;
+      color: inherit;
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .wt-choice-primary,
+    .wt-choice-secondary {
+      min-height: 44px;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .wt-choice-primary {
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .wt-choice-secondary {
+      background: var(--green);
+      color: #fff;
+    }
 
     /* ── MODAL ── */
     .modal-overlay {
@@ -1783,7 +1827,20 @@
       .floating-wa-icon svg { width: 22px; height: 22px; }
 
 
-      .wt-modal-body { padding: 20px; }
+      .wt-modal-overlay {
+        align-items: flex-start;
+        overflow-y: auto;
+        padding: 12px;
+      }
+
+      .wt-modal {
+        margin: 12px 0;
+        max-height: calc(100dvh - 24px);
+      }
+
+      .wt-modal-body {
+        padding: 20px 20px calc(24px + env(safe-area-inset-bottom));
+      }
       .wt-modal-head { padding: 21px 20px; }
       .wt-modal-head h3 { font-size: 20px; }
       .wt-form-grid { grid-template-columns: 1fr; }
@@ -2794,10 +2851,12 @@
       el.innerHTML = `<small>Status da consulta</small>${msg}`;
     }
 
-    function wtAbrirModal() {
-      trackGA4("abriu_modal_whatsapp", { origem_botao: "botao_whatsapp_site" });
+    function wtAbrirModal(origemBotao = "botao_whatsapp_site") {
+      trackGA4("abriu_modal_whatsapp", { origem_botao: origemBotao });
       const modal = wtId("modalConsultaWhats");
       if (!modal) return;
+
+      modal.dataset.origemBotao = origemBotao;
       modal.classList.add("open");
       modal.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
@@ -2810,6 +2869,14 @@
       modal.classList.remove("open");
       modal.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
+
+      setTimeout(() => {
+        if (typeof window.wtAvaliarStickyConsulta === "function") {
+          window.wtAvaliarStickyConsulta();
+        } else {
+          window.dispatchEvent(new Event("scroll"));
+        }
+      }, 80);
     }
 
     function wtMontarWhatsapp(cep, numero, fachada, coords) {
@@ -2847,9 +2914,10 @@
       const btn = wtId("consultarModalWhats");
       const extraBox = wtId("wtEnderecoCompletoWhats");
       const extraVisivel = extraBox && extraBox.classList.contains("show");
+      const origemConsulta = wtId("modalConsultaWhats")?.dataset.origemBotao || "modal_whatsapp";
 
       trackGA4("clicou_consultar_cobertura", {
-        origem_consulta: "modal_whatsapp",
+        origem_consulta: origemConsulta,
         etapa_consulta: extraVisivel ? "consulta_cobertura" : "busca_endereco",
         cep_preenchido: cep.length === 8 ? "sim" : "nao",
         numero_preenchido: numero ? "sim" : "nao"
@@ -2970,7 +3038,7 @@
           uf,
           fachada,
           radius: FIXED_RADIUS,
-          origem: "botao_floating_whatsapp_site"
+          origem: origemConsulta
         };
 
         const r = await wtFetchTimeout(ENDPOINT, {
@@ -2983,8 +3051,21 @@
         const coords = data && data.coords ? data.coords : "";
 
         if (wtIsViavel(data)) {
+          coberturaPaginaData = {
+            cep: wtFormatCep(cep),
+            numero,
+            logradouro,
+            bairro,
+            cidade,
+            uf,
+            complemento: "",
+            enderecoCompleto: fachada,
+            fachada,
+            cobertura: data
+          };
+
           trackGA4("consulta_cobertura_viavel", {
-            origem_consulta: "modal_whatsapp",
+            origem_consulta: origemConsulta,
             cidade,
             uf,
             cep
@@ -2997,30 +3078,50 @@
             uf,
             motivo: data && data.motivo ? data.motivo : "-",
             coords,
-            origem: "modal_whatsapp"
+            origem: origemConsulta
           });
 
-          wtSetStatus("Cobertura disponível! Encaminhando para nossa equipe...", "ok");
+          const linkWhats = wtMontarWhatsapp(wtFormatCep(cep), numero, fachada, coords);
 
-          setTimeout(() => {
-            trackGA4("clique_whatsapp", {
-              origem_botao: "modal_whatsapp_cobertura_viavel",
+          wtSetStatus(`
+            <strong>Cobertura disponível para este endereço.</strong>
+            <div class="wt-modal-choice">
+              <p>Você pode continuar a contratação aqui pelo site ou falar com nossa equipe pelo WhatsApp.</p>
+              <button type="button" id="btnContinuarSiteModalWhats" class="wt-choice-primary">Continuar por aqui</button>
+              <a id="btnContinuarWhatsModal" class="wt-choice-secondary" href="${linkWhats}" target="_blank" rel="noopener">Falar no WhatsApp</a>
+            </div>
+          `, "ok");
+
+          const btnSite = wtId("btnContinuarSiteModalWhats");
+          const btnWhats = wtId("btnContinuarWhatsModal");
+
+          btnSite?.addEventListener("click", function() {
+            trackGA4("continuar_contratacao_site", {
+              origem_botao: origemConsulta,
               cidade,
               uf,
               cep
             });
 
-            window.location.href = wtMontarWhatsapp(
-              wtFormatCep(wtId("cepModalWhats").value),
-              numero,
-              fachada,
-              coords
-            );
-          }, 650);
+            wtFecharModal();
+            setTimeout(() => {
+              if (typeof abrirModalCobertura === "function") abrirModalCobertura();
+              else if (typeof abrirModal === "function") abrirModal("");
+            }, 160);
+          });
+
+          btnWhats?.addEventListener("click", function() {
+            trackGA4("clique_whatsapp", {
+              origem_botao: origemConsulta + "_cobertura_viavel",
+              cidade,
+              uf,
+              cep
+            });
+          });
 
         } else {
           trackGA4("consulta_cobertura_inviavel", {
-            origem_consulta: "modal_whatsapp",
+            origem_consulta: origemConsulta,
             cidade,
             uf,
             cep,
@@ -3032,7 +3133,7 @@
 
       } catch (e) {
         trackGA4("erro_consulta_cobertura", {
-          origem_consulta: "modal_whatsapp",
+          origem_consulta: origemConsulta,
           erro: e && e.message ? e.message : "erro_consulta"
         });
 
@@ -3049,8 +3150,8 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-      wtId("botaoWhats")?.addEventListener("click", wtAbrirModal);
-      wtId("botaoWhatsTopo")?.addEventListener("click", wtAbrirModal);
+      wtId("botaoWhats")?.addEventListener("click", () => wtAbrirModal("botao_floating_whatsapp_site"));
+      wtId("botaoWhatsTopo")?.addEventListener("click", () => wtAbrirModal("botao_topo_atendimento"));
       wtId("fecharModalWhats")?.addEventListener("click", wtFecharModal);
       wtId("modalConsultaWhats")?.addEventListener("click", function(e) {
         if (e.target && e.target.id === "modalConsultaWhats") wtFecharModal();
@@ -4176,24 +4277,16 @@
   <!-- =========================================================
        WEBTURBO — FASE 1 RECUPERAÇÃO DE LEADS
        Estratégias aplicadas com ressalvas:
-       1) Sticky bar de CEP apenas mobile
+       1) Sticky inferior de consulta apenas mobile
        2) Toast de abandono do modal somente após cobertura validada
        Observação: sem popup idle, sem prova social simulada e sem scroll/exit-intent nesta fase.
   ========================================================== -->
 
   <div id="wt-s1-sticky-cep" class="wt-s1-sticky-cep" aria-hidden="true">
-    <div class="wt-s1-row">
-      <label class="wt-s1-field" for="wt-s1-cep">
-        <span>CEP</span>
-        <input id="wt-s1-cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" maxlength="9" />
-      </label>
-      <label class="wt-s1-field wt-s1-numero" for="wt-s1-numero">
-        <span>Nº</span>
-        <input id="wt-s1-numero" autocomplete="address-line2" placeholder="Nº" />
-      </label>
-      <button id="wt-s1-btn" type="button">Verificar</button>
-    </div>
-    <div id="wt-s1-status" class="wt-s1-status">Consulte cobertura no seu endereço.</div>
+    <button id="wt-s1-btn" class="wt-s1-sticky-cta" type="button" aria-label="Abrir consulta de cobertura">
+      <strong>Será que a MhNet chegou aí?</strong>
+      <span>Clique aqui e confira</span>
+    </button>
   </div>
 
   <div id="wt-s2-toast-abandono" class="wt-s2-toast-abandono" aria-hidden="true">
@@ -4211,20 +4304,18 @@
       position: fixed;
       left: 0;
       right: 0;
-      top: 60px;
-      z-index: 49;
-      background: var(--blue, #0a2463);
-      color: #fff;
-      padding: 9px 12px 8px;
-      border: 2px solid rgba(255,255,255,.72);
-      border-left: 0;
-      border-right: 0;
-      box-shadow: 0 10px 26px rgba(10,36,99,.34), 0 0 0 3px rgba(0,200,83,.28);
-      transform: translateY(-120%);
+      bottom: 28px;
+      z-index: 60;
+      display: flex;
+      justify-content: center;
+      padding: 0 14px;
+      background: transparent;
+      top: auto !important;
+      transform: translateY(130%);
       opacity: 0;
       pointer-events: none;
-      transition: transform .22s ease, opacity .22s ease;
-      font-family: 'Open Sans', sans-serif;
+      transition: transform .24s ease, opacity .24s ease;
+      font-family: 'Montserrat', sans-serif;
     }
 
     .wt-s1-sticky-cep.show {
@@ -4233,77 +4324,85 @@
       pointer-events: auto;
     }
 
-    .wt-s1-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1.15fr) 72px 96px;
-      gap: 8px;
-      align-items: end;
-      max-width: 560px;
-      margin: 0 auto;
-    }
-
-    .wt-s1-field {
+    .wt-s1-sticky-cta {
+      width: 100%;
+      max-width: 680px;
+      min-height: 64px;
+      border-radius: 999px;
+      background: var(--blue, #0a2463);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,.72);
+      box-shadow:
+        0 10px 28px rgba(5,15,40,.28),
+        inset 0 0 0 1px rgba(255,255,255,.18);
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      min-width: 0;
-    }
-
-    .wt-s1-field span {
-      font-size: 10px;
-      line-height: 1;
-      font-weight: 800;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.82);
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .wt-s1-field input {
-      width: 100%;
-      height: 38px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,.24);
-      background: rgba(255,255,255,.1);
-      color: #fff;
-      padding: 0 10px;
-      font-size: 13px;
-      font-weight: 700;
-      outline: none;
-      font-family: 'Open Sans', sans-serif;
-    }
-
-    .wt-s1-field input::placeholder { color: rgba(255,255,255,.65); }
-    .wt-s1-field input:focus { border-color: var(--green, #00c853); background: rgba(255,255,255,.16); }
-
-    #wt-s1-btn {
-      height: 38px;
-      border-radius: 8px;
-      border: none;
-      background: var(--green, #00c853);
-      color: #fff;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 12px;
-      font-weight: 800;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 10px 18px;
       cursor: pointer;
-      white-space: nowrap;
+      pointer-events: auto;
+      font-family: 'Montserrat', sans-serif;
+      transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
     }
 
-    #wt-s1-btn:disabled { opacity: .75; cursor: wait; }
-
-    .wt-s1-status {
-      display: none;
-      max-width: 560px;
-      margin: 6px auto 0;
-      font-size: 11px;
-      line-height: 1.35;
-      font-weight: 700;
-      color: rgba(255,255,255,.84);
+    .wt-s1-sticky-cta:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+      box-shadow:
+        0 14px 32px rgba(5,15,40,.32),
+        inset 0 0 0 1px rgba(255,255,255,.20);
     }
 
-    .wt-s1-status.show { display: block; }
-    .wt-s1-status.ok { color: #bfffd8; }
-    .wt-s1-status.bad { color: #ffd0d0; }
+    .wt-s1-sticky-cta strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.18;
+      font-weight: 600;
+      letter-spacing: -.1px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .wt-s1-sticky-cta span {
+      display: block;
+      font-size: 13px;
+      line-height: 1.18;
+      font-weight: 400;
+      color: rgba(255,255,255,.88);
+    }
+
+    body.wt-s1-sticky-visible .floating-wa {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(10px) scale(.96);
+    }
+
+    @media (max-width: 768px) {
+      body.wt-s1-sticky-visible .benefits-section {
+        padding-bottom: 132px;
+      }
+
+      body.wt-s1-sticky-visible .footer {
+        padding-bottom: 142px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .wt-s1-sticky-cep {
+        bottom: 26px;
+        padding-left: 14px;
+        padding-right: 14px;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+
+      .wt-s1-sticky-cta {
+        min-height: 64px;
+        padding: 10px 18px;
+      }
+    }
 
     .wt-s2-toast-abandono {
       position: fixed;
@@ -4398,9 +4497,6 @@
     }
 
     @media (max-width: 430px) {
-      .wt-s1-sticky-cep { top: 60px; padding-left: 10px; padding-right: 10px; }
-      .wt-s1-row { grid-template-columns: minmax(0, 1fr) 58px 86px; gap: 6px; }
-      #wt-s1-btn { font-size: 11px; }
       .wt-s2-toast-abandono {
         bottom: 88px;
         grid-template-columns: 24px minmax(0, 1fr);
@@ -4439,13 +4535,6 @@
         return !coberturaPaginaData && !modalAberto() && !wtPopupAtivo;
       }
 
-      function setS1Status(msg, type = "") {
-        const el = document.getElementById("wt-s1-status");
-        if (!el) return;
-        el.textContent = msg || "";
-        el.className = "wt-s1-status" + (msg ? " show" : "") + (type ? " " + type : "");
-      }
-
       function setS1Visible(visible) {
         const bar = document.getElementById("wt-s1-sticky-cep");
         if (!bar) return;
@@ -4453,6 +4542,7 @@
         const show = Boolean(visible && window.innerWidth <= 768 && podeInterromper());
         bar.classList.toggle("show", show);
         bar.setAttribute("aria-hidden", show ? "false" : "true");
+        document.body.classList.toggle("wt-s1-sticky-visible", show);
 
         if (show && !wtS1LastVisible) {
           if (!sessionStorage.getItem(S1_FLAG)) {
@@ -4463,115 +4553,15 @@
         wtS1LastVisible = show;
       }
 
-      async function consultarStickyCep() {
-        const cepInput = document.getElementById("wt-s1-cep");
-        const numeroInput = document.getElementById("wt-s1-numero");
-        const btn = document.getElementById("wt-s1-btn");
-        const cep = cepDigits(cepInput && cepInput.value);
-        const numero = String(numeroInput && numeroInput.value || "").trim();
-
-        safeTrack("sticky_bar_consulta_clicada", {
-          cep_preenchido: cep.length === 8 ? "sim" : "nao",
-          numero_preenchido: numero ? "sim" : "nao"
-        });
-
-        if (cep.length !== 8) { setS1Status("Informe um CEP válido.", "bad"); return; }
-        if (!numero) { setS1Status("Informe o número do imóvel.", "bad"); return; }
-
-        if (btn) { btn.disabled = true; btn.textContent = "..."; }
-        setS1Status("Buscando endereço...");
-        if (typeof showGlobalLoading === "function") showGlobalLoading("Consultando cobertura no seu endereço...");
-
-        try {
-          const endereco = typeof buscarEnderecoPorCep === "function" ? await buscarEnderecoPorCep(cep) : null;
-          if (!endereco || !endereco.cidade || !endereco.uf) {
-            setS1Status("Não conseguimos localizar este CEP. Confira e tente novamente.", "bad");
-            return;
-          }
-
-          const fachada = [
-            endereco.logradouro || "",
-            numero,
-            endereco.bairro || "",
-            endereco.cidade && endereco.uf ? `${endereco.cidade} - ${endereco.uf}` : ""
-          ].filter(Boolean).join(", ");
-
-          const payload = {
-            cep,
-            numero,
-            logradouro: endereco.logradouro || "",
-            bairro: endereco.bairro || "",
-            cidade: endereco.cidade || "",
-            uf: endereco.uf || "",
-            fachada,
-            radius: typeof FIXED_RADIUS !== "undefined" ? FIXED_RADIUS : 200,
-            origem: "sticky_bar_mobile"
-          };
-
-          setS1Status("Verificando disponibilidade...");
-          const data = await consultarCoberturaCloudRun(payload);
-          const viavel = data && data.ok === true && data.viavel === true;
-          const coords = data && data.coords ? data.coords : "";
-
-          if (viavel) {
-            coberturaPaginaData = {
-              cep: maskCep(cep),
-              numero,
-              logradouro: endereco.logradouro || "",
-              bairro: endereco.bairro || "",
-              cidade: endereco.cidade || "",
-              uf: endereco.uf || "",
-              complemento: "",
-              fachada,
-              cobertura: data
-            };
-
-            safeTrack("sticky_bar_cobertura_viavel", { cidade: endereco.cidade || "", uf: endereco.uf || "", cep });
-
-            if (typeof notificarConsultaViavel === "function") {
-              notificarConsultaViavel({
-                cep,
-                fachada,
-                cidade: endereco.cidade || "",
-                uf: endereco.uf || "",
-                motivo: data && data.motivo ? data.motivo : "-",
-                coords,
-                origem: "sticky_bar_mobile"
-              });
-            }
-
-            setS1Status("Cobertura disponível. Abrindo contratação...", "ok");
-            setS1Visible(false);
-            setTimeout(() => {
-              if (typeof abrirModalCobertura === "function") abrirModalCobertura();
-              else if (typeof abrirModal === "function") abrirModal("");
-            }, 450);
-          } else {
-            safeTrack("sticky_bar_cobertura_inviavel", {
-              cidade: endereco.cidade || "",
-              uf: endereco.uf || "",
-              cep,
-              motivo: data && data.motivo ? data.motivo : "sem_viabilidade"
-            });
-            setS1Status("Ainda não identificamos cobertura neste endereço. Nossa equipe pode conferir manualmente.", "bad");
-          }
-        } catch (err) {
-          setS1Status("Não foi possível consultar agora. Tente novamente em instantes.", "bad");
-        } finally {
-          if (btn) { btn.disabled = false; btn.textContent = "Verificar"; }
-          if (typeof hideGlobalLoading === "function") hideGlobalLoading();
-        }
-      }
-
       function iniciarStickyMobile() {
         const dobraAlvo = document.querySelector(".benefits-section");
         const bar = document.getElementById("wt-s1-sticky-cep");
         if (!dobraAlvo || !bar) return;
 
-        document.getElementById("wt-s1-cep")?.addEventListener("input", function(e) {
-          e.target.value = maskCep(e.target.value);
+        document.getElementById("wt-s1-btn")?.addEventListener("click", function() {
+          safeTrack("sticky_bar_cta_clicada", { origem_botao: "sticky_bottom_cep" });
+          if (typeof wtAbrirModal === "function") wtAbrirModal("sticky_bottom_cep");
         });
-        document.getElementById("wt-s1-btn")?.addEventListener("click", consultarStickyCep);
 
         // Regra ajustada: a sticky só aparece na dobra abaixo da consulta de cobertura
         // (.benefits-section), evitando redundância nas dobras que já têm consulta.
@@ -4585,6 +4575,7 @@
           setS1Visible(chegouNaDobra);
         }
 
+        window.wtAvaliarStickyConsulta = avaliarDobraSticky;
         window.addEventListener("scroll", avaliarDobraSticky, { passive: true });
         window.addEventListener("resize", avaliarDobraSticky, { passive: true });
         avaliarDobraSticky();
