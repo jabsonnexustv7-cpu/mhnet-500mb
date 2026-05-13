@@ -62,7 +62,7 @@
       --gray-bg:   #f4f7fc;
       --gray-line: #dde4ef;
       --text:      #1a1a2e;
-      --muted:     #5a6a82;
+      --muted:     #4a5a70;
       --max:       1200px;
       --radius:    12px;
       --radius-lg: 20px;
@@ -291,6 +291,28 @@
     .plans::-webkit-scrollbar { height: 6px; }
     .plans::-webkit-scrollbar-track { background: var(--gray-line); border-radius: 999px; }
     .plans::-webkit-scrollbar-thumb { background: var(--blue-light); border-radius: 999px; }
+
+    .plans-scroll-hint {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      width: 36px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to right, transparent, rgba(244,247,252,.95) 60%);
+      font-size: 28px;
+      color: #1a56db;
+      font-weight: 700;
+      pointer-events: none;
+      border-radius: 0 12px 12px 0;
+      transition: opacity .3s ease;
+    }
+
+    .plans-scroll-hint.hidden { opacity: 0; }
 
     .plan {
       background: var(--white);
@@ -2001,7 +2023,9 @@
           <p>Ofertas disponíveis conforme cobertura e viabilidade técnica no seu endereço.</p>
         </div>
 
-        <div class="plans">
+        <div class="plans-wrapper" style="position:relative;">
+          <div class="plans-scroll-hint" aria-hidden="true">›</div>
+          <div class="plans" id="plansTrack">
           <article class="plan">
             <div class="plan-badge">Plano econômico</div>
             <h3>500 Mega</h3>
@@ -2127,6 +2151,7 @@
             </ul>
             <button class="btn-contratar-plano" onclick="abrirModal('FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI')">Contratar agora</button>
           </article>
+          </div>
         </div>
       </div>
     </section>
@@ -4392,6 +4417,7 @@
       visibility: hidden;
       pointer-events: none;
       transform: translateY(10px) scale(.96);
+      transition: opacity .22s ease .3s, visibility .22s ease .3s, transform .22s ease .3s;
     }
 
     @media (max-width: 768px) {
@@ -4749,6 +4775,21 @@
           if (e.key === "Escape") esconderToastAbandono(true);
         });
       });
+
+      (function() {
+        var track = document.getElementById('plansTrack');
+        var hint = document.querySelector('.plans-scroll-hint');
+        if (!track || !hint) return;
+
+        function checkScroll() {
+          var atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+          hint.classList.toggle('hidden', atEnd);
+        }
+
+        track.addEventListener('scroll', checkScroll, { passive: true });
+        window.addEventListener('resize', checkScroll);
+        checkScroll();
+      })();
     })();
   </script>
 
