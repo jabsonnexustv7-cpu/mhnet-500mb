@@ -1292,6 +1292,14 @@
       margin-bottom: 14px;
     }
 
+    .wt-extra-address {
+      display: none;
+    }
+
+    .wt-extra-address.show {
+      display: contents;
+    }
+
     .wt-field.full { grid-column: 1 / -1; }
 
     .wt-field label {
@@ -2667,6 +2675,28 @@
             <label for="enderecoModalWhats">Endereço encontrado</label>
             <input id="enderecoModalWhats" placeholder="Será preenchido automaticamente" readonly />
           </div>
+
+          <div id="wtEnderecoCompletoWhats" class="wt-extra-address">
+            <div class="wt-field full">
+              <label for="wtLogradouroWhats">Logradouro</label>
+              <input id="wtLogradouroWhats" type="text" placeholder="Rua / Avenida" autocomplete="address-line1" />
+            </div>
+
+            <div class="wt-field">
+              <label for="wtBairroWhats">Bairro</label>
+              <input id="wtBairroWhats" type="text" placeholder="Bairro" />
+            </div>
+
+            <div class="wt-field">
+              <label for="wtCidadeWhats">Cidade</label>
+              <input id="wtCidadeWhats" type="text" placeholder="Cidade" />
+            </div>
+
+            <div class="wt-field">
+              <label for="wtUfWhats">UF</label>
+              <input id="wtUfWhats" type="text" placeholder="UF" maxlength="2" />
+            </div>
+          </div>
         </div>
         <div class="wt-modal-actions">
           <button class="wt-btn-modal" id="consultarModalWhats" type="button">Consultar cobertura</button>
@@ -2815,45 +2845,129 @@
       const cep = wtOnlyDigits(wtId("cepModalWhats")?.value);
       const numero = wtId("numeroModalWhats")?.value.trim() || "";
       const btn = wtId("consultarModalWhats");
+      const extraBox = wtId("wtEnderecoCompletoWhats");
+      const extraVisivel = extraBox && extraBox.classList.contains("show");
 
       trackGA4("clicou_consultar_cobertura", {
         origem_consulta: "modal_whatsapp",
+        etapa_consulta: extraVisivel ? "consulta_cobertura" : "busca_endereco",
         cep_preenchido: cep.length === 8 ? "sim" : "nao",
         numero_preenchido: numero ? "sim" : "nao"
       });
 
-      if (cep.length !== 8) { wtSetStatus("Informe um CEP válido.", "bad"); return; }
-      if (!numero) { wtSetStatus("Informe o número do imóvel.", "bad"); return; }
+      if (cep.length !== 8) {
+        wtSetStatus("Informe um CEP válido.", "bad");
+        return;
+      }
 
-      wtSetStatus("Localizando endereço...");
+      if (!numero) {
+        wtSetStatus("Informe o número do imóvel.", "bad");
+        return;
+      }
+
+      if (!extraVisivel) {
+        wtSetStatus("Localizando endereço...");
+        if (btn) btn.disabled = true;
+        showGlobalLoading("Buscando endereço pelo CEP...");
+
+        try {
+          const end = await wtBuscarCep(cep);
+
+          if (!end || !end.localidade || !end.uf) {
+            if (extraBox) extraBox.classList.add("show");
+            wtSetStatus("Não conseguimos localizar esse CEP automaticamente. Complete o endereço para consultar.", "bad");
+            return;
+          }
+
+          wtId("wtLogradouroWhats").value = end.logradouro || "";
+          wtId("wtBairroWhats").value = end.bairro || "";
+          wtId("wtCidadeWhats").value = end.localidade || "";
+          wtId("wtUfWhats").value = end.uf || "";
+
+          const fachada = [
+            end.logradouro || "",
+            numero,
+            end.bairro || "",
+            `${end.localidade} - ${end.uf}`
+          ].filter(Boolean).join(", ");
+
+          wtId("enderecoModalWhats").value = fachada;
+
+          if (extraBox) extraBox.classList.add("show");
+
+          if (!end.logradouro || !end.bairro) {
+            wtSetStatus("Esse CEP parece ser geral. Complete rua e bairro para consultar a cobertura.", "bad");
+            wtId(!end.logradouro ? "wtLogradouroWhats" : "wtBairroWhats")?.focus();
+          } else {
+            wtSetStatus("Endereço localizado. Confira os dados e clique novamente para consultar cobertura.");
+          }
+
+          if (btn) btn.textContent = "Consultar cobertura";
+          return;
+
+        } catch (e) {
+          if (extraBox) extraBox.classList.add("show");
+          wtSetStatus("Não conseguimos buscar o CEP automaticamente. Complete o endereço para consultar.", "bad");
+          return;
+
+        } finally {
+          if (btn) btn.disabled = false;
+          hideGlobalLoading();
+        }
+      }
+
+      const logradouro = wtId("wtLogradouroWhats")?.value.trim() || "";
+      const bairro = wtId("wtBairroWhats")?.value.trim() || "";
+      const cidade = wtId("wtCidadeWhats")?.value.trim() || "";
+      const uf = (wtId("wtUfWhats")?.value.trim() || "").toUpperCase();
+
+      if (!logradouro) {
+        wtSetStatus("Informe a rua ou avenida para consultar a cobertura.", "bad");
+        wtId("wtLogradouroWhats")?.focus();
+        return;
+      }
+
+      if (!bairro) {
+        wtSetStatus("Informe o bairro para consultar a cobertura.", "bad");
+        wtId("wtBairroWhats")?.focus();
+        return;
+      }
+
+      if (!cidade) {
+        wtSetStatus("Informe a cidade para consultar a cobertura.", "bad");
+        wtId("wtCidadeWhats")?.focus();
+        return;
+      }
+
+      if (!uf || uf.length !== 2) {
+        wtSetStatus("Informe a UF para consultar a cobertura.", "bad");
+        wtId("wtUfWhats")?.focus();
+        return;
+      }
+
+      wtId("wtUfWhats").value = uf;
+
+      const fachada = [
+        logradouro,
+        numero,
+        bairro,
+        `${cidade} - ${uf}`
+      ].filter(Boolean).join(", ");
+
+      wtId("enderecoModalWhats").value = fachada;
+
+      wtSetStatus("Verificando cobertura...");
       if (btn) btn.disabled = true;
       showGlobalLoading("Consultando cobertura antes de abrir o atendimento...");
 
       try {
-        const end = await wtBuscarCep(cep);
-
-        if (!end || !end.localidade || !end.uf) {
-          wtSetStatus("Não conseguimos localizar este CEP. Confira os dados e tente novamente.", "bad");
-          return;
-        }
-
-        const fachada = [
-          end.logradouro || "",
-          numero,
-          end.bairro || "",
-          end.localidade && end.uf ? `${end.localidade} - ${end.uf}` : ""
-        ].filter(Boolean).join(", ");
-
-        wtId("enderecoModalWhats").value = fachada;
-        wtSetStatus("Verificando cobertura...");
-
         const payload = {
           cep,
           numero,
-          logradouro: end.logradouro || "",
-          bairro: end.bairro || "",
-          cidade: end.localidade || "",
-          uf: end.uf || "",
+          logradouro,
+          bairro,
+          cidade,
+          uf,
           fachada,
           radius: FIXED_RADIUS,
           origem: "botao_floating_whatsapp_site"
@@ -2871,29 +2985,31 @@
         if (wtIsViavel(data)) {
           trackGA4("consulta_cobertura_viavel", {
             origem_consulta: "modal_whatsapp",
-            cidade: end.localidade || "",
-            uf: end.uf || "",
+            cidade,
+            uf,
             cep
           });
 
           notificarConsultaViavel({
             cep,
             fachada,
-            cidade: end.localidade || "",
-            uf: end.uf || "",
+            cidade,
+            uf,
             motivo: data && data.motivo ? data.motivo : "-",
             coords,
             origem: "modal_whatsapp"
           });
 
           wtSetStatus("Cobertura disponível! Encaminhando para nossa equipe...", "ok");
+
           setTimeout(() => {
             trackGA4("clique_whatsapp", {
               origem_botao: "modal_whatsapp_cobertura_viavel",
-              cidade: end.localidade || "",
-              uf: end.uf || "",
+              cidade,
+              uf,
               cep
             });
+
             window.location.href = wtMontarWhatsapp(
               wtFormatCep(wtId("cepModalWhats").value),
               numero,
@@ -2901,24 +3017,33 @@
               coords
             );
           }, 650);
+
         } else {
           trackGA4("consulta_cobertura_inviavel", {
             origem_consulta: "modal_whatsapp",
-            cidade: end.localidade || "",
-            uf: end.uf || "",
+            cidade,
+            uf,
             cep,
             motivo: data && data.motivo ? data.motivo : "sem_viabilidade"
           });
+
           wtSetStatus("No momento ainda não identificamos cobertura disponível para esse endereço. Fale com nossa equipe para verificarmos outras possibilidades.", "bad");
         }
+
       } catch (e) {
-        trackGA4("erro_consulta_cobertura", { origem_consulta: "modal_whatsapp", erro: e && e.message ? e.message : "erro_consulta" });
+        trackGA4("erro_consulta_cobertura", {
+          origem_consulta: "modal_whatsapp",
+          erro: e && e.message ? e.message : "erro_consulta"
+        });
+
         wtSetStatus("Não foi possível consultar agora. Tente novamente em instantes.", "bad");
+
       } finally {
         if (btn) {
           btn.disabled = false;
           btn.textContent = "Consultar cobertura";
         }
+
         hideGlobalLoading();
       }
     }
@@ -2932,6 +3057,18 @@
       });
       wtId("cepModalWhats")?.addEventListener("input", function(e) {
         e.target.value = wtFormatCep(e.target.value);
+        wtId("wtEnderecoCompletoWhats")?.classList.remove("show");
+        wtId("enderecoModalWhats").value = "";
+        ["wtLogradouroWhats", "wtBairroWhats", "wtCidadeWhats", "wtUfWhats"].forEach((id) => {
+          const field = wtId(id);
+          if (field) field.value = "";
+        });
+        wtSetStatus("Informe o CEP e número para continuar.");
+      });
+      wtId("numeroModalWhats")?.addEventListener("input", function() {
+        wtId("wtEnderecoCompletoWhats")?.classList.remove("show");
+        wtId("enderecoModalWhats").value = "";
+        wtSetStatus("Informe o CEP e número para continuar.");
       });
       wtId("consultarModalWhats")?.addEventListener("click", wtConsultarCobertura);
       document.addEventListener("keydown", function(e) {
