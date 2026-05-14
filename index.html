@@ -2829,13 +2829,68 @@
       }
     }
 
+    function origemEhFluxoWhatsapp(origem) {
+      const value = String(origem || "").toLowerCase();
+
+      return Boolean(
+        value.includes("whatsapp") ||
+        value.includes("modal_whats") ||
+        value.includes("botao_whats") ||
+        value.includes("floating") ||
+        value.includes("atendimento") ||
+        value.includes("wa")
+      );
+    }
+
+    function montarDadosRastreamentoMeta(eventId) {
+      const origem = typeof lerOrigemTrafego === "function" ? lerOrigemTrafego() : {};
+
+      return {
+        page_url: window.location.href,
+        landing_page: origem.landing_page || window.location.href,
+        referrer: document.referrer || origem.referrer || "",
+        user_agent: navigator.userAgent,
+
+        fbp: typeof getCookieValue === "function" ? getCookieValue("_fbp") : "",
+        fbc: typeof getCookieValue === "function" ? getCookieValue("_fbc") : "",
+        fbclid: origem.fbclid || "",
+
+        gclid: origem.gclid || "",
+        gbraid: origem.gbraid || "",
+        wbraid: origem.wbraid || "",
+
+        utm_source: origem.utm_source || "",
+        utm_medium: origem.utm_medium || "",
+        utm_campaign: origem.utm_campaign || "",
+        utm_content: origem.utm_content || "",
+        utm_term: origem.utm_term || "",
+
+        event_id: eventId
+      };
+    }
+
     function notificarConsultaViavel({ cep, fachada, cidade, uf, motivo, coords, origem }) {
       const cepLimpo = String(cep || "").replace(/\D+/g, "");
+      const origemConsulta = origem || "";
 
       if (cepLimpo.length !== 8) {
-        console.warn("Notificação de consulta viável ignorada: CEP inválido.", { cep, origem });
+        console.warn("Notificação de consulta viável ignorada: CEP inválido.", { cep, origem: origemConsulta });
         return Promise.resolve(false);
       }
+
+      // Importante: o Cloud Run atualizado dispara InitiateCheckout ao receber notifyConsulta.
+      // Por isso, consultas originadas nos botões/modal de WhatsApp não são enviadas aqui,
+      // evitando duplicidade com o envio feito no fluxo do WhatsApp.
+      if (origemEhFluxoWhatsapp(origemConsulta)) {
+        console.info("Consulta viável originada em fluxo de WhatsApp. InitiateCheckout do site não será enviado.", {
+          origem: origemConsulta,
+          cep: cepLimpo
+        });
+        return Promise.resolve(false);
+      }
+
+      const eventId = `ic_${cepLimpo}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      const trackingData = montarDadosRastreamentoMeta(eventId);
 
       return fetch(CLOUD_RUN_URL, {
         method: "POST",
@@ -2846,14 +2901,15 @@
           fachada: fachada || "-",
           nomeCidade: cidade || "",
           uf: uf || "",
-          origemConsulta: origem || "",
+          origemConsulta,
+          ...trackingData,
           cobertura: {
             motivo: motivo || "-",
             coords: coords || ""
           }
         })
       }).catch((err) => {
-        console.warn("Falha ao enviar notificação de consulta viável:", { origem, err });
+        console.warn("Falha ao enviar notificação de consulta viável:", { origem: origemConsulta, err });
         return false;
       });
     }
