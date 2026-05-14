@@ -2836,9 +2836,9 @@
         value.includes("whatsapp") ||
         value.includes("modal_whats") ||
         value.includes("botao_whats") ||
-        value.includes("floating") ||
-        value.includes("atendimento") ||
-        value.includes("wa")
+        value.includes("botao_floating_whatsapp") ||
+        value.includes("botao_topo_whatsapp") ||
+        value.includes("floating_whatsapp")
       );
     }
 
@@ -2878,19 +2878,14 @@
         return Promise.resolve(false);
       }
 
-      // Importante: o Cloud Run atualizado dispara InitiateCheckout ao receber notifyConsulta.
-      // Por isso, consultas originadas nos botões/modal de WhatsApp não são enviadas aqui,
-      // evitando duplicidade com o envio feito no fluxo do WhatsApp.
-      if (origemEhFluxoWhatsapp(origemConsulta)) {
-        console.info("Consulta viável originada em fluxo de WhatsApp. InitiateCheckout do site não será enviado.", {
-          origem: origemConsulta,
-          cep: cepLimpo
-        });
-        return Promise.resolve(false);
-      }
-
-      const eventId = `ic_${cepLimpo}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-      const trackingData = montarDadosRastreamentoMeta(eventId);
+      // O frontend sempre notifica consulta viável ao backend.
+      // Fluxos de WhatsApp sinalizam ao Cloud Run para não disparar InitiateCheckout,
+      // evitando duplicidade com a lógica própria do WhatsApp/Meta/Zapier.
+      const fluxoWhatsapp = origemEhFluxoWhatsapp(origemConsulta);
+      const eventId = fluxoWhatsapp
+        ? ""
+        : `ic_${cepLimpo}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      const trackingData = fluxoWhatsapp ? {} : montarDadosRastreamentoMeta(eventId);
 
       return fetch(CLOUD_RUN_URL, {
         method: "POST",
@@ -2902,6 +2897,7 @@
           nomeCidade: cidade || "",
           uf: uf || "",
           origemConsulta,
+          skipInitiateCheckout: fluxoWhatsapp,
           ...trackingData,
           cobertura: {
             motivo: motivo || "-",
@@ -3232,7 +3228,7 @@
 
     document.addEventListener("DOMContentLoaded", function() {
       wtId("botaoWhats")?.addEventListener("click", () => wtAbrirModal("botao_floating_whatsapp_site"));
-      wtId("botaoWhatsTopo")?.addEventListener("click", () => wtAbrirModal("botao_topo_atendimento"));
+      wtId("botaoWhatsTopo")?.addEventListener("click", () => wtAbrirModal("botao_topo_whatsapp_site"));
       wtId("fecharModalWhats")?.addEventListener("click", wtFecharModal);
       wtId("modalConsultaWhats")?.addEventListener("click", function(e) {
         if (e.target && e.target.id === "modalConsultaWhats") wtFecharModal();
