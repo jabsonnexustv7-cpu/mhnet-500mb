@@ -49,6 +49,15 @@
     gtag('config', 'AW-17075496858');
   </script>
 
+
+  <!-- Leaflet.js - mapa interativo OpenStreetMap -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIINfQK7G8d9D50DfxWg5y6nRHITCoM4aE="
+    crossorigin=""
+  />
+
   <style>
     /* ── TOKENS ── */
     :root {
@@ -1798,6 +1807,140 @@
       font-weight: 700;
     }
 
+
+
+    /* ── LOCALIZAÇÃO FIXA NO MODAL ── */
+    .btn-nao-sei-cep {
+      margin-top: 8px;
+      border: none;
+      background: transparent;
+      color: var(--blue-light);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: left;
+      padding: 0;
+    }
+
+    .btn-nao-sei-cep:hover { text-decoration: underline; }
+
+    .modal-location-box {
+      display: none;
+      grid-column: 1 / -1;
+      border: 1.5px solid var(--gray-line);
+      background: #f8fbff;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 4px;
+    }
+
+    .modal-location-box.show { display: block; }
+
+    .modal-location-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .modal-location-head strong {
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 3px;
+    }
+
+    .modal-location-head span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .btn-location-current {
+      min-height: 40px;
+      border: none;
+      border-radius: 8px;
+      background: var(--green);
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 0 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: filter .18s, transform .18s;
+    }
+
+    .btn-location-current:hover:not(:disabled) {
+      filter: brightness(1.07);
+      transform: translateY(-1px);
+    }
+
+    .btn-location-current:disabled {
+      opacity: .7;
+      cursor: not-allowed;
+    }
+
+    .modal-location-map {
+      width: 100%;
+      height: 260px;
+      border-radius: 10px;
+      border: 1px solid var(--gray-line);
+      overflow: hidden;
+      margin: 10px 0;
+      background: #e8edf5;
+    }
+
+    .modal-location-status {
+      border: 1px solid var(--gray-line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .modal-location-status.ok {
+      background: #effdf5;
+      border-color: #b7efcc;
+      color: #0f7a3a;
+    }
+
+    .modal-location-status.bad {
+      background: #fff5f5;
+      border-color: #ffcaca;
+      color: #b42318;
+    }
+
+    .modal-location-address {
+      width: 100%;
+      min-height: 58px;
+      border-radius: 8px;
+      border: 1.5px solid var(--gray-line);
+      background: #eef2f7;
+      color: var(--muted);
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.45;
+      resize: vertical;
+      outline: none;
+      font-family: 'Open Sans', system-ui, sans-serif;
+    }
+
+    .modal-location-coords {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
       .coverage-grid { grid-template-columns: 1fr; gap: 36px; }
@@ -1875,6 +2018,23 @@
       .mgrid { grid-template-columns: 1fr; }
       .mgrid .mfield.full { grid-column: 1 / -1; }
       .summary-row { grid-template-columns: 1fr; gap: 2px; }
+
+      .modal-location-head {
+        flex-direction: column;
+      }
+
+      .btn-location-current {
+        width: 100%;
+      }
+
+      .modal-location-map {
+        height: 230px;
+      }
+
+      .modal-location-coords {
+        grid-template-columns: 1fr;
+      }
+
     }
 
     @media (max-width: 390px) {
@@ -1934,6 +2094,212 @@
     }
 
     body.global-loading-active { overflow: hidden; }
+
+    /* ── OTIMIZAÇÕES MOBILE - LOCALIZAÇÃO E UX ── */
+
+    /* Mapa altura maior no mobile para facilitar clique */
+    @media (max-width: 768px) {
+      .modal-location-map {
+        height: 280px;
+        cursor: crosshair;
+      }
+      /* Coordenadas em coluna única no mobile */
+      .modal-location-coords {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Botão de localização: mais destaque */
+    .btn-location-current {
+      background: var(--green);
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      border: none;
+      border-radius: 10px;
+      min-height: 46px;
+      padding: 0 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(0,200,83,.28);
+      transition: filter .18s, transform .18s, box-shadow .18s;
+    }
+
+    .btn-location-current:hover:not(:disabled) {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0,200,83,.36);
+    }
+
+    .btn-location-current:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Status de localização com fonte ligeiramente maior */
+    .modal-location-status {
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    /* Box de localização com borda de destaque */
+    .modal-location-box {
+      border-color: var(--blue-light);
+      background: #f0f5ff;
+    }
+
+    /* Hint "Toque no mapa" no mobile */
+    .map-tap-hint {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      margin: 4px 0 6px;
+      padding: 6px 10px;
+      background: rgba(26,86,219,.06);
+      border-radius: 6px;
+      border: 1px dashed rgba(26,86,219,.18);
+    }
+
+    /* Planos: scroll suave e borda de indicação no mobile */
+    @media (max-width: 640px) {
+      .plans {
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 16px;
+      }
+      .plan {
+        flex: 0 0 88%;
+        max-width: 88%;
+      }
+      /* Campos de formulário: tamanho de fonte mínimo 16px para evitar zoom no iOS */
+      .field input,
+      .wt-field input,
+      .mfield input,
+      .mfield select {
+        font-size: 16px !important;
+      }
+      /* Botão de consultar cobertura: maior e mais fácil de tocar */
+      #btnConsultar {
+        min-height: 56px;
+        font-size: 15px;
+        border-radius: 10px;
+      }
+      /* Ações do modal em coluna no mobile */
+      .consult-actions {
+        flex-direction: column;
+        gap: 8px;
+      }
+      #btnLimpar {
+        height: 44px;
+        width: 100%;
+      }
+      /* Modal de etapas: header padding menor */
+      .modal-header {
+        padding: 18px 16px 14px;
+      }
+      /* Steps indicator menor */
+      .modal-steps {
+        gap: 4px;
+        margin-bottom: 14px;
+      }
+      .modal-step {
+        height: 3px;
+      }
+      /* Botões de ação do modal sempre em coluna */
+      .modal-actions {
+        flex-direction: column-reverse;
+        gap: 8px;
+      }
+      .btn-modal-back {
+        width: 100%;
+        justify-content: center;
+      }
+      .btn-modal-next,
+      .btn-modal-submit {
+        min-height: 52px;
+        font-size: 15px;
+      }
+      /* Safe area inferior para modais */
+      .wt-modal-body,
+      .modal-body {
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+      }
+      /* Floating WA: aumentar área de toque */
+      .floating-wa {
+        min-height: 52px;
+        padding: 12px 14px;
+      }
+    }
+
+    /* Mapa: cursor de mira para indicar que é clicável */
+    .modal-location-map {
+      cursor: crosshair;
+      position: relative;
+    }
+
+    /* Textarea de endereço detectado */
+    .modal-location-address {
+      font-size: 13px;
+      line-height: 1.55;
+      min-height: 64px;
+      color: var(--text);
+      background: #eef2f7;
+      border: 1.5px solid var(--gray-line);
+    }
+
+    .modal-location-address:not(:empty),
+    .modal-location-address[value]:not([value=""]) {
+      background: #f0fdf4;
+      border-color: rgba(0,200,83,.35);
+      color: #1a5c34;
+    }
+
+    /* Coords fields: fundo verde quando preenchido */
+    #mLatitudeFixa:not([value=""]):not([placeholder]),
+    #mLongitudeFixa:not([value=""]):not([placeholder]),
+    #consultaLatitudeFixa:not([value=""]),
+    #consultaLongitudeFixa:not([value=""]),
+    #wtLatitudeFixaWhats:not([value=""]),
+    #wtLongitudeFixaWhats:not([value=""]) {
+      background: #f0fdf4 !important;
+      border-color: rgba(0,200,83,.4) !important;
+      color: #1a5c34;
+      font-weight: 700;
+    }
+
+    /* Label "Não sei meu CEP" - maior área de toque */
+    .btn-nao-sei-cep {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-height: 36px;
+      padding: 4px 0;
+      font-size: 13px;
+    }
+
+    /* Animação de pulse no botão de localização */
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 4px 14px rgba(0,200,83,.28); }
+      50% { box-shadow: 0 4px 20px rgba(0,200,83,.5); }
+    }
+
+    .btn-location-pulse {
+      animation: pulse-green 1.8s ease-in-out infinite;
+    }
+
+    /* Toast abandono: safe area no mobile */
+    @media (max-width: 430px) {
+      .wt-s2-toast-abandono {
+        bottom: calc(88px + env(safe-area-inset-bottom));
+      }
+    }
+
   </style>
 
   <!-- Schema.org JSON-LD -->
@@ -2187,6 +2553,7 @@
               <div class="field">
                 <label for="cep">CEP</label>
                 <input id="cep" type="text" inputmode="numeric" placeholder="00000-000" maxlength="9" autocomplete="postal-code" />
+                <button type="button" class="btn-nao-sei-cep" id="btnNaoSeiCepConsulta">Não sei meu CEP</button>
               </div>
 
               <div class="field">
@@ -2218,6 +2585,37 @@
                 <div class="field full">
                   <label for="consultaComplemento">Complemento</label>
                   <input id="consultaComplemento" type="text" placeholder="Apto, bloco, casa fundos..." />
+                </div>
+
+                <div class="modal-location-box" id="consultaLocationBox">
+                  <div class="modal-location-head">
+                    <div>
+                      <strong>📍 Não sabe o CEP? Use o mapa!</strong>
+                      <span>Toque no mapa para marcar sua casa, ou clique em "Capturar minha localização". Se o ponto cair errado, arraste o marcador.</span>
+                    </div>
+                    <button type="button" class="btn-location-current btn-location-pulse" id="btnUsarLocalizacaoConsulta">📍 Capturar minha localização</button>
+                  </div>
+
+                  <div id="consultaLocationStatus" class="modal-location-status">📍 Toque no mapa ou clique em "Capturar minha localização" para marcar sua casa com precisão.</div>
+                  <div class="map-tap-hint" aria-hidden="true">👆 Toque/clique no mapa para fixar sua localização</div>
+                  <div id="consultaLocationMap" class="modal-location-map" aria-label="Mapa para fixar localização"></div>
+
+                  <label for="consultaEnderecoDetectadoLocalizacao" style="display:block;color:var(--blue);font-size:12px;letter-spacing:.03em;font-weight:800;text-transform:uppercase;margin:8px 0;">Endereço detectado pela localização</label>
+                  <textarea id="consultaEnderecoDetectadoLocalizacao" class="modal-location-address" readonly placeholder="O endereço aproximado aparecerá aqui automaticamente após tocar no mapa ou capturar a localização."></textarea>
+
+                  <div class="modal-location-coords">
+                    <div class="field">
+                      <label for="consultaLatitudeFixa">Latitude (gerado)</label>
+                      <input id="consultaLatitudeFixa" type="text" readonly placeholder="Automático" />
+                    </div>
+                    <div class="field">
+                      <label for="consultaLongitudeFixa">Longitude (gerado)</label>
+                      <input id="consultaLongitudeFixa" type="text" readonly placeholder="Automático" />
+                    </div>
+                  </div>
+
+                  <input type="hidden" id="consultaCoordenadasFixas" />
+                  <input type="hidden" id="consultaLinkLocalizacaoFixa" />
                 </div>
               </div>
 
@@ -2472,6 +2870,7 @@
             <div class="mfield" id="field-mCep">
               <label for="mCep">CEP *</label>
               <input id="mCep" type="text" inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="postal-code" />
+              <button type="button" class="btn-nao-sei-cep" id="btnNaoSeiCepModal">Não sei meu CEP</button>
               <span class="mfield-error-msg" id="err-mCep">Informe um CEP válido.</span>
             </div>
             <div class="mfield" id="field-mNumero">
@@ -2509,6 +2908,39 @@
               <label for="mPontoRef">Ponto de referência *</label>
               <input id="mPontoRef" type="text" placeholder="Ex.: próximo ao mercado, portão azul..." />
               <span class="mfield-error-msg" id="err-mPontoRef">Informe um ponto de referência.</span>
+            </div>
+
+            <div class="modal-location-box" id="modalLocationBox">
+              <div class="modal-location-head">
+                <div>
+                  <strong>📍 Não sabe o CEP? Use o mapa!</strong>
+                  <span>Toque no mapa para marcar sua casa, ou clique em "Capturar minha localização". Se o ponto cair errado, arraste o marcador.</span>
+                </div>
+                <button type="button" class="btn-location-current btn-location-pulse" id="btnUsarLocalizacaoModal">📍 Capturar minha localização</button>
+              </div>
+
+              <div id="modalLocationStatus" class="modal-location-status">📍 Toque no mapa ou clique em "Capturar minha localização" para marcar sua casa com precisão.</div>
+              <div class="map-tap-hint" aria-hidden="true">👆 Toque/clique no mapa para fixar sua localização</div>
+              <div id="modalLocationMap" class="modal-location-map" aria-label="Mapa para fixar localização"></div>
+
+              <label for="mEnderecoDetectadoLocalizacao" style="display:block;color:var(--blue);font-size:12px;letter-spacing:.03em;font-weight:800;text-transform:uppercase;margin:8px 0;">Endereço detectado pela localização</label>
+              <textarea id="mEnderecoDetectadoLocalizacao" class="modal-location-address" readonly placeholder="O endereço aproximado aparecerá aqui automaticamente após tocar no mapa ou capturar a localização."></textarea>
+
+              <div class="modal-location-coords">
+                <div class="mfield" id="field-mLatitudeFixa">
+                  <label for="mLatitudeFixa">Latitude</label>
+                  <input id="mLatitudeFixa" type="text" readonly placeholder="Automático" />
+                  <span class="mfield-error-msg" id="err-mLatitudeFixa"></span>
+                </div>
+                <div class="mfield" id="field-mLongitudeFixa">
+                  <label for="mLongitudeFixa">Longitude</label>
+                  <input id="mLongitudeFixa" type="text" readonly placeholder="Automático" />
+                  <span class="mfield-error-msg" id="err-mLongitudeFixa"></span>
+                </div>
+              </div>
+
+              <input type="hidden" id="mCoordenadasFixas" />
+              <input type="hidden" id="mLinkLocalizacaoFixa" />
             </div>
             </div>
           </div>
@@ -2748,6 +3180,7 @@
           <div class="wt-field">
             <label for="cepModalWhats">CEP</label>
             <input id="cepModalWhats" inputmode="numeric" placeholder="00000-000" maxlength="9" />
+            <button type="button" class="btn-nao-sei-cep" id="btnNaoSeiCepWhats">Não sei meu CEP</button>
           </div>
           <div class="wt-field">
             <label for="numeroModalWhats">Número</label>
@@ -2778,6 +3211,37 @@
               <label for="wtUfWhats">UF</label>
               <input id="wtUfWhats" type="text" placeholder="UF" maxlength="2" />
             </div>
+
+            <div class="modal-location-box" id="wtLocationBoxWhats">
+              <div class="modal-location-head">
+                <div>
+                  <strong>📍 Não sabe o CEP? Use o mapa!</strong>
+                  <span>Toque no mapa para marcar sua casa, ou clique em "Capturar minha localização". Se o ponto cair errado, arraste o marcador.</span>
+                </div>
+                <button type="button" class="btn-location-current btn-location-pulse" id="btnUsarLocalizacaoWhats">📍 Capturar minha localização</button>
+              </div>
+
+              <div id="wtLocationStatusWhats" class="modal-location-status">📍 Toque no mapa ou clique em "Capturar minha localização" para marcar sua casa com precisão.</div>
+              <div class="map-tap-hint" aria-hidden="true">👆 Toque/clique no mapa para fixar sua localização</div>
+              <div id="wtLocationMapWhats" class="modal-location-map" aria-label="Mapa para fixar localização"></div>
+
+              <label for="wtEnderecoDetectadoLocalizacaoWhats" style="display:block;color:var(--blue);font-size:12px;letter-spacing:.03em;font-weight:800;text-transform:uppercase;margin:8px 0;">Endereço detectado pela localização</label>
+              <textarea id="wtEnderecoDetectadoLocalizacaoWhats" class="modal-location-address" readonly placeholder="O endereço aproximado aparecerá aqui automaticamente após tocar no mapa ou capturar a localização."></textarea>
+
+              <div class="modal-location-coords">
+                <div class="wt-field">
+                  <label for="wtLatitudeFixaWhats">Latitude</label>
+                  <input id="wtLatitudeFixaWhats" type="text" readonly placeholder="Automático" />
+                </div>
+                <div class="wt-field">
+                  <label for="wtLongitudeFixaWhats">Longitude</label>
+                  <input id="wtLongitudeFixaWhats" type="text" readonly placeholder="Automático" />
+                </div>
+              </div>
+
+              <input type="hidden" id="wtCoordenadasFixasWhats" />
+              <input type="hidden" id="wtLinkLocalizacaoFixaWhats" />
+            </div>
           </div>
         </div>
         <div class="wt-modal-actions">
@@ -2790,6 +3254,13 @@
       </div>
     </div>
   </div>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin="">
+  </script>
 
   <script>
     /* ── CONFIGURAÇÕES ── */
@@ -2985,6 +3456,232 @@
       return data;
     }
 
+
+    const ESTADOS_BR_SIGLAS = {
+      "Acre": "AC", "Alagoas": "AL", "Amapá": "AP", "Amazonas": "AM", "Bahia": "BA", "Ceará": "CE",
+      "Distrito Federal": "DF", "Espírito Santo": "ES", "Goiás": "GO", "Maranhão": "MA", "Mato Grosso": "MT",
+      "Mato Grosso do Sul": "MS", "Minas Gerais": "MG", "Pará": "PA", "Paraíba": "PB", "Paraná": "PR",
+      "Pernambuco": "PE", "Piauí": "PI", "Rio de Janeiro": "RJ", "Rio Grande do Norte": "RN",
+      "Rio Grande do Sul": "RS", "Rondônia": "RO", "Roraima": "RR", "Santa Catarina": "SC", "São Paulo": "SP",
+      "Sergipe": "SE", "Tocantins": "TO"
+    };
+
+    function parseEnderecoNominatim(data) {
+      const address = data && data.address ? data.address : {};
+      const logradouro = address.road || address.pedestrian || address.footway || address.residential || address.path || address.street || "";
+      const numero = address.house_number || "";
+      const bairro = address.suburb || address.neighbourhood || address.quarter || address.city_district || address.hamlet || address.village_suburb || "";
+      const cidade = address.city || address.town || address.village || address.municipality || address.county || "";
+      let uf = address.state_code || "";
+      if (!uf && address.state) uf = ESTADOS_BR_SIGLAS[address.state] || "";
+      const cep = String(address.postcode || "").replace(/\D+/g, "").slice(0, 8);
+      return { logradouro, numero, bairro, cidade, uf: String(uf || "").toUpperCase().slice(0, 2), cep };
+    }
+
+    async function reverseGeocodeGenerico(lat, lng) {
+      const url = new URL("https://nominatim.openstreetmap.org/reverse");
+      url.searchParams.set("format", "jsonv2");
+      url.searchParams.set("lat", lat);
+      url.searchParams.set("lon", lng);
+      url.searchParams.set("addressdetails", "1");
+      url.searchParams.set("accept-language", "pt-BR");
+      const response = await fetch(url.toString(), { method: "GET", headers: { "Accept": "application/json" } });
+      if (!response.ok) throw new Error("reverse_geocode_failed");
+      return await response.json().catch(() => ({}));
+    }
+
+    async function buscarCepViaEnderecoGenerico(uf, cidade, logradouro, bairro) {
+      const ufLimpo = String(uf || "").trim().toUpperCase().slice(0, 2);
+      const cidadeLimpa = String(cidade || "").trim();
+      const logradouroLimpo = String(logradouro || "").trim();
+      const bairroLimpo = String(bairro || "").trim().toLowerCase();
+      if (!ufLimpo || !cidadeLimpa || !logradouroLimpo || logradouroLimpo.length < 3) return "";
+      try {
+        const url = `https://viacep.com.br/ws/${encodeURIComponent(ufLimpo)}/${encodeURIComponent(cidadeLimpa)}/${encodeURIComponent(logradouroLimpo)}/json/`;
+        const response = await fetch(url, { method: "GET", headers: { "Accept": "application/json" } });
+        if (!response.ok) return "";
+        const data = await response.json().catch(() => []);
+        if (!Array.isArray(data) || !data.length) return "";
+        const melhor = data.find(item => bairroLimpo && String(item.bairro || "").trim().toLowerCase() === bairroLimpo) || data[0];
+        return String(melhor.cep || "").replace(/\D+/g, "").slice(0, 8);
+      } catch (error) {
+        console.warn("Falha ao buscar CEP por endereço:", error);
+        return "";
+      }
+    }
+
+    function setLocationFields(prefix, lat, lng, address) {
+      const latFmt = formatLocationCoord(lat);
+      const lngFmt = formatLocationCoord(lng);
+      const coords = latFmt && lngFmt ? `${latFmt},${lngFmt}` : "";
+      const map = {
+        consulta: ["consultaLatitudeFixa", "consultaLongitudeFixa", "consultaCoordenadasFixas", "consultaLinkLocalizacaoFixa", "consultaEnderecoDetectadoLocalizacao"],
+        wt: ["wtLatitudeFixaWhats", "wtLongitudeFixaWhats", "wtCoordenadasFixasWhats", "wtLinkLocalizacaoFixaWhats", "wtEnderecoDetectadoLocalizacaoWhats"]
+      };
+      const ids = map[prefix];
+      if (!ids) return;
+      if (wtId(ids[0])) wtId(ids[0]).value = latFmt;
+      if (wtId(ids[1])) wtId(ids[1]).value = lngFmt;
+      if (wtId(ids[2])) wtId(ids[2]).value = coords;
+      if (wtId(ids[3])) wtId(ids[3]).value = coords ? `https://www.google.com/maps?q=${coords}` : "";
+      if (address && wtId(ids[4])) wtId(ids[4]).value = address;
+    }
+
+    function setLocationStatus(prefix, msg, type = "") {
+      const id = prefix === "wt" ? "wtLocationStatusWhats" : "consultaLocationStatus";
+      const el = wtId(id);
+      if (!el) return;
+      el.className = "modal-location-status" + (type ? " " + type : "");
+      el.textContent = msg;
+    }
+
+    let wtSemCepMode = false;
+    let wtLocationMap = null;
+    let wtLocationMarker = null;
+    let wtLocationMapReady = false;
+    let consultaSemCepMode = false;
+    let consultaLocationMap = null;
+    let consultaLocationMarker = null;
+    let consultaLocationMapReady = false;
+
+    function initLocationMap(prefix) {
+      if (typeof L === "undefined") return;
+      const isWt = prefix === "wt";
+      const mapId = isWt ? "wtLocationMapWhats" : "consultaLocationMap";
+      if (!wtId(mapId)) return;
+
+      if (isWt && !wtLocationMapReady) {
+        wtLocationMap = L.map(mapId, { zoomControl: true, attributionControl: true }).setView([-14.2350, -51.9253], 4);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" }).addTo(wtLocationMap);
+        wtLocationMap.on("click", e => handleGenericLocationSelected("wt", e.latlng.lat, e.latlng.lng, false));
+        wtLocationMapReady = true;
+      }
+
+      if (!isWt && !consultaLocationMapReady) {
+        consultaLocationMap = L.map(mapId, { zoomControl: true, attributionControl: true }).setView([-14.2350, -51.9253], 4);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" }).addTo(consultaLocationMap);
+        consultaLocationMap.on("click", e => handleGenericLocationSelected("consulta", e.latlng.lat, e.latlng.lng, false));
+        consultaLocationMapReady = true;
+      }
+
+      setTimeout(() => {
+        if (isWt && wtLocationMap) wtLocationMap.invalidateSize();
+        if (!isWt && consultaLocationMap) consultaLocationMap.invalidateSize();
+      }, 220);
+    }
+
+    function updateGenericMarker(prefix, lat, lng, shouldZoom) {
+      initLocationMap(prefix);
+      const isWt = prefix === "wt";
+      const map = isWt ? wtLocationMap : consultaLocationMap;
+      if (!map) return;
+      const position = [lat, lng];
+      if (isWt) {
+        if (!wtLocationMarker) {
+          wtLocationMarker = L.marker(position, { draggable: true }).addTo(map);
+          wtLocationMarker.on("dragend", () => {
+            const pos = wtLocationMarker.getLatLng();
+            handleGenericLocationSelected("wt", pos.lat, pos.lng, false);
+          });
+        } else wtLocationMarker.setLatLng(position);
+      } else {
+        if (!consultaLocationMarker) {
+          consultaLocationMarker = L.marker(position, { draggable: true }).addTo(map);
+          consultaLocationMarker.on("dragend", () => {
+            const pos = consultaLocationMarker.getLatLng();
+            handleGenericLocationSelected("consulta", pos.lat, pos.lng, false);
+          });
+        } else consultaLocationMarker.setLatLng(position);
+      }
+      map.setView(position, shouldZoom ? 17 : Math.max(map.getZoom(), 16));
+    }
+
+    async function preencherEnderecoPrefixo(prefix, data) {
+      const p = parseEnderecoNominatim(data);
+      if (!p) return;
+      const ids = prefix === "wt"
+        ? { cep: "cepModalWhats", numero: "numeroModalWhats", logradouro: "wtLogradouroWhats", bairro: "wtBairroWhats", cidade: "wtCidadeWhats", uf: "wtUfWhats", endereco: "enderecoModalWhats", extra: "wtEnderecoCompletoWhats" }
+        : { cep: "cep", numero: "numero", logradouro: "consultaLogradouro", bairro: "consultaBairro", cidade: "consultaCidade", uf: "consultaUf", endereco: "logradouro", extra: "consultaEnderecoCompleto" };
+
+      if (wtId(ids.logradouro) && p.logradouro) wtId(ids.logradouro).value = p.logradouro;
+      if (wtId(ids.numero) && p.numero && !wtId(ids.numero).value.trim()) wtId(ids.numero).value = p.numero;
+      if (wtId(ids.bairro) && p.bairro) wtId(ids.bairro).value = p.bairro;
+      if (wtId(ids.cidade) && p.cidade) wtId(ids.cidade).value = p.cidade;
+      if (wtId(ids.uf) && p.uf) wtId(ids.uf).value = p.uf;
+
+      let cep = p.cep;
+      if (cep.length !== 8) cep = await buscarCepViaEnderecoGenerico(p.uf, p.cidade, p.logradouro, p.bairro);
+      if (cep.length === 8 && wtId(ids.cep)) wtId(ids.cep).value = wtFormatCep(cep);
+
+      if (wtId(ids.extra)) wtId(ids.extra).classList.add("show");
+      const numero = wtId(ids.numero) ? wtId(ids.numero).value.trim() : "";
+      const cidadeUf = [p.cidade, p.uf].filter(Boolean).join(" - ");
+      const fachada = [p.logradouro, numero, p.bairro, cidadeUf].filter(Boolean).join(", ");
+      if (prefix === "wt" && wtId(ids.endereco)) wtId(ids.endereco).value = fachada || (data.display_name || "");
+      if (prefix === "consulta" && typeof setAddress === "function") setAddress(fachada || data.display_name || "Complete o endereço para consultar a cobertura.");
+    }
+
+    async function handleGenericLocationSelected(prefix, lat, lng, shouldZoom) {
+      setLocationFields(prefix, lat, lng, "");
+      updateGenericMarker(prefix, lat, lng, shouldZoom !== false);
+      setLocationStatus(prefix, "Coordenadas salvas. Buscando endereço aproximado...", "ok");
+      try {
+        const data = await reverseGeocodeGenerico(lat, lng);
+        const endereco = data && data.display_name ? data.display_name : "Endereço aproximado não localizado.";
+        setLocationFields(prefix, lat, lng, endereco);
+        await preencherEnderecoPrefixo(prefix, data);
+        setLocationStatus(prefix, "Endereço aproximado preenchido. Confira os dados e corrija se necessário.", "ok");
+      } catch (error) {
+        setLocationStatus(prefix, "Coordenadas salvas. Não foi possível detectar o endereço automático. Complete o endereço manualmente.", "bad");
+      }
+    }
+
+    function usarLocalizacaoGenerica(prefix) {
+      const btnId = prefix === "wt" ? "btnUsarLocalizacaoWhats" : "btnUsarLocalizacaoConsulta";
+      const btn = wtId(btnId);
+      if (!navigator.geolocation) {
+        setLocationStatus(prefix, "Seu navegador não suporta geolocalização. Toque no mapa para fixar o ponto.", "bad");
+        return;
+      }
+      if (btn) { btn.disabled = true; btn.textContent = "Capturando..."; }
+      setLocationStatus(prefix, "Solicitando permissão de localização do navegador...", "ok");
+      navigator.geolocation.getCurrentPosition(
+        async position => {
+          const accuracy = Math.round(position.coords.accuracy || 0);
+          if (accuracy && accuracy > 150) setLocationStatus(prefix, `Localização capturada com baixa precisão: aproximadamente ${accuracy} metros. Confira o ponto no mapa.`, "bad");
+          await handleGenericLocationSelected(prefix, position.coords.latitude, position.coords.longitude, true);
+          if (btn) { btn.disabled = false; btn.textContent = "Usar minha localização atual"; }
+        },
+        error => {
+          let message = "Não foi possível capturar sua localização. Toque no mapa para fixar manualmente.";
+          if (error.code === error.PERMISSION_DENIED) message = "Permissão de localização negada. Toque no mapa para fixar manualmente.";
+          if (error.code === error.POSITION_UNAVAILABLE) message = "Localização indisponível no momento. Toque no mapa para fixar manualmente.";
+          if (error.code === error.TIMEOUT) message = "A localização demorou demais. Tente novamente ou toque no mapa.";
+          setLocationStatus(prefix, message, "bad");
+          if (btn) { btn.disabled = false; btn.textContent = "Usar minha localização atual"; }
+        },
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+      );
+    }
+
+    function ativarSemCepWhats() {
+      wtSemCepMode = true;
+      wtId("wtEnderecoCompletoWhats")?.classList.add("show");
+      wtId("wtLocationBoxWhats")?.classList.add("show");
+      initLocationMap("wt");
+      wtSetStatus("Como você não sabe o CEP, use a localização atual ou toque no mapa. Depois confira cidade/UF e número.");
+      setLocationStatus("wt", "Use sua localização atual ou toque no mapa para fixar o ponto.", "ok");
+    }
+
+    function ativarSemCepConsulta() {
+      consultaSemCepMode = true;
+      wtId("consultaEnderecoCompleto")?.classList.add("show");
+      wtId("consultaLocationBox")?.classList.add("show");
+      initLocationMap("consulta");
+      setStatus("Como você não sabe o CEP, use a localização atual ou toque no mapa. Depois confira cidade/UF e número.");
+      setLocationStatus("consulta", "Use sua localização atual ou toque no mapa para fixar o ponto.", "ok");
+    }
+
     async function wtConsultarCobertura() {
       const cep = wtOnlyDigits(wtId("cepModalWhats")?.value);
       const numero = wtId("numeroModalWhats")?.value.trim() || "";
@@ -3000,8 +3697,11 @@
         numero_preenchido: numero ? "sim" : "nao"
       });
 
-      if (cep.length !== 8) {
-        wtSetStatus("Informe um CEP válido.", "bad");
+      const coordsFixasWhats = wtId("wtCoordenadasFixasWhats")?.value.trim() || "";
+      const usandoLocalizacaoSemCepWhats = wtSemCepMode && coordsFixasWhats;
+
+      if (cep.length !== 8 && !usandoLocalizacaoSemCepWhats) {
+        wtSetStatus("Informe um CEP válido ou clique em Não sei meu CEP para enviar sua localização.", "bad");
         return;
       }
 
@@ -3011,6 +3711,14 @@
       }
 
       if (!extraVisivel) {
+        if (usandoLocalizacaoSemCepWhats) {
+          if (extraBox) extraBox.classList.add("show");
+          wtId("wtLocationBoxWhats")?.classList.add("show");
+          initLocationMap("wt");
+          wtSetStatus("Localização recebida. Confira os dados do endereço e clique novamente para consultar cobertura.");
+          return;
+        }
+
         wtSetStatus("Localizando endereço...");
         if (btn) btn.disabled = true;
         showGlobalLoading("Buscando endereço pelo CEP...");
@@ -3066,13 +3774,13 @@
       const cidade = wtId("wtCidadeWhats")?.value.trim() || "";
       const uf = (wtId("wtUfWhats")?.value.trim() || "").toUpperCase();
 
-      if (!logradouro) {
+      if (!usandoLocalizacaoSemCepWhats && !logradouro) {
         wtSetStatus("Informe a rua ou avenida para consultar a cobertura.", "bad");
         wtId("wtLogradouroWhats")?.focus();
         return;
       }
 
-      if (!bairro) {
+      if (!usandoLocalizacaoSemCepWhats && !bairro) {
         wtSetStatus("Informe o bairro para consultar a cobertura.", "bad");
         wtId("wtBairroWhats")?.focus();
         return;
@@ -3093,7 +3801,7 @@
       wtId("wtUfWhats").value = uf;
 
       const fachada = [
-        logradouro,
+        logradouro || "Localização enviada pelo cliente",
         numero,
         bairro,
         `${cidade} - ${uf}`
@@ -3115,7 +3823,18 @@
           uf,
           fachada,
           radius: FIXED_RADIUS,
-          origem: origemConsulta
+          origem: origemConsulta,
+          semCep: wtSemCepMode === true,
+          sem_cep: wtSemCepMode === true,
+          coords: coordsFixasWhats,
+          coordenadas: coordsFixasWhats,
+          coordenadasFixas: coordsFixasWhats,
+          latitude: wtId("wtLatitudeFixaWhats")?.value || "",
+          longitude: wtId("wtLongitudeFixaWhats")?.value || "",
+          latitudeFixa: wtId("wtLatitudeFixaWhats")?.value || "",
+          longitudeFixa: wtId("wtLongitudeFixaWhats")?.value || "",
+          linkLocalizacao: wtId("wtLinkLocalizacaoFixaWhats")?.value || "",
+          enderecoLocalizacaoFixa: wtId("wtEnderecoDetectadoLocalizacaoWhats")?.value || ""
         };
 
         const r = await wtFetchTimeout(ENDPOINT, {
@@ -3158,7 +3877,8 @@
             origem: origemConsulta
           });
 
-          const linkWhats = wtMontarWhatsapp(wtFormatCep(cep), numero, fachada, coords);
+          const coordsParaWhats = coords || coordsFixasWhats;
+          const linkWhats = wtMontarWhatsapp(cep ? wtFormatCep(cep) : "Não informado", numero, fachada, coordsParaWhats);
 
           wtSetStatus(`
             <strong>Cobertura disponível para este endereço.</strong>
@@ -3235,7 +3955,9 @@
       });
       wtId("cepModalWhats")?.addEventListener("input", function(e) {
         e.target.value = wtFormatCep(e.target.value);
+        wtSemCepMode = false;
         wtId("wtEnderecoCompletoWhats")?.classList.remove("show");
+        wtId("wtLocationBoxWhats")?.classList.remove("show");
         wtId("enderecoModalWhats").value = "";
         ["wtLogradouroWhats", "wtBairroWhats", "wtCidadeWhats", "wtUfWhats"].forEach((id) => {
           const field = wtId(id);
@@ -3248,6 +3970,8 @@
         wtId("enderecoModalWhats").value = "";
         wtSetStatus("Informe o CEP e número para continuar.");
       });
+      wtId("btnNaoSeiCepWhats")?.addEventListener("click", ativarSemCepWhats);
+      wtId("btnUsarLocalizacaoWhats")?.addEventListener("click", () => usarLocalizacaoGenerica("wt"));
       wtId("consultarModalWhats")?.addEventListener("click", wtConsultarCobertura);
       document.addEventListener("keydown", function(e) {
         if (e.key === "Escape") wtFecharModal();
@@ -3458,8 +4182,11 @@
         numero_preenchido: numero ? "sim" : "nao"
       });
 
-      if (cepLimpo.length !== 8) {
-        setStatus("Informe um CEP válido.", "bad");
+      const coordsFixasConsulta = $("consultaCoordenadasFixas") ? $("consultaCoordenadasFixas").value.trim() : "";
+      const usandoLocalizacaoSemCepConsulta = consultaSemCepMode && coordsFixasConsulta;
+
+      if (cepLimpo.length !== 8 && !usandoLocalizacaoSemCepConsulta) {
+        setStatus("Informe um CEP válido ou clique em Não sei meu CEP para enviar sua localização.", "bad");
         return;
       }
 
@@ -3474,6 +4201,14 @@
         Se for CEP geral, o cliente completa rua e bairro.
       */
       if (!extraVisivel) {
+        if (usandoLocalizacaoSemCepConsulta) {
+          if (extraBox) extraBox.classList.add("show");
+          $("consultaLocationBox")?.classList.add("show");
+          initLocationMap("consulta");
+          setStatus("Localização recebida. Confira os dados do endereço e clique novamente para consultar cobertura.");
+          return;
+        }
+
         setLoading(true);
         setStatus("Buscando endereço...");
         showGlobalLoading("Buscando endereço pelo CEP...");
@@ -3534,13 +4269,13 @@
       const uf = $("consultaUf").value.trim().toUpperCase();
       const complemento = $("consultaComplemento").value.trim();
 
-      if (!logradouro) {
+      if (!usandoLocalizacaoSemCepConsulta && !logradouro) {
         setStatus("Informe a rua ou avenida para consultar a cobertura.", "bad");
         $("consultaLogradouro").focus();
         return;
       }
 
-      if (!bairro) {
+      if (!usandoLocalizacaoSemCepConsulta && !bairro) {
         setStatus("Informe o bairro para consultar a cobertura.", "bad");
         $("consultaBairro").focus();
         return;
@@ -3561,7 +4296,7 @@
       $("consultaUf").value = uf;
 
       const fachada = [
-        logradouro,
+        logradouro || "Localização enviada pelo cliente",
         numero,
         bairro,
         cidade,
@@ -3591,7 +4326,18 @@
           uf,
           complemento,
           fachada,
-          radius: FIXED_RADIUS
+          radius: FIXED_RADIUS,
+          semCep: consultaSemCepMode === true,
+          sem_cep: consultaSemCepMode === true,
+          coords: coordsFixasConsulta,
+          coordenadas: coordsFixasConsulta,
+          coordenadasFixas: coordsFixasConsulta,
+          latitude: $("consultaLatitudeFixa") ? $("consultaLatitudeFixa").value : "",
+          longitude: $("consultaLongitudeFixa") ? $("consultaLongitudeFixa").value : "",
+          latitudeFixa: $("consultaLatitudeFixa") ? $("consultaLatitudeFixa").value : "",
+          longitudeFixa: $("consultaLongitudeFixa") ? $("consultaLongitudeFixa").value : "",
+          linkLocalizacao: $("consultaLinkLocalizacaoFixa") ? $("consultaLinkLocalizacaoFixa").value : "",
+          enderecoLocalizacaoFixa: $("consultaEnderecoDetectadoLocalizacao") ? $("consultaEnderecoDetectadoLocalizacao").value : ""
         };
 
         const res = await consultarCoberturaCloudRun(payload);
@@ -3630,7 +4376,7 @@
             cidade,
             uf,
             motivo: res.motivo || "-",
-            coords: res.coords || "",
+            coords: res.coords || coordsFixasConsulta || "",
             origem: "box_principal"
           });
         } else {
@@ -3655,7 +4401,13 @@
       }
     }
 
-    $("cep").addEventListener("input", (e) => { e.target.value = formatCep(e.target.value); });
+    $("cep").addEventListener("input", (e) => {
+      e.target.value = formatCep(e.target.value);
+      consultaSemCepMode = false;
+      $("consultaLocationBox")?.classList.remove("show");
+    });
+    $("btnNaoSeiCepConsulta")?.addEventListener("click", ativarSemCepConsulta);
+    $("btnUsarLocalizacaoConsulta")?.addEventListener("click", () => usarLocalizacaoGenerica("consulta"));
     $("btnConsultar").addEventListener("click", consultarCobertura);
     $("btnLimpar").addEventListener("click", clearForm);
     $("btnContratarCobertura").addEventListener("click", function() {
@@ -3675,6 +4427,7 @@
     let modalCoverageValidated = false;
     let modalCoverageData = null;
     let coberturaPaginaData = null;
+    let modalSemCepMode = false;
 
     const PLAN_LABELS = {
       "FIBRA 500MB": "FIBRA 500MB — R$ 99,90/mês",
@@ -3765,6 +4518,7 @@
       });
       const box = $("coverageOkBox");
       if (box) box.classList.remove("show");
+      resetModalLocation();
     }
 
     function abrirModal(planoPreSelecionado) {
@@ -3775,10 +4529,12 @@
       });
       modalCoverageValidated = false;
       modalCoverageData = null;
+      modalSemCepMode = false;
       resetModalVisual();
 
       const enderecoCompletoEl = $("modalEnderecoCompleto");
       if (enderecoCompletoEl) enderecoCompletoEl.classList.remove("show");
+      esconderBoxLocalizacaoModal();
 
       const btnEndereco = document.querySelector("#etapa1 .btn-modal-next");
       if (btnEndereco) {
@@ -3797,6 +4553,7 @@
       $("modalOverlay").classList.add("open");
       document.body.style.overflow = "hidden";
       mostrarEtapa(1);
+      initModalLocationMap();
       setTimeout(() => $("mCep").focus(), 120);
     }
 
@@ -3821,6 +4578,7 @@
       modalCoverageValidated = true;
       modalCoverageData = coberturaPaginaData.cobertura;
       $("coverageOkBox").classList.add("show");
+      esconderBoxLocalizacaoModal();
 
       mostrarEtapa(2);
     }
@@ -3832,6 +4590,8 @@
 
     $("modalOverlay").addEventListener("click", function(e) { if (e.target === this) fecharModal(); });
     document.addEventListener("keydown", function(e) { if (e.key === "Escape") fecharModal(); });
+    $("btnNaoSeiCepModal")?.addEventListener("click", ativarModalSemCep);
+    $("btnUsarLocalizacaoModal")?.addEventListener("click", usarLocalizacaoAtualModal);
 
     function mostrarEtapa(n) {
       ["etapa1","etapa2","etapa3","etapa4","etapa5","etapaSucesso"].forEach((id, index) => {
@@ -3875,16 +4635,430 @@
       if (box) box.classList.remove("show");
     }
 
+
+
+    let modalLocationMap = null;
+    let modalLocationMarker = null;
+    let modalLocationMapReady = false;
+
+    function setModalLocationStatus(message, type) {
+      const el = $("modalLocationStatus");
+      if (!el) return;
+      el.textContent = message;
+      el.className = "modal-location-status" + (type ? " " + type : "");
+    }
+
+    function formatLocationCoord(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return "";
+      return n.toFixed(7);
+    }
+
+    function parseCoordsString(coords) {
+      const raw = String(coords || "").trim();
+      const match = raw.match(/(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)/);
+      if (!match) return null;
+      const lat = Number(match[1]);
+      const lng = Number(match[2]);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+      return { lat, lng };
+    }
+
+    function getModalCoordsFixas() {
+      const raw = $("mCoordenadasFixas") ? $("mCoordenadasFixas").value.trim() : "";
+      return parseCoordsString(raw);
+    }
+
+    function garantirReferenciaPorLocalizacao() {
+      const coords = getModalCoordsFixas();
+      if (coords && $("mPontoRef") && !$("mPontoRef").value.trim()) {
+        $("mPontoRef").value = "Localização enviada pelo mapa/GPS";
+        fieldOk("mPontoRef");
+      }
+    }
+
+    function resetModalLocation() {
+      ["mLatitudeFixa", "mLongitudeFixa", "mCoordenadasFixas", "mLinkLocalizacaoFixa", "mEnderecoDetectadoLocalizacao"].forEach(id => {
+        const el = $(id);
+        if (el) el.value = "";
+      });
+      setModalLocationStatus("Toque no mapa ou clique em 'Capturar minha localização' para marcar sua casa com precisão.");
+      if (modalLocationMarker && modalLocationMap) {
+        modalLocationMap.removeLayer(modalLocationMarker);
+        modalLocationMarker = null;
+      }
+    }
+
+    function initModalLocationMap() {
+      if (typeof L === "undefined" || !$("modalLocationMap")) return;
+
+      if (!modalLocationMapReady) {
+        modalLocationMap = L.map("modalLocationMap", {
+          zoomControl: true,
+          attributionControl: true
+        }).setView([-14.2350, -51.9253], 4);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: "&copy; OpenStreetMap contributors"
+        }).addTo(modalLocationMap);
+
+        modalLocationMap.on("click", function(event) {
+          handleModalLocationSelected(event.latlng.lat, event.latlng.lng, false);
+        });
+
+        modalLocationMapReady = true;
+      }
+
+      setTimeout(() => {
+        if (modalLocationMap) modalLocationMap.invalidateSize();
+      }, 180);
+    }
+
+    function updateModalLocationMarker(lat, lng, shouldZoom) {
+      if (!modalLocationMapReady) initModalLocationMap();
+      if (!modalLocationMap) return;
+
+      const position = [lat, lng];
+
+      if (!modalLocationMarker) {
+        modalLocationMarker = L.marker(position, { draggable: true }).addTo(modalLocationMap);
+        modalLocationMarker.on("dragend", function() {
+          const pos = modalLocationMarker.getLatLng();
+          handleModalLocationSelected(pos.lat, pos.lng, false);
+        });
+      } else {
+        modalLocationMarker.setLatLng(position);
+      }
+
+      modalLocationMap.setView(position, shouldZoom ? 17 : Math.max(modalLocationMap.getZoom(), 16));
+    }
+
+    function saveModalLocationFields(lat, lng, address) {
+      const latFmt = formatLocationCoord(lat);
+      const lngFmt = formatLocationCoord(lng);
+      const coords = latFmt && lngFmt ? `${latFmt},${lngFmt}` : "";
+
+      if ($("mLatitudeFixa")) $("mLatitudeFixa").value = latFmt;
+      if ($("mLongitudeFixa")) $("mLongitudeFixa").value = lngFmt;
+      if ($("mCoordenadasFixas")) $("mCoordenadasFixas").value = coords;
+      if ($("mLinkLocalizacaoFixa")) $("mLinkLocalizacaoFixa").value = coords ? `https://www.google.com/maps?q=${coords}` : "";
+
+      if (address && $("mEnderecoDetectadoLocalizacao")) {
+        $("mEnderecoDetectadoLocalizacao").value = address;
+      }
+    }
+
+    async function reverseGeocodeModalLocation(lat, lng) {
+      const url = new URL("https://nominatim.openstreetmap.org/reverse");
+      url.searchParams.set("format", "jsonv2");
+      url.searchParams.set("lat", lat);
+      url.searchParams.set("lon", lng);
+      url.searchParams.set("addressdetails", "1");
+      url.searchParams.set("accept-language", "pt-BR");
+
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+      });
+
+      if (!response.ok) throw new Error("reverse_geocode_failed");
+      return await response.json().catch(() => ({}));
+    }
+
+    async function buscarCepViaEnderecoModal(uf, cidade, logradouro) {
+      const ufLimpo = String(uf || "").trim().toUpperCase().slice(0, 2);
+      const cidadeLimpa = String(cidade || "").trim();
+      const logradouroLimpo = String(logradouro || "").trim();
+
+      if (!ufLimpo || !cidadeLimpa || !logradouroLimpo || logradouroLimpo.length < 3) {
+        return "";
+      }
+
+      try {
+        const url = `https://viacep.com.br/ws/${encodeURIComponent(ufLimpo)}/${encodeURIComponent(cidadeLimpa)}/${encodeURIComponent(logradouroLimpo)}/json/`;
+        const response = await fetch(url, {
+          method: "GET",
+          headers: { "Accept": "application/json" }
+        });
+
+        if (!response.ok) return "";
+
+        const data = await response.json().catch(() => []);
+        if (!Array.isArray(data) || !data.length) return "";
+
+        const bairroAtual = String($('mBairro')?.value || "").trim().toLowerCase();
+        const melhor = data.find(function(item) {
+          return bairroAtual && String(item.bairro || "").trim().toLowerCase() === bairroAtual;
+        }) || data[0];
+
+        return String(melhor.cep || "").replace(/\D+/g, "").slice(0, 8);
+      } catch (error) {
+        console.warn("Falha ao buscar CEP por UF/cidade/logradouro:", error);
+        return "";
+      }
+    }
+
+    async function preencherCamposEnderecoComLocalizacaoModal(data) {
+      if (!data || !data.address) return;
+
+      const address = data.address || {};
+
+      const logradouro =
+        address.road ||
+        address.pedestrian ||
+        address.footway ||
+        address.residential ||
+        address.path ||
+        address.street ||
+        "";
+
+      const numero = address.house_number || "";
+
+      const bairro =
+        address.suburb ||
+        address.neighbourhood ||
+        address.quarter ||
+        address.city_district ||
+        address.hamlet ||
+        address.village_suburb ||
+        "";
+
+      const cidade =
+        address.city ||
+        address.town ||
+        address.village ||
+        address.municipality ||
+        address.county ||
+        "";
+
+      let uf = address.state_code || "";
+
+      if (!uf && address.state) {
+        const estados = {
+          "Acre": "AC",
+          "Alagoas": "AL",
+          "Amapá": "AP",
+          "Amazonas": "AM",
+          "Bahia": "BA",
+          "Ceará": "CE",
+          "Distrito Federal": "DF",
+          "Espírito Santo": "ES",
+          "Goiás": "GO",
+          "Maranhão": "MA",
+          "Mato Grosso": "MT",
+          "Mato Grosso do Sul": "MS",
+          "Minas Gerais": "MG",
+          "Pará": "PA",
+          "Paraíba": "PB",
+          "Paraná": "PR",
+          "Pernambuco": "PE",
+          "Piauí": "PI",
+          "Rio de Janeiro": "RJ",
+          "Rio Grande do Norte": "RN",
+          "Rio Grande do Sul": "RS",
+          "Rondônia": "RO",
+          "Roraima": "RR",
+          "Santa Catarina": "SC",
+          "São Paulo": "SP",
+          "Sergipe": "SE",
+          "Tocantins": "TO"
+        };
+        uf = estados[address.state] || "";
+      }
+
+      let cep = String(address.postcode || "").replace(/\D+/g, "").slice(0, 8);
+
+      if ($("mLogradouro") && logradouro) $("mLogradouro").value = logradouro;
+      if ($("mNumero") && numero && !$("mNumero").value.trim()) $("mNumero").value = numero;
+      if ($("mBairro") && bairro) $("mBairro").value = bairro;
+      if ($("mCidade") && cidade) $("mCidade").value = cidade;
+      if ($("mUf") && uf) $("mUf").value = String(uf).toUpperCase().slice(0, 2);
+
+      if (cep.length !== 8) {
+        cep = await buscarCepViaEnderecoModal(uf, cidade, logradouro);
+      }
+
+      if ($("mCep") && cep.length === 8) {
+        $("mCep").value = cep.replace(/^(\d{5})(\d{3})$/, "$1-$2");
+        fieldOk("mCep");
+      }
+
+      const enderecoCompletoEl = $("modalEnderecoCompleto");
+      if (enderecoCompletoEl) enderecoCompletoEl.classList.add("show");
+
+      ["mCep", "mNumero", "mLogradouro", "mBairro", "mCidade", "mUf"].forEach(function(id) {
+        const el = $(id);
+        if (el && el.value.trim()) fieldOk(id);
+      });
+
+      resetCoverageValidation();
+    }
+
+    async function handleModalLocationSelected(lat, lng, shouldZoom) {
+      saveModalLocationFields(lat, lng, "");
+      updateModalLocationMarker(lat, lng, shouldZoom !== false);
+      setModalLocationStatus("Coordenadas salvas. Buscando endereço aproximado...", "ok");
+
+      try {
+        const dataEndereco = await reverseGeocodeModalLocation(lat, lng);
+        const enderecoFormatado = dataEndereco && dataEndereco.display_name ? dataEndereco.display_name : "Endereço aproximado não localizado.";
+
+        saveModalLocationFields(lat, lng, enderecoFormatado);
+        await preencherCamposEnderecoComLocalizacaoModal(dataEndereco);
+        garantirReferenciaPorLocalizacao();
+
+        const precisaNumero = $("mNumero") && !$("mNumero").value.trim();
+        if (precisaNumero) {
+          fieldError("mNumero", "Confira a localização e informe o número da casa.");
+          setModalLocationStatus("Endereço aproximado preenchido. Informe o número da casa e corrija os dados se necessário.", "ok");
+        } else {
+          setModalLocationStatus("Endereço aproximado preenchido. Confira os dados antes de consultar a cobertura.", "ok");
+        }
+      } catch (e) {
+        if ($("mEnderecoDetectadoLocalizacao")) $("mEnderecoDetectadoLocalizacao").value = "Endereço automático indisponível. As coordenadas foram salvas normalmente.";
+        setModalLocationStatus("Coordenadas salvas. Não foi possível detectar o endereço automático. Preencha o endereço manualmente.", "bad");
+      }
+    }
+
+    function usarLocalizacaoAtualModal() {
+      const btn = $("btnUsarLocalizacaoModal");
+
+      if (!navigator.geolocation) {
+        setModalLocationStatus("Seu navegador não suporta geolocalização. Toque no mapa para fixar o ponto.", "bad");
+        return;
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Capturando...";
+      }
+
+      setModalLocationStatus("Solicitando permissão de localização do navegador...", "ok");
+
+      navigator.geolocation.getCurrentPosition(
+        async function(position) {
+          const accuracy = Math.round(position.coords.accuracy || 0);
+
+          if (accuracy && accuracy > 150) {
+            setModalLocationStatus(`Localização capturada com baixa precisão: aproximadamente ${accuracy} metros. Confira o ponto no mapa e ajuste se necessário.`, "bad");
+          } else if (accuracy) {
+            setModalLocationStatus(`Localização capturada com precisão aproximada de ${accuracy} metros. Buscando endereço...`, "ok");
+          }
+
+          await handleModalLocationSelected(position.coords.latitude, position.coords.longitude, true);
+
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = "Usar minha localização atual";
+          }
+        },
+        function(error) {
+          let message = "Não foi possível capturar sua localização. Toque no mapa para fixar manualmente.";
+          if (error.code === error.PERMISSION_DENIED) message = "Permissão de localização negada. Toque no mapa para fixar manualmente.";
+          if (error.code === error.POSITION_UNAVAILABLE) message = "Localização indisponível no momento. Toque no mapa para fixar manualmente.";
+          if (error.code === error.TIMEOUT) message = "A localização demorou demais. Tente novamente ou toque no mapa.";
+          setModalLocationStatus(message, "bad");
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = "Usar minha localização atual";
+          }
+        },
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+      );
+    }
+
+    function aplicarCoordsCoberturaNoMapa() {
+      const coords = modalCoverageData && modalCoverageData.coords ? parseCoordsString(modalCoverageData.coords) : null;
+      if (!coords) return;
+      saveModalLocationFields(coords.lat, coords.lng, "Coordenadas retornadas pela consulta de cobertura.");
+      updateModalLocationMarker(coords.lat, coords.lng, true);
+      setModalLocationStatus("O ponto retornado pela consulta foi carregado no mapa. Ajuste manualmente se necessário.", "ok");
+    }
+
+    function mostrarBoxLocalizacaoModal(message) {
+      const box = $("modalLocationBox");
+      if (box) box.classList.add("show");
+      initModalLocationMap();
+      if (message) setModalLocationStatus(message, "ok");
+      setTimeout(() => {
+        if (modalLocationMap) modalLocationMap.invalidateSize();
+      }, 220);
+    }
+
+    function esconderBoxLocalizacaoModal() {
+      const box = $("modalLocationBox");
+      if (box) box.classList.remove("show");
+    }
+
+    function ativarModalSemCep() {
+      modalSemCepMode = true;
+      const enderecoCompletoEl = $("modalEnderecoCompleto");
+      if (enderecoCompletoEl) enderecoCompletoEl.classList.add("show");
+      fieldReset("mCep");
+      if ($("mCep")) $("mCep").value = "";
+      const btnEndereco = document.querySelector("#etapa1 .btn-modal-next");
+      if (btnEndereco) btnEndereco.innerHTML = "Consultar cobertura e continuar →";
+      mostrarBoxLocalizacaoModal("Como você não sabe o CEP, marque sua localização no mapa ou use a localização atual. Depois complete os dados que souber do endereço.");
+      setTimeout(() => $("mNumero") && $("mNumero").focus(), 80);
+    }
+
     function validarCamposEndereco() {
       let hasError = false;
       ["mCep","mNumero","mLogradouro","mBairro","mCidade","mUf","mPontoRef"].forEach(fieldReset);
-      if (onlyDigits($("mCep").value).length !== 8) { fieldError("mCep", "Informe um CEP válido."); hasError = true; } else fieldOk("mCep");
-      if (!$("mNumero").value.trim())     { fieldError("mNumero", "Informe o número."); hasError = true; } else fieldOk("mNumero");
-      if (!$("mLogradouro").value.trim()) { fieldError("mLogradouro", "Informe o logradouro."); hasError = true; } else fieldOk("mLogradouro");
-      if (!$("mBairro").value.trim())     { fieldError("mBairro", "Informe o bairro."); hasError = true; } else fieldOk("mBairro");
-      if (!$("mCidade").value.trim())     { fieldError("mCidade", "Informe a cidade."); hasError = true; } else fieldOk("mCidade");
-      if (!$("mUf").value.trim())         { fieldError("mUf", "Informe a UF."); hasError = true; } else fieldOk("mUf");
-      if (!$("mPontoRef").value.trim())   { fieldError("mPontoRef", "Informe um ponto de referência."); hasError = true; } else fieldOk("mPontoRef");
+
+      const cepValido = onlyDigits($("mCep").value).length === 8;
+      const coordsFixas = getModalCoordsFixas();
+      const usandoLocalizacaoSemCep = modalSemCepMode && coordsFixas;
+
+      if (!modalSemCepMode && !cepValido) {
+        fieldError("mCep", "Informe um CEP válido ou clique em Não sei meu CEP.");
+        hasError = true;
+      } else if (cepValido) {
+        fieldOk("mCep");
+      } else if (usandoLocalizacaoSemCep) {
+        fieldReset("mCep");
+      }
+
+      if (!$("mNumero").value.trim()) {
+        fieldError("mNumero", "Informe o número.");
+        hasError = true;
+      } else {
+        fieldOk("mNumero");
+      }
+
+      const logradouroVazio = !$("mLogradouro").value.trim();
+      const bairroVazio = !$("mBairro").value.trim();
+      const cidadeVazia = !$("mCidade").value.trim();
+      const ufVazia = !$("mUf").value.trim();
+
+      /*
+        No modo "Não sei meu CEP", a coordenada GPS passa a ser a principal referência
+        para consultar cobertura. Por isso, não travamos o avanço quando o reverse geocode
+        não devolve rua/bairro com precisão. O cliente ainda pode corrigir manualmente.
+      */
+      if (!usandoLocalizacaoSemCep && logradouroVazio) { fieldError("mLogradouro", "Informe o logradouro."); hasError = true; } else if (!logradouroVazio) fieldOk("mLogradouro");
+      if (!usandoLocalizacaoSemCep && bairroVazio)     { fieldError("mBairro", "Informe o bairro."); hasError = true; } else if (!bairroVazio) fieldOk("mBairro");
+      if (cidadeVazia)                                { fieldError("mCidade", "Informe a cidade."); hasError = true; } else fieldOk("mCidade");
+      if (ufVazia)                                    { fieldError("mUf", "Informe a UF."); hasError = true; } else fieldOk("mUf");
+
+      if (modalSemCepMode && !coordsFixas) {
+        mostrarBoxLocalizacaoModal("Marque a localização no mapa ou use a localização atual para continuar sem CEP.");
+        setModalLocationStatus("Para continuar sem CEP, envie a localização pelo botão ou toque no mapa.", "bad");
+        hasError = true;
+      }
+
+      if (usandoLocalizacaoSemCep) {
+        garantirReferenciaPorLocalizacao();
+      }
+
+      if (!$("mPontoRef").value.trim()) {
+        fieldError("mPontoRef", "Informe um ponto de referência ou envie a localização.");
+        hasError = true;
+      } else {
+        fieldOk("mPontoRef");
+      }
+
       return !hasError;
     }
 
@@ -3897,8 +5071,9 @@
 
       ["mCep", "mNumero", "mLogradouro", "mBairro", "mCidade", "mUf", "mPontoRef"].forEach(fieldReset);
 
-      const cep = onlyDigits($("mCep").value);
+      let cep = onlyDigits($("mCep").value);
       const numero = $("mNumero").value.trim();
+      const coordsFixas = getModalCoordsFixas();
       const btn = document.querySelector("#etapa1 .btn-modal-next");
 
       trackGA4("clicou_consultar_cobertura", {
@@ -3908,8 +5083,14 @@
         numero_preenchido: numero ? "sim" : "nao"
       });
 
-      if (cep.length !== 8) {
-        fieldError("mCep", "Informe um CEP válido.");
+      if (cep.length !== 8 && !modalSemCepMode) {
+        fieldError("mCep", "Informe um CEP válido ou clique em Não sei meu CEP.");
+        return;
+      }
+
+      if (modalSemCepMode && cep.length !== 8 && !coordsFixas) {
+        mostrarBoxLocalizacaoModal("Marque a localização no mapa ou use a localização atual para continuar sem CEP.");
+        setModalLocationStatus("Para consultar sem CEP, primeiro envie a localização pelo botão ou toque no mapa.", "bad");
         return;
       }
 
@@ -3918,10 +5099,10 @@
         return;
       }
 
-      fieldOk("mCep");
+      if (cep.length === 8) fieldOk("mCep");
       fieldOk("mNumero");
 
-      if (!enderecoCompletoVisivel) {
+      if (!enderecoCompletoVisivel && !modalSemCepMode) {
         btn.disabled = true;
         showGlobalLoading("Buscando endereço pelo CEP...");
 
@@ -3955,7 +5136,8 @@
         else fieldOk("mUf");
 
         if (!logradouro || !bairro || !cidade || !uf) {
-          erroEl.textContent = "Esse CEP parece ser geral. Complete os dados do endereço para consultar a cobertura.";
+          mostrarBoxLocalizacaoModal("Esse CEP parece ser geral. Complete o endereço e, se possível, fixe a localização no mapa.");
+          erroEl.textContent = "Esse CEP parece ser geral. Complete os dados do endereço e use a localização se não souber todos os dados.";
           erroEl.classList.add("show");
         } else {
           erroEl.textContent = "Endereço carregado. Confira os dados e clique em consultar cobertura para continuar.";
@@ -3977,10 +5159,14 @@
       showGlobalLoading("Consultando cobertura no endereço informado...");
 
       try {
-        const logradouro = $("mLogradouro").value.trim();
-        const bairro = $("mBairro").value.trim();
+        const coordsTexto = $("mCoordenadasFixas") ? $("mCoordenadasFixas").value.trim() : "";
+        const coordsObj = parseCoordsString(coordsTexto);
+        const logradouro = $("mLogradouro").value.trim() || (modalSemCepMode && coordsObj ? "Localização enviada pelo mapa" : "");
+        const bairro = $("mBairro").value.trim() || (modalSemCepMode && coordsObj ? "Não informado" : "");
         const cidade = $("mCidade").value.trim();
-        const uf = $("mUf").value.trim();
+        const uf = $("mUf").value.trim().toUpperCase();
+        const pontoReferencia = $("mPontoRef").value.trim() || (coordsObj ? "Localização enviada pelo mapa/GPS" : "");
+        const enderecoLocalizacao = $("mEnderecoDetectadoLocalizacao") ? $("mEnderecoDetectadoLocalizacao").value.trim() : "";
 
         const fachada = [
           logradouro,
@@ -3998,7 +5184,20 @@
           cidade,
           uf,
           complemento: $("mComplemento").value.trim(),
-          ponto_referencia: $("mPontoRef").value.trim(),
+          ponto_referencia: pontoReferencia,
+          coordenadas_fixadas: coordsTexto,
+          coordenadasFixas: coordsTexto,
+          coordenadas: coordsTexto,
+          coords: coordsTexto,
+          latitude: coordsObj ? String(coordsObj.lat) : "",
+          longitude: coordsObj ? String(coordsObj.lng) : "",
+          latitudeFixa: coordsObj ? String(coordsObj.lat) : "",
+          longitudeFixa: coordsObj ? String(coordsObj.lng) : "",
+          linkLocalizacao: coordsTexto ? `https://www.google.com/maps?q=${coordsTexto}` : "",
+          sem_cep: modalSemCepMode === true,
+          semCep: modalSemCepMode === true,
+          endereco_localizacao_fixada: enderecoLocalizacao,
+          enderecoLocalizacaoFixa: enderecoLocalizacao,
           fachada,
           radius: FIXED_RADIUS
         };
@@ -4044,7 +5243,11 @@
         trackGA4("erro_consulta_cobertura", { origem_consulta: "modal_contratacao", erro: err && err.message ? err.message : "erro_consulta" });
         modalCoverageValidated = false;
         modalCoverageData = null;
-        erroEl.textContent = err.message || "Erro ao consultar cobertura. Tente novamente.";
+        if (modalSemCepMode && getModalCoordsFixas()) {
+          erroEl.textContent = "Não conseguimos concluir a consulta automática apenas pela localização. Confira se cidade, UF e número estão corretos ou informe o CEP se souber.";
+        } else {
+          erroEl.textContent = err.message || "Erro ao consultar cobertura. Tente novamente.";
+        }
         erroEl.classList.add("show");
       } finally {
         btn.disabled = false;
@@ -4166,6 +5369,8 @@
         ["Endereço", `${$("mLogradouro").value}, ${$("mNumero").value} - ${$("mBairro").value} - ${$("mCidade").value}/${$("mUf").value}`],
         ["Complemento", $("mComplemento").value || "-"],
         ["Referência", $("mPontoRef").value],
+        ["Localização enviada", $("mCoordenadasFixas") && $("mCoordenadasFixas").value ? $("mCoordenadasFixas").value : "-"],
+        ["Endereço detectado", $("mEnderecoDetectadoLocalizacao") && $("mEnderecoDetectadoLocalizacao").value ? $("mEnderecoDetectadoLocalizacao").value : "-"],
         ["Plano", PLAN_LABELS[$("mPlano").value] || $("mPlano").value],
         ["Fatura proporcional", faturamento.proporcional],
         ["Primeira fatura cheia", faturamento.cheia],
@@ -4197,20 +5402,30 @@
         telefone1Cliente:        onlyDigits($("mTelefone1").value),
         telefone2Cliente:        onlyDigits($("mTelefone2").value),
         cep:                     onlyDigits($("mCep").value),
+        semCep:                  modalSemCepMode === true,
+        sem_cep:                 modalSemCepMode === true,
         uf:                      $("mUf").value.trim().toUpperCase(),
         nomeCidade:              $("mCidade").value.trim(),
+        cidade:                  $("mCidade").value.trim(),
         bairro:                  $("mBairro").value.trim(),
         logradouro:              $("mLogradouro").value.trim(),
         numero:                  $("mNumero").value.trim(),
         complemento:             $("mComplemento").value.trim(),
-        pontoReferencia:         $("mPontoRef").value.trim(),
+        pontoReferencia:         $("mPontoRef").value.trim() || ($("mCoordenadasFixas") && $("mCoordenadasFixas").value ? "Localização enviada pelo mapa/GPS" : ""),
+        ponto_referencia:        $("mPontoRef").value.trim() || ($("mCoordenadasFixas") && $("mCoordenadasFixas").value ? "Localização enviada pelo mapa/GPS" : ""),
+        latitudeFixa:            $("mLatitudeFixa") ? $("mLatitudeFixa").value.trim() : "",
+        longitudeFixa:           $("mLongitudeFixa") ? $("mLongitudeFixa").value.trim() : "",
+        coordenadasFixas:        $("mCoordenadasFixas") ? $("mCoordenadasFixas").value.trim() : "",
+        coordenadas:             $("mCoordenadasFixas") ? $("mCoordenadasFixas").value.trim() : "",
+        coords:                  $("mCoordenadasFixas") ? $("mCoordenadasFixas").value.trim() : "",
+        enderecoLocalizacaoFixa: $("mEnderecoDetectadoLocalizacao") ? $("mEnderecoDetectadoLocalizacao").value.trim() : "",
         planos:                  $("mPlano").value,
         diaVencimentoFatura:     $("mVencimento").value,
         dataInstalacao1:         $("mDataInstalacao").value,
         turnoInstalacao1:        $("mTurnoInstalacao").value,
-        linkLocalizacao:         modalCoverageData && modalCoverageData.coords ? `https://www.google.com/maps?q=${modalCoverageData.coords}` : "",
+        linkLocalizacao:         $("mLinkLocalizacaoFixa") && $("mLinkLocalizacaoFixa").value ? $("mLinkLocalizacaoFixa").value : (modalCoverageData && modalCoverageData.coords ? `https://www.google.com/maps?q=${modalCoverageData.coords}` : ""),
         urlAdicional:            "",
-        obsEndereco:             modalCoverageData && modalCoverageData.motivo ? `Cobertura validada pelo site. Motivo: ${modalCoverageData.motivo}` : "Cobertura validada pelo site.",
+        obsEndereco:             `${modalCoverageData && modalCoverageData.motivo ? `Cobertura validada pelo site. Motivo: ${modalCoverageData.motivo}` : "Cobertura validada pelo site."}${$("mCoordenadasFixas") && $("mCoordenadasFixas").value ? ` Localização fixa enviada pelo cliente: ${$("mCoordenadasFixas").value}. Endereço detectado: ${$("mEnderecoDetectadoLocalizacao").value || "-"}.` : ""}`,
 
         page_url:                window.location.href,
         landing_page:            lerOrigemTrafego().landing_page || window.location.href,
@@ -4327,9 +5542,25 @@
       }
     }
 
+
+    // Remove animação de pulse quando localização for capturada
+    function removerPulseLocalizacao(prefixo) {
+      const ids = {
+        consulta: 'btnUsarLocalizacaoConsulta',
+        wt: 'btnUsarLocalizacaoWhats',
+        modal: 'btnUsarLocalizacaoModal'
+      };
+      const btn = document.getElementById(ids[prefixo]);
+      if (btn) btn.classList.remove('btn-location-pulse');
+    }
+
     /* Máscaras */
     $("mCep").addEventListener("input", function() {
       this.value = formatCep(this.value);
+      if (onlyDigits(this.value).length > 0 && modalSemCepMode) {
+        modalSemCepMode = false;
+        esconderBoxLocalizacaoModal();
+      }
       resetCoverageValidation();
       if (onlyDigits(this.value).length === 8) buscarCepModal(this.value);
     });
