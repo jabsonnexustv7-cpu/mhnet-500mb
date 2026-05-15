@@ -1941,6 +1941,15 @@
       margin-top: 10px;
     }
 
+
+    /* ── GUIA DISCRETO APÓS LOCALIZAÇÃO ── */
+    .wt-guide-focus {
+      outline: 3px solid rgba(0,200,83,.85) !important;
+      outline-offset: 3px !important;
+      box-shadow: 0 0 0 6px rgba(0,200,83,.14) !important;
+      transition: outline .18s ease, box-shadow .18s ease;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
       .coverage-grid { grid-template-columns: 1fr; gap: 36px; }
@@ -2094,6 +2103,59 @@
     }
 
     body.global-loading-active { overflow: hidden; }
+
+
+    /* ── RECOLHER MAPA APÓS LOCALIZAÇÃO ── */
+    .modal-location-box.location-collapsed {
+      padding: 12px 14px;
+      background: #effdf5;
+      border-color: #b7efcc;
+    }
+
+    .modal-location-box.location-collapsed .modal-location-head {
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .modal-location-box.location-collapsed .modal-location-head span {
+      display: none;
+    }
+
+    .modal-location-box.location-collapsed .modal-location-head strong {
+      margin-bottom: 0;
+      color: #0f7a3a;
+    }
+
+    .modal-location-box.location-collapsed .modal-location-map,
+    .modal-location-box.location-collapsed .map-tap-hint,
+    .modal-location-box.location-collapsed .modal-location-address,
+    .modal-location-box.location-collapsed .modal-location-coords,
+    .modal-location-box.location-collapsed label[for="consultaEnderecoDetectadoLocalizacao"],
+    .modal-location-box.location-collapsed label[for="mEnderecoDetectadoLocalizacao"],
+    .modal-location-box.location-collapsed label[for="wtEnderecoDetectadoLocalizacaoWhats"] {
+      display: none !important;
+    }
+
+    .modal-location-box.location-collapsed .modal-location-status {
+      margin: 0;
+      padding: 9px 11px;
+      min-height: 0;
+      font-size: 12px;
+      background: #ffffff;
+      border-color: #b7efcc;
+      color: #0f7a3a;
+    }
+
+    .modal-location-box.location-collapsed .btn-location-current {
+      min-height: 36px;
+      padding: 0 12px;
+      font-size: 11px;
+      background: #ffffff;
+      color: var(--blue);
+      border: 1px solid rgba(10,36,99,.18);
+      box-shadow: none;
+      animation: none;
+    }
 
     /* ── OTIMIZAÇÕES MOBILE - LOCALIZAÇÃO E UX ── */
 
@@ -3622,6 +3684,115 @@
       if (prefix === "consulta" && typeof setAddress === "function") setAddress(fachada || data.display_name || "Complete o endereço para consultar a cobertura.");
     }
 
+
+
+    function wtGuideGet(id) {
+      return wtId(id) || document.getElementById(id);
+    }
+
+    function wtGuideValue(id) {
+      const el = wtGuideGet(id);
+      return el ? String(el.value || "").trim() : "";
+    }
+
+    function wtGuideScrollTo(target, message, statusFn) {
+      const el = typeof target === "string" ? wtGuideGet(target) : target;
+      if (!el) return false;
+
+      if (typeof statusFn === "function" && message) {
+        statusFn(message, "ok");
+      }
+
+      document.querySelectorAll(".wt-guide-focus").forEach(item => item.classList.remove("wt-guide-focus"));
+      el.classList.add("wt-guide-focus");
+
+      setTimeout(() => {
+        try {
+          el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        } catch (_) {
+          el.scrollIntoView();
+        }
+
+        setTimeout(() => {
+          if (typeof el.focus === "function" && !el.readOnly && !el.disabled && el.tagName !== "BUTTON") {
+            try { el.focus({ preventScroll: true }); } catch (_) { el.focus(); }
+          }
+        }, 350);
+      }, 180);
+
+      clearTimeout(window.__wtGuideFocusTimer);
+      window.__wtGuideFocusTimer = setTimeout(() => {
+        el.classList.remove("wt-guide-focus");
+      }, 7000);
+
+      return true;
+    }
+
+    function guiarDepoisDaLocalizacao(prefix) {
+      if (prefix === "modal") {
+        const status = typeof setModalLocationStatus === "function" ? setModalLocationStatus : null;
+        if (!wtGuideValue("mNumero")) return wtGuideScrollTo("mNumero", "Localização encontrada. Agora informe o número da casa para continuar.", status);
+        if (!wtGuideValue("mCidade")) return wtGuideScrollTo("mCidade", "Confira a cidade. Se não preencheu automático, digite aqui.", status);
+        if (!wtGuideValue("mUf")) return wtGuideScrollTo("mUf", "Informe a UF com 2 letras, exemplo: RS, SC, PR, SP ou MS.", status);
+        if (!wtGuideValue("mLogradouro")) return wtGuideScrollTo("mLogradouro", "Confira a rua/avenida. Se não preencheu automático, digite aqui.", status);
+        const btn = document.querySelector("#etapa1 .btn-modal-next");
+        if (btn) return wtGuideScrollTo(btn, "Dados prontos. Clique em Consultar cobertura e continuar.", status);
+        return false;
+      }
+
+      if (prefix === "consulta") {
+        const status = (msg, type) => setLocationStatus("consulta", msg, type);
+        if (!wtGuideValue("numero")) return wtGuideScrollTo("numero", "Localização encontrada. Agora informe o número da casa para consultar a cobertura.", status);
+        if (!wtGuideValue("consultaCidade")) return wtGuideScrollTo("consultaCidade", "Confira a cidade. Se não preencheu automático, digite aqui.", status);
+        if (!wtGuideValue("consultaUf")) return wtGuideScrollTo("consultaUf", "Informe a UF com 2 letras, exemplo: RS, SC, PR, SP ou MS.", status);
+        if (!wtGuideValue("consultaLogradouro")) return wtGuideScrollTo("consultaLogradouro", "Confira a rua/avenida. Se não preencheu automático, digite aqui.", status);
+        return wtGuideScrollTo("btnConsultar", "Dados prontos. Clique em Consultar cobertura para verificar a disponibilidade.", status);
+      }
+
+      if (prefix === "wt") {
+        const status = (msg, type) => setLocationStatus("wt", msg, type);
+        if (!wtGuideValue("numeroModalWhats")) return wtGuideScrollTo("numeroModalWhats", "Localização encontrada. Agora informe o número da casa para consultar a cobertura.", status);
+        if (!wtGuideValue("wtCidadeWhats")) return wtGuideScrollTo("wtCidadeWhats", "Confira a cidade. Se não preencheu automático, digite aqui.", status);
+        if (!wtGuideValue("wtUfWhats")) return wtGuideScrollTo("wtUfWhats", "Informe a UF com 2 letras, exemplo: RS, SC, PR, SP ou MS.", status);
+        if (!wtGuideValue("wtLogradouroWhats")) return wtGuideScrollTo("wtLogradouroWhats", "Confira a rua/avenida. Se não preencheu automático, digite aqui.", status);
+        return wtGuideScrollTo("consultarModalWhats", "Dados prontos. Clique em Consultar cobertura para continuar.", status);
+      }
+
+      return false;
+    }
+
+
+    function wtLocationBoxId(prefix) {
+      if (prefix === "modal") return "modalLocationBox";
+      if (prefix === "wt") return "wtLocationBoxWhats";
+      return "consultaLocationBox";
+    }
+
+    function wtLocationButtonId(prefix) {
+      if (prefix === "modal") return "btnUsarLocalizacaoModal";
+      if (prefix === "wt") return "btnUsarLocalizacaoWhats";
+      return "btnUsarLocalizacaoConsulta";
+    }
+
+    function expandirMapaLocalizacao(prefix) {
+      const box = wtGuideGet(wtLocationBoxId(prefix));
+      if (box) box.classList.remove("location-collapsed");
+      const btn = wtGuideGet(wtLocationButtonId(prefix));
+      if (btn && !btn.disabled) btn.textContent = "📍 Capturar minha localização";
+      setTimeout(() => {
+        if (prefix === "modal" && modalLocationMap) modalLocationMap.invalidateSize();
+        if (prefix === "wt" && wtLocationMap) wtLocationMap.invalidateSize();
+        if (prefix === "consulta" && consultaLocationMap) consultaLocationMap.invalidateSize();
+      }, 160);
+    }
+
+    function recolherMapaLocalizacao(prefix) {
+      const box = wtGuideGet(wtLocationBoxId(prefix));
+      if (box) box.classList.add("location-collapsed");
+      const btn = wtGuideGet(wtLocationButtonId(prefix));
+      if (btn && !btn.disabled) btn.textContent = "Alterar localização";
+    }
+
     async function handleGenericLocationSelected(prefix, lat, lng, shouldZoom) {
       setLocationFields(prefix, lat, lng, "");
       updateGenericMarker(prefix, lat, lng, shouldZoom !== false);
@@ -3631,13 +3802,18 @@
         const endereco = data && data.display_name ? data.display_name : "Endereço aproximado não localizado.";
         setLocationFields(prefix, lat, lng, endereco);
         await preencherEnderecoPrefixo(prefix, data);
-        setLocationStatus(prefix, "Endereço aproximado preenchido. Confira os dados e corrija se necessário.", "ok");
+        setLocationStatus(prefix, "Localização salva. Agora complete o próximo campo destacado para consultar a cobertura.", "ok");
+        recolherMapaLocalizacao(prefix);
+        guiarDepoisDaLocalizacao(prefix);
       } catch (error) {
-        setLocationStatus(prefix, "Coordenadas salvas. Não foi possível detectar o endereço automático. Complete o endereço manualmente.", "bad");
+        setLocationStatus(prefix, "Coordenadas salvas. Complete os campos necessários para consultar a cobertura.", "bad");
+        recolherMapaLocalizacao(prefix);
+        guiarDepoisDaLocalizacao(prefix);
       }
     }
 
     function usarLocalizacaoGenerica(prefix) {
+      expandirMapaLocalizacao(prefix);
       const btnId = prefix === "wt" ? "btnUsarLocalizacaoWhats" : "btnUsarLocalizacaoConsulta";
       const btn = wtId(btnId);
       if (!navigator.geolocation) {
@@ -3651,7 +3827,11 @@
           const accuracy = Math.round(position.coords.accuracy || 0);
           if (accuracy && accuracy > 150) setLocationStatus(prefix, `Localização capturada com baixa precisão: aproximadamente ${accuracy} metros. Confira o ponto no mapa.`, "bad");
           await handleGenericLocationSelected(prefix, position.coords.latitude, position.coords.longitude, true);
-          if (btn) { btn.disabled = false; btn.textContent = "Usar minha localização atual"; }
+          if (btn) {
+            btn.disabled = false;
+            const box = wtGuideGet(wtLocationBoxId(prefix));
+            btn.textContent = box && box.classList.contains("location-collapsed") ? "Alterar localização" : "📍 Capturar minha localização";
+          }
         },
         error => {
           let message = "Não foi possível capturar sua localização. Toque no mapa para fixar manualmente.";
@@ -3669,6 +3849,7 @@
       wtSemCepMode = true;
       // Mostra APENAS o mapa/GPS — campos de endereço aparecem após localização capturada
       wtId("wtLocationBoxWhats")?.classList.add("show");
+      expandirMapaLocalizacao("wt");
       initLocationMap("wt");
       wtSetStatus("Use sua localização atual ou toque no mapa para marcar sua casa. Os campos de endereço serão preenchidos automaticamente.");
       setLocationStatus("wt", "Toque no mapa ou use o botão de localização para continuar.", "ok");
@@ -3678,6 +3859,7 @@
       consultaSemCepMode = true;
       // Mostra APENAS o mapa/GPS — campos de endereço aparecem após localização capturada
       wtId("consultaLocationBox")?.classList.add("show");
+      expandirMapaLocalizacao("consulta");
       initLocationMap("consulta");
       setStatus("Use sua localização atual ou toque no mapa para marcar sua casa. Os campos de endereço serão preenchidos automaticamente.");
       setLocationStatus("consulta", "Toque no mapa ou use o botão de localização para continuar.", "ok");
@@ -4911,17 +5093,22 @@
         const precisaNumero = $("mNumero") && !$("mNumero").value.trim();
         if (precisaNumero) {
           fieldError("mNumero", "Confira a localização e informe o número da casa.");
-          setModalLocationStatus("Endereço aproximado preenchido. Informe o número da casa e corrija os dados se necessário.", "ok");
+          setModalLocationStatus("Localização salva. Agora informe o número da casa para continuar.", "ok");
         } else {
-          setModalLocationStatus("Endereço aproximado preenchido. Confira os dados antes de consultar a cobertura.", "ok");
+          setModalLocationStatus("Localização salva. Confira os dados e avance para consultar a cobertura.", "ok");
         }
+        recolherMapaLocalizacao("modal");
+        guiarDepoisDaLocalizacao("modal");
       } catch (e) {
         if ($("mEnderecoDetectadoLocalizacao")) $("mEnderecoDetectadoLocalizacao").value = "Endereço automático indisponível. As coordenadas foram salvas normalmente.";
-        setModalLocationStatus("Coordenadas salvas. Não foi possível detectar o endereço automático. Preencha o endereço manualmente.", "bad");
+        setModalLocationStatus("Coordenadas salvas. Complete os campos necessários para continuar.", "bad");
+        recolherMapaLocalizacao("modal");
+        guiarDepoisDaLocalizacao("modal");
       }
     }
 
     function usarLocalizacaoAtualModal() {
+      expandirMapaLocalizacao("modal");
       const btn = $("btnUsarLocalizacaoModal");
 
       if (!navigator.geolocation) {
@@ -4950,7 +5137,8 @@
 
           if (btn) {
             btn.disabled = false;
-            btn.textContent = "Usar minha localização atual";
+            const box = wtGuideGet(wtLocationBoxId("modal"));
+            btn.textContent = box && box.classList.contains("location-collapsed") ? "Alterar localização" : "📍 Capturar minha localização";
           }
         },
         function(error) {
@@ -4978,7 +5166,7 @@
 
     function mostrarBoxLocalizacaoModal(message) {
       const box = $("modalLocationBox");
-      if (box) box.classList.add("show");
+      if (box) { box.classList.add("show"); box.classList.remove("location-collapsed"); }
       initModalLocationMap();
       if (message) setModalLocationStatus(message, "ok");
       setTimeout(() => {
