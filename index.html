@@ -5776,11 +5776,11 @@
             easy_ok: data.easyOk === true ? "sim" : "nao"
           });
           mostrarEtapa(6);
-          if (data.easyOk === true && vendaVeioDoGoogleSite() && typeof gtag === "function") {
+          if (data.easyOk === true && typeof gtag === "function") {
             const planoSelecionado = $("mPlano").value;
             const valorConversao = PLAN_VALUES[planoSelecionado] || 1.0;
             gtag("event", "conversion", {
-              send_to: "AW-17075496858/mdbTCLiuxcsaEJrPnc4_",
+              send_to: "AW-17075496858/zJmpCO2ZoM8bEJrPnc4_",
               value: valorConversao,
               currency: "BRL"
             });
