@@ -2362,6 +2362,155 @@
       }
     }
 
+
+    /* ── REFINO PREMIUM WEBTURBO ── */
+    .topbar {
+      background: linear-gradient(90deg, #06153d 0%, #0a2463 100%);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .hero-banner,
+    .hero-banner-card {
+      background:
+        radial-gradient(circle at 1px 1px, rgba(255,255,255,.04) 1px, transparent 1.6px),
+        linear-gradient(135deg, #0a2463 0%, #1039a8 50%, #1a56db 100%);
+      background-size: 24px 24px, auto;
+    }
+
+    .hero-banner-card {
+      justify-content: center;
+      min-height: 360px;
+    }
+
+    .hero-banner-card::before {
+      background:
+        radial-gradient(ellipse at top right, rgba(0,180,216,.20), transparent 55%),
+        radial-gradient(ellipse at bottom left, rgba(0,200,83,.12), transparent 50%);
+    }
+
+    .hero-content-fallback {
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 70px 24px;
+      text-align: center;
+    }
+
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      letter-spacing: 1.2px;
+    }
+
+    .section-eyebrow::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      display: inline-block;
+      margin-right: 8px;
+      vertical-align: middle;
+      flex: 0 0 auto;
+    }
+
+    .benefits-section .section-eyebrow::before,
+    #hero-fallback .section-eyebrow::before {
+      background: var(--green);
+    }
+
+    .plan-tag {
+      background: rgba(26,86,219,.07);
+      color: #1a56db;
+      border: 1px solid rgba(26,86,219,.18);
+    }
+
+    .plan.featured {
+      background: #0a2463;
+      border-color: rgba(255,255,255,.16);
+      color: #ffffff;
+      box-shadow: 0 24px 60px rgba(10,36,99,.35);
+    }
+
+    @media (min-width: 769px) {
+      .plan.featured {
+        transform: scale(1.03);
+      }
+
+      .plan.featured:hover {
+        transform: scale(1.03) translateY(-4px);
+      }
+    }
+
+    .plan.featured h3,
+    .plan.featured .price .value,
+    .plan.featured ul li {
+      color: #ffffff;
+    }
+
+    .plan.featured .subtitle,
+    .plan.featured .price small {
+      color: rgba(255,255,255,.74);
+    }
+
+    .plan.featured .plan-tag {
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.92);
+      border-color: rgba(255,255,255,.18);
+    }
+
+    .plan.featured .plan-badge {
+      background: #00c853;
+      color: #ffffff;
+      border-color: transparent;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .plan.featured .btn-contratar-plano {
+      background: #ffffff;
+      color: #0a2463;
+      font-weight: 800;
+      box-shadow: none;
+    }
+
+    .plan.featured .btn-contratar-plano:hover {
+      filter: brightness(1.04);
+      box-shadow: 0 12px 28px rgba(255,255,255,.18);
+    }
+
+    .btn-primary,
+    .btn-contratar-plano,
+    .btn-whats {
+      background: linear-gradient(135deg, #1a56db 0%, #0a2463 100%);
+      box-shadow: 0 8px 24px rgba(26,86,219,.40);
+      transition: all .2s ease;
+    }
+
+    .btn-primary:hover,
+    .btn-contratar-plano:hover,
+    .btn-whats:hover {
+      filter: brightness(1.12);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(26,86,219,.50);
+    }
+
+    .consult-card {
+      border-top: 3px solid #1a56db;
+      box-shadow: 0 24px 64px rgba(10,36,99,.16);
+    }
+
+    @media (max-width: 640px) {
+      .plan.featured,
+      .plan.featured:hover {
+        transform: none;
+      }
+
+      .hero-content-fallback {
+        padding: 52px 16px;
+      }
+    }
+
   </style>
 
   <!-- Schema.org JSON-LD -->
@@ -2434,7 +2583,7 @@
              loading="eager"
              onerror="this.style.display='none';document.getElementById('hero-fallback').style.display='block';" />
         <div id="hero-fallback" class="hero-content-fallback container">
-          <span class="section-eyebrow" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25);">🌐 Internet Fibra Óptica</span>
+          <span class="section-eyebrow" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25);">Internet Fibra Óptica</span>
           <h1 style="font-family:Montserrat,sans-serif;font-size:clamp(32px,5vw,64px);font-weight:900;color:#fff;letter-spacing:-1px;margin:16px 0 10px;">Conecte-se com<br>o que importa</h1>
           <p style="font-size:18px;color:rgba(255,255,255,.78);max-width:540px;margin:0 auto 28px;">Internet fibra MhNet com atendimento autorizado WebTurbo. A partir de R$ 99,90/mês.</p>
           <a href="#planos" class="btn-primary" style="margin:0 auto;">Ver planos</a>
@@ -2497,7 +2646,7 @@
           </article>
 
           <article class="plan featured">
-            <div class="plan-badge">⭐ Mais vendido</div>
+            <div class="plan-badge">Mais popular</div>
             <h3>500MB + 1 Ponto extra</h3>
             <div class="subtitle">Mais alcance dentro da casa com um segundo ponto de Wi-Fi cabeado em outro cômodo.</div>
             <div class="price">
@@ -2588,7 +2737,7 @@
     <section class="coverage-section" aria-label="Consulta de cobertura MhNet" id="consulta">
       <div class="container coverage-grid">
         <div class="coverage-left">
-          <span class="section-eyebrow">⚡ Internet fibra MhNet</span>
+          <span class="section-eyebrow">Internet fibra MhNet</span>
           <h1>Consulte cobertura MhNet</h1>
           <p>Informe CEP e número para verificar a disponibilidade de fibra óptica no seu endereço.</p>
 
@@ -6270,6 +6419,57 @@
     })();
   </script>
 
+
+
+  <script>
+    (function wtPremiumEntranceAnimations() {
+      const selector = '.plan, .section-head, .consult-card, .coverage-trust, .trust-chip';
+      const items = Array.from(document.querySelectorAll(selector));
+
+      if (!items.length) return;
+
+      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      items.forEach((el) => {
+        if (reduceMotion) return;
+        const siblings = Array.from(el.parentElement ? el.parentElement.querySelectorAll(selector) : []);
+        const index = Math.max(0, siblings.indexOf(el));
+        const delay = (index % 3) * 80;
+
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity .45s cubic-bezier(.22,1,.36,1), transform .45s cubic-bezier(.22,1,.36,1)';
+        el.style.transitionDelay = delay + 'ms';
+      });
+
+      if (reduceMotion || !('IntersectionObserver' in window)) {
+        items.forEach((el) => {
+          el.style.opacity = '1';
+          el.style.transform = '';
+        });
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          const el = entry.target;
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+
+          window.setTimeout(() => {
+            el.style.transitionDelay = '';
+            el.style.transform = '';
+          }, 560);
+
+          obs.unobserve(el);
+        });
+      }, { threshold: 0.16, rootMargin: '0px 0px -40px 0px' });
+
+      items.forEach((el) => observer.observe(el));
+    })();
+  </script>
 
 </body>
 </html>
