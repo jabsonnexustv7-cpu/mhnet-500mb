@@ -2362,155 +2362,6 @@
       }
     }
 
-
-    /* ── REFINO PREMIUM WEBTURBO ── */
-    .topbar {
-      background: linear-gradient(90deg, #06153d 0%, #0a2463 100%);
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-
-    .hero-banner,
-    .hero-banner-card {
-      background:
-        radial-gradient(circle at 1px 1px, rgba(255,255,255,.04) 1px, transparent 1.6px),
-        linear-gradient(135deg, #0a2463 0%, #1039a8 50%, #1a56db 100%);
-      background-size: 24px 24px, auto;
-    }
-
-    .hero-banner-card {
-      justify-content: center;
-      min-height: 360px;
-    }
-
-    .hero-banner-card::before {
-      background:
-        radial-gradient(ellipse at top right, rgba(0,180,216,.20), transparent 55%),
-        radial-gradient(ellipse at bottom left, rgba(0,200,83,.12), transparent 50%);
-    }
-
-    .hero-content-fallback {
-      width: 100%;
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 70px 24px;
-      text-align: center;
-    }
-
-    .section-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      letter-spacing: 1.2px;
-    }
-
-    .section-eyebrow::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--blue-light);
-      display: inline-block;
-      margin-right: 8px;
-      vertical-align: middle;
-      flex: 0 0 auto;
-    }
-
-    .benefits-section .section-eyebrow::before,
-    #hero-fallback .section-eyebrow::before {
-      background: var(--green);
-    }
-
-    .plan-tag {
-      background: rgba(26,86,219,.07);
-      color: #1a56db;
-      border: 1px solid rgba(26,86,219,.18);
-    }
-
-    .plan.featured {
-      background: #0a2463;
-      border-color: rgba(255,255,255,.16);
-      color: #ffffff;
-      box-shadow: 0 24px 60px rgba(10,36,99,.35);
-    }
-
-    @media (min-width: 769px) {
-      .plan.featured {
-        transform: scale(1.03);
-      }
-
-      .plan.featured:hover {
-        transform: scale(1.03) translateY(-4px);
-      }
-    }
-
-    .plan.featured h3,
-    .plan.featured .price .value,
-    .plan.featured ul li {
-      color: #ffffff;
-    }
-
-    .plan.featured .subtitle,
-    .plan.featured .price small {
-      color: rgba(255,255,255,.74);
-    }
-
-    .plan.featured .plan-tag {
-      background: rgba(255,255,255,.10);
-      color: rgba(255,255,255,.92);
-      border-color: rgba(255,255,255,.18);
-    }
-
-    .plan.featured .plan-badge {
-      background: #00c853;
-      color: #ffffff;
-      border-color: transparent;
-      font-size: 11px;
-      text-transform: uppercase;
-    }
-
-    .plan.featured .btn-contratar-plano {
-      background: #ffffff;
-      color: #0a2463;
-      font-weight: 800;
-      box-shadow: none;
-    }
-
-    .plan.featured .btn-contratar-plano:hover {
-      filter: brightness(1.04);
-      box-shadow: 0 12px 28px rgba(255,255,255,.18);
-    }
-
-    .btn-primary,
-    .btn-contratar-plano,
-    .btn-whats {
-      background: linear-gradient(135deg, #1a56db 0%, #0a2463 100%);
-      box-shadow: 0 8px 24px rgba(26,86,219,.40);
-      transition: all .2s ease;
-    }
-
-    .btn-primary:hover,
-    .btn-contratar-plano:hover,
-    .btn-whats:hover {
-      filter: brightness(1.12);
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(26,86,219,.50);
-    }
-
-    .consult-card {
-      border-top: 3px solid #1a56db;
-      box-shadow: 0 24px 64px rgba(10,36,99,.16);
-    }
-
-    @media (max-width: 640px) {
-      .plan.featured,
-      .plan.featured:hover {
-        transform: none;
-      }
-
-      .hero-content-fallback {
-        padding: 52px 16px;
-      }
-    }
-
   </style>
 
   <!-- Schema.org JSON-LD -->
@@ -2646,7 +2497,7 @@
           </article>
 
           <article class="plan featured">
-            <div class="plan-badge">Mais popular</div>
+            <div class="plan-badge">⭐ Mais vendido</div>
             <h3>500MB + 1 Ponto extra</h3>
             <div class="subtitle">Mais alcance dentro da casa com um segundo ponto de Wi-Fi cabeado em outro cômodo.</div>
             <div class="price">
@@ -2737,7 +2588,7 @@
     <section class="coverage-section" aria-label="Consulta de cobertura MhNet" id="consulta">
       <div class="container coverage-grid">
         <div class="coverage-left">
-          <span class="section-eyebrow">Internet fibra MhNet</span>
+          <span class="section-eyebrow">⚡ Internet fibra MhNet</span>
           <h1>Consulte cobertura MhNet</h1>
           <p>Informe CEP e número para verificar a disponibilidade de fibra óptica no seu endereço.</p>
 
@@ -4168,13 +4019,7 @@
           enderecoLocalizacaoFixa: wtId("wtEnderecoDetectadoLocalizacaoWhats")?.value || ""
         };
 
-        const r = await wtFetchTimeout(ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }, 18000);
-
-        const data = await r.json().catch(() => ({}));
+        const data = await wtConsultarCoberturaEndpointComFallback(payload);
         const coords = data && data.coords ? data.coords : "";
 
         if (wtIsViavel(data)) {
@@ -4494,6 +4339,91 @@
         throw error;
       } finally { clearTimeout(timer); }
     }
+    function montarPayloadCoberturaFallback(payload) {
+      if (!payload || payload.semCep === true || payload.sem_cep === true) return null;
+
+      const cep = String(payload.cep || "").replace(/\D/g, "");
+      const logradouro = String(payload.logradouro || "").trim();
+      const numero = String(payload.numero || "").trim();
+      const radius = Number(payload.radius || FIXED_RADIUS || 200);
+
+      if (!cep || cep.length !== 8 || !logradouro || !numero) return null;
+
+      const fachadaSimples = `${logradouro} ${numero}`.trim();
+      const fachadaAtual = String(payload.fachada || "").trim();
+      if (!fachadaSimples) return null;
+
+      /*
+        Fallback propositalmente mínimo.
+        O Cloud Run respondeu viável quando testado manualmente com apenas:
+        { cep, fachada: "Rua Lima e Silva 80", radius: 200 }.
+        Então a segunda tentativa não deve reenviar bairro/cidade/UF/complemento,
+        pois esses campos podem fazer o backend geocodificar outro ponto.
+      */
+      return {
+        cep,
+        fachada: fachadaSimples,
+        radius,
+        fachada_original_site: fachadaAtual,
+        tentativa_frontend: "fallback_minimo_cep_fachada"
+      };
+    }
+
+    function deveTentarFallbackCobertura(data) {
+      if (!data || data.viavel === true) return false;
+      const motivo = String(data.motivo || data.reason || "").toLowerCase();
+      return motivo === "sem_ftth_no_raio" || motivo.includes("sem_ftth_no_raio");
+    }
+
+    async function consultarCoberturaCloudRunComFallback(payload) {
+      const primeiraResposta = await consultarCoberturaCloudRun(payload);
+
+      if (!deveTentarFallbackCobertura(primeiraResposta)) {
+        return primeiraResposta;
+      }
+
+      const payloadFallback = montarPayloadCoberturaFallback(payload);
+      if (!payloadFallback) return primeiraResposta;
+
+      try {
+        const segundaResposta = await consultarCoberturaCloudRun(payloadFallback);
+        return (segundaResposta && segundaResposta.ok === true && segundaResposta.viavel === true)
+          ? segundaResposta
+          : primeiraResposta;
+      } catch (error) {
+        return primeiraResposta;
+      }
+    }
+
+    async function wtConsultarCoberturaEndpointComFallback(payload) {
+      const executarConsulta = async (body) => {
+        const r = await wtFetchTimeout(ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        }, 18000);
+        return await r.json().catch(() => ({}));
+      };
+
+      const primeiraResposta = await executarConsulta(payload);
+
+      if (!deveTentarFallbackCobertura(primeiraResposta)) {
+        return primeiraResposta;
+      }
+
+      const payloadFallback = montarPayloadCoberturaFallback(payload);
+      if (!payloadFallback) return primeiraResposta;
+
+      try {
+        const segundaResposta = await executarConsulta(payloadFallback);
+        return (segundaResposta && segundaResposta.ok === true && segundaResposta.viavel === true)
+          ? segundaResposta
+          : primeiraResposta;
+      } catch (error) {
+        return primeiraResposta;
+      }
+    }
+
 
     async function consultarCobertura() {
       const cep = $("cep").value.trim();
@@ -4670,7 +4600,7 @@
           enderecoLocalizacaoFixa: $("consultaEnderecoDetectadoLocalizacao") ? $("consultaEnderecoDetectadoLocalizacao").value : ""
         };
 
-        const res = await consultarCoberturaCloudRun(payload);
+        const res = await consultarCoberturaCloudRunComFallback(payload);
 
         if (res && res.ok === true && res.viavel === true) {
           trackGA4("consulta_cobertura_viavel", {
@@ -5545,7 +5475,7 @@
           radius: FIXED_RADIUS
         };
 
-        const res = await consultarCoberturaCloudRun(payload);
+        const res = await consultarCoberturaCloudRunComFallback(payload);
 
         if (res && res.ok === true && res.viavel === true) {
           trackGA4("consulta_cobertura_viavel", {
@@ -6170,7 +6100,183 @@
       }
       #wt-s2-wa { grid-column: 1 / -1; width: 100%; }
     }
-  </style>
+  
+
+    /* ─────────────────────────────────────────────
+       PREMIUM UI PATCH — seguro: apenas CSS/visual.
+       Não altera JS, IDs, formulários ou integrações.
+    ───────────────────────────────────────────── */
+
+    .topbar {
+      background: linear-gradient(90deg, #06153d 0%, #0a2463 100%) !important;
+      border-bottom: 1px solid rgba(255,255,255,.08) !important;
+    }
+
+    .hero-banner,
+    .hero-banner-card {
+      background-color: #0a2463 !important;
+    }
+
+    .hero-banner-card {
+      background:
+        radial-gradient(circle at 18% 22%, rgba(255,255,255,.055) 0 1.5px, transparent 1.7px),
+        radial-gradient(circle at 82% 16%, rgba(255,255,255,.045) 0 1.4px, transparent 1.6px),
+        radial-gradient(circle at 70% 78%, rgba(255,255,255,.04) 0 1.5px, transparent 1.7px),
+        linear-gradient(135deg, #0a2463 0%, #1039a8 50%, #1a56db 100%) !important;
+      background-size: 28px 28px, 36px 36px, 42px 42px, cover !important;
+    }
+
+    .hero-content-fallback {
+      max-width: 980px !important;
+      margin: 0 auto !important;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary,
+    .btn-contratar-plano,
+    .btn-whats {
+      background: linear-gradient(135deg, #1a56db 0%, #0a2463 100%) !important;
+      box-shadow: 0 8px 24px rgba(26,86,219,.40) !important;
+      transition: all .2s ease !important;
+    }
+
+    .btn-primary:hover,
+    .btn-contratar-plano:hover,
+    .btn-whats:hover {
+      filter: brightness(1.12) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 12px 32px rgba(26,86,219,.50) !important;
+    }
+
+    .plan-tag {
+      background: rgba(26,86,219,.07) !important;
+      color: #1a56db !important;
+      border: 1px solid rgba(26,86,219,.18) !important;
+    }
+
+    .plan.featured {
+      background: #0a2463 !important;
+      border-color: rgba(255,255,255,.16) !important;
+      box-shadow: 0 24px 60px rgba(10,36,99,.35) !important;
+      color: #ffffff !important;
+    }
+
+    @media (min-width: 769px) {
+      .plan.featured { transform: scale(1.03) !important; }
+      .plan.featured:hover { transform: scale(1.03) translateY(-6px) !important; }
+    }
+
+    .plan.featured h3,
+    .plan.featured .price .value,
+    .plan.featured .price small,
+    .plan.featured ul li,
+    .plan.featured .subtitle {
+      color: #ffffff !important;
+    }
+
+    .plan.featured .subtitle,
+    .plan.featured .price small {
+      opacity: .78 !important;
+    }
+
+    .plan.featured ul li::before {
+      color: #00c853 !important;
+    }
+
+    .plan.featured .plan-tag {
+      background: rgba(255,255,255,.12) !important;
+      color: rgba(255,255,255,.92) !important;
+      border-color: rgba(255,255,255,.18) !important;
+    }
+
+    .plan.featured .plan-badge {
+      background: #00c853 !important;
+      color: #ffffff !important;
+      border-color: transparent !important;
+      font-size: 11px !important;
+      text-transform: uppercase !important;
+    }
+
+    .plan.featured .plan-badge::before {
+      content: "Mais popular";
+    }
+
+    .plan.featured .plan-badge {
+      font-size: 0 !important;
+    }
+
+    .plan.featured .plan-badge::before {
+      font-size: 11px !important;
+      line-height: 1 !important;
+      letter-spacing: .4px !important;
+    }
+
+    .plan.featured .btn-contratar-plano {
+      background: #ffffff !important;
+      color: #0a2463 !important;
+      font-weight: 800 !important;
+      box-shadow: 0 10px 24px rgba(255,255,255,.18) !important;
+    }
+
+    .plan.featured .btn-contratar-plano:hover {
+      box-shadow: 0 14px 30px rgba(255,255,255,.24) !important;
+    }
+
+    .section-eyebrow {
+      letter-spacing: 1.2px !important;
+    }
+
+    .section-eyebrow::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      display: inline-block;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .benefits-section .section-eyebrow::before {
+      background: #00c853;
+    }
+
+    .consult-card {
+      border-top: 3px solid #1a56db !important;
+      box-shadow: 0 24px 64px rgba(10,36,99,.16) !important;
+    }
+
+    .plan,
+    .section-head,
+    .consult-card,
+    .coverage-trust,
+    .trust-chip {
+      animation: wtPremiumFadeUp .45s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    .plans .plan:nth-child(2),
+    .coverage-trust .trust-chip:nth-child(2) { animation-delay: .08s; }
+
+    .plans .plan:nth-child(3),
+    .coverage-trust .trust-chip:nth-child(3) { animation-delay: .16s; }
+
+    @keyframes wtPremiumFadeUp {
+      from { opacity: .001; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .plan,
+      .section-head,
+      .consult-card,
+      .coverage-trust,
+      .trust-chip {
+        animation: none !important;
+      }
+    }
+</style>
 
   <script>
     (function wtLeadRecoveryFase1() {
@@ -6419,57 +6525,6 @@
     })();
   </script>
 
-
-
-  <script>
-    (function wtPremiumEntranceAnimations() {
-      const selector = '.plan, .section-head, .consult-card, .coverage-trust, .trust-chip';
-      const items = Array.from(document.querySelectorAll(selector));
-
-      if (!items.length) return;
-
-      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      items.forEach((el) => {
-        if (reduceMotion) return;
-        const siblings = Array.from(el.parentElement ? el.parentElement.querySelectorAll(selector) : []);
-        const index = Math.max(0, siblings.indexOf(el));
-        const delay = (index % 3) * 80;
-
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity .45s cubic-bezier(.22,1,.36,1), transform .45s cubic-bezier(.22,1,.36,1)';
-        el.style.transitionDelay = delay + 'ms';
-      });
-
-      if (reduceMotion || !('IntersectionObserver' in window)) {
-        items.forEach((el) => {
-          el.style.opacity = '1';
-          el.style.transform = '';
-        });
-        return;
-      }
-
-      const observer = new IntersectionObserver((entries, obs) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-
-          const el = entry.target;
-          el.style.opacity = '1';
-          el.style.transform = 'translateY(0)';
-
-          window.setTimeout(() => {
-            el.style.transitionDelay = '';
-            el.style.transform = '';
-          }, 560);
-
-          obs.unobserve(el);
-        });
-      }, { threshold: 0.16, rootMargin: '0px 0px -40px 0px' });
-
-      items.forEach((el) => observer.observe(el));
-    })();
-  </script>
 
 </body>
 </html>
