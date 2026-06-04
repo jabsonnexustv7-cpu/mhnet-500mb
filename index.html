@@ -41,12 +41,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
 
   <!-- Google tag (gtag.js) - Google Ads -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17075496858"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18209661462"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'AW-17075496858');
+
+    gtag('config', 'AW-18209661462');
   </script>
 
 
@@ -3342,6 +3343,13 @@
        - erro_envio_formulario
        - clique_whatsapp
     */
+    function trackGoogleAdsWhatsAppConversion() {
+      if (typeof gtag !== "function") return;
+      gtag('event', 'conversion', {
+        'send_to': 'AW-18209661462/INSERIR_LABEL_DA_CONVERSAO'
+      });
+    }
+
     function trackGA4(eventName, params = {}) {
       try {
         const cleanParams = { origem: "site_webturbo", ...params };
@@ -4084,6 +4092,7 @@
           });
 
           btnWhats?.addEventListener("click", function() {
+            trackGoogleAdsWhatsAppConversion();
             trackGA4("clique_whatsapp", {
               origem_botao: origemConsulta + "_cobertura_viavel",
               cidade,
@@ -4671,6 +4680,7 @@
     $("btnConsultar").addEventListener("click", consultarCobertura);
     $("btnLimpar").addEventListener("click", clearForm);
     $("btnContratarCobertura").addEventListener("click", function() {
+      trackGoogleAdsWhatsAppConversion();
       trackGA4("clique_whatsapp", {
         origem_botao: "box_principal_cobertura_viavel",
         cidade: coberturaPaginaData && coberturaPaginaData.cidade ? coberturaPaginaData.cidade : "",
@@ -5731,6 +5741,7 @@
         if (contador) contador.textContent = segundos;
         if (segundos <= 0) {
           clearInterval(intervalo);
+          trackGoogleAdsWhatsAppConversion();
           trackGA4("clique_whatsapp", {
             origem_botao: "pos_envio_formulario_easy",
             plano: $("mPlano") ? $("mPlano").value : "",
@@ -5776,15 +5787,6 @@
             easy_ok: data.easyOk === true ? "sim" : "nao"
           });
           mostrarEtapa(6);
-          if (data.easyOk === true && typeof gtag === "function") {
-            const planoSelecionado = $("mPlano").value;
-            const valorConversao = PLAN_VALUES[planoSelecionado] || 1.0;
-            gtag("event", "conversion", {
-              send_to: "AW-17075496858/zJmpCO2ZoM8bEJrPnc4_",
-              value: valorConversao,
-              currency: "BRL"
-            });
-          }
           hideGlobalLoading();
           redirecionarWhatsAppFinal();
         } else {
@@ -6499,6 +6501,7 @@
 
         document.getElementById("wt-s2-close")?.addEventListener("click", () => esconderToastAbandono(true));
         document.getElementById("wt-s2-wa")?.addEventListener("click", function() {
+          trackGoogleAdsWhatsAppConversion();
           safeTrack("toast_abandono_clicou_whatsapp");
           esconderToastAbandono(false);
         });
