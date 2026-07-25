@@ -2445,8 +2445,7 @@
       padding: 10px 20px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      justify-content: flex-start;
     }
 
     .meta-landing-brand {
@@ -2471,25 +2470,42 @@
       text-transform: uppercase;
     }
 
-    .meta-help-whatsapp {
-      min-height: 44px;
+    .meta-floating-whatsapp {
+      --meta-wa-bottom: 24px;
+      position: fixed;
+      right: 24px;
+      bottom: calc(var(--meta-wa-bottom) + env(safe-area-inset-bottom, 0px));
+      z-index: 70;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 48px;
       padding: 0 18px;
-      border: 1px solid rgba(255,255,255,.25);
-      border-radius: 9px;
+      border: 0;
+      border-radius: 999px;
       background: #00c853;
       color: #fff;
       font-family: 'Montserrat', sans-serif;
       font-size: 13px;
       font-weight: 800;
       cursor: pointer;
-      transition: filter .18s ease, transform .18s ease;
+      box-shadow: 0 10px 28px rgba(0,120,50,.28);
+      transition: filter .18s ease, transform .18s ease, bottom .18s ease;
     }
 
-    .meta-help-whatsapp:hover,
-    .meta-help-whatsapp:focus-visible {
+    .meta-floating-whatsapp svg {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 auto;
+      fill: currentColor;
+    }
+
+    .meta-floating-whatsapp:hover,
+    .meta-floating-whatsapp:focus-visible {
       filter: brightness(1.08);
       transform: translateY(-1px);
-      outline: 3px solid rgba(255,255,255,.42);
+      outline: 3px solid rgba(10,36,99,.28);
       outline-offset: 2px;
     }
 
@@ -2555,7 +2571,7 @@
 
     .meta-coverage-landing #modalOverlay .modal {
       width: 100%;
-      max-width: 760px;
+      max-width: 920px;
       max-height: none;
       margin: 0 auto;
       overflow: visible;
@@ -2582,24 +2598,263 @@
       min-height: 340px;
     }
 
+    .meta-coverage-success {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 0 0 22px;
+      padding: 16px 18px;
+      border: 1px solid #69b985;
+      border-radius: 12px;
+      background: #effaf2;
+      color: #14532d;
+    }
+
+    .meta-coverage-success-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 30px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #168a45;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .meta-coverage-success strong,
+    .meta-coverage-success span {
+      display: block;
+    }
+
+    .meta-coverage-success strong {
+      margin: 1px 0 4px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .meta-coverage-success span {
+      color: #245d38;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .meta-coverage-success-location {
+      margin-top: 5px;
+      font-size: 12px !important;
+      font-weight: 700;
+    }
+
+    .meta-plan-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .meta-plan-card {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      min-height: 230px;
+      padding: 18px;
+      border: 2px solid #d8e0ec;
+      border-radius: 14px;
+      background: #fff;
+      color: #1f2d3d;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 7px 20px rgba(10,36,99,.07);
+      transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+
+    .meta-plan-card:hover {
+      border-color: #8eace4;
+      transform: translateY(-2px);
+      box-shadow: 0 11px 26px rgba(10,36,99,.12);
+    }
+
+    .meta-plan-card:focus-visible {
+      outline: 3px solid rgba(26,86,219,.34);
+      outline-offset: 3px;
+    }
+
+    .meta-plan-card.is-selected {
+      border-color: #1a56db;
+      background: #f4f8ff;
+      box-shadow: 0 10px 28px rgba(26,86,219,.16);
+    }
+
+    .meta-plan-card-inner {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .meta-plan-card-badge {
+      align-self: flex-start;
+      margin-bottom: 9px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eaf0fb;
+      color: #0a2463;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .35px;
+      text-transform: uppercase;
+    }
+
+    .meta-plan-card.is-popular .meta-plan-card-badge {
+      background: #168a45;
+      color: #fff;
+    }
+
+    .meta-plan-card h3 {
+      margin: 0;
+      color: #0a2463;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 19px;
+      font-weight: 900;
+      line-height: 1.22;
+    }
+
+    .meta-plan-card-description {
+      min-height: 38px;
+      margin: 7px 0 11px;
+      color: #5a6879;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .meta-plan-card-price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 10px;
+      color: #0a2463;
+    }
+
+    .meta-plan-card-price strong {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .meta-plan-card-price small {
+      color: #68778b;
+      font-size: 12px;
+    }
+
+    .meta-plan-card ul {
+      display: grid;
+      gap: 5px;
+      margin: auto 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .meta-plan-card li {
+      position: relative;
+      padding-left: 17px;
+      color: #425166;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .meta-plan-card li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #168a45;
+      font-weight: 900;
+    }
+
+    .meta-plan-card-check {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: 2px solid #b7c2d1;
+      border-radius: 50%;
+      background: #fff;
+      color: transparent;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .meta-plan-card.is-selected .meta-plan-card-check {
+      border-color: #1a56db;
+      background: #1a56db;
+      color: #fff;
+    }
+
+    .meta-plan-native-select label,
+    .meta-plan-native-select select {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      margin: -1px !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    .meta-plan-native-select {
+      margin-top: 4px;
+    }
+
+    .meta-plan-native-select .mfield-error-msg {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    #metaPlanContinue:disabled {
+      cursor: not-allowed;
+      filter: grayscale(.35);
+      opacity: .52;
+      transform: none;
+      box-shadow: none;
+    }
+
     .meta-coverage-landing .footer {
       margin-top: 0;
     }
 
     @media (max-width: 600px) {
       .meta-landing-header-inner {
-        align-items: stretch;
-        flex-direction: column;
-        padding: 10px 14px 12px;
+        justify-content: center;
+        padding: 10px 14px;
       }
 
       .meta-landing-brand {
         text-align: center;
       }
 
-      .meta-help-whatsapp {
-        width: 100%;
-        min-height: 48px;
+      .meta-floating-whatsapp {
+        --meta-wa-bottom: 16px;
+        right: 16px;
+        width: 58px;
+        height: 58px;
+        min-height: 58px;
+        padding: 0;
+      }
+
+      .meta-floating-whatsapp span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
       }
 
       .meta-landing-intro {
@@ -2637,6 +2892,20 @@
         padding: 20px 16px 24px;
       }
 
+      .meta-plan-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .meta-plan-card {
+        min-height: 0;
+        padding: 16px;
+      }
+
+      .meta-plan-card-description {
+        min-height: 0;
+      }
+
       .meta-coverage-landing .modal-actions {
         grid-template-columns: 1fr;
       }
@@ -2646,6 +2915,10 @@
       .meta-coverage-landing .btn-modal-submit {
         width: 100%;
         min-height: 50px;
+      }
+
+      .meta-coverage-landing .footer {
+        padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
       }
     }
 
@@ -2657,6 +2930,10 @@
         animation-duration: .01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: .01ms !important;
+      }
+
+      .meta-floating-whatsapp {
+        transition: none;
       }
     }
   </style>
@@ -2682,9 +2959,6 @@
         <strong>WebTurbo</strong>
         <span>Agente autorizado MhNet</span>
       </div>
-      <button type="button" class="meta-help-whatsapp" id="metaHelpWhats">
-        Falar com um atendente
-      </button>
     </div>
   </header>
 
@@ -2697,6 +2971,14 @@
       <span>✓ Atendimento online</span>
     </div>
   </section>
+
+  <button type="button" class="meta-floating-whatsapp" id="metaFloatingWhats"
+          aria-label="Falar com um atendente pelo WhatsApp">
+    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+      <path d="M19.11 17.21c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.59.13-.17.26-.67.85-.82 1.02-.15.17-.3.2-.56.07-.26-.13-1.1-.4-2.09-1.29-.77-.69-1.29-1.54-1.44-1.8-.15-.26-.02-.4.11-.53.12-.12.26-.3.39-.46.13-.15.17-.26.26-.43.09-.17.04-.33-.02-.46-.07-.13-.59-1.41-.8-1.93-.21-.51-.43-.44-.59-.45h-.5c-.17 0-.46.07-.69.33-.24.26-.91.89-.91 2.17s.93 2.52 1.06 2.69c.13.17 1.83 2.79 4.43 3.91.62.27 1.1.43 1.48.55.62.2 1.18.17 1.63.1.5-.07 1.54-.63 1.76-1.24.22-.61.22-1.13.15-1.24-.06-.11-.23-.17-.49-.3zM16.03 4.8c-6.18 0-11.2 4.98-11.2 11.12 0 2.16.62 4.18 1.7 5.89L4.3 28.4l6.86-2.18a11.24 11.24 0 0 0 4.87 1.11c6.18 0 11.2-4.98 11.2-11.12S22.21 4.8 16.03 4.8zm0 20.65c-1.63 0-3.23-.44-4.62-1.27l-.33-.2-4.07 1.29 1.33-3.94-.22-.35a9.21 9.21 0 0 1-1.42-4.91c0-5.12 4.19-9.28 9.34-9.28 5.15 0 9.34 4.16 9.34 9.28s-4.19 9.38-9.35 9.38z"/>
+    </svg>
+    <span>Falar com um atendente</span>
+  </button>
 
   <!-- ── HEADER ── -->
   <header class="topbar">
@@ -3207,8 +3489,8 @@
       <div id="etapa1">
         <div class="modal-header">
           <button class="modal-close" type="button" onclick="fecharModal()" aria-label="Fechar">×</button>
-          <h2 id="modalTitulo">Consulte a cobertura no seu endereço</h2>
-          <p class="modal-subtitle">Informe seus dados de endereço para consultar a disponibilidade de internet fibra.</p>
+          <h2 id="modalTitulo">Informe seu endereço</h2>
+          <p class="modal-subtitle">Digite o CEP e o número do imóvel para verificarmos a disponibilidade.</p>
         </div>
         <div class="modal-body">
           <div class="modal-steps">
@@ -3326,10 +3608,87 @@
           </div>
           <div class="modal-step-label">Etapa 2 de 5 — Plano</div>
 
+          <div class="meta-coverage-success" id="metaCoverageSuccess" role="status" aria-live="polite" tabindex="-1">
+            <span class="meta-coverage-success-icon" aria-hidden="true">✓</span>
+            <div>
+              <strong>Ótima notícia! Temos cobertura no seu endereço.</strong>
+              <span>Agora escolha o plano ideal para continuar sua contratação.</span>
+              <span class="meta-coverage-success-location" id="metaCoverageLocation" hidden></span>
+            </div>
+          </div>
+
+          <div class="meta-plan-grid" id="metaPlanGrid" role="radiogroup" aria-label="Escolha seu plano de internet">
+            <div class="meta-plan-card" role="radio" aria-checked="false" tabindex="0" data-plan="FIBRA 500MB" aria-label="500 Mega, R$ 99,90 por mês">
+              <span class="meta-plan-card-check" aria-hidden="true">✓</span>
+              <span class="meta-plan-card-inner">
+                <span class="meta-plan-card-badge">Plano econômico</span>
+                <h3>500 Mega</h3>
+                <span class="meta-plan-card-description">Boa performance para navegação, vídeos e uso diário.</span>
+                <span class="meta-plan-card-price"><strong>R$ 99,90</strong><small>/mês</small></span>
+                <ul><li>Internet fibra óptica MhNet</li><li>Wi-Fi incluso</li><li>Instalação grátis</li></ul>
+              </span>
+            </div>
+
+            <div class="meta-plan-card" role="radio" aria-checked="false" tabindex="-1" data-plan="FIBRA 500MB + GLOBOPLAY" aria-label="500 Mega com Globoplay, R$ 114,80 por mês">
+              <span class="meta-plan-card-check" aria-hidden="true">✓</span>
+              <span class="meta-plan-card-inner">
+                <span class="meta-plan-card-badge">Com streaming</span>
+                <h3>500MB + Globoplay</h3>
+                <span class="meta-plan-card-description">Internet fibra para o dia a dia com Globoplay incluso.</span>
+                <span class="meta-plan-card-price"><strong>R$ 114,80</strong><small>/mês</small></span>
+                <ul><li>500MB de internet fibra MhNet</li><li>Globoplay incluso</li><li>Instalação grátis</li></ul>
+              </span>
+            </div>
+
+            <div class="meta-plan-card is-popular" role="radio" aria-checked="false" tabindex="-1" data-plan="FIBRA 500MB + 1 PONTO EXTRA DE WI-FI" aria-label="500 Mega com um ponto extra de Wi-Fi, R$ 119,90 por mês, Mais popular">
+              <span class="meta-plan-card-check" aria-hidden="true">✓</span>
+              <span class="meta-plan-card-inner">
+                <span class="meta-plan-card-badge">Mais popular</span>
+                <h3>500MB + 1 Ponto extra</h3>
+                <span class="meta-plan-card-description">Mais alcance com um segundo ponto de Wi-Fi cabeado.</span>
+                <span class="meta-plan-card-price"><strong>R$ 119,90</strong><small>/mês</small></span>
+                <ul><li>500MB de internet fibra MhNet</li><li>Ponto extra de Wi-Fi incluso</li><li>Instalação grátis</li></ul>
+              </span>
+            </div>
+
+            <div class="meta-plan-card" role="radio" aria-checked="false" tabindex="-1" data-plan="FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY" aria-label="600 Mega com ponto extra de Wi-Fi e Globoplay, R$ 139,90 por mês">
+              <span class="meta-plan-card-check" aria-hidden="true">✓</span>
+              <span class="meta-plan-card-inner">
+                <span class="meta-plan-card-badge">Combo streaming</span>
+                <h3>600MB + Ponto extra + Globoplay</h3>
+                <span class="meta-plan-card-description">Mais velocidade, alcance e Globoplay no mesmo plano.</span>
+                <span class="meta-plan-card-price"><strong>R$ 139,90</strong><small>/mês</small></span>
+                <ul><li>600MB de internet fibra MhNet</li><li>Ponto extra e Globoplay inclusos</li><li>Instalação grátis</li></ul>
+              </span>
+            </div>
+
+            <div class="meta-plan-card" role="radio" aria-checked="false" tabindex="-1" data-plan="FIBRA 700MB + 1 PONTO EXTRA DE WI-FI" aria-label="700 Mega com um ponto extra de Wi-Fi, R$ 149,90 por mês">
+              <span class="meta-plan-card-check" aria-hidden="true">✓</span>
+              <span class="meta-plan-card-inner">
+                <span class="meta-plan-card-badge">Alta performance</span>
+                <h3>700MB + 1 Ponto extra</h3>
+                <span class="meta-plan-card-description">Mais velocidade e alcance para vários aparelhos.</span>
+                <span class="meta-plan-card-price"><strong>R$ 149,90</strong><small>/mês</small></span>
+                <ul><li>700MB de internet fibra MhNet</li><li>Ponto extra de Wi-Fi incluso</li><li>Instalação grátis</li></ul>
+              </span>
+            </div>
+
+            <div class="meta-plan-card" role="radio" aria-checked="false" tabindex="-1" data-plan="FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI" aria-label="1 Giga com um ponto extra de Wi-Fi, R$ 159,90 por mês">
+              <span class="meta-plan-card-check" aria-hidden="true">✓</span>
+              <span class="meta-plan-card-inner">
+                <span class="meta-plan-card-badge">Combo destaque</span>
+                <h3>1GB + 1 Ponto extra</h3>
+                <span class="meta-plan-card-description">Alta performance para casas com muitos dispositivos.</span>
+                <span class="meta-plan-card-price"><strong>R$ 159,90</strong><small>/mês</small></span>
+                <ul><li>1GB de internet fibra MhNet</li><li>Ponto extra de Wi-Fi incluso</li><li>Instalação grátis</li></ul>
+              </span>
+            </div>
+          </div>
+
           <div class="mgrid">
-            <div class="mfield full" id="field-mPlano">
+            <div class="mfield full meta-plan-native-select" id="field-mPlano">
               <label for="mPlano">Plano desejado *</label>
-              <select id="mPlano">
+              <select id="mPlano" aria-hidden="true" tabindex="-1">
                 <option value="">Selecione o plano...</option>
                 <option value="FIBRA 500MB">FIBRA 500MB — R$ 99,90/mês</option>
                 <option value="FIBRA 500MB + GLOBOPLAY">FIBRA 500MB + GLOBOPLAY — R$ 114,80/mês</option>
@@ -3344,7 +3703,7 @@
 
           <div class="modal-actions">
             <button class="btn-modal-back" type="button" onclick="mostrarEtapa(1)">← Voltar</button>
-            <button class="btn-modal-next" type="button" onclick="validarEtapaPlano()">Continuar →</button>
+            <button class="btn-modal-next" id="metaPlanContinue" type="button" onclick="validarEtapaPlano()" disabled>Continuar →</button>
           </div>
         </div>
       </div>
@@ -5222,6 +5581,7 @@
       esconderBoxLocalizacaoModal();
 
       mostrarEtapa(2);
+      window.atualizarConfirmacaoLanding?.();
     }
 
     function fecharModal() {
@@ -5245,6 +5605,8 @@
         const el = $(id);
         if (el) el.classList.remove("show");
       });
+      if (n === 2) window.sincronizarCardsPlanoLanding?.();
+      window.ajustarWhatsAppFlutuanteLanding?.();
     }
 
     async function buscarCepModal(cep) {
@@ -5888,6 +6250,7 @@
           modalCoverageData = res;
           $("coverageOkBox").classList.add("show");
           mostrarEtapa(2);
+          window.atualizarConfirmacaoLanding?.();
         } else {
           trackGA4("consulta_cobertura_inviavel", {
             origem_consulta: "modal_contratacao",
@@ -6992,9 +7355,91 @@
       function abrirAjudaWhatsApp() {
         trackGoogleAdsWhatsAppConversion();
         trackGA4("clique_whatsapp", {
-          origem_botao: "landing_meta_cobertura_ajuda"
+          origem_botao: "landing_cobertura_whatsapp_flutuante"
         });
-        window.location.href = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(META_WHATS_MESSAGE)}`;
+        window.open(
+          `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(META_WHATS_MESSAGE)}`,
+          "_blank",
+          "noopener"
+        );
+      }
+
+      function atualizarConfirmacaoCobertura() {
+        const cidade = $("mCidade")?.value.trim() || "";
+        const uf = ($("mUf")?.value.trim() || "").toUpperCase();
+        const locationEl = $("metaCoverageLocation");
+        const successEl = $("metaCoverageSuccess");
+
+        if (locationEl) {
+          const localValido = Boolean(cidade && /^[A-Z]{2}$/.test(uf));
+          locationEl.textContent = localValido ? `Cobertura confirmada em ${cidade}/${uf}.` : "";
+          locationEl.hidden = !localValido;
+        }
+
+        if (successEl) setTimeout(() => successEl.focus({ preventScroll: true }), 80);
+      }
+
+      function sincronizarCardsPlano() {
+        const planoSelect = $("mPlano");
+        const continuar = $("metaPlanContinue");
+        const cards = Array.from(document.querySelectorAll(".meta-plan-card"));
+        const valorAtual = planoSelect?.value || "";
+        let cardSelecionado = null;
+
+        cards.forEach((card) => {
+          const selecionado = card.dataset.plan === valorAtual;
+          card.classList.toggle("is-selected", selecionado);
+          card.setAttribute("aria-checked", selecionado ? "true" : "false");
+          if (selecionado) cardSelecionado = card;
+        });
+
+        cards.forEach((card, index) => {
+          card.tabIndex = card === cardSelecionado || (!cardSelecionado && index === 0) ? 0 : -1;
+        });
+
+        if (continuar) continuar.disabled = !valorAtual;
+        if (valorAtual) fieldReset("mPlano");
+        setTimeout(ajustarPosicaoWhatsApp, 0);
+      }
+
+      function selecionarPlanoCard(card) {
+        const planoSelect = $("mPlano");
+        const novoPlano = card?.dataset.plan || "";
+        if (!planoSelect || !novoPlano || planoSelect.value === novoPlano) return;
+
+        planoSelect.value = novoPlano;
+        planoSelect.dispatchEvent(new Event("change", { bubbles: true }));
+        sincronizarCardsPlano();
+      }
+
+      function ajustarPosicaoWhatsApp() {
+        const button = $("metaFloatingWhats");
+        if (!button) return;
+
+        const baseBottom = window.innerWidth <= 600 ? 16 : 24;
+        button.style.setProperty("--meta-wa-bottom", `${baseBottom}px`);
+
+        requestAnimationFrame(() => {
+          const buttonRect = button.getBoundingClientRect();
+          const blockers = Array.from(document.querySelectorAll(
+            ".modal-actions, .modal-error-msg.show, .footer"
+          )).filter((el) => {
+            const style = getComputedStyle(el);
+            const rect = el.getBoundingClientRect();
+            return style.display !== "none" && rect.width > 0 && rect.height > 0;
+          });
+
+          let bottom = baseBottom;
+          blockers.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            const horizontalOverlap = buttonRect.right > rect.left - 8 && buttonRect.left < rect.right + 8;
+            const verticalOverlap = buttonRect.bottom > rect.top - 8 && buttonRect.top < rect.bottom + 8;
+            if (horizontalOverlap && verticalOverlap && rect.top < window.innerHeight) {
+              bottom = Math.max(bottom, Math.ceil(window.innerHeight - rect.top + 12));
+            }
+          });
+          button.style.setProperty("--meta-wa-bottom", `${bottom}px`);
+        });
       }
 
       function rastrearPrimeiraConsultaValida() {
@@ -7028,15 +7473,44 @@
           planoSelect.value = planoParam;
         }
 
-        $("metaHelpWhats")?.addEventListener("click", abrirAjudaWhatsApp);
+        window.atualizarConfirmacaoLanding = atualizarConfirmacaoCobertura;
+        window.sincronizarCardsPlanoLanding = sincronizarCardsPlano;
+        window.ajustarWhatsAppFlutuanteLanding = ajustarPosicaoWhatsApp;
+
+        $("metaFloatingWhats")?.addEventListener("click", abrirAjudaWhatsApp);
         document.querySelector("#etapa1 .btn-modal-next")?.addEventListener("click", rastrearPrimeiraConsultaValida, true);
-        planoSelect?.addEventListener("change", function() {
-          if (!this.value) return;
-          trackGA4("selecionou_plano", {
-            plano: this.value,
-            origem: "landing_meta_cobertura"
+        document.querySelectorAll(".meta-plan-card").forEach((card) => {
+          card.addEventListener("click", () => selecionarPlanoCard(card));
+          card.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              selecionarPlanoCard(card);
+              return;
+            }
+
+            if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+            event.preventDefault();
+            const cards = Array.from(document.querySelectorAll(".meta-plan-card"));
+            const direction = event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1;
+            const nextCard = cards[(cards.indexOf(card) + direction + cards.length) % cards.length];
+            selecionarPlanoCard(nextCard);
+            nextCard.focus();
           });
         });
+        planoSelect?.addEventListener("change", function() {
+          sincronizarCardsPlano();
+          if (this.value) {
+            trackGA4("selecionou_plano", {
+              plano: this.value,
+              origem: "landing_cobertura_cards"
+            });
+          }
+        });
+
+        window.addEventListener("scroll", ajustarPosicaoWhatsApp, { passive: true });
+        window.addEventListener("resize", ajustarPosicaoWhatsApp, { passive: true });
+        sincronizarCardsPlano();
+        ajustarPosicaoWhatsApp();
       });
     })();
   </script>
