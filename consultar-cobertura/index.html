@@ -2471,10 +2471,9 @@
     }
 
     .meta-floating-whatsapp {
-      --meta-wa-bottom: 24px;
       position: fixed;
       right: 24px;
-      bottom: calc(var(--meta-wa-bottom) + env(safe-area-inset-bottom, 0px));
+      bottom: calc(24px + env(safe-area-inset-bottom, 0px));
       z-index: 70;
       display: inline-flex;
       align-items: center;
@@ -2491,7 +2490,7 @@
       font-weight: 800;
       cursor: pointer;
       box-shadow: 0 10px 28px rgba(0,120,50,.28);
-      transition: filter .18s ease, transform .18s ease, bottom .18s ease;
+      transition: filter .18s ease, transform .18s ease;
     }
 
     .meta-floating-whatsapp svg {
@@ -2556,6 +2555,10 @@
       box-shadow: 0 4px 14px rgba(10,36,99,.06);
     }
 
+    .meta-trust-row[hidden] {
+      display: none !important;
+    }
+
     .meta-coverage-landing #modalOverlay {
       position: static;
       inset: auto;
@@ -2611,17 +2614,12 @@
     }
 
     .meta-coverage-success-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex: 0 0 30px;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: #168a45;
-      color: #fff;
-      font-size: 18px;
-      font-weight: 900;
+      display: block;
+      flex: 0 0 26px;
+      width: 26px;
+      height: 26px;
+      color: #168a45;
+      margin-top: 2px;
     }
 
     .meta-coverage-success strong,
@@ -2825,8 +2823,17 @@
       box-shadow: none;
     }
 
+    .meta-field-help {
+      display: block;
+      margin-top: 6px;
+      color: #68778b;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
     .meta-coverage-landing .footer {
       margin-top: 0;
+      padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
     }
 
     @media (max-width: 600px) {
@@ -2840,8 +2847,8 @@
       }
 
       .meta-floating-whatsapp {
-        --meta-wa-bottom: 16px;
         right: 16px;
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
         width: 58px;
         height: 58px;
         min-height: 58px;
@@ -2964,8 +2971,8 @@
 
   <section class="meta-landing-intro" id="meta-formulario" aria-labelledby="meta-landing-title">
     <h1 id="meta-landing-title">Consulte a cobertura no seu endereço</h1>
-    <p>Informe o CEP e o número do imóvel para verificar se temos internet fibra disponível para sua casa.</p>
-    <div class="meta-trust-row" aria-label="Benefícios">
+    <p id="meta-landing-description">Informe o CEP e o número do imóvel para verificar a disponibilidade.</p>
+    <div class="meta-trust-row" id="meta-trust-row" aria-label="Benefícios">
       <span>✓ Internet 100% fibra óptica</span>
       <span>✓ Instalação grátis</span>
       <span>✓ Atendimento online</span>
@@ -3609,7 +3616,12 @@
           <div class="modal-step-label">Etapa 2 de 5 — Plano</div>
 
           <div class="meta-coverage-success" id="metaCoverageSuccess" role="status" aria-live="polite" tabindex="-1">
-            <span class="meta-coverage-success-icon" aria-hidden="true">✓</span>
+            <svg class="meta-coverage-success-icon" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="m8 12 2.6 2.6L16.5 9"></path>
+            </svg>
             <div>
               <strong>Ótima notícia! Temos cobertura no seu endereço.</strong>
               <span>Agora escolha o plano ideal para continuar sua contratação.</span>
@@ -3737,8 +3749,12 @@
               <span class="mfield-error-msg" id="err-mCpf">CPF inválido.</span>
             </div>
             <div class="mfield" id="field-mNascimento">
-              <label for="mNascimento">Data de nascimento *</label>
-              <input id="mNascimento" type="date" />
+              <label for="mNascimentoTexto">Data de nascimento *</label>
+              <input id="mNascimentoTexto" type="text" inputmode="numeric" maxlength="10"
+                     placeholder="DD/MM/AAAA" autocomplete="bday"
+                     aria-describedby="mNascimentoHelp err-mNascimento" />
+              <input id="mNascimento" type="hidden" />
+              <span class="meta-field-help" id="mNascimentoHelp">Exemplo: 08/04/1990</span>
               <span class="mfield-error-msg" id="err-mNascimento">Informe a data de nascimento.</span>
             </div>
             <div class="mfield full" id="field-mEmail">
@@ -5486,6 +5502,64 @@
       return v;
     }
 
+    function formatNascimentoTexto(value) {
+      const digits = String(value || "").replace(/\D/g, "").slice(0, 8);
+      if (digits.length > 4) return `${digits.slice(0,2)}/${digits.slice(2,4)}/${digits.slice(4)}`;
+      if (digits.length > 2) return `${digits.slice(0,2)}/${digits.slice(2)}`;
+      return digits;
+    }
+
+    function validarNascimentoTexto(value) {
+      const digits = String(value || "").replace(/\D/g, "").slice(0, 8);
+      if (!digits.length) return { ok: false, reason: "empty", iso: "" };
+      if (digits.length !== 8) return { ok: false, reason: "incomplete", iso: "" };
+
+      const day = Number(digits.slice(0, 2));
+      const month = Number(digits.slice(2, 4));
+      const year = Number(digits.slice(4, 8));
+
+      if (year < 1900) return { ok: false, reason: "year", iso: "" };
+
+      const date = new Date(year, month - 1, day);
+      const exactDate = (
+        date.getFullYear() === year &&
+        date.getMonth() === month - 1 &&
+        date.getDate() === day
+      );
+      if (!exactDate) return { ok: false, reason: "invalid", iso: "" };
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (date > today) return { ok: false, reason: "future", iso: "" };
+
+      return {
+        ok: true,
+        reason: "",
+        iso: `${String(year).padStart(4,"0")}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`
+      };
+    }
+
+    function sincronizarNascimentoTexto() {
+      const visible = $("mNascimentoTexto");
+      const hidden = $("mNascimento");
+      if (!visible || !hidden) return { ok: false, reason: "empty", iso: "" };
+
+      visible.value = formatNascimentoTexto(visible.value);
+      const result = validarNascimentoTexto(visible.value);
+      hidden.value = result.ok ? result.iso : "";
+      return result;
+    }
+
+    function sincronizarNascimentoIsoParaTexto() {
+      const visible = $("mNascimentoTexto");
+      const hidden = $("mNascimento");
+      if (!visible || !hidden || !/^\d{4}-\d{2}-\d{2}$/.test(hidden.value || "")) return;
+
+      const [year, month, day] = hidden.value.split("-");
+      const textValue = `${day}/${month}/${year}`;
+      if (validarNascimentoTexto(textValue).ok) visible.value = textValue;
+    }
+
     function fieldError(id, msg) {
       const wrap = document.getElementById("field-" + id);
       const errEl = document.getElementById("err-" + id);
@@ -5594,6 +5668,50 @@
     $("btnNaoSeiCepModal")?.addEventListener("click", ativarModalSemCep);
     $("btnUsarLocalizacaoModal")?.addEventListener("click", usarLocalizacaoAtualModal);
 
+    const META_LANDING_STEP_CONTENT = {
+      1: {
+        title: "Consulte a cobertura no seu endereço",
+        description: "Informe o CEP e o número do imóvel para verificar a disponibilidade.",
+        showBenefits: true
+      },
+      2: {
+        title: "Escolha o plano ideal para sua casa",
+        description: "Com a cobertura confirmada, compare as opções disponíveis para o seu endereço.",
+        showBenefits: false
+      },
+      3: {
+        title: "Complete seus dados para continuar",
+        description: "Preencha seus dados com segurança para iniciarmos sua solicitação.",
+        showBenefits: false
+      },
+      4: {
+        title: "Escolha suas preferências de instalação",
+        description: "Informe o vencimento, a melhor data e o turno desejado.",
+        showBenefits: false
+      },
+      5: {
+        title: "Revise sua solicitação",
+        description: "Confira as informações antes de enviar seu pré-cadastro.",
+        showBenefits: false
+      },
+      6: {
+        title: "Solicitação enviada com sucesso!",
+        description: "Recebemos seus dados e você será encaminhado para confirmar o atendimento.",
+        showBenefits: false
+      }
+    };
+
+    function atualizarCabecalhoLanding(n) {
+      const content = META_LANDING_STEP_CONTENT[n] || META_LANDING_STEP_CONTENT[1];
+      const title = $("meta-landing-title");
+      const description = $("meta-landing-description");
+      const benefits = $("meta-trust-row");
+
+      if (title) title.textContent = content.title;
+      if (description) description.textContent = content.description;
+      if (benefits) benefits.hidden = !content.showBenefits;
+    }
+
     function mostrarEtapa(n) {
       ["etapa1","etapa2","etapa3","etapa4","etapa5","etapaSucesso"].forEach((id, index) => {
         const el = $(id);
@@ -5605,8 +5723,9 @@
         const el = $(id);
         if (el) el.classList.remove("show");
       });
+      atualizarCabecalhoLanding(n);
+      if (n === 3) sincronizarNascimentoIsoParaTexto();
       if (n === 2) window.sincronizarCardsPlanoLanding?.();
-      window.ajustarWhatsAppFlutuanteLanding?.();
     }
 
     async function buscarCepModal(cep) {
@@ -6347,9 +6466,20 @@
       ["mNome","mCpf","mNascimento","mEmail","mTelefone1","mTelefone2"].forEach(fieldReset);
 
       const nome = $("mNome").value.trim();
+      const nascimento = sincronizarNascimentoTexto();
       if (!nome || nome.split(" ").length < 2) { fieldError("mNome", "Informe nome e sobrenome."); hasError = true; } else fieldOk("mNome");
       if (!isValidCpf($("mCpf").value))         { fieldError("mCpf", "CPF inválido. Verifique os números."); hasError = true; } else fieldOk("mCpf");
-      if (!$("mNascimento").value)               { fieldError("mNascimento", "Informe a data de nascimento."); hasError = true; } else fieldOk("mNascimento");
+      if (!nascimento.ok) {
+        const nascimentoMessages = {
+          empty: "Informe a data de nascimento.",
+          incomplete: "Digite a data completa no formato DD/MM/AAAA.",
+          invalid: "Informe uma data de nascimento válida.",
+          future: "A data de nascimento não pode estar no futuro.",
+          year: "Informe um ano de nascimento válido."
+        };
+        fieldError("mNascimento", nascimentoMessages[nascimento.reason] || nascimentoMessages.invalid);
+        hasError = true;
+      } else fieldOk("mNascimento");
       if (!isValidEmail($("mEmail").value))      { fieldError("mEmail", "Informe um e-mail válido."); hasError = true; } else fieldOk("mEmail");
 
       const tel1 = onlyDigits($("mTelefone1").value);
@@ -6360,8 +6490,11 @@
       else fieldOk("mTelefone2");
 
       if (hasError) {
-        const firstError = document.querySelector("#etapa3 .mfield.has-error input");
-        if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+        const firstError = document.querySelector("#etapa3 .mfield.has-error input:not([type='hidden'])");
+        if (firstError) {
+          firstError.focus({ preventScroll: true });
+          firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
         return;
       }
 
@@ -6461,6 +6594,7 @@
         ["Primeira fatura cheia", faturamento.cheia],
         ["Cliente", $("mNome").value],
         ["CPF", (() => { const d = onlyDigits($("mCpf").value); return d ? `***.***.***-${d.slice(-2)}` : "-"; })()],
+        ["Data de nascimento", formatDateBR($("mNascimento").value)],
         ["E-mail", $("mEmail").value],
         ["Telefones", `${$("mTelefone1").value} / ${$("mTelefone2").value}`],
         ["Vencimento", $("mVencimento").value],
@@ -6665,6 +6799,43 @@
         isValidCpf(this.value) ? fieldOk("mCpf") : fieldError("mCpf", "CPF inválido. Verifique os números.");
       } else fieldReset("mCpf");
     });
+    $("mNascimentoTexto").addEventListener("input", function() {
+      const cursor = this.selectionStart == null ? this.value.length : this.selectionStart;
+      const digitsBeforeCursor = (this.value.slice(0, cursor).match(/\d/g) || []).length;
+      this.value = formatNascimentoTexto(this.value);
+
+      let nextCursor = 0;
+      let digitsSeen = 0;
+      while (nextCursor < this.value.length && digitsSeen < digitsBeforeCursor) {
+        if (/\d/.test(this.value[nextCursor])) digitsSeen++;
+        nextCursor++;
+      }
+      this.setSelectionRange(nextCursor, nextCursor);
+
+      const result = sincronizarNascimentoTexto();
+      if (result.ok) fieldOk("mNascimento");
+      else fieldReset("mNascimento");
+    });
+    $("mNascimentoTexto").addEventListener("blur", function() {
+      const result = sincronizarNascimentoTexto();
+      if (result.ok) {
+        fieldOk("mNascimento");
+        return;
+      }
+      if (!this.value) {
+        fieldReset("mNascimento");
+        return;
+      }
+      const messages = {
+        incomplete: "Digite a data completa no formato DD/MM/AAAA.",
+        invalid: "Informe uma data de nascimento válida.",
+        future: "A data de nascimento não pode estar no futuro.",
+        year: "Informe um ano de nascimento válido."
+      };
+      fieldError("mNascimento", messages[result.reason] || "Informe uma data de nascimento válida.");
+    });
+    $("mNascimento").addEventListener("input", sincronizarNascimentoIsoParaTexto);
+    $("mNascimento").addEventListener("change", sincronizarNascimentoIsoParaTexto);
     ["mTelefone1","mTelefone2"].forEach(id => {
       $(id).addEventListener("input", function() { this.value = formatPhoneInput(this.value); });
     });
@@ -7399,7 +7570,6 @@
 
         if (continuar) continuar.disabled = !valorAtual;
         if (valorAtual) fieldReset("mPlano");
-        setTimeout(ajustarPosicaoWhatsApp, 0);
       }
 
       function selecionarPlanoCard(card) {
@@ -7410,36 +7580,6 @@
         planoSelect.value = novoPlano;
         planoSelect.dispatchEvent(new Event("change", { bubbles: true }));
         sincronizarCardsPlano();
-      }
-
-      function ajustarPosicaoWhatsApp() {
-        const button = $("metaFloatingWhats");
-        if (!button) return;
-
-        const baseBottom = window.innerWidth <= 600 ? 16 : 24;
-        button.style.setProperty("--meta-wa-bottom", `${baseBottom}px`);
-
-        requestAnimationFrame(() => {
-          const buttonRect = button.getBoundingClientRect();
-          const blockers = Array.from(document.querySelectorAll(
-            ".modal-actions, .modal-error-msg.show, .footer"
-          )).filter((el) => {
-            const style = getComputedStyle(el);
-            const rect = el.getBoundingClientRect();
-            return style.display !== "none" && rect.width > 0 && rect.height > 0;
-          });
-
-          let bottom = baseBottom;
-          blockers.forEach((el) => {
-            const rect = el.getBoundingClientRect();
-            const horizontalOverlap = buttonRect.right > rect.left - 8 && buttonRect.left < rect.right + 8;
-            const verticalOverlap = buttonRect.bottom > rect.top - 8 && buttonRect.top < rect.bottom + 8;
-            if (horizontalOverlap && verticalOverlap && rect.top < window.innerHeight) {
-              bottom = Math.max(bottom, Math.ceil(window.innerHeight - rect.top + 12));
-            }
-          });
-          button.style.setProperty("--meta-wa-bottom", `${bottom}px`);
-        });
       }
 
       function rastrearPrimeiraConsultaValida() {
@@ -7475,7 +7615,6 @@
 
         window.atualizarConfirmacaoLanding = atualizarConfirmacaoCobertura;
         window.sincronizarCardsPlanoLanding = sincronizarCardsPlano;
-        window.ajustarWhatsAppFlutuanteLanding = ajustarPosicaoWhatsApp;
 
         $("metaFloatingWhats")?.addEventListener("click", abrirAjudaWhatsApp);
         document.querySelector("#etapa1 .btn-modal-next")?.addEventListener("click", rastrearPrimeiraConsultaValida, true);
@@ -7507,10 +7646,7 @@
           }
         });
 
-        window.addEventListener("scroll", ajustarPosicaoWhatsApp, { passive: true });
-        window.addEventListener("resize", ajustarPosicaoWhatsApp, { passive: true });
         sincronizarCardsPlano();
-        ajustarPosicaoWhatsApp();
       });
     })();
   </script>
