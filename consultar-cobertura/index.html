@@ -5628,7 +5628,6 @@
       document.body.style.overflow = "hidden";
       mostrarEtapa(1);
       initModalLocationMap();
-      setTimeout(() => $("mCep").focus(), 120);
     }
 
     function abrirModalCobertura() {
@@ -5701,6 +5700,9 @@
       }
     };
 
+    let etapaLandingAtual = null;
+    let landingInicializada = false;
+
     function atualizarCabecalhoLanding(n) {
       const content = META_LANDING_STEP_CONTENT[n] || META_LANDING_STEP_CONTENT[1];
       const title = $("meta-landing-title");
@@ -5712,7 +5714,24 @@
       if (benefits) benefits.hidden = !content.showBenefits;
     }
 
+    function rolarParaInicioEtapa() {
+      const target = $("meta-formulario");
+      const header = document.querySelector(".meta-landing-header");
+      if (!target) return;
+
+      const headerHeight = header ? header.getBoundingClientRect().height : 0;
+      const top = window.scrollY + target.getBoundingClientRect().top - headerHeight - 12;
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      window.scrollTo({
+        top: Math.max(0, top),
+        behavior: reducedMotion ? "auto" : "smooth"
+      });
+    }
+
     function mostrarEtapa(n) {
+      const etapaAnterior = etapaLandingAtual;
+
       ["etapa1","etapa2","etapa3","etapa4","etapa5","etapaSucesso"].forEach((id, index) => {
         const el = $(id);
         if (!el) return;
@@ -5726,6 +5745,12 @@
       atualizarCabecalhoLanding(n);
       if (n === 3) sincronizarNascimentoIsoParaTexto();
       if (n === 2) window.sincronizarCardsPlanoLanding?.();
+
+      etapaLandingAtual = n;
+      if (landingInicializada && etapaAnterior !== null && etapaAnterior !== n) {
+        requestAnimationFrame(rolarParaInicioEtapa);
+      }
+      landingInicializada = true;
     }
 
     async function buscarCepModal(cep) {
@@ -6405,7 +6430,6 @@
       if (!$("mPlano").value) { fieldError("mPlano", "Selecione o plano desejado."); return; }
       fieldOk("mPlano");
       mostrarEtapa(3);
-      setTimeout(() => $("mNome").focus(), 120);
     }
 
     async function enviarLeadDadosPessoais() {
@@ -7572,7 +7596,27 @@
         if (valorAtual) fieldReset("mPlano");
       }
 
-      function selecionarPlanoCard(card) {
+      function elementoVisivelNaViewport(element) {
+        if (!element) return false;
+
+        const rect = element.getBoundingClientRect();
+        const margin = 16;
+        return rect.top >= margin && rect.bottom <= window.innerHeight - margin;
+      }
+
+      function rolarParaContinuarPlanoSeNecessario() {
+        const continuar = $("metaPlanContinue");
+        if (!continuar || continuar.disabled || elementoVisivelNaViewport(continuar)) return;
+
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        continuar.scrollIntoView({
+          behavior: reducedMotion ? "auto" : "smooth",
+          block: "center",
+          inline: "nearest"
+        });
+      }
+
+      function selecionarPlanoCard(card, rolarAteContinuar = false) {
         const planoSelect = $("mPlano");
         const novoPlano = card?.dataset.plan || "";
         if (!planoSelect || !novoPlano || planoSelect.value === novoPlano) return;
@@ -7580,6 +7624,12 @@
         planoSelect.value = novoPlano;
         planoSelect.dispatchEvent(new Event("change", { bubbles: true }));
         sincronizarCardsPlano();
+
+        if (rolarAteContinuar) {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(rolarParaContinuarPlanoSeNecessario);
+          });
+        }
       }
 
       function rastrearPrimeiraConsultaValida() {
@@ -7619,11 +7669,11 @@
         $("metaFloatingWhats")?.addEventListener("click", abrirAjudaWhatsApp);
         document.querySelector("#etapa1 .btn-modal-next")?.addEventListener("click", rastrearPrimeiraConsultaValida, true);
         document.querySelectorAll(".meta-plan-card").forEach((card) => {
-          card.addEventListener("click", () => selecionarPlanoCard(card));
+          card.addEventListener("click", () => selecionarPlanoCard(card, true));
           card.addEventListener("keydown", (event) => {
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
-              selecionarPlanoCard(card);
+              selecionarPlanoCard(card, true);
               return;
             }
 
