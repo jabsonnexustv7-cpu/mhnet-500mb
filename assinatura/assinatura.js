@@ -20,6 +20,7 @@ const signatureOverlayGuidance = document.getElementById("signatureOverlayGuidan
 const signatureHelpButton = document.getElementById("signatureHelpButton");
 const retrySignatureFrameButton = document.getElementById("retrySignatureFrame");
 const openSignatureDirectlyButton = document.getElementById("openSignatureDirectly");
+const closeSignatureHelpButton = document.getElementById("closeSignatureHelp");
 const portalDetails = Array.from(document.querySelectorAll("details"));
 
 let overlayOpenTimer;
@@ -92,20 +93,20 @@ function resetSignatureGuidance() {
   if (signatureOverlayGuidance) {
     signatureOverlayGuidance.hidden = true;
   }
-
-  if (signatureHelpButton) {
-    signatureHelpButton.hidden = true;
-  }
 }
 
 function showSignatureGuidance() {
   if (signatureOverlayGuidance) {
     signatureOverlayGuidance.hidden = false;
   }
+}
 
-  if (signatureHelpButton) {
-    signatureHelpButton.hidden = false;
+function setSignatureHelpVisibility(shouldShowHelp) {
+  if (signatureFrameFallback) {
+    signatureFrameFallback.hidden = !shouldShowHelp;
   }
+
+  signatureHelpButton?.setAttribute("aria-expanded", String(shouldShowHelp));
 }
 
 function loadSignatureFrame() {
@@ -120,8 +121,7 @@ function loadSignatureFrame() {
   clearFrameTimers();
   resetSignatureGuidance();
   signatureFrameLoading.hidden = false;
-  signatureFrameFallback.hidden = true;
-  signatureHelpButton?.setAttribute("aria-expanded", "false");
+  setSignatureHelpVisibility(false);
   signatureFrame.removeAttribute("src");
 
   frameRetryTimer = window.setTimeout(() => {
@@ -155,11 +155,7 @@ function closeSignatureOverlay() {
     signatureFrameLoading.hidden = false;
   }
 
-  if (signatureFrameFallback) {
-    signatureFrameFallback.hidden = true;
-  }
-
-  signatureHelpButton?.setAttribute("aria-expanded", "false");
+  setSignatureHelpVisibility(false);
 
   resetSignatureGuidance();
 
@@ -201,8 +197,12 @@ signatureHelpButton?.addEventListener("click", () => {
   if (!signatureFrameFallback) return;
 
   const shouldShowHelp = signatureFrameFallback.hidden;
-  signatureFrameFallback.hidden = !shouldShowHelp;
-  signatureHelpButton.setAttribute("aria-expanded", String(shouldShowHelp));
+  setSignatureHelpVisibility(shouldShowHelp);
+});
+
+closeSignatureHelpButton?.addEventListener("click", () => {
+  setSignatureHelpVisibility(false);
+  signatureHelpButton?.focus();
 });
 
 openSignatureDirectlyButton?.addEventListener("click", () => {

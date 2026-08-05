@@ -9,8 +9,8 @@
   <meta name="description" content="Portal da WebTurbo para acompanhamento da contratação e assinatura digital.">
   <title>WebTurbo Cliente | Contratação de internet MhNet</title>
   <link rel="icon" type="image/png" href="../favicon.png">
-  <link rel="stylesheet" href="assinatura.css?v=7">
-  <script src="assinatura.js?v=7" defer></script>
+  <link rel="stylesheet" href="assinatura.css?v=8">
+  <script src="assinatura.js?v=8" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
@@ -424,8 +424,25 @@
         <span class="signature-overlay-guidance" id="signatureOverlayGuidance" role="status" aria-live="polite" hidden><span aria-hidden="true">↓</span> Toque no botão vermelho Assinar para iniciar as fotos.</span>
       </div>
 
+      <button type="button" class="signature-help-button" id="signatureHelpButton" aria-label="Problemas para abrir a assinatura?" aria-expanded="false" aria-controls="signatureFrameFallback" title="Ajuda">
+        <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M9.8 9a2.4 2.4 0 0 1 4.6 1c0 1.8-2.4 2-2.4 3.8M12 17.2h.01"/>
+        </svg>
+        <span class="signature-help-label">Ajuda</span>
+      </button>
+
       <img src="../favicon.png" class="brand-logo brand-logo-overlay" alt="" aria-hidden="true">
     </header>
+
+    <section class="signature-help-panel" id="signatureFrameFallback" aria-label="Ajuda para abrir a assinatura" hidden>
+      <p>Caso o documento não esteja respondendo, tente novamente ou abra a assinatura diretamente.</p>
+      <div class="signature-frame-actions">
+        <button type="button" id="retrySignatureFrame" class="signature-frame-retry">Tentar novamente</button>
+        <button type="button" id="openSignatureDirectly" class="signature-frame-direct">Abrir diretamente</button>
+        <button type="button" id="closeSignatureHelp" class="signature-frame-close">Fechar</button>
+      </div>
+    </section>
 
     <div class="signature-frame-container">
       <div class="signature-frame-loading" id="signatureFrameLoading" role="status" aria-live="polite">
@@ -434,16 +451,6 @@
       </div>
 
       <iframe id="signatureFrame" title="Documento para assinatura" allow="camera; microphone" referrerpolicy="no-referrer"></iframe>
-
-      <button type="button" class="signature-help-button" id="signatureHelpButton" aria-expanded="false" aria-controls="signatureFrameFallback" hidden>Problemas para abrir?</button>
-
-      <div class="signature-frame-fallback" id="signatureFrameFallback" hidden>
-        <p>Caso o documento não esteja respondendo, tente novamente ou abra a assinatura diretamente.</p>
-        <div class="signature-frame-actions">
-          <button type="button" id="retrySignatureFrame" class="signature-frame-retry">Tentar novamente</button>
-          <button type="button" id="openSignatureDirectly" class="signature-frame-direct">Abrir diretamente</button>
-        </div>
-      </div>
     </div>
   </div>
 </body>

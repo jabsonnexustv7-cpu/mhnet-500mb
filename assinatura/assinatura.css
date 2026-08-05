@@ -1091,7 +1091,7 @@ a:focus-visible {
   height: 100vh;
   height: 100dvh;
   min-width: 320px;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
   overflow: hidden;
   background: var(--surface);
 }
@@ -1099,7 +1099,8 @@ a:focus-visible {
 .signature-overlay-header {
   display: grid;
   min-width: 0;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-row: 1;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 12px;
   padding: max(10px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) 10px max(14px, env(safe-area-inset-left));
@@ -1110,7 +1111,8 @@ a:focus-visible {
 
 .signature-overlay-back,
 .signature-frame-retry,
-.signature-frame-direct {
+.signature-frame-direct,
+.signature-frame-close {
   min-height: 42px;
   border-radius: 10px;
   cursor: pointer;
@@ -1185,6 +1187,7 @@ a:focus-visible {
   position: relative;
   min-width: 0;
   min-height: 0;
+  grid-row: 3;
   padding-bottom: env(safe-area-inset-bottom);
   overflow: hidden;
   background: var(--white);
@@ -1219,57 +1222,60 @@ a:focus-visible {
 }
 
 .signature-help-button {
-  position: absolute;
-  right: max(14px, env(safe-area-inset-right));
-  bottom: max(14px, env(safe-area-inset-bottom));
-  z-index: 4;
-  min-height: 40px;
-  padding: 8px 13px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 6px 20px rgba(6, 20, 50, 0.14);
-  color: var(--navy-800);
+  display: inline-flex;
+  min-width: 42px;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 11px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 
-.signature-help-button:hover {
-  background: var(--blue-100);
+.signature-help-button .line-icon {
+  width: 19px;
+  height: 19px;
 }
 
-.signature-frame-fallback {
-  position: absolute;
-  right: max(14px, env(safe-area-inset-right));
-  bottom: calc(max(14px, env(safe-area-inset-bottom)) + 52px);
-  left: max(14px, env(safe-area-inset-left));
-  z-index: 3;
-  max-width: 620px;
-  margin: 0 auto;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-small);
-  background: rgba(255, 255, 255, 0.97);
-  box-shadow: 0 10px 32px rgba(6, 20, 50, 0.2);
+.signature-help-button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.signature-help-panel {
+  display: grid;
+  min-width: 0;
+  grid-row: 2;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  max-height: 140px;
+  padding: 10px max(14px, env(safe-area-inset-right)) 10px max(14px, env(safe-area-inset-left));
+  border-bottom: 1px solid var(--line);
+  background: var(--white);
   color: var(--text);
 }
 
-.signature-frame-fallback p {
+.signature-help-panel p {
   margin: 0;
   font-size: 13px;
-  text-align: center;
+  line-height: 1.4;
 }
 
 .signature-frame-actions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 9px;
-  margin-top: 10px;
 }
 
 .signature-frame-retry,
-.signature-frame-direct {
+.signature-frame-direct,
+.signature-frame-close {
   padding: 8px 12px;
   border: 1px solid var(--navy-800);
   font-size: 12px;
@@ -1283,6 +1289,11 @@ a:focus-visible {
 .signature-frame-direct {
   background: var(--navy-800);
   color: var(--white);
+}
+
+.signature-frame-close {
+  background: var(--surface-soft);
+  color: var(--navy-800);
 }
 
 .footer-brand strong {
@@ -1527,6 +1538,7 @@ a:focus-visible {
   }
 
   .signature-overlay-header {
+    grid-template-columns: auto minmax(0, 1fr) auto;
     gap: 8px;
   }
 
@@ -1559,8 +1571,41 @@ a:focus-visible {
     line-height: 1.25;
   }
 
+  .brand-logo-overlay {
+    display: none;
+  }
+
+  .signature-help-button {
+    width: 42px;
+    padding: 0;
+  }
+
+  .signature-help-label {
+    display: none;
+  }
+
+  .signature-help-panel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 7px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .signature-help-panel p {
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
   .signature-frame-actions {
-    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .signature-frame-retry,
+  .signature-frame-direct,
+  .signature-frame-close {
+    padding-right: 7px;
+    padding-left: 7px;
+    font-size: 11px;
   }
 }
 
