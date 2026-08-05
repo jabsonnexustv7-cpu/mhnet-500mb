@@ -11,12 +11,16 @@ const FRAME_RETRY_DELAY_MS = 80;
 const REQUEST_TIMEOUT_MS = 10_000;
 const MAX_CUSTOMER_NAME_LENGTH = 100;
 const MAX_PLAN_LENGTH = 100;
+const MAX_CITY_LENGTH = 120;
+const MAX_STATE_LENGTH = 2;
 
 const customerName = document.getElementById("customerName");
 const customerPlan = document.getElementById("customerPlan");
 const summaryCustomerName = document.getElementById("summaryCustomerName");
 const summaryPlanName = document.getElementById("summaryPlanName");
 const summaryOperatorName = document.getElementById("summaryOperatorName");
+const summaryCity = document.getElementById("summaryCity");
+const summaryDueDay = document.getElementById("summaryDueDay");
 const portalSessionStatus = document.getElementById("portalSessionStatus");
 const signatureButton = document.getElementById("signatureButton");
 const signatureButtonLabel = signatureButton?.querySelector("[data-button-label]");
@@ -106,10 +110,18 @@ function applyCustomerData(data) {
   const safeCustomerName = sanitizeOptionalText(data?.customer?.name, MAX_CUSTOMER_NAME_LENGTH);
   const safePlanName = sanitizeOptionalText(data?.plan?.name, MAX_PLAN_LENGTH);
   const safeOperatorName = sanitizeOptionalText(data?.operator?.name, MAX_PLAN_LENGTH);
+  const safeCity = sanitizeOptionalText(data?.location?.city, MAX_CITY_LENGTH);
+  const safeState = sanitizeOptionalText(data?.location?.state, MAX_STATE_LENGTH).toUpperCase();
+  const dueDay = Number.isInteger(data?.billing?.dueDay) && data.billing.dueDay >= 1 && data.billing.dueDay <= 31
+    ? data.billing.dueDay
+    : 0;
   const speedMbps = Number.isInteger(data?.plan?.speedMbps) && data.plan.speedMbps > 0
     ? `${data.plan.speedMbps} Mbps`
     : "";
   const planLabel = safePlanName || speedMbps || "Plano de internet contratado";
+  const cityLabel = safeCity && safeState
+    ? `${safeCity}/${safeState}`
+    : safeCity || safeState || "Cidade/UF";
 
   if (customerName) {
     customerName.textContent = safeCustomerName;
@@ -119,6 +131,8 @@ function applyCustomerData(data) {
   if (summaryCustomerName) summaryCustomerName.textContent = safeCustomerName || "Cliente WebTurbo";
   if (summaryPlanName) summaryPlanName.textContent = planLabel;
   if (summaryOperatorName) summaryOperatorName.textContent = safeOperatorName || "Operadora contratada";
+  if (summaryCity) summaryCity.textContent = cityLabel;
+  if (summaryDueDay) summaryDueDay.textContent = dueDay ? `Dia ${dueDay}` : "Dia escolhido";
 }
 
 function applyDemoPersonalization() {
