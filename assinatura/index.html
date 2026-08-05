@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="no-referrer">
-  <meta name="theme-color" content="#0a2463">
-  <meta name="description" content="Portal visual da WebTurbo para acompanhamento da contratação e futura assinatura digital.">
+  <meta name="theme-color" content="#071c4a">
+  <meta name="description" content="Portal da WebTurbo para acompanhamento da contratação e assinatura digital.">
   <title>WebTurbo Cliente | Contratação de internet MhNet</title>
   <link rel="icon" type="image/png" href="../favicon.png">
   <link rel="stylesheet" href="assinatura.css">
+  <script src="assinatura.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
@@ -25,60 +26,115 @@
       </div>
 
       <span class="header-context">
-        <span class="status-dot" aria-hidden="true"></span>
-        Ambiente informativo
+        <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3 20 6.5v5.7c0 4.4-3.1 7.5-8 8.8-4.9-1.3-8-4.4-8-8.8V6.5L12 3Z"/>
+          <path d="m8.7 12 2.1 2.1 4.6-4.7"/>
+        </svg>
+        Ambiente de apoio à contratação
       </span>
     </div>
   </header>
 
   <main id="conteudo-principal">
     <section class="hero" aria-labelledby="titulo-principal">
-      <div class="container hero-grid">
+      <div class="container hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">Acompanhamento da contratação</p>
-          <h1 id="titulo-principal">Sua contratação, apresentada com clareza.</h1>
+          <p class="eyebrow">Portal de acompanhamento</p>
+          <h1 id="titulo-principal">Acompanhe sua assinatura com clareza.</h1>
           <p class="hero-lead">A WebTurbo é parceira comercial da MhNet e acompanha sua contratação durante as etapas de assinatura e agendamento da instalação.</p>
 
-          <div class="identity-note">
-            <span class="identity-note-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
-                <path d="M12 2.75 20 6.1v5.65c0 4.76-3.36 8.17-8 9.5-4.64-1.33-8-4.74-8-9.5V6.1l8-3.35Zm0 2.17L6 7.43v4.32c0 3.54 2.36 6.18 6 7.34 3.64-1.16 6-3.8 6-7.34V7.43l-6-2.51Z"/>
-              </svg>
-            </span>
-            <p><strong>Você está no ambiente da WebTurbo.</strong> As informações abaixo ajudam você a conferir o processo antes da assinatura digital.</p>
+          <div class="hero-trust">
+            <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 20 6.5v5.7c0 4.4-3.1 7.5-8 8.8-4.9-1.3-8-4.4-8-8.8V6.5L12 3Z"/>
+              <path d="m8.7 12 2.1 2.1 4.6-4.7"/>
+            </svg>
+            <p><strong>Você está no ambiente da WebTurbo.</strong> Confira o resumo antes de abrir o documento da operadora.</p>
           </div>
         </div>
 
-        <aside class="journey-card" aria-labelledby="titulo-jornada">
+        <div class="hero-status" role="group" aria-label="Etapa atual da contratação">
+          <span class="hero-status-icon" aria-hidden="true">
+            <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/>
+              <path d="M14 3.5V8h4M9 12h6M9 15.5h4"/>
+            </svg>
+          </span>
+          <span>
+            <small>Etapa atual</small>
+            <strong>Assinatura do documento</strong>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <section class="journey-section" aria-labelledby="titulo-jornada">
+      <div class="container">
+        <div class="journey-panel">
           <div class="journey-heading">
-            <span class="journey-kicker">Visão geral</span>
-            <h2 id="titulo-jornada">Etapas da contratação</h2>
+            <p class="section-label">Jornada da contratação</p>
+            <h2 id="titulo-jornada">Seu processo em quatro etapas</h2>
           </div>
 
           <ol class="journey-list">
-            <li class="journey-item current">
-              <span class="journey-number" aria-hidden="true">1</span>
-              <span>
-                <strong>Confira a contratação</strong>
-                <small>Revise o resumo apresentado nesta página.</small>
+            <li class="journey-item is-complete">
+              <span class="journey-icon" aria-hidden="true">
+                <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M16 20v-1.7a3.3 3.3 0 0 0-3.3-3.3H7.3A3.3 3.3 0 0 0 4 18.3V20"/>
+                  <circle cx="10" cy="7.5" r="3.5"/>
+                  <path d="m16.5 9.5 1.5 1.5 3-3"/>
+                </svg>
+              </span>
+              <span class="journey-copy">
+                <small>1</small>
+                <strong>Contratação</strong>
+                <span>Solicitação recebida</span>
               </span>
             </li>
-            <li class="journey-item">
-              <span class="journey-number" aria-hidden="true">2</span>
-              <span>
-                <strong>Assine o documento</strong>
-                <small>O acesso será liberado após a confirmação.</small>
+
+            <li class="journey-item is-complete">
+              <span class="journey-icon" aria-hidden="true">
+                <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 4h8M9 2.8h6a1 1 0 0 1 1 1V6H8V3.8a1 1 0 0 1 1-1Z"/>
+                  <path d="M17 5h1a2 2 0 0 1 2 2v13H4V7a2 2 0 0 1 2-2h1"/>
+                  <path d="m8.5 13 2 2 4.5-5"/>
+                </svg>
+              </span>
+              <span class="journey-copy">
+                <small>2</small>
+                <strong>Conferência</strong>
+                <span>Resumo disponível</span>
               </span>
             </li>
+
+            <li class="journey-item is-current" aria-current="step">
+              <span class="journey-icon" aria-hidden="true">
+                <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/>
+                  <path d="M14 3.5V8h4M9 16.5c1.4-2 2.5-3 3.3-3 .7 0 .6 1.4 1.2 1.5.5.1 1-.5 1.5-1"/>
+                </svg>
+              </span>
+              <span class="journey-copy">
+                <small>3 · Etapa atual</small>
+                <strong>Assinatura</strong>
+                <span>Documento para assinar</span>
+              </span>
+            </li>
+
             <li class="journey-item">
-              <span class="journey-number" aria-hidden="true">3</span>
-              <span>
-                <strong>Aguarde a instalação</strong>
-                <small>O agendamento será acompanhado pela equipe.</small>
+              <span class="journey-icon" aria-hidden="true">
+                <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3.5" y="5" width="17" height="15" rx="2"/>
+                  <path d="M7.5 3v4M16.5 3v4M3.5 9.5h17M8 13h3M13.5 13H16M8 16.5h3"/>
+                </svg>
+              </span>
+              <span class="journey-copy">
+                <small>4</small>
+                <strong>Instalação</strong>
+                <span>Agendamento posterior</span>
               </span>
             </li>
           </ol>
-        </aside>
+        </div>
       </div>
     </section>
 
@@ -87,98 +143,199 @@
         <article class="card summary-card" aria-labelledby="titulo-resumo">
           <div class="card-heading">
             <span class="section-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" focusable="false">
-                <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 2v14h10V5H7Zm2 3h6v2H9V8Zm0 4h6v2H9v-2Zm0 4h4v2H9v-2Z"/>
+              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 4h8M9 2.8h6a1 1 0 0 1 1 1V6H8V3.8a1 1 0 0 1 1-1Z"/>
+                <path d="M17 5h1a2 2 0 0 1 2 2v13H4V7a2 2 0 0 1 2-2h1M8 11h8M8 15h8"/>
               </svg>
             </span>
             <div>
-              <p class="card-kicker">Para conferência</p>
+              <p class="section-label">Para conferência</p>
               <h2 id="titulo-resumo">Resumo da contratação</h2>
             </div>
           </div>
 
           <!-- Dados demonstrativos. Serão substituídos pela integração em uma etapa futura. -->
           <dl class="summary-list">
-            <div>
-              <dt>Cliente</dt>
+            <div class="summary-item">
+              <dt>
+                <span class="summary-icon" aria-hidden="true">
+                  <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/>
+                  </svg>
+                </span>
+                <span>Cliente</span>
+              </dt>
               <dd>Cliente WebTurbo</dd>
             </div>
-            <div>
-              <dt>Plano</dt>
+
+            <div class="summary-item">
+              <dt>
+                <span class="summary-icon" aria-hidden="true">
+                  <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 12.5a10 10 0 0 1 14 0M8 15.5a5.8 5.8 0 0 1 8 0M10.8 18.2a1.8 1.8 0 0 1 2.4 0"/>
+                  </svg>
+                </span>
+                <span>Plano</span>
+              </dt>
               <dd>Plano de internet contratado</dd>
             </div>
-            <div>
-              <dt>Operadora</dt>
+
+            <div class="summary-item">
+              <dt>
+                <span class="summary-icon" aria-hidden="true">
+                  <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 21V7l8-4 8 4v14M8 9h2M14 9h2M8 13h2M14 13h2M9 21v-4h6v4"/>
+                  </svg>
+                </span>
+                <span>Operadora</span>
+              </dt>
               <dd>MhNet</dd>
             </div>
-            <div>
-              <dt>Cidade</dt>
+
+            <div class="summary-item">
+              <dt>
+                <span class="summary-icon" aria-hidden="true">
+                  <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/>
+                    <circle cx="12" cy="10" r="2.5"/>
+                  </svg>
+                </span>
+                <span>Cidade</span>
+              </dt>
               <dd>Cidade/UF</dd>
             </div>
-            <div>
-              <dt>Vencimento</dt>
+
+            <div class="summary-item">
+              <dt>
+                <span class="summary-icon" aria-hidden="true">
+                  <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="8.5"/>
+                    <path d="M12 7.5V12l3 2"/>
+                  </svg>
+                </span>
+                <span>Vencimento</span>
+              </dt>
               <dd>Dia escolhido</dd>
             </div>
-            <div>
-              <dt>Instalação</dt>
-              <dd><span class="pending-dot" aria-hidden="true"></span>A confirmar</dd>
+
+            <div class="summary-item">
+              <dt>
+                <span class="summary-icon" aria-hidden="true">
+                  <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3.5" y="5" width="17" height="15" rx="2"/>
+                    <path d="M7.5 3v4M16.5 3v4M3.5 9.5h17M8 14h8"/>
+                  </svg>
+                </span>
+                <span>Instalação</span>
+              </dt>
+              <dd>A confirmar</dd>
             </div>
           </dl>
 
-          <p class="demo-note">Este é um resumo visual com dados neutros de demonstração.</p>
+          <p class="demo-note">Resumo visual com dados neutros de demonstração.</p>
         </article>
 
         <article class="card signature-card" aria-labelledby="titulo-assinatura">
-          <div class="signature-visual" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false">
-              <path d="M16.86 3.28a2.5 2.5 0 0 1 3.54 3.54L9.22 18H5v-4.22L16.86 3.28Zm1.41 1.41L7 14.66V16h1.34l10.65-10.6a.5.5 0 0 0-.72-.71ZM4 20h16v2H4v-2Z"/>
-            </svg>
+          <div class="signature-topline">
+            <span class="signature-visual" aria-hidden="true">
+              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/>
+                <path d="M14 3.5V8h4M8.8 16.8c1.6-2.4 2.8-3.6 3.7-3.6.8 0 .7 1.7 1.4 1.8.6.1 1.1-.6 1.7-1.2"/>
+              </svg>
+            </span>
+            <span class="current-chip">Etapa atual</span>
           </div>
-          <p class="card-kicker">Próxima etapa</p>
+
+          <p class="section-label">Documento da operadora</p>
           <h2 id="titulo-assinatura">Assinatura segura do documento</h2>
-          <p>Para concluir sua contratação, você será direcionado ao ambiente de assinatura digital utilizado pela operadora. Antes de continuar, confira os dados apresentados nesta página.</p>
+          <p class="signature-description">Para concluir sua contratação, você será direcionado ao ambiente de assinatura digital utilizado pela operadora. Antes de continuar, confira os dados apresentados nesta página.</p>
+
           <p class="no-payment">
-            <span aria-hidden="true">✓</span>
+            <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 20 6.5v5.7c0 4.4-3.1 7.5-8 8.8-4.9-1.3-8-4.4-8-8.8V6.5L12 3Z"/>
+              <path d="m8.7 12 2.1 2.1 4.6-4.7"/>
+            </svg>
             Nenhum pagamento é solicitado nesta etapa.
           </p>
 
-          <button class="signature-button" type="button" disabled aria-disabled="true">Assinar documento</button>
-          <p class="button-note">O acesso à assinatura será disponibilizado após a confirmação da contratação.</p>
+          <button class="signature-button" id="signatureButton" type="button" aria-busy="false">
+            <svg class="line-icon button-leading-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/>
+              <path d="M14 3.5V8h4M9 13h6M9 16h4"/>
+            </svg>
+            <svg class="button-spinner" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8.5"/>
+              <path d="M12 3.5a8.5 8.5 0 0 1 8.5 8.5"/>
+            </svg>
+            <span data-button-label>Assinar documento</span>
+            <svg class="line-icon button-arrow" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M14 7l5 5-5 5"/>
+            </svg>
+          </button>
+
+          <p class="button-note">A assinatura será aberta nesta mesma aba. Use o botão Voltar do navegador para retornar.</p>
+          <p class="signature-error" id="signatureError" role="status" aria-live="polite" hidden>Não foi possível abrir a assinatura. Tente novamente.</p>
         </article>
 
         <section class="card security-card" aria-labelledby="titulo-seguranca">
           <div class="security-intro">
             <div class="card-heading">
               <span class="section-icon section-icon-green" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false">
-                  <path d="M12 2.75 20 6.1v5.65c0 4.76-3.36 8.17-8 9.5-4.64-1.33-8-4.74-8-9.5V6.1l8-3.35Zm0 2.17L6 7.43v4.32c0 3.54 2.36 6.18 6 7.34 3.64-1.16 6-3.8 6-7.34V7.43l-6-2.51Zm-1.02 9.83L7.7 11.47l1.42-1.42 1.86 1.87 3.9-3.9 1.42 1.41-5.32 5.32Z"/>
+                <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3 20 6.5v5.7c0 4.4-3.1 7.5-8 8.8-4.9-1.3-8-4.4-8-8.8V6.5L12 3Z"/>
+                  <path d="m8.7 12 2.1 2.1 4.6-4.7"/>
                 </svg>
               </span>
               <div>
-                <p class="card-kicker">Orientações de confiança</p>
+                <p class="section-label">Orientações de confiança</p>
                 <h2 id="titulo-seguranca">Como identificar este acesso</h2>
               </div>
             </div>
-            <p>Alguns cuidados simples ajudam você a reconhecer o ambiente e seguir com tranquilidade.</p>
+            <p>Alguns cuidados simples ajudam você a reconhecer o ambiente antes de continuar.</p>
+
             <div class="domain-check">
-              <span>Endereço esperado</span>
-              <strong>webturbo-internet.com.br</strong>
+              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M3.5 12h17M12 3c2.2 2.4 3.3 5.4 3.3 9s-1.1 6.6-3.3 9c-2.2-2.4-3.3-5.4-3.3-9S9.8 5.4 12 3Z"/>
+              </svg>
+              <span><small>Endereço esperado</small><strong>webturbo-internet.com.br</strong></span>
             </div>
           </div>
 
           <ul class="security-list">
-            <li><span aria-hidden="true">✓</span>Confira se o endereço começa com webturbo-internet.com.br.</li>
-            <li><span aria-hidden="true">✓</span>Seus dados pessoais serão exibidos de forma limitada.</li>
-            <li><span aria-hidden="true">✓</span>A WebTurbo não solicita senha bancária.</li>
-            <li><span aria-hidden="true">✓</span>Nenhum pagamento é solicitado durante a assinatura.</li>
-            <li><span aria-hidden="true">✓</span>Em caso de dúvida, confirme o atendimento antes de continuar.</li>
+            <li>
+              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.2 2.2 4.8-4.8"/></svg>
+              <span>Confira se o endereço começa com webturbo-internet.com.br.</span>
+            </li>
+            <li>
+              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>
+              <span>Seus dados pessoais serão exibidos de forma limitada.</span>
+            </li>
+            <li>
+              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 10V7.5a5.5 5.5 0 0 1 11 0V10"/><rect x="4.5" y="10" width="15" height="11" rx="2"/><path d="M12 14v3"/></svg>
+              <span>A WebTurbo não solicita senha bancária.</span>
+            </li>
+            <li>
+              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16.5 15h1"/></svg>
+              <span>Nenhum pagamento é solicitado durante a assinatura.</span>
+            </li>
+            <li>
+              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-5l-4 4v-4H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M9 9h6M9 12h4"/></svg>
+              <span>Em caso de dúvida, confirme o atendimento antes de continuar.</span>
+            </li>
           </ul>
         </section>
 
         <section class="about-grid" aria-label="Informações institucionais">
           <article class="card about-card" aria-labelledby="titulo-webturbo">
-            <div class="about-mark webturbo-mark" aria-hidden="true">WT</div>
-            <p class="card-kicker">Atendimento comercial</p>
+            <span class="about-icon webturbo-icon" aria-hidden="true">
+              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 3.5h8a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z"/>
+                <path d="M9 7h6M9 10.5h6M10 17h4"/>
+              </svg>
+            </span>
+            <p class="section-label">Atendimento comercial</p>
             <h2 id="titulo-webturbo">Sobre a WebTurbo</h2>
             <p>A WebTurbo atua na intermediação de vendas de serviços de internet e acompanha o cliente durante as etapas de contratação, assinatura e agendamento da instalação.</p>
 
@@ -197,8 +354,12 @@
           </article>
 
           <article class="card about-card" aria-labelledby="titulo-mhnet">
-            <div class="about-mark mhnet-mark" aria-hidden="true">M</div>
-            <p class="card-kicker">Operadora dos serviços</p>
+            <span class="about-icon mhnet-icon" aria-hidden="true">
+              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 21V7l8-4 8 4v14M8 9h2M14 9h2M8 13h2M14 13h2M9 21v-4h6v4"/>
+              </svg>
+            </span>
+            <p class="section-label">Operadora dos serviços</p>
             <h2 id="titulo-mhnet">Sobre a MhNet</h2>
             <p>A MhNet oferece serviços de telecomunicações, incluindo internet por fibra óptica, em diferentes regiões do Brasil.</p>
 
