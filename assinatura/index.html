@@ -9,8 +9,8 @@
   <meta name="description" content="Portal da WebTurbo para acompanhamento da contratação e assinatura digital.">
   <title>WebTurbo Cliente | Contratação de internet MhNet</title>
   <link rel="icon" type="image/png" href="../favicon.png">
-  <link rel="stylesheet" href="assinatura.css?v=9">
-  <script src="assinatura.js?v=9" defer></script>
+  <link rel="stylesheet" href="assinatura.css?v=10">
+  <script src="assinatura.js?v=10" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
@@ -203,7 +203,6 @@
             </div>
           </div>
 
-          <!-- Dados demonstrativos. Serão substituídos pela integração em uma etapa futura. -->
           <ul class="summary-list">
             <li class="summary-item">
               <span class="summary-icon" aria-hidden="true">
@@ -240,7 +239,7 @@
                   <circle cx="12" cy="10" r="2.5"/>
                 </svg>
               </span>
-              <div class="summary-copy"><span>Cidade</span><strong>Cidade/UF</strong></div>
+              <div class="summary-copy"><span>Cidade</span><strong id="summaryCity">Cidade/UF</strong></div>
             </li>
 
             <li class="summary-item">
@@ -250,7 +249,7 @@
                   <path d="M12 7.5V12l3 2"/>
                 </svg>
               </span>
-              <div class="summary-copy"><span>Vencimento</span><strong>Dia escolhido</strong></div>
+              <div class="summary-copy"><span>Vencimento</span><strong id="summaryDueDay">Dia escolhido</strong></div>
             </li>
 
             <li class="summary-item">
@@ -264,7 +263,7 @@
             </li>
           </ul>
 
-            <p class="demo-note">Dados ilustrativos para conferência.</p>
+            <p class="demo-note">Confira os dados da contratação antes de continuar.</p>
           </section>
         </details>
 
@@ -278,6 +277,7 @@
               <span>Como reconhecer este acesso</span>
             </span>
           </summary>
+
           <section class="card security-card" aria-labelledby="titulo-seguranca">
           <div class="security-intro">
             <div class="card-heading">
