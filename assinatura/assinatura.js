@@ -7,14 +7,13 @@ const signatureButton = document.getElementById("signatureButton");
 const signatureButtonLabel = signatureButton?.querySelector("[data-button-label]");
 const signatureError = document.getElementById("signatureError");
 
-function getValidatedSignatureUrl() {
-  const destination = new URL(TEST_SIGNATURE_URL);
-
-  if (destination.protocol !== "https:" || destination.hostname !== EXPECTED_SIGNATURE_HOSTNAME) {
-    throw new Error("Invalid signature destination");
+function hasValidSignatureUrl() {
+  try {
+    const destination = new URL(TEST_SIGNATURE_URL);
+    return destination.protocol === "https:" && destination.hostname === EXPECTED_SIGNATURE_HOSTNAME;
+  } catch {
+    return false;
   }
-
-  return destination.href;
 }
 
 function restoreSignatureButton() {
@@ -46,16 +45,12 @@ signatureButton?.addEventListener("click", () => {
     signatureError.hidden = true;
   }
 
-  let destination;
-
-  try {
-    destination = getValidatedSignatureUrl();
-  } catch {
+  if (!hasValidSignatureUrl()) {
     showSignatureError();
     return;
   }
 
   window.setTimeout(() => {
-    window.location.assign(destination);
+    window.location.assign(TEST_SIGNATURE_URL);
   }, REDIRECT_DELAY_MS);
 });
