@@ -3,8 +3,11 @@ const TEST_SIGNATURE_URL = "https://vds.voalle.app/documents/15b9a990-31fd-4407-
 const EXPECTED_SIGNATURE_HOSTNAME = "vds.voalle.app";
 const OVERLAY_OPEN_DELAY_MS = 450;
 const FRAME_RETRY_DELAY_MS = 80;
-const FRAME_FALLBACK_DELAY_MS = 12000;
+const MAX_CUSTOMER_NAME_LENGTH = 100;
+const MAX_PLAN_LENGTH = 50;
 
+const customerName = document.getElementById("customerName");
+const customerPlan = document.getElementById("customerPlan");
 const signatureButton = document.getElementById("signatureButton");
 const signatureButtonLabel = signatureButton?.querySelector("[data-button-label]");
 const signatureError = document.getElementById("signatureError");
@@ -13,15 +16,42 @@ const closeSignatureOverlayButton = document.getElementById("closeSignatureOverl
 const signatureFrame = document.getElementById("signatureFrame");
 const signatureFrameLoading = document.getElementById("signatureFrameLoading");
 const signatureFrameFallback = document.getElementById("signatureFrameFallback");
-const signatureOverlayContext = document.getElementById("signatureOverlayContext");
 const signatureOverlayGuidance = document.getElementById("signatureOverlayGuidance");
+const signatureHelpButton = document.getElementById("signatureHelpButton");
 const retrySignatureFrameButton = document.getElementById("retrySignatureFrame");
 const openSignatureDirectlyButton = document.getElementById("openSignatureDirectly");
 const portalDetails = Array.from(document.querySelectorAll("details"));
 
 let overlayOpenTimer;
 let frameRetryTimer;
-let frameFallbackTimer;
+
+function sanitizeOptionalParameter(value, maximumLength) {
+  if (!value) return "";
+
+  const normalizedValue = value
+    .replace(/[\u0000-\u001F\u007F-\u009F]/g, " ")
+    .replace(/\s+/gu, " ")
+    .trim();
+
+  if (/^(undefined|null)$/iu.test(normalizedValue)) return "";
+
+  return Array.from(normalizedValue).slice(0, maximumLength).join("").trim();
+}
+
+function applyCustomerPersonalization() {
+  const searchParameters = new URLSearchParams(window.location.search);
+  const safeCustomerName = sanitizeOptionalParameter(searchParameters.get("nome"), MAX_CUSTOMER_NAME_LENGTH);
+  const safePlan = sanitizeOptionalParameter(searchParameters.get("plano"), MAX_PLAN_LENGTH);
+
+  if (customerName && safeCustomerName) {
+    customerName.textContent = safeCustomerName;
+    customerName.hidden = false;
+  }
+
+  if (customerPlan) {
+    customerPlan.textContent = safePlan ? `Plano contratado: ${safePlan}` : "Seu plano de internet";
+  }
+}
 
 function getValidatedSignatureUrl() {
   try {
@@ -56,35 +86,25 @@ function showSignatureError() {
 
 function clearFrameTimers() {
   window.clearTimeout(frameRetryTimer);
-  window.clearTimeout(frameFallbackTimer);
-}
-
-function startFrameFallbackTimer() {
-  window.clearTimeout(frameFallbackTimer);
-  frameFallbackTimer = window.setTimeout(() => {
-    if (signatureOverlay && !signatureOverlay.hidden && signatureFrameFallback) {
-      signatureFrameFallback.hidden = false;
-    }
-  }, FRAME_FALLBACK_DELAY_MS);
 }
 
 function resetSignatureGuidance() {
-  if (signatureOverlayContext) {
-    signatureOverlayContext.hidden = false;
-  }
-
   if (signatureOverlayGuidance) {
     signatureOverlayGuidance.hidden = true;
+  }
+
+  if (signatureHelpButton) {
+    signatureHelpButton.hidden = true;
   }
 }
 
 function showSignatureGuidance() {
-  if (signatureOverlayContext) {
-    signatureOverlayContext.hidden = true;
-  }
-
   if (signatureOverlayGuidance) {
     signatureOverlayGuidance.hidden = false;
+  }
+
+  if (signatureHelpButton) {
+    signatureHelpButton.hidden = false;
   }
 }
 
@@ -101,11 +121,11 @@ function loadSignatureFrame() {
   resetSignatureGuidance();
   signatureFrameLoading.hidden = false;
   signatureFrameFallback.hidden = true;
+  signatureHelpButton?.setAttribute("aria-expanded", "false");
   signatureFrame.removeAttribute("src");
 
   frameRetryTimer = window.setTimeout(() => {
     signatureFrame.src = signatureUrl;
-    startFrameFallbackTimer();
   }, FRAME_RETRY_DELAY_MS);
 }
 
@@ -138,6 +158,8 @@ function closeSignatureOverlay() {
   if (signatureFrameFallback) {
     signatureFrameFallback.hidden = true;
   }
+
+  signatureHelpButton?.setAttribute("aria-expanded", "false");
 
   resetSignatureGuidance();
 
@@ -175,6 +197,14 @@ signatureButton?.addEventListener("click", () => {
 closeSignatureOverlayButton?.addEventListener("click", closeSignatureOverlay);
 retrySignatureFrameButton?.addEventListener("click", loadSignatureFrame);
 
+signatureHelpButton?.addEventListener("click", () => {
+  if (!signatureFrameFallback) return;
+
+  const shouldShowHelp = signatureFrameFallback.hidden;
+  signatureFrameFallback.hidden = !shouldShowHelp;
+  signatureHelpButton.setAttribute("aria-expanded", String(shouldShowHelp));
+});
+
 openSignatureDirectlyButton?.addEventListener("click", () => {
   const signatureUrl = getValidatedSignatureUrl();
 
@@ -206,6 +236,8 @@ portalDetails.forEach((detailsElement) => {
     });
   });
 });
+
+applyCustomerPersonalization();
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && signatureOverlay && !signatureOverlay.hidden) {

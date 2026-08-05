@@ -708,9 +708,47 @@ a:focus-visible {
   color: var(--cyan-300);
 }
 
-.signature-card h2 {
-  max-width: 470px;
+.signature-card h1 {
+  max-width: 520px;
+  margin: 0;
   color: var(--white);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+.customer-identification {
+  max-width: 560px;
+  min-width: 0;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-small);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.customer-name {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--white);
+  font-size: clamp(1.35rem, 5vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.customer-plan {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #cbd8f5;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.customer-name:not([hidden]) + .customer-plan {
+  margin-top: 5px;
 }
 
 .signature-description {
@@ -720,8 +758,22 @@ a:focus-visible {
   line-height: 1.65;
 }
 
-.signature-description + .signature-description {
-  margin-top: 8px;
+.signature-preparation {
+  display: flex;
+  max-width: 560px;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 10px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.signature-preparation .line-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--cyan-300);
 }
 
 .no-payment {
@@ -839,15 +891,6 @@ a:focus-visible {
 
 .signature-button.is-loading .button-arrow {
   visibility: hidden;
-}
-
-.button-note {
-  max-width: 470px;
-  margin: 10px auto 0;
-  color: rgba(255, 255, 255, 0.56);
-  font-size: 11px;
-  line-height: 1.5;
-  text-align: center;
 }
 
 .signature-error {
@@ -1175,10 +1218,31 @@ a:focus-visible {
   height: 30px;
 }
 
-.signature-frame-fallback {
+.signature-help-button {
   position: absolute;
   right: max(14px, env(safe-area-inset-right));
   bottom: max(14px, env(safe-area-inset-bottom));
+  z-index: 4;
+  min-height: 40px;
+  padding: 8px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 6px 20px rgba(6, 20, 50, 0.14);
+  color: var(--navy-800);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.signature-help-button:hover {
+  background: var(--blue-100);
+}
+
+.signature-frame-fallback {
+  position: absolute;
+  right: max(14px, env(safe-area-inset-right));
+  bottom: calc(max(14px, env(safe-area-inset-bottom)) + 52px);
   left: max(14px, env(safe-area-inset-left));
   z-index: 3;
   max-width: 620px;
@@ -1376,6 +1440,25 @@ a:focus-visible {
   }
 }
 
+@media (min-width: 360px) and (max-width: 599px) {
+  .header-inner {
+    display: flex;
+    min-height: 66px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .header-context {
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    font-size: 10px;
+    text-align: right;
+  }
+}
+
 @media (max-width: 480px) {
   .hero-inner {
     gap: 16px;
@@ -1409,6 +1492,10 @@ a:focus-visible {
     padding: 18px;
   }
 
+  .signature-card h1 {
+    font-size: 28px;
+  }
+
   .signature-topline {
     margin-bottom: 14px;
   }
@@ -1418,8 +1505,17 @@ a:focus-visible {
     line-height: 1.5;
   }
 
-  .signature-description + .signature-description {
-    margin-top: 6px;
+  .customer-identification {
+    margin-top: 14px;
+    padding: 12px 13px;
+  }
+
+  .customer-name {
+    font-size: 22px;
+  }
+
+  .signature-preparation {
+    margin-top: 8px;
   }
 
   .no-payment {
