@@ -9,8 +9,8 @@
   <meta name="description" content="Portal da WebTurbo para acompanhamento da contratação e assinatura digital.">
   <title>WebTurbo Cliente | Contratação de internet MhNet</title>
   <link rel="icon" type="image/png" href="../favicon.png">
-  <link rel="stylesheet" href="assinatura.css?v=8">
-  <script src="assinatura.js?v=8" defer></script>
+  <link rel="stylesheet" href="assinatura.css?v=9">
+  <script src="assinatura.js?v=9" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
@@ -57,6 +57,8 @@
             <p class="customer-plan" id="customerPlan">Seu plano de internet</p>
           </div>
 
+          <p class="portal-session-status" id="portalSessionStatus" role="status" aria-live="polite" hidden></p>
+
           <p class="signature-description" id="texto-assinatura">Para finalizar sua contratação, abra o documento e siga as etapas para enviar suas fotos.</p>
           <p class="signature-preparation">
             <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8M9 2.8h6a1 1 0 0 1 1 1V6H8V3.8a1 1 0 0 1 1-1Z"/><path d="M17 5h1a2 2 0 0 1 2 2v13H4V7a2 2 0 0 1 2-2h1"/><path d="M8 11h8M8 15h5"/></svg>
@@ -71,7 +73,7 @@
             Nenhum pagamento será solicitado nesta etapa.
           </p>
 
-          <button class="signature-button" id="signatureButton" type="button" aria-busy="false" aria-describedby="texto-assinatura aviso-pagamento">
+          <button class="signature-button" id="signatureButton" type="button" aria-busy="false" aria-describedby="texto-assinatura aviso-pagamento portalSessionStatus" disabled>
             <svg class="line-icon button-leading-icon" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/>
               <path d="M14 3.5V8h4M9 13h6M9 16h4"/>
@@ -210,7 +212,7 @@
                   <path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/>
                 </svg>
               </span>
-              <div class="summary-copy"><span>Cliente</span><strong>Cliente WebTurbo</strong></div>
+              <div class="summary-copy"><span>Cliente</span><strong id="summaryCustomerName">Cliente WebTurbo</strong></div>
             </li>
 
             <li class="summary-item">
@@ -219,7 +221,7 @@
                   <path d="M5 12.5a10 10 0 0 1 14 0M8 15.5a5.8 5.8 0 0 1 8 0M10.8 18.2a1.8 1.8 0 0 1 2.4 0"/>
                 </svg>
               </span>
-              <div class="summary-copy"><span>Plano</span><strong>Plano de internet contratado</strong></div>
+              <div class="summary-copy"><span>Plano</span><strong id="summaryPlanName">Plano de internet contratado</strong></div>
             </li>
 
             <li class="summary-item">
@@ -228,7 +230,7 @@
                   <path d="M4 21V7l8-4 8 4v14M8 9h2M14 9h2M8 13h2M14 13h2M9 21v-4h6v4"/>
                 </svg>
               </span>
-              <div class="summary-copy"><span>Operadora</span><strong>MhNet</strong></div>
+              <div class="summary-copy"><span>Operadora</span><strong id="summaryOperatorName">MhNet</strong></div>
             </li>
 
             <li class="summary-item">
