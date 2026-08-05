@@ -13,8 +13,11 @@ const closeSignatureOverlayButton = document.getElementById("closeSignatureOverl
 const signatureFrame = document.getElementById("signatureFrame");
 const signatureFrameLoading = document.getElementById("signatureFrameLoading");
 const signatureFrameFallback = document.getElementById("signatureFrameFallback");
+const signatureOverlayContext = document.getElementById("signatureOverlayContext");
+const signatureOverlayGuidance = document.getElementById("signatureOverlayGuidance");
 const retrySignatureFrameButton = document.getElementById("retrySignatureFrame");
 const openSignatureDirectlyButton = document.getElementById("openSignatureDirectly");
+const portalDetails = Array.from(document.querySelectorAll("details"));
 
 let overlayOpenTimer;
 let frameRetryTimer;
@@ -65,6 +68,26 @@ function startFrameFallbackTimer() {
   }, FRAME_FALLBACK_DELAY_MS);
 }
 
+function resetSignatureGuidance() {
+  if (signatureOverlayContext) {
+    signatureOverlayContext.hidden = false;
+  }
+
+  if (signatureOverlayGuidance) {
+    signatureOverlayGuidance.hidden = true;
+  }
+}
+
+function showSignatureGuidance() {
+  if (signatureOverlayContext) {
+    signatureOverlayContext.hidden = true;
+  }
+
+  if (signatureOverlayGuidance) {
+    signatureOverlayGuidance.hidden = false;
+  }
+}
+
 function loadSignatureFrame() {
   const signatureUrl = getValidatedSignatureUrl();
 
@@ -75,6 +98,7 @@ function loadSignatureFrame() {
   }
 
   clearFrameTimers();
+  resetSignatureGuidance();
   signatureFrameLoading.hidden = false;
   signatureFrameFallback.hidden = true;
   signatureFrame.removeAttribute("src");
@@ -114,6 +138,8 @@ function closeSignatureOverlay() {
   if (signatureFrameFallback) {
     signatureFrameFallback.hidden = true;
   }
+
+  resetSignatureGuidance();
 
   if (signatureOverlay) {
     signatureOverlay.hidden = true;
@@ -163,7 +189,22 @@ openSignatureDirectlyButton?.addEventListener("click", () => {
 signatureFrame?.addEventListener("load", () => {
   if (signatureOverlay && !signatureOverlay.hidden && signatureFrame.hasAttribute("src") && signatureFrameLoading) {
     signatureFrameLoading.hidden = true;
+    showSignatureGuidance();
   }
+});
+
+portalDetails.forEach((detailsElement) => {
+  detailsElement.open = false;
+
+  detailsElement.addEventListener("toggle", () => {
+    if (!detailsElement.open) return;
+
+    portalDetails.forEach((otherDetailsElement) => {
+      if (otherDetailsElement !== detailsElement && otherDetailsElement.open) {
+        otherDetailsElement.open = false;
+      }
+    });
+  });
 });
 
 document.addEventListener("keydown", (event) => {

@@ -9,8 +9,8 @@
   <meta name="description" content="Portal da WebTurbo para acompanhamento da contratação e assinatura digital.">
   <title>WebTurbo Cliente | Contratação de internet MhNet</title>
   <link rel="icon" type="image/png" href="../favicon.png">
-  <link rel="stylesheet" href="assinatura.css?v=5">
-  <script src="assinatura.js?v=5" defer></script>
+  <link rel="stylesheet" href="assinatura.css?v=6">
+  <script src="assinatura.js?v=6" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
@@ -18,7 +18,7 @@
   <header class="portal-header">
     <div class="container header-inner">
       <div class="brand">
-        <span class="brand-mark" aria-hidden="true">WT</span>
+        <img src="../favicon.png" class="brand-logo" alt="" aria-hidden="true">
         <span class="brand-copy">
           <strong>WebTurbo Cliente</strong>
           <span>Contratação de internet MhNet</span>
@@ -116,7 +116,18 @@
 
     <section class="journey-section" aria-labelledby="titulo-jornada">
       <div class="container">
-        <div class="journey-panel">
+        <details class="portal-details journey-details">
+          <summary class="details-summary">
+            <span class="details-summary-icon" aria-hidden="true">
+              <svg class="line-icon" viewBox="0 0 24 24"><path d="M9 6h10M9 12h10M9 18h10"/><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/></svg>
+            </span>
+            <span class="details-summary-copy">
+              <strong>Ver etapas da contratação</strong>
+              <span>Etapa 3 de 4 — Assinatura</span>
+            </span>
+          </summary>
+
+          <div class="journey-panel">
           <div class="journey-heading">
             <p class="section-label">Jornada da contratação</p>
             <h2 id="titulo-jornada">Seu processo em quatro etapas</h2>
@@ -181,13 +192,25 @@
               </span>
             </li>
           </ol>
-        </div>
+          </div>
+        </details>
       </div>
     </section>
 
     <section class="portal-content" aria-label="Informações da contratação">
       <div class="container content-grid">
-        <section class="card summary-card" aria-labelledby="titulo-resumo">
+        <details class="portal-details summary-details">
+          <summary class="details-summary">
+            <span class="details-summary-icon" aria-hidden="true">
+              <svg class="line-icon" viewBox="0 0 24 24"><path d="M8 4h8M9 2.8h6a1 1 0 0 1 1 1V6H8V3.8a1 1 0 0 1 1-1Z"/><path d="M17 5h1a2 2 0 0 1 2 2v13H4V7a2 2 0 0 1 2-2h1M8 11h8M8 15h8"/></svg>
+            </span>
+            <span class="details-summary-copy">
+              <strong>Conferir dados da contratação</strong>
+              <span>Plano, operadora, cidade, vencimento e instalação</span>
+            </span>
+          </summary>
+
+          <section class="card summary-card" aria-labelledby="titulo-resumo">
           <div class="card-heading">
             <span class="section-icon" aria-hidden="true">
               <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -262,11 +285,20 @@
             </li>
           </ul>
 
-          <p class="demo-note">Resumo visual com dados neutros de demonstração.</p>
-        </section>
+            <p class="demo-note">Resumo visual com dados neutros de demonstração.</p>
+          </section>
+        </details>
 
-        <details class="secondary-details security-details">
-          <summary>Informações de segurança</summary>
+        <details class="portal-details secondary-details security-details">
+          <summary class="details-summary">
+            <span class="details-summary-icon" aria-hidden="true">
+              <svg class="line-icon" viewBox="0 0 24 24"><path d="M12 3 20 6.5v5.7c0 4.4-3.1 7.5-8 8.8-4.9-1.3-8-4.4-8-8.8V6.5L12 3Z"/><path d="m8.7 12 2.1 2.1 4.6-4.7"/></svg>
+            </span>
+            <span class="details-summary-copy">
+              <strong>Informações de segurança</strong>
+              <span>Como reconhecer este acesso</span>
+            </span>
+          </summary>
           <section class="card security-card" aria-labelledby="titulo-seguranca">
           <div class="security-intro">
             <div class="card-heading">
@@ -317,9 +349,17 @@
           </section>
         </details>
 
-        <details class="secondary-details about-details">
-          <summary>Sobre a WebTurbo e a MhNet</summary>
-          <section class="about-grid" aria-label="Informações institucionais">
+        <details class="portal-details secondary-details about-details">
+          <summary class="details-summary">
+            <span class="details-summary-icon" aria-hidden="true">
+              <svg class="line-icon" viewBox="0 0 24 24"><path d="M8 3.5h8a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z"/><path d="M9 7h6M9 10.5h6M10 17h4"/></svg>
+            </span>
+            <span class="details-summary-copy">
+              <strong>Sobre a WebTurbo</strong>
+              <span>Atendimento e acompanhamento da contratação</span>
+            </span>
+          </summary>
+
           <section class="card about-card" aria-labelledby="titulo-webturbo">
             <span class="about-icon webturbo-icon" aria-hidden="true">
               <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -344,6 +384,18 @@
               <div hidden><dt>Cidade/UF</dt><dd></dd></div>
             </dl>
           </section>
+        </details>
+
+        <details class="portal-details secondary-details about-details">
+          <summary class="details-summary">
+            <span class="details-summary-icon" aria-hidden="true">
+              <svg class="line-icon" viewBox="0 0 24 24"><path d="M4 21V7l8-4 8 4v14M8 9h2M14 9h2M8 13h2M14 13h2M9 21v-4h6v4"/></svg>
+            </span>
+            <span class="details-summary-copy">
+              <strong>Sobre a MhNet</strong>
+              <span>Operadora responsável pelos serviços</span>
+            </span>
+          </summary>
 
           <section class="card about-card" aria-labelledby="titulo-mhnet">
             <span class="about-icon mhnet-icon" aria-hidden="true">
@@ -364,7 +416,6 @@
               <div hidden><dt>Site oficial</dt><dd></dd></div>
             </dl>
           </section>
-          </section>
         </details>
       </div>
     </section>
@@ -373,7 +424,7 @@
   <footer class="portal-footer">
     <div class="container footer-inner">
       <div class="footer-brand">
-        <span class="brand-mark brand-mark-small" aria-hidden="true">WT</span>
+        <img src="../favicon.png" class="brand-logo brand-logo-small" alt="" aria-hidden="true">
         <p><strong>WebTurbo</strong> — Atendimento comercial e acompanhamento da contratação.</p>
       </div>
       <p class="footer-help">Em caso de dúvida, fale com o atendimento antes de acessar qualquer documento.</p>
@@ -393,10 +444,11 @@
 
       <div class="signature-overlay-title">
         <strong id="signatureOverlayHeading">Assinatura do documento</strong>
-        <span>Ambiente utilizado pela operadora</span>
+        <span id="signatureOverlayContext">Ambiente utilizado pela operadora</span>
+        <span class="signature-overlay-guidance" id="signatureOverlayGuidance" role="status" aria-live="polite" hidden><span aria-hidden="true">↓</span> Toque no botão vermelho Assinar para iniciar as fotos.</span>
       </div>
 
-      <span class="brand-mark brand-mark-overlay" aria-hidden="true">WT</span>
+      <img src="../favicon.png" class="brand-logo brand-logo-overlay" alt="" aria-hidden="true">
     </header>
 
     <div class="signature-frame-container">
