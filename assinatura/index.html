@@ -9,8 +9,8 @@
   <meta name="description" content="Portal da WebTurbo para acompanhamento da contratação e assinatura digital.">
   <title>WebTurbo Cliente | Contratação de internet MhNet</title>
   <link rel="icon" type="image/png" href="../favicon.png">
-  <link rel="stylesheet" href="assinatura.css?v=4">
-  <script src="assinatura.js?v=4" defer></script>
+  <link rel="stylesheet" href="assinatura.css?v=5">
+  <script src="assinatura.js?v=5" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
@@ -39,16 +39,16 @@
     <section class="hero" aria-labelledby="titulo-principal">
       <div class="container hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">Portal de acompanhamento</p>
-          <h1 id="titulo-principal">Acompanhe sua assinatura com clareza.</h1>
-          <p class="hero-lead">A WebTurbo é parceira comercial da MhNet e acompanha sua contratação durante as etapas de assinatura e agendamento da instalação.</p>
+          <p class="eyebrow">Etapa 3 de 4</p>
+          <h1 id="titulo-principal">Assinatura do documento</h1>
+          <p class="hero-lead">Confira o acesso e abra o documento da operadora com segurança.</p>
 
           <div class="hero-trust">
             <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 3 20 6.5v5.7c0 4.4-3.1 7.5-8 8.8-4.9-1.3-8-4.4-8-8.8V6.5L12 3Z"/>
               <path d="m8.7 12 2.1 2.1 4.6-4.7"/>
             </svg>
-            <p><strong>Você está no ambiente da WebTurbo.</strong> Confira o resumo antes de abrir o documento da operadora.</p>
+            <p><strong>Ambiente WebTurbo.</strong> Nenhum pagamento é solicitado nesta etapa.</p>
           </div>
         </div>
 
@@ -64,6 +64,53 @@
             <strong>Assinatura do documento</strong>
           </span>
         </div>
+      </div>
+    </section>
+
+    <section class="signature-entry" aria-label="Ação principal de assinatura">
+      <div class="container">
+        <section class="card signature-card" aria-labelledby="titulo-assinatura">
+          <div class="signature-topline">
+            <span class="signature-visual" aria-hidden="true">
+              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/>
+                <path d="M14 3.5V8h4M8.8 16.8c1.6-2.4 2.8-3.6 3.7-3.6.8 0 .7 1.7 1.4 1.8.6.1 1.1-.6 1.7-1.2"/>
+              </svg>
+            </span>
+            <span class="current-chip">Etapa atual</span>
+          </div>
+
+          <p class="section-label">Documento da operadora</p>
+          <h2 id="titulo-assinatura">Assinatura segura do documento</h2>
+          <p class="signature-description" id="texto-assinatura">O documento será aberto em um painel protegido dentro do Portal WebTurbo.</p>
+          <p class="signature-description">Se necessário, você poderá continuar diretamente no ambiente da operadora.</p>
+
+          <p class="no-payment" id="aviso-pagamento">
+            <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3 20 6.5v5.7c0 4.4-3.1 7.5-8 8.8-4.9-1.3-8-4.4-8-8.8V6.5L12 3Z"/>
+              <path d="m8.7 12 2.1 2.1 4.6-4.7"/>
+            </svg>
+            Nenhum pagamento é solicitado nesta etapa.
+          </p>
+
+          <button class="signature-button" id="signatureButton" type="button" aria-busy="false" aria-describedby="texto-assinatura aviso-pagamento">
+            <svg class="line-icon button-leading-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/>
+              <path d="M14 3.5V8h4M9 13h6M9 16h4"/>
+            </svg>
+            <svg class="button-spinner" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8.5"/>
+              <path d="M12 3.5a8.5 8.5 0 0 1 8.5 8.5"/>
+            </svg>
+            <span data-button-label>Assinar documento</span>
+            <svg class="line-icon button-arrow" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M14 7l5 5-5 5"/>
+            </svg>
+          </button>
+
+          <p class="button-note">O painel mantém o Portal WebTurbo aberto ao fundo.</p>
+          <p class="signature-error" id="signatureError" role="status" aria-live="polite" hidden>Não foi possível abrir a assinatura. Tente novamente.</p>
+        </section>
       </div>
     </section>
 
@@ -218,50 +265,9 @@
           <p class="demo-note">Resumo visual com dados neutros de demonstração.</p>
         </section>
 
-        <section class="card signature-card" aria-labelledby="titulo-assinatura">
-          <div class="signature-topline">
-            <span class="signature-visual" aria-hidden="true">
-              <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/>
-                <path d="M14 3.5V8h4M8.8 16.8c1.6-2.4 2.8-3.6 3.7-3.6.8 0 .7 1.7 1.4 1.8.6.1 1.1-.6 1.7-1.2"/>
-              </svg>
-            </span>
-            <span class="current-chip">Etapa atual</span>
-          </div>
-
-          <p class="section-label">Documento da operadora</p>
-          <h2 id="titulo-assinatura">Assinatura segura do documento</h2>
-          <p class="signature-description" id="texto-assinatura">Para concluir sua contratação, você será direcionado ao ambiente de assinatura digital utilizado pela operadora.</p>
-          <p class="signature-description">Antes de continuar, confira os dados apresentados nesta página.</p>
-
-          <p class="no-payment" id="aviso-pagamento">
-            <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 3 20 6.5v5.7c0 4.4-3.1 7.5-8 8.8-4.9-1.3-8-4.4-8-8.8V6.5L12 3Z"/>
-              <path d="m8.7 12 2.1 2.1 4.6-4.7"/>
-            </svg>
-            Nenhum pagamento é solicitado nesta etapa.
-          </p>
-
-          <button class="signature-button" id="signatureButton" type="button" aria-busy="false" aria-describedby="texto-assinatura aviso-pagamento">
-            <svg class="line-icon button-leading-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/>
-              <path d="M14 3.5V8h4M9 13h6M9 16h4"/>
-            </svg>
-            <svg class="button-spinner" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="8.5"/>
-              <path d="M12 3.5a8.5 8.5 0 0 1 8.5 8.5"/>
-            </svg>
-            <span data-button-label>Assinar documento</span>
-            <svg class="line-icon button-arrow" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 12h14M14 7l5 5-5 5"/>
-            </svg>
-          </button>
-
-          <p class="button-note">A assinatura será aberta nesta mesma aba. Use o botão Voltar do navegador para retornar.</p>
-          <p class="signature-error" id="signatureError" role="status" aria-live="polite" hidden>Não foi possível abrir a assinatura. Tente novamente.</p>
-        </section>
-
-        <section class="card security-card" aria-labelledby="titulo-seguranca">
+        <details class="secondary-details security-details">
+          <summary>Informações de segurança</summary>
+          <section class="card security-card" aria-labelledby="titulo-seguranca">
           <div class="security-intro">
             <div class="card-heading">
               <span class="section-icon section-icon-green" aria-hidden="true">
@@ -308,9 +314,12 @@
               <span>Em caso de dúvida, confirme o atendimento antes de continuar.</span>
             </li>
           </ul>
-        </section>
+          </section>
+        </details>
 
-        <section class="about-grid" aria-label="Informações institucionais">
+        <details class="secondary-details about-details">
+          <summary>Sobre a WebTurbo e a MhNet</summary>
+          <section class="about-grid" aria-label="Informações institucionais">
           <section class="card about-card" aria-labelledby="titulo-webturbo">
             <span class="about-icon webturbo-icon" aria-hidden="true">
               <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -355,7 +364,8 @@
               <div hidden><dt>Site oficial</dt><dd></dd></div>
             </dl>
           </section>
-        </section>
+          </section>
+        </details>
       </div>
     </section>
   </main>
@@ -367,7 +377,44 @@
         <p><strong>WebTurbo</strong> — Atendimento comercial e acompanhamento da contratação.</p>
       </div>
       <p class="footer-help">Em caso de dúvida, fale com o atendimento antes de acessar qualquer documento.</p>
+      <details class="safari-help">
+        <summary>Problemas para visualizar no Safari?</summary>
+        <p>Caso esta página abra no modo Leitura, toque no menu da página e desative “Usar Leitor Automaticamente” para este site.</p>
+      </details>
     </div>
   </footer>
+
+  <div class="signature-overlay" id="signatureOverlay" role="dialog" aria-modal="true" aria-labelledby="signatureOverlayHeading" hidden>
+    <header class="signature-overlay-header">
+      <button type="button" id="closeSignatureOverlay" class="signature-overlay-back" aria-label="Voltar ao resumo da contratação">
+        <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M10 7l-5 5 5 5"/></svg>
+        <span>Voltar</span>
+      </button>
+
+      <div class="signature-overlay-title">
+        <strong id="signatureOverlayHeading">Assinatura do documento</strong>
+        <span>Ambiente utilizado pela operadora</span>
+      </div>
+
+      <span class="brand-mark brand-mark-overlay" aria-hidden="true">WT</span>
+    </header>
+
+    <div class="signature-frame-container">
+      <div class="signature-frame-loading" id="signatureFrameLoading" role="status" aria-live="polite">
+        <svg class="button-spinner" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 1 8.5 8.5"/></svg>
+        <span>Carregando documento...</span>
+      </div>
+
+      <iframe id="signatureFrame" title="Documento para assinatura" allow="camera; microphone" referrerpolicy="no-referrer"></iframe>
+
+      <div class="signature-frame-fallback" id="signatureFrameFallback" role="status" aria-live="polite" hidden>
+        <p><strong>Está demorando mais que o esperado?</strong></p>
+        <div class="signature-frame-actions">
+          <button type="button" id="retrySignatureFrame" class="signature-frame-retry">Tentar novamente</button>
+          <button type="button" id="openSignatureDirectly" class="signature-frame-direct">Continuar para assinatura</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

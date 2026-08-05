@@ -44,6 +44,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+html.signature-open,
+body.signature-open {
+  height: 100%;
+  overflow: hidden;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -312,6 +318,16 @@ a:focus-visible {
   padding-top: 24px;
 }
 
+.signature-entry {
+  padding-top: 24px;
+}
+
+.signature-entry .signature-card {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
 .journey-panel {
   min-width: 0;
   padding: 22px;
@@ -436,6 +452,35 @@ a:focus-visible {
   min-width: 0;
   align-items: start;
   gap: 20px;
+}
+
+.secondary-details {
+  min-width: 0;
+}
+
+.secondary-details > summary,
+.safari-help > summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.secondary-details > summary {
+  padding: 15px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  background: var(--white);
+  box-shadow: var(--shadow);
+  color: var(--navy-800);
+  line-height: 1.4;
+}
+
+.secondary-details[open] > summary {
+  margin-bottom: 14px;
+}
+
+.secondary-details .security-card,
+.secondary-details .about-grid {
+  width: 100%;
 }
 
 .card {
@@ -923,6 +968,190 @@ a:focus-visible {
   line-height: 1.5;
 }
 
+.safari-help {
+  min-width: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 12px;
+}
+
+.safari-help > summary {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.safari-help p {
+  max-width: 680px;
+  margin: 8px 0 0;
+  line-height: 1.55;
+}
+
+.signature-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  min-width: 320px;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.signature-overlay-header {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: max(10px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) 10px max(14px, env(safe-area-inset-left));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--navy-950);
+  color: var(--white);
+}
+
+.signature-overlay-back,
+.signature-frame-retry,
+.signature-frame-direct {
+  min-height: 42px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.signature-overlay-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
+  font-size: 13px;
+}
+
+.signature-overlay-back .line-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.signature-overlay-title {
+  display: grid;
+  min-width: 0;
+  justify-items: center;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.signature-overlay-title strong,
+.signature-overlay-title span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.signature-overlay-title strong {
+  font-size: 14px;
+}
+
+.signature-overlay-title span {
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 10px;
+}
+
+.brand-mark-overlay {
+  width: 36px;
+  height: 36px;
+  flex-basis: 36px;
+  border-radius: 9px;
+  font-size: 10px;
+}
+
+.signature-frame-container {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  overflow: hidden;
+  background: var(--white);
+}
+
+.signature-frame-container iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--white);
+}
+
+.signature-frame-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  background: var(--white);
+  color: var(--navy-800);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.signature-frame-loading .button-spinner {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+.signature-frame-fallback {
+  position: absolute;
+  right: max(14px, env(safe-area-inset-right));
+  bottom: max(14px, env(safe-area-inset-bottom));
+  left: max(14px, env(safe-area-inset-left));
+  z-index: 3;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 10px 32px rgba(6, 20, 50, 0.2);
+  color: var(--text);
+}
+
+.signature-frame-fallback p {
+  margin: 0;
+  font-size: 13px;
+  text-align: center;
+}
+
+.signature-frame-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 10px;
+}
+
+.signature-frame-retry,
+.signature-frame-direct {
+  padding: 8px 12px;
+  border: 1px solid var(--navy-800);
+  font-size: 12px;
+}
+
+.signature-frame-retry {
+  background: var(--white);
+  color: var(--navy-800);
+}
+
+.signature-frame-direct {
+  background: var(--navy-800);
+  color: var(--white);
+}
+
 .footer-brand strong {
   color: var(--white);
 }
@@ -1025,6 +1254,11 @@ a:focus-visible {
     gap: 22px;
   }
 
+  .summary-card,
+  .secondary-details {
+    grid-column: 1 / -1;
+  }
+
   .security-card,
   .about-grid {
     grid-column: 1 / -1;
@@ -1057,11 +1291,101 @@ a:focus-visible {
     padding-bottom: 28px;
   }
 
+  .safari-help {
+    grid-column: 1 / -1;
+  }
+
   .footer-help {
     padding-top: 0;
     padding-left: 32px;
     border-top: 0;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-inner {
+    gap: 16px;
+    padding-top: 26px;
+    padding-bottom: 26px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .hero-lead {
+    margin-top: 12px;
+    line-height: 1.55;
+  }
+
+  .hero-trust {
+    margin-top: 14px;
+    padding-top: 12px;
+  }
+
+  .hero-status {
+    padding: 10px;
+  }
+
+  .signature-entry {
+    padding-top: 16px;
+  }
+
+  .signature-card {
+    padding: 18px;
+  }
+
+  .signature-topline {
+    margin-bottom: 14px;
+  }
+
+  .signature-description {
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  .signature-description + .signature-description {
+    margin-top: 6px;
+  }
+
+  .no-payment {
+    margin-top: 12px;
+  }
+
+  .signature-button {
+    margin-top: 10px;
+  }
+
+  .signature-overlay-header {
+    gap: 8px;
+  }
+
+  .signature-overlay-back {
+    width: 42px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .signature-overlay-back span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .signature-overlay-title strong {
+    font-size: 13px;
+  }
+
+  .signature-overlay-title span {
+    font-size: 9px;
+  }
+
+  .signature-frame-actions {
+    grid-template-columns: 1fr;
   }
 }
 
