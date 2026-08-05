@@ -9,8 +9,8 @@
   <meta name="description" content="Portal da WebTurbo para acompanhamento da contratação e assinatura digital.">
   <title>WebTurbo Cliente | Contratação de internet MhNet</title>
   <link rel="icon" type="image/png" href="../favicon.png">
-  <link rel="stylesheet" href="assinatura.css?v=3">
-  <script src="assinatura.js?v=3" defer></script>
+  <link rel="stylesheet" href="assinatura.css?v=4">
+  <script src="assinatura.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
@@ -35,7 +35,7 @@
     </div>
   </header>
 
-  <main id="conteudo-principal">
+  <main id="conteudo-principal" aria-label="Portal de assinatura WebTurbo">
     <section class="hero" aria-labelledby="titulo-principal">
       <div class="container hero-inner">
         <div class="hero-copy">
@@ -140,7 +140,7 @@
 
     <section class="portal-content" aria-label="Informações da contratação">
       <div class="container content-grid">
-        <article class="card summary-card" aria-labelledby="titulo-resumo">
+        <section class="card summary-card" aria-labelledby="titulo-resumo">
           <div class="card-heading">
             <span class="section-icon" aria-hidden="true">
               <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -216,9 +216,9 @@
           </ul>
 
           <p class="demo-note">Resumo visual com dados neutros de demonstração.</p>
-        </article>
+        </section>
 
-        <article class="card signature-card" aria-labelledby="titulo-assinatura">
+        <section class="card signature-card" aria-labelledby="titulo-assinatura">
           <div class="signature-topline">
             <span class="signature-visual" aria-hidden="true">
               <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -231,9 +231,10 @@
 
           <p class="section-label">Documento da operadora</p>
           <h2 id="titulo-assinatura">Assinatura segura do documento</h2>
-          <p class="signature-description">Para concluir sua contratação, você será direcionado ao ambiente de assinatura digital utilizado pela operadora. Antes de continuar, confira os dados apresentados nesta página.</p>
+          <p class="signature-description" id="texto-assinatura">Para concluir sua contratação, você será direcionado ao ambiente de assinatura digital utilizado pela operadora.</p>
+          <p class="signature-description">Antes de continuar, confira os dados apresentados nesta página.</p>
 
-          <p class="no-payment">
+          <p class="no-payment" id="aviso-pagamento">
             <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 3 20 6.5v5.7c0 4.4-3.1 7.5-8 8.8-4.9-1.3-8-4.4-8-8.8V6.5L12 3Z"/>
               <path d="m8.7 12 2.1 2.1 4.6-4.7"/>
@@ -241,7 +242,7 @@
             Nenhum pagamento é solicitado nesta etapa.
           </p>
 
-          <button class="signature-button" id="signatureButton" type="button" aria-busy="false">
+          <button class="signature-button" id="signatureButton" type="button" aria-busy="false" aria-describedby="texto-assinatura aviso-pagamento">
             <svg class="line-icon button-leading-icon" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/>
               <path d="M14 3.5V8h4M9 13h6M9 16h4"/>
@@ -258,7 +259,7 @@
 
           <p class="button-note">A assinatura será aberta nesta mesma aba. Use o botão Voltar do navegador para retornar.</p>
           <p class="signature-error" id="signatureError" role="status" aria-live="polite" hidden>Não foi possível abrir a assinatura. Tente novamente.</p>
-        </article>
+        </section>
 
         <section class="card security-card" aria-labelledby="titulo-seguranca">
           <div class="security-intro">
@@ -310,7 +311,7 @@
         </section>
 
         <section class="about-grid" aria-label="Informações institucionais">
-          <article class="card about-card" aria-labelledby="titulo-webturbo">
+          <section class="card about-card" aria-labelledby="titulo-webturbo">
             <span class="about-icon webturbo-icon" aria-hidden="true">
               <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M8 3.5h8a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z"/>
@@ -333,9 +334,9 @@
               <!-- Campo oculto: depende da confirmação da cidade e UF oficiais. -->
               <div hidden><dt>Cidade/UF</dt><dd></dd></div>
             </dl>
-          </article>
+          </section>
 
-          <article class="card about-card" aria-labelledby="titulo-mhnet">
+          <section class="card about-card" aria-labelledby="titulo-mhnet">
             <span class="about-icon mhnet-icon" aria-hidden="true">
               <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M4 21V7l8-4 8 4v14M8 9h2M14 9h2M8 13h2M14 13h2M9 21v-4h6v4"/>
@@ -353,7 +354,7 @@
               <!-- Campo oculto: depende da confirmação do site oficial da MhNet. -->
               <div hidden><dt>Site oficial</dt><dd></dd></div>
             </dl>
-          </article>
+          </section>
         </section>
       </div>
     </section>

@@ -619,6 +619,10 @@ a:focus-visible {
   line-height: 1.65;
 }
 
+.signature-description + .signature-description {
+  margin-top: 8px;
+}
+
 .no-payment {
   display: flex;
   min-width: 0;
