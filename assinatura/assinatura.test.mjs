@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -115,19 +116,56 @@ test("eventos do Clarity usam apenas identificadores permitidos, sem dados pesso
 });
 
 test("as quatro imagens locais estão referenciadas com dimensões e carregamento otimizado", () => {
-  for (const fileName of [
-    "selfie-documento.png",
-    "validar-selfie.png",
-    "frente-documento.png",
-    "validar-documento.png"
-  ]) {
-    assert.equal(existsSync(join(testDirectory, "assets", "ajuda", fileName)), true);
+  const imageHashes = {
+    "selfie-documento.png": "43F8D1B0756C288D06E2CEC309DA297E4986878D45B502406EB5C3B5D9CE695E",
+    "validar-selfie.png": "0A49DA39BF2B30648A591DD0807C805EDEFF3A91F17A81563BB16F19FB6C98D3",
+    "frente-documento.png": "6BA282AA08EC774F455F1FF8CC13AE9BD6C0BDC8F98F17CF4C31E556F19EF872",
+    "validar-documento.png": "D45AF047212F2CC75F4BB6AFB48550FE8857350263A270A03E8140C4A39D27C4"
+  };
+
+  for (const [fileName, expectedHash] of Object.entries(imageHashes)) {
+    const imagePath = join(testDirectory, "assets", "ajuda", fileName);
+    assert.equal(existsSync(imagePath), true);
     const escapedFileName = fileName.replaceAll(".", "\\.");
     assert.match(
       html,
-      new RegExp(`src="assets/ajuda/${escapedFileName}" width="941" height="1672" loading="lazy" decoding="async" alt="[^"]+"`, "u")
+      new RegExp(`class="help-image" src="assets/ajuda/${escapedFileName}" width="941" height="1672" loading="lazy" decoding="async" alt="[^"]+"`, "u")
+    );
+    assert.equal(
+      createHash("sha256").update(readFileSync(imagePath)).digest("hex").toUpperCase(),
+      expectedHash
     );
   }
+});
+
+test("as imagens usam limite responsivo compacto sem corte ou distorção", () => {
+  const imageRule = sourceBetween(css, ".help-image {", ".help-image-grid figcaption");
+  assert.match(css, /\.help-image-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2/u);
+  assert.match(imageRule, /width:\s*auto/u);
+  assert.match(imageRule, /max-width:\s*100%/u);
+  assert.match(imageRule, /max-height:\s*clamp\(280px, 46vh, 400px\)/u);
+  assert.match(imageRule, /margin-inline:\s*auto/u);
+  assert.match(imageRule, /object-fit:\s*contain/u);
+  assert.equal(countMatches(html, /class="help-image"/gu), 4);
+});
+
+test("as orientações de selfie e documento permanecem completas e compactas", () => {
+  const selfieSection = html.match(/data-clarity-event="ajuda_selfie_aberta"[\s\S]*?<ol class="help-steps">([\s\S]*?)<\/ol>/u)?.[1] ?? "";
+  const documentSection = html.match(/data-clarity-event="ajuda_documento_aberta"[\s\S]*?<ol class="help-steps">([\s\S]*?)<\/ol>/u)?.[1] ?? "";
+  assert.equal(countMatches(selfieSection, /<li>/gu), 4);
+  assert.equal(countMatches(documentSection, /<li>/gu), 4);
+  assert.match(selfieSection, /TIRAR SELFIE/u);
+  assert.match(selfieSection, /ASSINAR/u);
+  assert.match(documentSection, /frente/u);
+  assert.match(documentSection, /verso/u);
+});
+
+test("o conteúdo rola sem o rodapé encobrir ações e mantém duas ações no celular", () => {
+  const footerRule = sourceBetween(css, ".signature-help-sheet-footer {", ".signature-help-confirm");
+  assert.doesNotMatch(footerRule, /position:\s*(?:fixed|absolute)/u);
+  assert.match(css, /\.signature-help-content\s*\{[\s\S]*?overflow-y:\s*auto/u);
+  assert.match(css, /@media \(max-width: 480px\)[\s\S]*?\.signature-frame-actions\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2/u);
+  assert.match(css, /@media \(max-height: 500px\) and \(orientation: landscape\)/u);
 });
 
 test("IDs do HTML permanecem únicos", () => {
