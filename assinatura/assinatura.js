@@ -13,6 +13,17 @@ const MAX_CUSTOMER_NAME_LENGTH = 100;
 const MAX_PLAN_LENGTH = 100;
 const MAX_CITY_LENGTH = 120;
 const MAX_STATE_LENGTH = 2;
+const HELP_OPENED_SESSION_KEY = "webturbo-signature-help-opened";
+const CLARITY_EVENT_NAMES = new Set([
+  "ajuda_aberta",
+  "ajuda_fechada",
+  "ajuda_comecar_aberta",
+  "ajuda_camera_aberta",
+  "ajuda_selfie_aberta",
+  "ajuda_documento_aberta",
+  "assinatura_recarregada",
+  "assinatura_aberta_diretamente"
+]);
 
 const customerName = document.getElementById("customerName");
 const customerPlan = document.getElementById("customerPlan");
@@ -32,10 +43,15 @@ const signatureFrameLoading = document.getElementById("signatureFrameLoading");
 const signatureFrameFallback = document.getElementById("signatureFrameFallback");
 const signatureOverlayGuidance = document.getElementById("signatureOverlayGuidance");
 const signatureHelpButton = document.getElementById("signatureHelpButton");
+const signatureHelpDialog = document.getElementById("signatureHelpDialog");
+const signatureOverlayHeader = signatureOverlay?.querySelector(".signature-overlay-header");
+const signatureFrameContainer = signatureOverlay?.querySelector(".signature-frame-container");
 const retrySignatureFrameButton = document.getElementById("retrySignatureFrame");
 const openSignatureDirectlyButton = document.getElementById("openSignatureDirectly");
 const closeSignatureHelpButton = document.getElementById("closeSignatureHelp");
-const portalDetails = Array.from(document.querySelectorAll("details"));
+const confirmSignatureHelpButton = document.getElementById("confirmSignatureHelp");
+const helpAccordions = Array.from(document.querySelectorAll(".help-accordion"));
+const portalDetails = Array.from(document.querySelectorAll(".portal-details"));
 
 let portalToken = "";
 let signatureUrl = "";
@@ -44,6 +60,34 @@ let demoMode = false;
 let clickInProgress = false;
 let overlayOpenTimer;
 let frameRetryTimer;
+let helpReturnFocusElement = null;
+
+function trackClarityEvent(eventName) {
+  if (!CLARITY_EVENT_NAMES.has(eventName) || typeof window.clarity !== "function") return;
+
+  try {
+    window.clarity("event", eventName);
+  } catch {
+    // A telemetria nunca deve interromper a assinatura.
+  }
+}
+
+function hasOpenedHelpInThisSession() {
+  try {
+    return window.sessionStorage.getItem(HELP_OPENED_SESSION_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markHelpAsOpened() {
+  signatureHelpButton?.classList.remove("is-pulsing");
+  try {
+    window.sessionStorage.setItem(HELP_OPENED_SESSION_KEY, "1");
+  } catch {
+    // O sessionStorage pode estar indisponível em modos de privacidade restritos.
+  }
+}
 
 function sanitizeOptionalText(value, maximumLength) {
   if (typeof value !== "string") return "";
@@ -272,14 +316,66 @@ function showSignatureGuidance() {
   if (signatureOverlayGuidance) signatureOverlayGuidance.hidden = false;
 }
 
+function getHelpFocusableElements() {
+  if (!signatureHelpDialog) return [];
+
+  return Array.from(signatureHelpDialog.querySelectorAll(
+    'button:not([disabled]), summary, a[href], [tabindex]:not([tabindex="-1"])'
+  )).filter((element) => {
+    const closedDetails = element.closest("details:not([open])");
+    return !closedDetails || (element.tagName === "SUMMARY" && element.parentElement === closedDetails);
+  });
+}
+
 function setSignatureHelpVisibility(shouldShowHelp) {
-  if (signatureFrameFallback) signatureFrameFallback.hidden = !shouldShowHelp;
-  signatureHelpButton?.setAttribute("aria-expanded", String(shouldShowHelp));
+  if (!signatureFrameFallback || !signatureHelpButton || !signatureHelpDialog) return;
+
+  const isHelpOpen = !signatureFrameFallback.hidden;
+  if (shouldShowHelp === isHelpOpen) return;
+
+  if (shouldShowHelp) {
+    helpReturnFocusElement = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : signatureHelpButton;
+    signatureFrameFallback.hidden = false;
+    signatureHelpButton.setAttribute("aria-expanded", "true");
+    document.documentElement.classList.add("signature-help-open");
+    document.body.classList.add("signature-help-open");
+    markHelpAsOpened();
+    trackClarityEvent("ajuda_aberta");
+    closeSignatureHelpButton?.focus();
+    if (signatureOverlayHeader) {
+      signatureOverlayHeader.inert = true;
+      signatureOverlayHeader.setAttribute("aria-hidden", "true");
+    }
+    if (signatureFrameContainer) {
+      signatureFrameContainer.inert = true;
+      signatureFrameContainer.setAttribute("aria-hidden", "true");
+    }
+    return;
+  }
+
+  signatureFrameFallback.hidden = true;
+  signatureHelpButton.setAttribute("aria-expanded", "false");
+  document.documentElement.classList.remove("signature-help-open");
+  document.body.classList.remove("signature-help-open");
+  if (signatureOverlayHeader) {
+    signatureOverlayHeader.inert = false;
+    signatureOverlayHeader.removeAttribute("aria-hidden");
+  }
+  if (signatureFrameContainer) {
+    signatureFrameContainer.inert = false;
+    signatureFrameContainer.removeAttribute("aria-hidden");
+  }
+  trackClarityEvent("ajuda_fechada");
+  const focusTarget = helpReturnFocusElement?.isConnected ? helpReturnFocusElement : signatureHelpButton;
+  helpReturnFocusElement = null;
+  focusTarget?.focus();
 }
 
 function loadSignatureFrame() {
   const validatedUrl = getValidatedSignatureUrl(signatureUrl);
-  if (!validatedUrl || !signatureFrame || !signatureFrameLoading || !signatureFrameFallback) {
+  if (!validatedUrl || !signatureFrame || !signatureFrameLoading) {
     setSignatureError("Não foi possível abrir o documento. Tente novamente.");
     closeSignatureOverlay();
     return;
@@ -357,18 +453,25 @@ closeSignatureOverlayButton?.addEventListener("click", closeSignatureOverlay);
 retrySignatureFrameButton?.addEventListener("click", loadSignatureFrame);
 
 signatureHelpButton?.addEventListener("click", () => {
-  if (!signatureFrameFallback) return;
-  setSignatureHelpVisibility(signatureFrameFallback.hidden);
+  setSignatureHelpVisibility(true);
 });
 
 closeSignatureHelpButton?.addEventListener("click", () => {
   setSignatureHelpVisibility(false);
-  signatureHelpButton?.focus();
+});
+
+confirmSignatureHelpButton?.addEventListener("click", () => {
+  setSignatureHelpVisibility(false);
+});
+
+retrySignatureFrameButton?.addEventListener("click", () => {
+  trackClarityEvent("assinatura_recarregada");
 });
 
 openSignatureDirectlyButton?.addEventListener("click", () => {
   const validatedUrl = getValidatedSignatureUrl(signatureUrl);
   if (validatedUrl) {
+    trackClarityEvent("assinatura_aberta_diretamente");
     window.location.assign(validatedUrl);
   } else {
     setSignatureError("Não foi possível abrir o documento. Tente novamente.");
@@ -395,9 +498,56 @@ portalDetails.forEach((detailsElement) => {
   });
 });
 
+helpAccordions.forEach((detailsElement) => {
+  detailsElement.open = false;
+  detailsElement.addEventListener("toggle", () => {
+    if (!detailsElement.open) return;
+
+    helpAccordions.forEach((otherDetailsElement) => {
+      if (otherDetailsElement !== detailsElement && otherDetailsElement.open) {
+        otherDetailsElement.open = false;
+      }
+    });
+
+    trackClarityEvent(detailsElement.dataset.clarityEvent ?? "");
+  });
+});
+
+if (hasOpenedHelpInThisSession()) {
+  signatureHelpButton?.classList.remove("is-pulsing");
+}
+
 initializePortalSession();
 
 document.addEventListener("keydown", (event) => {
+  const isHelpOpen = Boolean(signatureFrameFallback && !signatureFrameFallback.hidden);
+
+  if (event.key === "Escape" && isHelpOpen) {
+    event.preventDefault();
+    setSignatureHelpVisibility(false);
+    return;
+  }
+
+  if (event.key === "Tab" && isHelpOpen) {
+    const focusableElements = getHelpFocusableElements();
+    if (focusableElements.length === 0) {
+      event.preventDefault();
+      signatureHelpDialog?.focus();
+      return;
+    }
+
+    const firstFocusableElement = focusableElements[0];
+    const lastFocusableElement = focusableElements[focusableElements.length - 1];
+    if (event.shiftKey && document.activeElement === firstFocusableElement) {
+      event.preventDefault();
+      lastFocusableElement.focus();
+    } else if (!event.shiftKey && document.activeElement === lastFocusableElement) {
+      event.preventDefault();
+      firstFocusableElement.focus();
+    }
+    return;
+  }
+
   if (event.key === "Escape" && signatureOverlay && !signatureOverlay.hidden) {
     closeSignatureOverlay();
   }

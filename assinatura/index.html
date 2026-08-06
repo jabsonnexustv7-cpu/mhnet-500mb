@@ -9,8 +9,15 @@
   <meta name="description" content="Portal da WebTurbo para acompanhamento da contratação e assinatura digital.">
   <title>WebTurbo Cliente | Contratação de internet MhNet</title>
   <link rel="icon" type="image/png" href="../favicon.png">
-  <link rel="stylesheet" href="assinatura.css?v=10">
-  <script src="assinatura.js?v=10" defer></script>
+  <link rel="stylesheet" href="assinatura.css?v=11">
+  <script>
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "wz76kl230p");
+  </script>
+  <script src="assinatura.js?v=11" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
@@ -426,25 +433,16 @@
         <span class="signature-overlay-guidance" id="signatureOverlayGuidance" role="status" aria-live="polite" hidden><span aria-hidden="true">↓</span> Toque no botão vermelho Assinar para iniciar as fotos.</span>
       </div>
 
-      <button type="button" class="signature-help-button" id="signatureHelpButton" aria-label="Problemas para abrir a assinatura?" aria-expanded="false" aria-controls="signatureFrameFallback" title="Ajuda">
+      <img src="../favicon.png" class="brand-logo brand-logo-overlay" alt="" aria-hidden="true">
+
+      <button type="button" class="signature-help-button is-pulsing" id="signatureHelpButton" aria-label="Abrir ajuda para concluir a assinatura" aria-expanded="false" aria-controls="signatureHelpDialog">
         <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="12" r="9"/>
           <path d="M9.8 9a2.4 2.4 0 0 1 4.6 1c0 1.8-2.4 2-2.4 3.8M12 17.2h.01"/>
         </svg>
         <span class="signature-help-label">Ajuda</span>
       </button>
-
-      <img src="../favicon.png" class="brand-logo brand-logo-overlay" alt="" aria-hidden="true">
     </header>
-
-    <section class="signature-help-panel" id="signatureFrameFallback" aria-label="Ajuda para abrir a assinatura" hidden>
-      <p>Caso o documento não esteja respondendo, tente novamente ou abra a assinatura diretamente.</p>
-      <div class="signature-frame-actions">
-        <button type="button" id="retrySignatureFrame" class="signature-frame-retry">Tentar novamente</button>
-        <button type="button" id="openSignatureDirectly" class="signature-frame-direct">Abrir diretamente</button>
-        <button type="button" id="closeSignatureHelp" class="signature-frame-close">Fechar</button>
-      </div>
-    </section>
 
     <div class="signature-frame-container">
       <div class="signature-frame-loading" id="signatureFrameLoading" role="status" aria-live="polite">
@@ -453,6 +451,113 @@
       </div>
 
       <iframe id="signatureFrame" title="Documento para assinatura" allow="camera; microphone" referrerpolicy="no-referrer"></iframe>
+    </div>
+
+    <div class="signature-help-modal" id="signatureFrameFallback" hidden>
+      <div class="signature-help-backdrop" aria-hidden="true"></div>
+
+      <section class="signature-help-sheet" id="signatureHelpDialog" role="dialog" aria-modal="true" aria-labelledby="signatureHelpHeading" aria-describedby="signatureHelpDescription">
+        <header class="signature-help-sheet-header">
+          <div>
+            <h2 id="signatureHelpHeading">Precisa de ajuda para assinar?</h2>
+            <p id="signatureHelpDescription">Veja onde clicar e como concluir cada etapa.</p>
+          </div>
+          <button type="button" id="closeSignatureHelp" class="signature-help-close" aria-label="Fechar ajuda">
+            <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </header>
+
+        <div class="signature-help-content">
+          <details class="help-accordion" data-clarity-event="ajuda_comecar_aberta">
+            <summary>
+              <span class="help-step-number" aria-hidden="true">1</span>
+              <span>Onde clicar para começar</span>
+            </summary>
+            <div class="help-accordion-content">
+              <p>Na primeira tela, toque no botão vermelho <strong>“Assinar este Documento”</strong> para iniciar as fotos.</p>
+              <div class="help-start-guide" aria-label="Primeiro botão do fluxo: Assinar este Documento">
+                <span>Primeiro botão do fluxo</span>
+                <strong><span aria-hidden="true">1</span> Assinar este Documento</strong>
+              </div>
+            </div>
+          </details>
+
+          <details class="help-accordion" data-clarity-event="ajuda_camera_aberta">
+            <summary>
+              <span class="help-step-number" aria-hidden="true">2</span>
+              <span>Como permitir a câmera</span>
+            </summary>
+            <div class="help-accordion-content">
+              <p>Quando o navegador solicitar acesso à câmera, toque em <strong>“Permitir”</strong>.</p>
+              <p class="help-warning"><strong>Atenção:</strong> Se tocar em “Cancelar”, a câmera poderá não abrir.</p>
+              <p>Se a câmera ficar preta, aguarde alguns segundos e tente recarregar. Persistindo o problema, abra a assinatura diretamente.</p>
+              <div class="signature-frame-actions">
+                <button type="button" id="retrySignatureFrame" class="signature-frame-retry">Recarregar assinatura</button>
+                <button type="button" id="openSignatureDirectly" class="signature-frame-direct">Abrir assinatura diretamente</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="help-accordion" data-clarity-event="ajuda_selfie_aberta">
+            <summary>
+              <span class="help-step-number" aria-hidden="true">3</span>
+              <span>Selfie com documento</span>
+            </summary>
+            <div class="help-accordion-content">
+              <ol class="help-steps">
+                <li>Toque em <strong>“TIRAR SELFIE”</strong>.</li>
+                <li>Permita o uso da câmera.</li>
+                <li>Segure o RG ou CNH ao lado do rosto.</li>
+                <li>Mantenha o rosto e o documento visíveis.</li>
+                <li>Toque em <strong>“TIRAR FOTO”</strong>.</li>
+                <li>Confira a imagem.</li>
+                <li>Toque em <strong>“ASSINAR”</strong> ou <strong>“NOVA FOTO”</strong>.</li>
+              </ol>
+              <div class="help-image-grid">
+                <figure>
+                  <img src="assets/ajuda/selfie-documento.png" width="941" height="1672" loading="lazy" decoding="async" alt="Exemplo de pessoa tirando uma selfie enquanto segura o documento ao lado do rosto.">
+                  <figcaption>Selfie com o documento</figcaption>
+                </figure>
+                <figure>
+                  <img src="assets/ajuda/validar-selfie.png" width="941" height="1672" loading="lazy" decoding="async" alt="Tela de exemplo para conferir a selfie e escolher entre Assinar e Nova Foto.">
+                  <figcaption>Validação da selfie</figcaption>
+                </figure>
+              </div>
+            </div>
+          </details>
+
+          <details class="help-accordion" data-clarity-event="ajuda_documento_aberta">
+            <summary>
+              <span class="help-step-number" aria-hidden="true">4</span>
+              <span>Frente e verso do documento</span>
+            </summary>
+            <div class="help-accordion-content">
+              <ol class="help-steps">
+                <li>Use o mesmo documento da selfie.</li>
+                <li>Fotografe toda a frente, sem cortar as bordas.</li>
+                <li>Confira e toque em <strong>“ASSINAR”</strong>.</li>
+                <li>Repita o mesmo processo para o verso.</li>
+                <li>Use <strong>“NOVA FOTO”</strong> quando a imagem estiver desfocada, cortada ou com reflexos.</li>
+              </ol>
+              <p class="help-repeat-note"><strong>Verso do documento:</strong> repita as mesmas orientações da foto da frente.</p>
+              <div class="help-image-grid">
+                <figure>
+                  <img src="assets/ajuda/frente-documento.png" width="941" height="1672" loading="lazy" decoding="async" alt="Tela de exemplo orientando a fotografar toda a frente do documento.">
+                  <figcaption>Frente do documento</figcaption>
+                </figure>
+                <figure>
+                  <img src="assets/ajuda/validar-documento.png" width="941" height="1672" loading="lazy" decoding="async" alt="Tela de exemplo para conferir a foto do documento e escolher entre Assinar e Nova Foto.">
+                  <figcaption>Validação da foto do documento</figcaption>
+                </figure>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <footer class="signature-help-sheet-footer">
+          <button type="button" id="confirmSignatureHelp" class="signature-help-confirm">Entendi</button>
+        </footer>
+      </section>
     </div>
   </div>
 </body>
