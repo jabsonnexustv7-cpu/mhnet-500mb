@@ -1,3 +1,4 @@
+# Temporary workflow: applies one surgical patch to the coverage landing.
 name: Patch coverage landing CRM integration
 
 on:
