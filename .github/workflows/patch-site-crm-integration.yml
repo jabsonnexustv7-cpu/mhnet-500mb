@@ -1,0 +1,91 @@
+name: Patch coverage landing CRM integration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/patch-site-crm-integration.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Redirect final pre-sale submit to WebTurbo CRM
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('consultar-cobertura/index.html')
+          text = path.read_text(encoding='utf-8')
+
+          replacements = [
+              (
+                  '    const CLOUD_RUN_URL = "https://modal-easy-964927461432.southamerica-east1.run.app";\n',
+                  '    const CLOUD_RUN_URL = "https://modal-easy-964927461432.southamerica-east1.run.app";\n'
+                  '    const CRM_PRE_SALE_URL = "https://webturbo-crm-api-964927461432.southamerica-east1.run.app/api/v1/public/site-pre-sales";\n'
+              ),
+              (
+                  '        event_id:                `site_${Date.now()}_${Math.random().toString(36).slice(2)}`\n',
+                  '        event_id:                leadDadosPessoaisEventId || (leadDadosPessoaisEventId = `site_${Date.now()}_${Math.random().toString(36).slice(2)}`)\n'
+              ),
+              (
+                  '            origem_botao: "pos_envio_formulario_easy",\n',
+                  '            origem_botao: "pos_envio_formulario_crm",\n'
+              ),
+              (
+                  '        const response = await fetch(CLOUD_RUN_URL, {\n          method: "POST",\n          headers: { "Content-Type": "application/json" },\n          body: JSON.stringify(buildModalPayload())\n        });\n',
+                  '        const response = await fetch(CRM_PRE_SALE_URL, {\n          method: "POST",\n          headers: { "Content-Type": "application/json" },\n          body: JSON.stringify(buildModalPayload())\n        });\n'
+              ),
+              (
+                  '          trackGA4("enviou_formulario_easy", {\n            plano: planoSelecionadoEvento,\n            valor: PLAN_VALUES[planoSelecionadoEvento] || 0,\n            cidade: $("mCidade").value.trim(),\n            uf: $("mUf").value.trim().toUpperCase(),\n            easy_ok: data.easyOk === true ? "sim" : "nao"\n          });\n',
+                  '          trackGA4("enviou_formulario_easy", {\n            plano: planoSelecionadoEvento,\n            valor: PLAN_VALUES[planoSelecionadoEvento] || 0,\n            cidade: $("mCidade").value.trim(),\n            uf: $("mUf").value.trim().toUpperCase(),\n            destino: "crm_webturbo",\n            crm_ok: data.ok === true ? "sim" : "nao",\n            pre_venda_criada: data.created === true ? "sim" : "ja_existia"\n          });\n'
+              ),
+              (
+                  '        erroEl.textContent = "Falha de conexão. Verifique o endpoint do Cloud Run ou tente novamente.";\n',
+                  '        erroEl.textContent = "Falha de conexão com o WebTurbo CRM. Tente novamente em instantes.";\n'
+              ),
+          ]
+
+          for old, new in replacements:
+              if old not in text:
+                  raise SystemExit(f'Expected snippet not found:\n{old[:180]}')
+              text = text.replace(old, new, 1)
+
+          attempt = '      trackGA4("tentou_enviar_formulario_easy", {\n        plano: $("mPlano") ? $("mPlano").value : "",\n        cidade: $("mCidade") ? $("mCidade").value.trim() : "",\n        uf: $("mUf") ? $("mUf").value.trim().toUpperCase() : ""\n      });\n'
+          attempt_new = '      trackGA4("tentou_enviar_formulario_easy", {\n        plano: $("mPlano") ? $("mPlano").value : "",\n        cidade: $("mCidade") ? $("mCidade").value.trim() : "",\n        uf: $("mUf") ? $("mUf").value.trim().toUpperCase() : "",\n        destino: "crm_webturbo"\n      });\n'
+          if attempt not in text:
+              raise SystemExit('Expected submit-attempt analytics block not found')
+          text = text.replace(attempt, attempt_new, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Verify only final submit moved away from Easy
+        shell: bash
+        run: |
+          grep -q 'CRM_PRE_SALE_URL' consultar-cobertura/index.html
+          grep -q 'fetch(CRM_PRE_SALE_URL' consultar-cobertura/index.html
+          grep -q 'const CLOUD_RUN_URL = "https://modal-easy-' consultar-cobertura/index.html
+          git diff --check
+
+      - name: Commit patched landing
+        shell: bash
+        run: |
+          if git diff --quiet -- consultar-cobertura/index.html; then
+            echo 'No landing changes required.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add consultar-cobertura/index.html
+          git commit -m 'fix: send coverage landing pre-sale to WebTurbo CRM'
+          git push origin main
