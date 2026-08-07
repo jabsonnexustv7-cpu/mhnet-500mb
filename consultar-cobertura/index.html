@@ -3997,6 +3997,7 @@
     /* ── CONFIGURAÇÕES ── */
     const ENDPOINT     = "https://consulta-cobertura-mhnet-br-964927461432.southamerica-east1.run.app";
     const CLOUD_RUN_URL = "https://modal-easy-964927461432.southamerica-east1.run.app";
+    const CRM_PRE_SALE_URL = "https://webturbo-crm-api-964927461432.southamerica-east1.run.app/api/v1/public/site-pre-sales";
     const FIXED_RADIUS = 200;
     const WHATS_NUMBER = "555193187300";
     const TIMEOUT_MS   = 8000;
@@ -6685,7 +6686,7 @@
         utm_campaign:            lerOrigemTrafego().utm_campaign || "",
         utm_content:             lerOrigemTrafego().utm_content || "",
         utm_term:                lerOrigemTrafego().utm_term || "",
-        event_id:                `site_${Date.now()}_${Math.random().toString(36).slice(2)}`
+        event_id:                leadDadosPessoaisEventId || (leadDadosPessoaisEventId = `site_${Date.now()}_${Math.random().toString(36).slice(2)}`)
       };
     }
 
@@ -6703,7 +6704,7 @@
           clearInterval(intervalo);
           trackGoogleAdsWhatsAppConversion();
           trackGA4("clique_whatsapp", {
-            origem_botao: "pos_envio_formulario_easy",
+            origem_botao: "pos_envio_formulario_crm",
             plano: $("mPlano") ? $("mPlano").value : "",
             cidade: $("mCidade") ? $("mCidade").value.trim() : "",
             uf: $("mUf") ? $("mUf").value.trim().toUpperCase() : ""
@@ -6733,7 +6734,8 @@
       trackGA4("tentou_enviar_formulario_easy", {
         plano: $("mPlano") ? $("mPlano").value : "",
         cidade: $("mCidade") ? $("mCidade").value.trim() : "",
-        uf: $("mUf") ? $("mUf").value.trim().toUpperCase() : ""
+        uf: $("mUf") ? $("mUf").value.trim().toUpperCase() : "",
+        destino: "crm_webturbo"
       });
       if (!modalCoverageValidated) {
         erroEl.textContent = "Volte para a etapa de endereço e valide a cobertura antes de enviar.";
@@ -6745,7 +6747,7 @@
       btn.disabled = true;
       showGlobalLoading("Estamos enviando sua solicitação. Aguarde a confirmação na tela antes de sair.", "Finalizando sua solicitação...");
       try {
-        const response = await fetch(CLOUD_RUN_URL, {
+        const response = await fetch(CRM_PRE_SALE_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(buildModalPayload())
@@ -6758,7 +6760,9 @@
             valor: PLAN_VALUES[planoSelecionadoEvento] || 0,
             cidade: $("mCidade").value.trim(),
             uf: $("mUf").value.trim().toUpperCase(),
-            easy_ok: data.easyOk === true ? "sim" : "nao"
+            destino: "crm_webturbo",
+            crm_ok: data.ok === true ? "sim" : "nao",
+            pre_venda_criada: data.created === true ? "sim" : "ja_existia"
           });
           mostrarEtapa(6);
           dispararConversaoLeadGoogleAds();
@@ -6784,7 +6788,7 @@
           uf: $("mUf").value.trim().toUpperCase(),
           erro: err && err.message ? err.message : "falha_conexao"
         });
-        erroEl.textContent = "Falha de conexão. Verifique o endpoint do Cloud Run ou tente novamente.";
+        erroEl.textContent = "Falha de conexão com o WebTurbo CRM. Tente novamente em instantes.";
         erroEl.classList.add("show");
         btn.disabled = false;
         btn.innerHTML = original;
