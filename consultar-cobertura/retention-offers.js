@@ -32,6 +32,9 @@
 
   let overlay = null;
   let currentTrigger = "";
+  let browserBackGuardArmed = false;
+  let browserBackGuardConsumed = false;
+  let suppressNextPopstate = false;
 
   function sessionGet(key) {
     try { return sessionStorage.getItem(key); } catch (_) { return null; }
@@ -186,6 +189,35 @@
     return overlay;
   }
 
+  function armBrowserBackGuard() {
+    if (browserBackGuardArmed || browserBackGuardConsumed) return;
+    if (sessionGet(SHOWN_FLAG)) return;
+    if (!coverageValidated() || ![2, 3].includes(activeStep())) return;
+
+    try {
+      const previousState = history.state && typeof history.state === "object" && !Array.isArray(history.state)
+        ? history.state
+        : {};
+      history.pushState({ ...previousState, wtRetentionGuard: true }, "", location.href);
+      browserBackGuardArmed = true;
+      track("retencao_voltar_navegador_armada", context());
+    } catch (error) {
+      console.warn("Não foi possível preparar o gatilho do botão voltar.", error);
+    }
+  }
+
+  function releaseBrowserBackGuard() {
+    if (!browserBackGuardArmed) return;
+
+    browserBackGuardArmed = false;
+    suppressNextPopstate = true;
+    try {
+      history.back();
+    } catch (_) {
+      suppressNextPopstate = false;
+    }
+  }
+
   function showModal(trigger) {
     if (sessionGet(SHOWN_FLAG)) return false;
     if (!coverageValidated()) return false;
@@ -193,6 +225,10 @@
 
     currentTrigger = trigger || "abandono_comportamental";
     sessionSet(SHOWN_FLAG, "1");
+
+    if (currentTrigger !== "botao_voltar_navegador") {
+      releaseBrowserBackGuard();
+    }
 
     const modal = buildModal();
     modal.classList.add("is-open");
@@ -251,14 +287,52 @@
     if (typeof window.mostrarEtapa === "function") window.mostrarEtapa(3);
   }
 
+  function handleBrowserBackAttempt() {
+    if (suppressNextPopstate) {
+      suppressNextPopstate = false;
+      return;
+    }
+
+    if (!browserBackGuardArmed || browserBackGuardConsumed) return;
+
+    browserBackGuardArmed = false;
+    browserBackGuardConsumed = true;
+
+    const ctx = context();
+    track("retencao_tentativa_voltar_navegador", {
+      etapa: ctx.etapa,
+      cidade: ctx.cidade,
+      uf: ctx.uf,
+      plano_atual: ctx.plano_atual
+    });
+
+    if (coverageValidated() && [2, 3].includes(activeStep()) && !sessionGet(SHOWN_FLAG)) {
+      showModal("botao_voltar_navegador");
+      return;
+    }
+
+    // Se o fluxo não estiver mais elegível, respeita a intenção de voltar sem criar um clique extra.
+    setTimeout(() => {
+      try { history.back(); } catch (_) {}
+    }, 0);
+  }
+
   function patchStepNavigation() {
     if (typeof window.mostrarEtapa !== "function" || window.mostrarEtapa.__wtRetentionPatched) return;
 
     const original = window.mostrarEtapa;
     const patched = function (nextStep) {
       const previous = activeStep();
+      const next = Number(nextStep);
       const result = original.apply(this, arguments);
-      if (previous === 3 && Number(nextStep) === 2) {
+
+      if ([2, 3].includes(next)) {
+        setTimeout(armBrowserBackGuard, 0);
+      } else if ([1, 4, 5, 6].includes(next)) {
+        releaseBrowserBackGuard();
+      }
+
+      if (previous === 3 && next === 2) {
         setTimeout(() => showModal("voltou_dados_para_planos"), 0);
       }
       return result;
@@ -285,6 +359,7 @@
     buildModal();
     patchStepNavigation();
     patchInternalClose();
+    window.addEventListener("popstate", handleBrowserBackAttempt);
 
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape" && overlay?.classList.contains("is-open")) {
