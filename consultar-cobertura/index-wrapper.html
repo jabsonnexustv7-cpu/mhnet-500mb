@@ -1,0 +1,5 @@
+---
+layout: null
+---
+{% capture coverage_html %}{% include_relative coverage-base.html %}{% endcapture %}
+{{ coverage_html | replace: '</body>', '<script src="/consultar-cobertura/regional-plans.js"></script></body>' }}
