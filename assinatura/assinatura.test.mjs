@@ -199,3 +199,5 @@ test("IDs do HTML permanecem únicos", () => {
   const ids = Array.from(html.matchAll(/\sid="([^"]+)"/gu), (match) => match[1]);
   assert.equal(new Set(ids).size, ids.length);
 });
+
+// signature-reload-session-v1
