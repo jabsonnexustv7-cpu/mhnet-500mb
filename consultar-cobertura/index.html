@@ -2,4 +2,8 @@
 layout: null
 ---
 {% capture coverage_html %}{% include_relative coverage-base.html %}{% endcapture %}
+{% assign coverage_html = coverage_html | replace: '"FIBRA 500MB": "FIBRA 500MB — R$ 99,90/mês",', '"FIBRA 500MB": "FIBRA 500MB — R$ 99,90/mês", "FIBRA 600MB": "FIBRA 600MB — R$ 99,90/mês",' %}
+{% assign coverage_html = coverage_html | replace: '"FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI — R$ 119,90/mês",', '"FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI — R$ 119,90/mês", "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI": "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI — R$ 119,90/mês",' %}
+{% assign coverage_html = coverage_html | replace: '"FIBRA 500MB": 99.90,', '"FIBRA 500MB": 99.90, "FIBRA 600MB": 99.90,' %}
+{% assign coverage_html = coverage_html | replace: '"FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": 119.90,', '"FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": 119.90, "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI": 119.90,' %}
 {{ coverage_html | replace: '</body>', '<script src="/consultar-cobertura/regional-plans.js"></script></body>' }}
