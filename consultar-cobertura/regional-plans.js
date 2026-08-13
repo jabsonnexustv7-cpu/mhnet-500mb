@@ -1,3 +1,4 @@
+// Regras regionais da etapa de planos da consulta de cobertura.
 (function () {
   "use strict";
 
