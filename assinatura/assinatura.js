@@ -3,9 +3,6 @@ const SIGNATURE_SESSION_ENDPOINT = "/api/v1/public/signature-portal/session";
 const SIGNATURE_EVENT_ENDPOINT = "/api/v1/public/signature-portal/events";
 const EXPECTED_SIGNATURE_HOSTNAME = "vds.voalle.app";
 
-// Modo demonstrativo isolado: usado apenas quando a URL não contém #acesso.
-const DEMO_SIGNATURE_URL = "https://vds.voalle.app/documents/15b9a990-31fd-4407-ac11-2d9224ea76a2/7673c198-b5b6-48c0-960b-ced50cd458f0";
-
 const OVERLAY_OPEN_DELAY_MS = 450;
 const FRAME_RETRY_DELAY_MS = 80;
 const REQUEST_TIMEOUT_MS = 10_000;
@@ -14,6 +11,7 @@ const MAX_PLAN_LENGTH = 100;
 const MAX_CITY_LENGTH = 120;
 const MAX_STATE_LENGTH = 2;
 const HELP_OPENED_SESSION_KEY = "webturbo-signature-help-opened";
+const PORTAL_TOKEN_SESSION_KEY = "webturbo-signature-portal-token";
 const CLARITY_EVENT_NAMES = new Set([
   "ajuda_aberta",
   "ajuda_fechada",
@@ -56,7 +54,6 @@ const portalDetails = Array.from(document.querySelectorAll(".portal-details"));
 let portalToken = "";
 let signatureUrl = "";
 let sessionReady = false;
-let demoMode = false;
 let clickInProgress = false;
 let overlayOpenTimer;
 let frameRetryTimer;
@@ -86,6 +83,30 @@ function markHelpAsOpened() {
     window.sessionStorage.setItem(HELP_OPENED_SESSION_KEY, "1");
   } catch {
     // O sessionStorage pode estar indisponível em modos de privacidade restritos.
+  }
+}
+
+function readStoredPortalToken() {
+  try {
+    return window.sessionStorage.getItem(PORTAL_TOKEN_SESSION_KEY)?.trim() ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function storePortalToken(token) {
+  try {
+    window.sessionStorage.setItem(PORTAL_TOKEN_SESSION_KEY, token);
+  } catch {
+    // Se o sessionStorage estiver indisponível, o primeiro acesso ainda funciona normalmente.
+  }
+}
+
+function clearStoredPortalToken() {
+  try {
+    window.sessionStorage.removeItem(PORTAL_TOKEN_SESSION_KEY);
+  } catch {
+    // Nenhuma ação adicional é necessária.
   }
 }
 
@@ -179,21 +200,6 @@ function applyCustomerData(data) {
   if (summaryDueDay) summaryDueDay.textContent = dueDay ? `Dia ${dueDay}` : "Dia escolhido";
 }
 
-function applyDemoPersonalization() {
-  const searchParameters = new URLSearchParams(window.location.search);
-  const safeCustomerName = sanitizeOptionalText(
-    searchParameters.get("nome"),
-    MAX_CUSTOMER_NAME_LENGTH
-  );
-  const safePlan = sanitizeOptionalText(searchParameters.get("plano"), MAX_PLAN_LENGTH);
-
-  applyCustomerData({
-    customer: { name: safeCustomerName },
-    plan: { name: safePlan || "Seu plano de internet" },
-    operator: { name: "MhNet" }
-  });
-}
-
 async function fetchWithTimeout(url, options) {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -251,6 +257,8 @@ async function loadPortalSession(token) {
     signatureUrl = "";
     restoreSignatureButton();
     if (error instanceof Error && error.message === "INVALID_LINK") {
+      portalToken = "";
+      clearStoredPortalToken();
       setSessionStatus("Este link de assinatura não é mais válido.", true);
     } else if (error instanceof Error && error.message === "CONTRACT_NOT_FOUND") {
       setSessionStatus("Não foi possível localizar o documento desta contratação.", true);
@@ -262,20 +270,28 @@ async function loadPortalSession(token) {
 
 function initializePortalSession() {
   const hashParameters = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-  const token = hashParameters.get("acesso")?.trim() ?? "";
+  const hashToken = hashParameters.get("acesso")?.trim() ?? "";
 
-  if (token) {
-    portalToken = token;
+  if (hashToken) {
+    portalToken = hashToken;
+    storePortalToken(hashToken);
     history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
     void loadPortalSession(portalToken);
     return;
   }
 
-  demoMode = true;
-  signatureUrl = getValidatedSignatureUrl(DEMO_SIGNATURE_URL) ?? "";
-  applyDemoPersonalization();
-  sessionReady = Boolean(signatureUrl);
+  const storedToken = readStoredPortalToken();
+  if (storedToken) {
+    portalToken = storedToken;
+    void loadPortalSession(portalToken);
+    return;
+  }
+
+  portalToken = "";
+  signatureUrl = "";
+  sessionReady = false;
   restoreSignatureButton();
+  setSessionStatus("Este link de assinatura não é válido ou expirou. Solicite um novo link de acesso.", true);
 }
 
 async function sendSignatureEvent(eventId) {
@@ -436,14 +452,12 @@ signatureButton?.addEventListener("click", async () => {
     return;
   }
 
-  if (!demoMode) {
-    try {
-      await recordSignatureClick();
-    } catch {
-      setSignatureError("Não foi possível iniciar a assinatura. Tente novamente.");
-      restoreSignatureButton();
-      return;
-    }
+  try {
+    await recordSignatureClick();
+  } catch {
+    setSignatureError("Não foi possível iniciar a assinatura. Tente novamente.");
+    restoreSignatureButton();
+    return;
   }
 
   overlayOpenTimer = window.setTimeout(openSignatureOverlay, OVERLAY_OPEN_DELAY_MS);
