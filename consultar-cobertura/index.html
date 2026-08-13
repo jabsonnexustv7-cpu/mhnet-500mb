@@ -2,9 +2,35 @@
 layout: null
 ---
 {% capture coverage_html %}{% include_relative coverage-base.html %}{% endcapture %}
+
+{% comment %} Planos regionais de Sorocaba/Votorantim. {% endcomment %}
 {% assign coverage_html = coverage_html | replace: '"FIBRA 500MB": "FIBRA 500MB — R$ 99,90/mês",', '"FIBRA 500MB": "FIBRA 500MB — R$ 99,90/mês", "FIBRA 600MB": "FIBRA 600MB — R$ 99,90/mês",' %}
 {% assign coverage_html = coverage_html | replace: '"FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI — R$ 119,90/mês",', '"FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI — R$ 119,90/mês", "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI": "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI — R$ 119,90/mês",' %}
 {% assign coverage_html = coverage_html | replace: '"FIBRA 500MB": 99.90,', '"FIBRA 500MB": 99.90, "FIBRA 600MB": 99.90,' %}
 {% assign coverage_html = coverage_html | replace: '"FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": 119.90,', '"FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": 119.90, "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI": 119.90,' %}
+
+{% comment %} A página de cobertura é apresentada exclusivamente como WebTurbo. {% endcomment %}
+{% assign coverage_html = coverage_html | replace: 'MhNet, parceiro autorizado MhNet, parceiro de vendas MhNet, ', 'WebTurbo, ' %}
+{% assign coverage_html = coverage_html | replace: '<meta name="author" content="MhNet Internet Fibra" />', '<meta name="author" content="WebTurbo" />' %}
+{% assign coverage_html = coverage_html | replace: '<meta property="og:site_name" content="MhNet Internet Fibra" />', '<meta property="og:site_name" content="WebTurbo" />' %}
+{% assign coverage_html = coverage_html | replace: 'https://assine-mhnet.com.br/og-image.jpg', 'https://webturbo-internet.com.br/favicon.png' %}
+{% assign coverage_html = coverage_html | replace: '"name": "MhNet Internet Fibra"', '"name": "WebTurbo"' %}
+{% assign coverage_html = coverage_html | replace: '"description": "Consulta de cobertura e solicitação de contratação de planos MhNet Internet Fibra."', '"description": "Consulta de cobertura e solicitação de contratação de planos de internet fibra pela WebTurbo."' %}
+{% assign coverage_html = coverage_html | replace: '"url": "https://assine-mhnet.com.br/"', '"url": "https://webturbo-internet.com.br/consultar-cobertura/"' %}
+{% assign coverage_html = coverage_html | replace: '<span>Agente autorizado MhNet</span>', '<span>Internet fibra para sua casa</span>' %}
+{% assign coverage_html = coverage_html | replace: 'Planos MhNet Internet Fibra com atendimento de parceiro autorizado', 'Planos de internet fibra WebTurbo' %}
+{% assign coverage_html = coverage_html | replace: 'Consulte cobertura no seu endereço e contrate com atendimento de parceiro autorizado.', 'Consulte cobertura no seu endereço e contrate online com a WebTurbo.' %}
+{% assign coverage_html = coverage_html | replace: 'Por que MhNet Internet Fibra?', 'Por que escolher a WebTurbo?' %}
+{% assign coverage_html = coverage_html | replace: 'conforme disponibilidade técnica da MhNet.', 'conforme disponibilidade técnica no endereço informado.' %}
+{% assign coverage_html = coverage_html | replace: '<h2 id="titulo-cliente">Já é cliente MhNet?</h2>', '<h2 id="titulo-cliente">Precisa de ajuda?</h2>' %}
+{% assign coverage_html = coverage_html | replace: 'Acesse a central do assinante para gerenciar seu plano, emitir segunda via de fatura e muito mais.', 'Fale com a equipe WebTurbo pelo WhatsApp para tirar dúvidas sobre cobertura e contratação.' %}
+{% assign coverage_html = coverage_html | replace: 'https://portal.mhnet.com.br/login', 'https://wa.me/555193187300' %}
+{% assign coverage_html = coverage_html | replace: 'Central do assinante', 'Falar com a WebTurbo' %}
+{% assign coverage_html = coverage_html | replace: 'Este site é operado por parceiro de vendas autorizado MhNet para consulta de cobertura e solicitação de contratação.', 'A WebTurbo facilita sua consulta de cobertura e solicitação de contratação.' %}
+{% assign coverage_html = coverage_html | replace: 'Será que a MhNet chegou aí?', 'Será que temos fibra no seu endereço?' %}
+{% assign coverage_html = coverage_html | replace: 'Olá! Consultei a cobertura no site da MhNet e quero contratar.', 'Olá! Consultei a cobertura no site da WebTurbo e quero contratar.' %}
+{% assign coverage_html = coverage_html | replace: 'Olá! Consultei a cobertura no site da WebTurbo, parceira de vendas autorizada MhNet, e quero contratar.', 'Olá! Consultei a cobertura no site da WebTurbo e quero contratar.' %}
+{% assign coverage_html = coverage_html | replace: 'MhNet', 'WebTurbo' %}
+
 {{ coverage_html | replace: '</body>', '<script src="/consultar-cobertura/regional-plans.js"></script><script src="/consultar-cobertura/location-capture-ui.js"></script><script src="/consultar-cobertura/retention-offers.js"></script></body>' }}
 <!-- retention-offers-v1 -->
