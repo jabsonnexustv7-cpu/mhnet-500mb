@@ -92,7 +92,7 @@
         extraCard.dataset.plan = PLAN_600_EXTRA;
         extraCard.setAttribute("aria-label", "600 Mega com um ponto extra de Wi-Fi, R$ 119,90 por mês, Mais popular");
         setCardTitle(extraCard, "600MB + 1 Ponto extra");
-        setFirstSpeedBullet(extraCard, "600MB de internet fibra MhNet");
+        setFirstSpeedBullet(extraCard, "600MB de internet fibra WebTurbo");
       }
 
       setOptionAvailability(select, PLAN_500, false);
@@ -112,7 +112,7 @@
         extraCard.dataset.plan = PLAN_500_EXTRA;
         extraCard.setAttribute("aria-label", "500 Mega com um ponto extra de Wi-Fi, R$ 119,90 por mês, Mais popular");
         setCardTitle(extraCard, "500MB + 1 Ponto extra");
-        setFirstSpeedBullet(extraCard, "500MB de internet fibra MhNet");
+        setFirstSpeedBullet(extraCard, "500MB de internet fibra WebTurbo");
       }
 
       setOptionAvailability(select, PLAN_500, true);
