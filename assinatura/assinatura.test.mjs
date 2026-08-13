@@ -81,6 +81,33 @@ test("a pulsação para após o primeiro acesso da sessão", () => {
   assert.match(javascript, /signatureHelpButton\?\.classList\.remove\("is-pulsing"\)/u);
 });
 
+test("o token de acesso é preservado no sessionStorage antes de sair da URL", () => {
+  assert.match(javascript, /const PORTAL_TOKEN_SESSION_KEY = "webturbo-signature-portal-token";/u);
+  const initialization = sourceBetween(
+    javascript,
+    "function initializePortalSession",
+    "async function sendSignatureEvent"
+  );
+  const storeIndex = initialization.indexOf("storePortalToken(hashToken);");
+  const replaceIndex = initialization.indexOf("history.replaceState");
+  assert.notEqual(storeIndex, -1);
+  assert.notEqual(replaceIndex, -1);
+  assert.ok(storeIndex < replaceIndex);
+  assert.match(initialization, /const storedToken = readStoredPortalToken\(\);/u);
+  assert.match(initialization, /if \(storedToken\) \{[\s\S]*?void loadPortalSession\(portalToken\);/u);
+});
+
+test("sem token o portal não abre contrato demonstrativo", () => {
+  assert.doesNotMatch(javascript, /DEMO_SIGNATURE_URL|demoMode|applyDemoPersonalization/u);
+  const initialization = sourceBetween(
+    javascript,
+    "function initializePortalSession",
+    "async function sendSignatureEvent"
+  );
+  assert.match(initialization, /sessionReady = false;/u);
+  assert.match(initialization, /Este link de assinatura não é válido ou expirou\. Solicite um novo link de acesso\./u);
+});
+
 test("prefers-reduced-motion desativa a animação do botão Ajuda", () => {
   const reducedMotion = css.slice(css.indexOf("@media (prefers-reduced-motion: reduce)"));
   assert.match(reducedMotion, /\.signature-help-button/u);
