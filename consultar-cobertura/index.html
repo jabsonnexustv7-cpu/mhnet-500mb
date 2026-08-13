@@ -7,3 +7,4 @@ layout: null
 {% assign coverage_html = coverage_html | replace: '"FIBRA 500MB": 99.90,', '"FIBRA 500MB": 99.90, "FIBRA 600MB": 99.90,' %}
 {% assign coverage_html = coverage_html | replace: '"FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": 119.90,', '"FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": 119.90, "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI": 119.90,' %}
 {{ coverage_html | replace: '</body>', '<script src="/consultar-cobertura/regional-plans.js"></script><script src="/consultar-cobertura/retention-offers.js"></script></body>' }}
+<!-- retention-offers-v1 -->
