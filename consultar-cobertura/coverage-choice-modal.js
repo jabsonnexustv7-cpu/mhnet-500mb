@@ -289,6 +289,8 @@
   }
 
   function showModal() {
+    if (overlay?.classList.contains("is-open")) return;
+
     const data = currentCoverageData();
     if (!data) return;
 
@@ -307,6 +309,25 @@
     requestAnimationFrame(function () {
       byId("wt-coverage-choice-site")?.focus({ preventScroll: true });
     });
+  }
+
+  function patchCoverageSuccessStatus() {
+    try {
+      if (typeof window.setStatus !== "function" || window.setStatus.__wtCoverageChoicePatched) return;
+
+      const originalSetStatus = window.setStatus;
+      const patchedSetStatus = function (text, type) {
+        const result = originalSetStatus.apply(this, arguments);
+        const success = type === "ok" && /cobertura\s+dispon[ií]vel/i.test(String(text || ""));
+        if (success) setTimeout(showModal, 0);
+        return result;
+      };
+
+      patchedSetStatus.__wtCoverageChoicePatched = true;
+      window.setStatus = patchedSetStatus;
+    } catch (error) {
+      console.warn("Não foi possível conectar o modal ao status de cobertura.", error);
+    }
   }
 
   function observeCoverageResult() {
@@ -328,9 +349,14 @@
     evaluate();
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", observeCoverageResult, { once: true });
-  } else {
+  function initialize() {
+    patchCoverageSuccessStatus();
     observeCoverageResult();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initialize, { once: true });
+  } else {
+    initialize();
   }
 })();
