@@ -32,6 +32,6 @@ layout: null
 {% assign coverage_html = coverage_html | replace: 'Olá! Consultei a cobertura no site da WebTurbo, parceira de vendas autorizada MhNet, e quero contratar.', 'Olá! Consultei a cobertura no site da WebTurbo e quero contratar.' %}
 {% assign coverage_html = coverage_html | replace: 'MhNet', 'WebTurbo' %}
 
-{{ coverage_html | replace: '</body>', '<script src="/consultar-cobertura/regional-plans.js"></script><script src="/consultar-cobertura/location-capture-ui.js"></script><script src="/consultar-cobertura/coverage-choice-modal.js"></script><script src="/consultar-cobertura/retention-offers.js"></script></body>' }}
+{{ coverage_html | replace: '</body>', '<script src="/consultar-cobertura/regional-plans.js"></script><script src="/consultar-cobertura/location-capture-ui.js"></script><script src="/consultar-cobertura/coverage-choice-modal.js?v=2"></script><script src="/consultar-cobertura/retention-offers.js"></script></body>' }}
 <!-- retention-offers-v1 -->
-<!-- coverage-choice-modal-v1 -->
+<!-- coverage-choice-modal-v2 -->
