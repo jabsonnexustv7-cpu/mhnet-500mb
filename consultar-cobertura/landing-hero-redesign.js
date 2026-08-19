@@ -18,11 +18,9 @@
       .meta-landing-header::before{top:-54px;border:2px solid #1a56db;transform:rotate(4deg)}
       .meta-landing-header::after{top:34px;border:2px solid #00c853;transform:rotate(-4deg);opacity:.16}
       .meta-landing-header-inner{position:relative;z-index:1;min-height:64px;justify-content:center}
-      .meta-landing-brand{display:grid;grid-template-columns:auto auto;grid-template-areas:"mark name" "mark tag";column-gap:9px;align-items:center;text-align:left}
-      .wt-hero-brand-mark{grid-area:mark;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a56db,#00c853);box-shadow:0 7px 18px rgba(0,200,83,.2)}
-      .wt-hero-brand-mark svg{width:16px;height:16px;display:block}
-      .meta-landing-brand strong{grid-area:name;font-family:Montserrat,'Open Sans',sans-serif;font-size:20px;font-weight:900;line-height:1;color:#fff;letter-spacing:-.25px}
-      .meta-landing-brand span:not(.wt-hero-brand-mark){grid-area:tag;margin-top:4px;color:#b9c9f5;font-size:10px;font-weight:700;letter-spacing:.075em;text-transform:uppercase}
+      .meta-landing-brand{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+      .meta-landing-brand strong{font-family:Montserrat,'Open Sans',sans-serif;font-size:20px;font-weight:900;line-height:1;color:#fff;letter-spacing:-.25px}
+      .meta-landing-brand span{margin-top:4px;color:#b9c9f5;font-size:10px;font-weight:700;letter-spacing:.075em;text-transform:uppercase}
 
       body.${ACTIVE_CLASS}{background:linear-gradient(180deg,#fff 0,#f7f9fd 560px,#fff 900px)}
       body.${ACTIVE_CLASS} .meta-landing-intro{max-width:760px;padding:24px 18px 8px}
@@ -63,7 +61,6 @@
 
       @media(max-width:600px){
         .meta-landing-header-inner{min-height:60px;padding:8px 14px}
-        .wt-hero-brand-mark{width:28px;height:28px}
         .meta-landing-brand strong{font-size:18px}
         body.${ACTIVE_CLASS} .meta-landing-intro{padding:20px 14px 6px}
         body.${ACTIVE_CLASS} .meta-landing-intro h1{font-size:clamp(25px,8.2vw,32px)}
@@ -90,17 +87,6 @@
       }
     `;
     document.head.appendChild(style);
-  }
-
-  function enhanceBrand() {
-    const brand = document.querySelector(".meta-landing-brand");
-    if (!brand || brand.querySelector(".wt-hero-brand-mark")) return;
-
-    const mark = document.createElement("span");
-    mark.className = "wt-hero-brand-mark";
-    mark.setAttribute("aria-hidden", "true");
-    mark.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" fill="#fff"></path></svg>';
-    brand.prepend(mark);
   }
 
   function moveTrustRow() {
@@ -165,7 +151,6 @@
 
   function install() {
     injectStyles();
-    enhanceBrand();
     moveTrustRow();
     enhanceGeoButton();
     updateStepState();
