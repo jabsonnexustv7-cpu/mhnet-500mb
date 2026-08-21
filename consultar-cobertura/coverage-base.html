@@ -4097,11 +4097,11 @@
       };
     }
 
-    async function notificarConsultaViavel({ cep, fachada, cidade, uf, motivo, coords, origem }) {
+    async function notificarConsultaViavel({ cep, fachada, cidade, uf, motivo, coords, origem, viavel = true }) {
       const cepLimpo = String(cep || "").replace(/\D+/g, "");
       const origemConsulta = origem || "";
 
-      if (cepLimpo.length !== 8) {
+      if (viavel === true && cepLimpo.length !== 8) {
         console.warn("Notificação de consulta viável ignorada: CEP inválido.", { cep, origem: origemConsulta });
         return false;
       }
@@ -4123,9 +4123,14 @@
         uf: uf || "",
         origemConsulta,
         siteOrigem: "mhnet",
+        resultadoConsulta: viavel === true ? "viavel" : "inviavel",
+        statusCobertura: viavel === true ? "VIAVEL" : "INVIAVEL",
+        viavel: viavel === true,
         skipInitiateCheckout: true,
         ...trackingData,
         cobertura: {
+          viavel: viavel === true,
+          status: viavel === true ? "VIAVEL" : "INVIAVEL",
           motivo: motivo || "-",
           coords: coords || ""
         }
@@ -4833,6 +4838,18 @@
             motivo: data && data.motivo ? data.motivo : "sem_viabilidade"
           });
 
+          console.info("[cobertura] Chamando notificarConsultaViavel", { origem: origemConsulta, cep, cidade, uf, viavel: false });
+          notificarConsultaViavel({
+            cep,
+            fachada,
+            cidade,
+            uf,
+            motivo: data && data.motivo ? data.motivo : "sem_viabilidade",
+            coords: data && data.coords ? data.coords : coordsFixasWhats || "",
+            origem: origemConsulta,
+            viavel: false
+          });
+
           wtSetStatus("No momento ainda não identificamos cobertura disponível para esse endereço. Fale com nossa equipe para verificarmos outras possibilidades.", "bad");
         }
 
@@ -5399,6 +5416,19 @@
             cep: cepLimpo,
             motivo: res && res.motivo ? res.motivo : "sem_viabilidade"
           });
+
+          console.info("[cobertura] Chamando notificarConsultaViavel", { origem: "box_principal", cep: cepLimpo, cidade, uf, viavel: false });
+          notificarConsultaViavel({
+            cep: cepLimpo,
+            fachada,
+            cidade,
+            uf,
+            motivo: res && res.motivo ? res.motivo : "sem_viabilidade",
+            coords: res && res.coords ? res.coords : coordsFixasConsulta || "",
+            origem: "box_principal",
+            viavel: false
+          });
+
           coberturaPaginaData = null;
           setStatus("Ainda não temos cobertura disponível para este endereço. Fale com nosso atendimento para verificarmos outras possibilidades.", "bad");
         }
@@ -6404,6 +6434,19 @@
             cep,
             motivo: res && res.motivo ? res.motivo : "sem_viabilidade"
           });
+
+          console.info("[cobertura] Chamando notificarConsultaViavel", { origem: "modal_contratacao", cep, cidade, uf, viavel: false });
+          notificarConsultaViavel({
+            cep,
+            fachada,
+            cidade,
+            uf,
+            motivo: res && res.motivo ? res.motivo : "sem_viabilidade",
+            coords: res && res.coords ? res.coords : coordsTexto || "",
+            origem: "modal_contratacao",
+            viavel: false
+          });
+
           modalCoverageValidated = false;
           modalCoverageData = null;
           erroEl.textContent = "Não encontramos cobertura para este endereço no momento." + (res && res.motivo ? " Motivo: " + res.motivo : "");
