@@ -1,0 +1,92 @@
+name: Notificar consultas inviaveis
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/notificar-consulta-inviavel.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Adicionar notificacao de inviabilidade
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('consultar-cobertura/coverage-base.html')
+          text = path.read_text(encoding='utf-8')
+
+          def replace_once(old, new, label):
+              global text
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{label}: esperava 1 ocorrencia, encontrei {count}')
+              text = text.replace(old, new, 1)
+
+          replace_once(
+              'async function notificarConsultaViavel({ cep, fachada, cidade, uf, motivo, coords, origem }) {',
+              'async function notificarConsultaViavel({ cep, fachada, cidade, uf, motivo, coords, origem, viavel = true }) {',
+              'assinatura da funcao'
+          )
+
+          replace_once(
+              '''      if (cepLimpo.length !== 8) {\n        console.warn("Notificação de consulta viável ignorada: CEP inválido.", { cep, origem: origemConsulta });\n        return false;\n      }''',
+              '''      if (viavel === true && cepLimpo.length !== 8) {\n        console.warn("Notificação de consulta viável ignorada: CEP inválido.", { cep, origem: origemConsulta });\n        return false;\n      }''',
+              'validacao de CEP'
+          )
+
+          replace_once(
+              '''        origemConsulta,\n        siteOrigem: "mhnet",\n        skipInitiateCheckout: true,''',
+              '''        origemConsulta,\n        siteOrigem: "mhnet",\n        resultadoConsulta: viavel === true ? "viavel" : "inviavel",\n        statusCobertura: viavel === true ? "VIAVEL" : "INVIAVEL",\n        viavel: viavel === true,\n        skipInitiateCheckout: true,''',
+              'status no payload'
+          )
+
+          replace_once(
+              '''        cobertura: {\n          motivo: motivo || "-",\n          coords: coords || ""\n        }''',
+              '''        cobertura: {\n          viavel: viavel === true,\n          status: viavel === true ? "VIAVEL" : "INVIAVEL",\n          motivo: motivo || "-",\n          coords: coords || ""\n        }''',
+              'status em cobertura'
+          )
+
+          replace_once(
+              '''          trackGA4("consulta_cobertura_inviavel", {\n            origem_consulta: origemConsulta,\n            cidade,\n            uf,\n            cep,\n            motivo: data && data.motivo ? data.motivo : "sem_viabilidade"\n          });\n\n          wtSetStatus''',
+              '''          trackGA4("consulta_cobertura_inviavel", {\n            origem_consulta: origemConsulta,\n            cidade,\n            uf,\n            cep,\n            motivo: data && data.motivo ? data.motivo : "sem_viabilidade"\n          });\n\n          console.info("[cobertura] Chamando notificarConsultaViavel", { origem: origemConsulta, cep, cidade, uf, viavel: false });\n          notificarConsultaViavel({\n            cep,\n            fachada,\n            cidade,\n            uf,\n            motivo: data && data.motivo ? data.motivo : "sem_viabilidade",\n            coords: data && data.coords ? data.coords : coordsFixasWhats || "",\n            origem: origemConsulta,\n            viavel: false\n          });\n\n          wtSetStatus''',
+              'inviavel modal WhatsApp'
+          )
+
+          replace_once(
+              '''          trackGA4("consulta_cobertura_inviavel", {\n            origem_consulta: "box_principal",\n            cidade,\n            uf,\n            cep: cepLimpo,\n            motivo: res && res.motivo ? res.motivo : "sem_viabilidade"\n          });\n          coberturaPaginaData = null;''',
+              '''          trackGA4("consulta_cobertura_inviavel", {\n            origem_consulta: "box_principal",\n            cidade,\n            uf,\n            cep: cepLimpo,\n            motivo: res && res.motivo ? res.motivo : "sem_viabilidade"\n          });\n\n          console.info("[cobertura] Chamando notificarConsultaViavel", { origem: "box_principal", cep: cepLimpo, cidade, uf, viavel: false });\n          notificarConsultaViavel({\n            cep: cepLimpo,\n            fachada,\n            cidade,\n            uf,\n            motivo: res && res.motivo ? res.motivo : "sem_viabilidade",\n            coords: res && res.coords ? res.coords : coordsFixasConsulta || "",\n            origem: "box_principal",\n            viavel: false\n          });\n\n          coberturaPaginaData = null;''',
+              'inviavel box principal'
+          )
+
+          replace_once(
+              '''          trackGA4("consulta_cobertura_inviavel", {\n            origem_consulta: "modal_contratacao",\n            cidade,\n            uf,\n            cep,\n            motivo: res && res.motivo ? res.motivo : "sem_viabilidade"\n          });\n          modalCoverageValidated = false;''',
+              '''          trackGA4("consulta_cobertura_inviavel", {\n            origem_consulta: "modal_contratacao",\n            cidade,\n            uf,\n            cep,\n            motivo: res && res.motivo ? res.motivo : "sem_viabilidade"\n          });\n\n          console.info("[cobertura] Chamando notificarConsultaViavel", { origem: "modal_contratacao", cep, cidade, uf, viavel: false });\n          notificarConsultaViavel({\n            cep,\n            fachada,\n            cidade,\n            uf,\n            motivo: res && res.motivo ? res.motivo : "sem_viabilidade",\n            coords: res && res.coords ? res.coords : coordsTexto || "",\n            origem: "modal_contratacao",\n            viavel: false\n          });\n\n          modalCoverageValidated = false;''',
+              'inviavel modal contratacao'
+          )
+
+          path.write_text(text, encoding='utf-8')
+          print('Notificacoes de consultas inviaveis adicionadas nos 3 fluxos.')
+          PY
+
+      - name: Commit
+        shell: bash
+        run: |
+          if git diff --quiet -- consultar-cobertura/coverage-base.html; then
+            echo "Nenhuma alteracao para commitar."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add consultar-cobertura/coverage-base.html
+          git commit -m "Notifica consultas de cobertura inviaveis"
+          git push
