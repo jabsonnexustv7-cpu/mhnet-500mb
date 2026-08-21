@@ -1,0 +1,106 @@
+name: Migrar Lead da pagina para Meta Pixel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/migrar-lead-meta-pixel.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrar-lead:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Substituir envio server-side pelo Meta Pixel
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('consultar-cobertura/coverage-base.html')
+          text = path.read_bytes().decode('utf-8')
+
+          # Remove o endpoint antigo usado para encaminhar Lead ao servidor/Zapier.
+          text, endpoint_count = re.subn(
+              r'^\s*const LEAD_DADOS_PESSOAIS_ENDPOINT = "https://webturbo-lead-zapier-964927461432\.southamerica-east1\.run\.app";\r?\n',
+              '',
+              text,
+              count=1,
+              flags=re.M,
+          )
+
+          nova_funcao = '''    async function enviarLeadDadosPessoais() {
+      if (leadDadosPessoaisEnviado || leadDadosPessoaisEmEnvio) return;
+
+      if (!leadDadosPessoaisEventId) {
+        leadDadosPessoaisEventId = `lead_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      }
+
+      if (typeof fbq !== "function") {
+        console.warn("Meta Pixel indisponível; evento Lead não foi enviado.");
+        return;
+      }
+
+      const plano = $("mPlano").value;
+      const planValue = typeof PLAN_VALUES !== "undefined" ? (PLAN_VALUES[plano] || 0) : 0;
+      leadDadosPessoaisEmEnvio = true;
+
+      try {
+        fbq(
+          "track",
+          "Lead",
+          {
+            value: 0,
+            currency: "BRL",
+            content_name: plano,
+            plan_value: planValue,
+            lead_stage: "dados_pessoais_enviados",
+            source: "site_webturbo"
+          },
+          { eventID: leadDadosPessoaisEventId }
+        );
+
+        leadDadosPessoaisEnviado = true;
+        console.info("Evento Lead enviado pelo Meta Pixel.", {
+          event_id: leadDadosPessoaisEventId
+        });
+      } finally {
+        leadDadosPessoaisEmEnvio = false;
+      }
+    }
+
+    function validarEtapaDados() {'''
+
+          pattern = re.compile(
+              r'    async function enviarLeadDadosPessoais\(\) \{.*?\r?\n    \}\r?\n\r?\n    function validarEtapaDados\(\) \{',
+              re.S,
+          )
+          text, function_count = pattern.subn(nova_funcao, text, count=1)
+
+          if endpoint_count != 1:
+              raise SystemExit(f'Endpoint antigo: esperava 1 substituição, obtive {endpoint_count}')
+          if function_count != 1:
+              raise SystemExit(f'Função de Lead: esperava 1 substituição, obtive {function_count}')
+
+          path.write_bytes(text.encode('utf-8'))
+          print('Lead migrado para Meta Pixel e endpoint antigo removido.')
+          PY
+
+      - name: Commit da alteração
+        shell: bash
+        run: |
+          if git diff --quiet -- consultar-cobertura/coverage-base.html; then
+            echo "Nenhuma alteração para commitar."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add consultar-cobertura/coverage-base.html
+          git commit -m "Substitui Lead server-side por Meta Pixel"
+          git push
