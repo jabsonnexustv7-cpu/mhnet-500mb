@@ -1,0 +1,43 @@
+name: Ajustar notificacao inviavel WebTurbo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/ajustar-notificacao-inviavel.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ajustar action e origem
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('consultar-cobertura/coverage-base.html')
+          s = p.read_text(encoding='utf-8')
+          old_action = '        action: "notifyConsulta",'
+          new_action = '        action: viavel === true ? "notifyConsulta" : "notifyConsultaInviavel",'
+          if s.count(old_action) != 1:
+              raise SystemExit(f'action: esperava 1, encontrei {s.count(old_action)}')
+          s = s.replace(old_action, new_action, 1)
+          old_site = '        siteOrigem: "mhnet",'
+          new_site = '        siteOrigem: "webturbo",'
+          if s.count(old_site) != 1:
+              raise SystemExit(f'siteOrigem: esperava 1, encontrei {s.count(old_site)}')
+          s = s.replace(old_site, new_site, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add consultar-cobertura/coverage-base.html
+          git commit -m "Usa action especifica para consulta inviavel"
+          git push
