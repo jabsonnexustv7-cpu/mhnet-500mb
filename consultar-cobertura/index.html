@@ -3,6 +3,28 @@ layout: null
 ---
 {% capture coverage_html %}{% include_relative coverage-base.html %}{% endcapture %}
 
+{% capture meta_pixel_head %}
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '907334254744897');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=907334254744897&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+</head>
+{% endcapture %}
+{% assign coverage_html = coverage_html | replace: '</head>', meta_pixel_head %}
+
 {% comment %} Planos regionais de Sorocaba/Votorantim. {% endcomment %}
 {% assign coverage_html = coverage_html | replace: '"FIBRA 500MB": "FIBRA 500MB — R$ 99,90/mês",', '"FIBRA 500MB": "FIBRA 500MB — R$ 99,90/mês", "FIBRA 600MB": "FIBRA 600MB — R$ 99,90/mês",' %}
 {% assign coverage_html = coverage_html | replace: '"FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI — R$ 119,90/mês",', '"FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI — R$ 119,90/mês", "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI": "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI — R$ 119,90/mês",' %}
