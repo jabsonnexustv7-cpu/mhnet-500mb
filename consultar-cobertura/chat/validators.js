@@ -52,6 +52,13 @@ export function isValidPhone(value) {
   return /^(?:[1-9]{2})9?\d{8}$/.test(phone) && !/^(\d)\1+$/.test(phone);
 }
 
+export function formatPhone(value) {
+  const phone = normalizePhone(value);
+  if (phone.length === 11) return `(${phone.slice(0, 2)}) ${phone.slice(2, 7)}-${phone.slice(7)}`;
+  if (phone.length === 10) return `(${phone.slice(0, 2)}) ${phone.slice(2, 6)}-${phone.slice(6)}`;
+  return phone;
+}
+
 export function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(value || "").trim());
 }

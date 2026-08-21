@@ -12,6 +12,7 @@ import {
   wantsConfirmation
 } from "./parser.js";
 import { getPlansForCity } from "./plans.js";
+import { calculateBillingSummary, DUE_DATE_OPTIONS, INSTALLATION_SHIFT_OPTIONS, parseInstallationDate, tomorrowISO } from "./billing.js";
 import { clearAddress, saveSession, STATES, transition } from "./state.js";
 import {
   formatCep,
@@ -21,6 +22,7 @@ import {
   isValidName,
   isValidPhone,
   maskCpf,
+  onlyDigits,
   parseBirthDate
 } from "./validators.js";
 
@@ -67,6 +69,10 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       [STATES.DATA_NASCIMENTO]: "DD/MM/AAAA",
       [STATES.EMAIL]: "seuemail@exemplo.com",
       [STATES.TELEFONE]: "(DDD) 99999-9999",
+      [STATES.TELEFONE_SECUNDARIO]: "Outro telefone com DDD",
+      [STATES.VENCIMENTO]: "Ex.: dia 10",
+      [STATES.DATA_INSTALACAO]: "DD/MM/AAAA",
+      [STATES.TURNO_INSTALACAO]: "Manhã ou tarde",
       [STATES.CONFIRMACAO]: "Digite confirmar"
     };
     ui.setPlaceholder(placeholders[session.step] || "Digite sua mensagem");
@@ -80,6 +86,12 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       ]);
     } else if (session.step === STATES.ESCOLHA_PLANO) {
       ui.showPlans(getPlansForCity(session.cidade));
+    } else if (session.step === STATES.VENCIMENTO) {
+      ui.showQuickReplies(DUE_DATE_OPTIONS.map((day) => ({ label: `Dia ${day}`, action: "select-due-date", value: day })));
+    } else if (session.step === STATES.DATA_INSTALACAO) {
+      ui.showDatePicker?.(tomorrowISO());
+    } else if (session.step === STATES.TURNO_INSTALACAO) {
+      ui.showQuickReplies(INSTALLATION_SHIFT_OPTIONS.map((shift) => ({ label: shift, action: "select-shift", value: shift })));
     } else if (session.step === STATES.CONFIRMACAO) {
       ui.showQuickReplies([
         { label: "Confirmar contratação", action: "confirm" },
@@ -101,6 +113,10 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       [STATES.DATA_NASCIMENTO]: "Qual é a sua data de nascimento? Use DD/MM/AAAA.",
       [STATES.EMAIL]: "Qual é o seu melhor e-mail?",
       [STATES.TELEFONE]: "E qual telefone com DDD podemos usar para contato?",
+      [STATES.TELEFONE_SECUNDARIO]: "Informe também um segundo telefone com DDD. Ele precisa ser diferente do contato principal.",
+      [STATES.VENCIMENTO]: "Qual dia você prefere para o vencimento da fatura?",
+      [STATES.DATA_INSTALACAO]: `Qual é a data preferida para instalação? A primeira data disponível é ${tomorrowISO().split("-").reverse().join("/" )}.`,
+      [STATES.TURNO_INSTALACAO]: "Qual turno você prefere para a instalação?",
       [STATES.CONFIRMACAO]: "Confira o resumo abaixo. Se estiver tudo certo, confirme a simulação."
     };
     if (prompts[session.step]) await assistant(prompts[session.step]);
@@ -168,6 +184,8 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
 
   async function choosePlan(plan) {
     session.plano = plan;
+    session.faturamento = null;
+    session.crmPayload = null;
     logger.info(`${PREFIX} Plan selected: ${plan.id}`);
     addMessage("user", `Quero o plano ${plan.title}.`, { planId: plan.id });
     changeStep(STATES.NOME);
@@ -275,6 +293,8 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         }
         // A mensagem digitada já foi registrada; evita duplicar como acontece no clique.
         session.plano = plan;
+        session.faturamento = null;
+        session.crmPayload = null;
         logger.info(`${PREFIX} Plan selected: ${plan.id}`);
         changeStep(STATES.NOME);
         await assistant(`Boa escolha: ${plan.title} por ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(plan.price)}/mês.`);
@@ -333,6 +353,60 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
           break;
         }
         session.telefone = phone;
+        changeStep(STATES.TELEFONE_SECUNDARIO);
+        await askCurrentStep();
+        break;
+      }
+      case STATES.TELEFONE_SECUNDARIO: {
+        const phone = extractPhone(parsedText);
+        if (!isValidPhone(phone)) {
+          await assistant("Esse segundo telefone parece incompleto. Envie o DDD e o número com 10 ou 11 dígitos.");
+          break;
+        }
+        if (phone === session.telefone) {
+          await assistant("O segundo contato precisa ser diferente do telefone principal. Pode informar outro número?");
+          break;
+        }
+        session.telefoneSecundario = phone;
+        changeStep(STATES.VENCIMENTO);
+        await askCurrentStep();
+        break;
+      }
+      case STATES.VENCIMENTO: {
+        const digits = onlyDigits(parsedText);
+        const dueDay = digits.length === 1 ? `0${digits}` : digits.slice(-2);
+        if (!DUE_DATE_OPTIONS.includes(dueDay)) {
+          await assistant("Os vencimentos disponíveis são nos dias 05, 10, 15, 20 ou 25. Escolha uma dessas opções.");
+          break;
+        }
+        session.diaVencimentoFatura = dueDay;
+        changeStep(STATES.DATA_INSTALACAO);
+        await askCurrentStep();
+        break;
+      }
+      case STATES.DATA_INSTALACAO: {
+        const installationDate = parseInstallationDate(parsedText);
+        if (!installationDate.valid) {
+          const message = installationDate.reason === "past"
+            ? `A instalação deve ser a partir de ${tomorrowISO().split("-").reverse().join("/")}. Escolha outra data.`
+            : "Não consegui validar a data. Envie no formato DD/MM/AAAA ou use o seletor abaixo.";
+          await assistant(message);
+          break;
+        }
+        session.dataInstalacao = installationDate.iso;
+        changeStep(STATES.TURNO_INSTALACAO);
+        await askCurrentStep();
+        break;
+      }
+      case STATES.TURNO_INSTALACAO: {
+        const normalized = String(parsedText).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const shift = normalized.includes("manha") ? "Manhã" : normalized.includes("tarde") ? "Tarde" : "";
+        if (!shift) {
+          await assistant("Os turnos disponíveis são manhã ou tarde. Qual você prefere?");
+          break;
+        }
+        session.turnoInstalacao = shift;
+        session.faturamento = calculateBillingSummary(session.plano?.price, session.diaVencimentoFatura);
         changeStep(STATES.CONFIRMACAO);
         ui.showSummary(session);
         await askCurrentStep();
@@ -370,6 +444,9 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       const plan = getPlansForCity(session.cidade).find((item) => item.id === value);
       if (plan) await choosePlan(plan);
       return;
+    }
+    if (["select-due-date", "select-installation-date", "select-shift"].includes(action)) {
+      return handleText(value);
     }
     if (action === "change-plan") {
       ui.removeSummary?.();

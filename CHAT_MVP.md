@@ -20,6 +20,7 @@ O laboratório não importa os scripts da página publicada. Assim, não carrega
 - `consultar-cobertura/chat-lab.html`: laboratório isolado e sem indexação.
 - `consultar-cobertura/chat/chat.css`: interface mobile-first.
 - `consultar-cobertura/chat/config.js`: modos e endpoints.
+- `consultar-cobertura/chat/billing.js`: vencimentos, data mínima e cálculo proporcional reaproveitado.
 - `consultar-cobertura/chat/state.js`: sessão, persistência e máquina de estados.
 - `consultar-cobertura/chat/validators.js`: validações e normalizações.
 - `consultar-cobertura/chat/parser.js`: interpretação local das mensagens.
@@ -34,7 +35,9 @@ O laboratório não importa os scripts da página publicada. Assim, não carrega
 
 ## Máquina de estados
 
-`WELCOME → CEP → NUMERO → COMPLEMENTO → CONSULTANDO_COBERTURA → COBERTURA_VIAVEL/COBERTURA_INVIAVEL → ESCOLHA_PLANO → NOME → CPF → DATA_NASCIMENTO → EMAIL → TELEFONE → CONFIRMACAO → FINALIZADO`
+`WELCOME → CEP → NUMERO → COMPLEMENTO → CONSULTANDO_COBERTURA → COBERTURA_VIAVEL/COBERTURA_INVIAVEL → ESCOLHA_PLANO → NOME → CPF → DATA_NASCIMENTO → EMAIL → TELEFONE → TELEFONE_SECUNDARIO → VENCIMENTO → DATA_INSTALACAO → TURNO_INSTALACAO → CONFIRMACAO → FINALIZADO`
+
+O segundo contato é obrigatório e deve ser diferente do principal. Os vencimentos disponíveis são `05`, `10`, `15`, `20` e `25`; a data de instalação começa em amanhã e os turnos disponíveis são `Manhã` e `Tarde`, iguais ao formulário normal.
 
 Transições de correção voltam para `CEP`, `NUMERO` ou `ESCOLHA_PLANO`. Transições não permitidas geram erro explícito.
 
@@ -70,7 +73,7 @@ Em `coverage=real`, uma indisponibilidade técnica do endpoint usa `mock-fallbac
 
 ## Persistência
 
-A sessão é salva em `localStorage` com a chave `webturbo-chat-mvp-v1`. Ao recarregar, a página oferece continuar o atendimento ou iniciar outro. O botão `Resetar sessão` aparece no painel aberto por `?debug=1`.
+A sessão é salva em `localStorage` com a chave `webturbo-chat-mvp-v2`. Ao recarregar, a página oferece continuar o atendimento ou iniciar outro. O botão `Resetar sessão` aparece no painel aberto por `?debug=1`.
 
 ## CRM
 
@@ -93,19 +96,22 @@ O modo padrão usa regras locais e não precisa de chave. O modo `openai` tenta 
 2. Informe `o número é 1186`.
 3. Informe `não tenho complemento`.
 4. Em modo mock viável, escolha um card ou escreva `quero o mais barato`.
-5. Informe nome completo, CPF válido, nascimento, e-mail e telefone.
-6. Confira o resumo e confirme.
-7. Verifique `CRM MOCK`, o payload no debug e a ausência de requisição ao CRM na aba Network.
-8. Recarregue durante o fluxo e teste `Continuar atendimento anterior`.
-9. Use `Resetar sessão`.
-10. Repita com `coverage=mock&mockCoverage=inviavel`.
-11. Envie CEP e CPF inválidos e confirme que o estado não avança.
+5. Informe nome completo, CPF válido, nascimento, e-mail, telefone principal e um segundo contato diferente.
+6. Escolha vencimento, data de instalação a partir de amanhã e turno.
+7. Confira no resumo o valor proporcional estimado e a primeira fatura cheia.
+8. Confirme a simulação.
+9. Verifique `CRM MOCK`, o payload no debug e a ausência de requisição ao CRM na aba Network.
+10. Recarregue durante o fluxo e teste `Continuar atendimento anterior`.
+11. Use `Resetar sessão`.
+12. Repita com `coverage=mock&mockCoverage=inviavel`.
+13. Envie CEP, CPF, telefones repetidos e datas inválidas e confirme que o estado não avança.
 
 ## Limitações atuais
 
 - O ViaCEP pode retornar CEP geral sem rua/bairro; o MVP mantém o fluxo, mas uma segunda versão deve solicitar esses campos no chat.
 - O proxy OpenAI ainda não foi implementado; o modo continua funcional por fallback local.
-- Data de vencimento, referência e preferência de instalação não são coletadas e ficam vazias no payload.
+- Ponto de referência ainda não é coletado e fica vazio no payload.
+- O cálculo proporcional espelha a regra atual da landing, que estima a instalação em D+2 mesmo quando o cliente escolhe outra data preferida.
 - O mock de cobertura serve apenas para homologação e nunca deve ser tratado como decisão técnica real.
 - O acesso pelo celular depende das regras do Windows Firewall e da rede permitir comunicação entre dispositivos.
 
@@ -125,5 +131,5 @@ O modo padrão usa regras locais e não precisa de chave. O modo `openai` tenta 
 1. Solicitar rua/bairro quando o CEP for geral e permitir confirmação estruturada do endereço.
 2. Buscar planos de uma fonte única versionada, em vez de manter dados no HTML.
 3. Criar um backend de sessão para OpenAI e CRM, sem expor segredos.
-4. Adicionar agendamento de instalação e vencimento ao diálogo.
+4. Substituir a data mínima local por uma agenda real de disponibilidade, quando existir um serviço para isso.
 5. Criar suíte E2E com cenários reais controlados de cobertura.

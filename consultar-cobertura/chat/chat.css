@@ -301,6 +301,12 @@ button { cursor: pointer; }
 .quick-reply { min-height: 34px; padding: 7px 12px; color: var(--blue-700); background: white; border: 1px solid #b9caed; border-radius: 999px; font-size: 11px; font-weight: 800; }
 .quick-reply:hover { color: white; background: var(--blue-600); border-color: var(--blue-600); }
 
+.date-picker-action { padding: 9px 14px 14px; display: grid; grid-template-columns: 1fr auto; gap: 7px 8px; align-items: end; }
+.date-picker-action label { grid-column: 1 / -1; color: #53637a; font-size: 10px; font-weight: 800; }
+.date-picker-action input { min-width: 0; height: 40px; padding: 0 10px; color: var(--ink); background: white; border: 1px solid #b9caed; border-radius: 10px; outline: none; }
+.date-picker-action input:focus { border-color: var(--blue-600); box-shadow: 0 0 0 3px rgba(26,86,219,0.08); }
+.date-picker-submit { height: 40px; padding: 0 13px; color: white; background: var(--blue-600); border: 0; border-radius: 10px; font-size: 10px; font-weight: 800; }
+
 .chat-plan-track { padding: 8px 14px 14px; display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; }
 .chat-plan-card { min-width: 238px; padding: 15px; display: flex; flex-direction: column; align-items: flex-start; gap: 7px; color: var(--ink); background: white; border: 1px solid #dae4f2; border-radius: 16px; box-shadow: 0 8px 22px rgba(10,36,99,0.07); scroll-snap-align: start; text-align: left; }
 .chat-plan-card:hover, .chat-plan-card:focus-visible { border-color: var(--blue-600); transform: translateY(-1px); outline: none; }

@@ -1,4 +1,4 @@
-import { formatCep, maskCpf } from "./validators.js";
+import { formatCep, formatPhone, maskCpf } from "./validators.js";
 import { formatPrice } from "./plans.js";
 
 function element(tag, className, text) {
@@ -56,6 +56,7 @@ export function createChatUI() {
       const button = element("button", "quick-reply", item.label);
       button.type = "button";
       button.dataset.action = item.action;
+      if (item.value !== undefined) button.dataset.value = item.value;
       wrap.appendChild(button);
     });
     actions.appendChild(wrap);
@@ -87,6 +88,24 @@ export function createChatUI() {
     scrollToBottom();
   }
 
+  function showDatePicker(minDate) {
+    clearActions();
+    const wrap = element("div", "date-picker-action");
+    const label = element("label", "", "Data preferida");
+    label.htmlFor = "installation-date-input";
+    const input = element("input");
+    input.id = "installation-date-input";
+    input.type = "date";
+    input.min = minDate;
+    input.value = minDate;
+    const button = element("button", "date-picker-submit", "Usar esta data");
+    button.type = "button";
+    button.dataset.action = "select-installation-date";
+    wrap.append(label, input, button);
+    actions.appendChild(wrap);
+    scrollToBottom();
+  }
+
   function showSummary(session) {
     messages.querySelector(".chat-summary")?.remove();
     const summary = element("section", "chat-summary");
@@ -96,11 +115,16 @@ export function createChatUI() {
       ["Endereço", `${session.logradouro || "CEP informado"}, ${session.numero}${session.bairro ? ` · ${session.bairro}` : ""}${session.cidade ? ` · ${session.cidade}/${session.uf}` : ""}`],
       ["Complemento", session.complemento || "-"],
       ["Plano", `${session.plano?.title || "-"} · ${session.plano ? formatPrice(session.plano.price) : "-"}/mês`],
+      ["Fatura proporcional", session.faturamento?.proportional || "-"],
+      ["Primeira fatura cheia", session.faturamento?.full || "-"],
       ["Cliente", session.nome],
       ["CPF", maskCpf(session.cpf)],
       ["Nascimento", session.dataNascimento.split("-").reverse().join("/")],
       ["E-mail", session.email],
-      ["Telefone", session.telefone]
+      ["Contato principal", formatPhone(session.telefone)],
+      ["Segundo contato", formatPhone(session.telefoneSecundario)],
+      ["Vencimento", `Dia ${session.diaVencimentoFatura}`],
+      ["Instalação", `${session.dataInstalacao.split("-").reverse().join("/")} · ${session.turnoInstalacao}`]
     ];
     rows.forEach(([label, value]) => {
       const row = element("div", "summary-row");
@@ -146,6 +170,9 @@ export function createChatUI() {
       Cobertura: coverage,
       Plano: session.plano?.id || "-",
       Nome: session.nome || "-",
+      "Segundo contato": session.telefoneSecundario || "-",
+      Vencimento: session.diaVencimentoFatura || "-",
+      Instalação: session.dataInstalacao ? `${session.dataInstalacao} · ${session.turnoInstalacao || "-"}` : "-",
       "CRM mode": config.crmMode,
       "Chat mode": config.chatMode,
       "Coverage mode": `${config.coverageMode}${session.cobertura?.source ? ` (${session.cobertura.source})` : ""}`
@@ -183,6 +210,7 @@ export function createChatUI() {
     clearActions,
     showQuickReplies,
     showPlans,
+    showDatePicker,
     showSummary,
     removeSummary,
     showFinalPayload,

@@ -47,7 +47,10 @@ form.addEventListener("submit", async (event) => {
 document.getElementById("chat-actions").addEventListener("click", async (event) => {
   const button = event.target.closest("[data-action]");
   if (!button) return;
-  const result = await flow.handleAction(button.dataset.action, button.dataset.value);
+  const value = button.dataset.action === "select-installation-date"
+    ? document.getElementById("installation-date-input")?.value
+    : button.dataset.value;
+  const result = await flow.handleAction(button.dataset.action, value);
   if (result === "restart") await startFresh();
 });
 

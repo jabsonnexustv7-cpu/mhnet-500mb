@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { calculateBillingSummary, parseInstallationDate, tomorrowISO } from "../billing.js";
 import { createCoverageService, createCrmService, buildCrmPayload } from "../integrations.js";
 import { createChatFlow } from "../flow.js";
 import { extractCep, selectPlanFromText } from "../parser.js";
@@ -25,7 +26,12 @@ const sampleSession = () => ({
   cpf: "52998224725",
   dataNascimento: "1990-05-20",
   email: "joao@example.com",
-  telefone: "51999998888"
+  telefone: "51999998888",
+  telefoneSecundario: "51988887777",
+  diaVencimentoFatura: "10",
+  dataInstalacao: "2026-08-25",
+  turnoInstalacao: "Manhã",
+  faturamento: calculateBillingSummary(99.9, "10", new Date(2026, 7, 21))
 });
 
 test("normaliza CEP removendo máscara e texto excedente", () => {
@@ -110,7 +116,24 @@ test("gera payload final compatível com o CRM existente", () => {
   assert.equal(payload.documentoCliente, "52998224725");
   assert.equal(payload.planos, "FIBRA 500MB");
   assert.equal(payload.nomeCidade, "Canoas");
+  assert.equal(payload.telefone2Cliente, "51988887777");
+  assert.equal(payload.diaVencimentoFatura, "10");
+  assert.equal(payload.dataInstalacao1, "2026-08-25");
+  assert.equal(payload.turnoInstalacao1, "Manhã");
   assert.equal(payload.event_id, "chat_mvp_session-test");
+});
+
+test("data de instalação respeita o mínimo de amanhã", () => {
+  const reference = new Date(2026, 7, 21);
+  assert.equal(tomorrowISO(reference), "2026-08-22");
+  assert.equal(parseInstallationDate("21/08/2026", reference).valid, false);
+  assert.equal(parseInstallationDate("22/08/2026", reference).iso, "2026-08-22");
+});
+
+test("cálculo proporcional espelha o texto do fluxo normal", () => {
+  const billing = calculateBillingSummary(99.9, "10", new Date(2026, 7, 21));
+  assert.equal(billing.proportional, "Em setembro/2026 você receberá um valor proporcional referente aos dias de uso — em torno de R$ 29,00.");
+  assert.equal(billing.full, "R$ 99,90 no dia 10 de outubro/2026.");
 });
 
 test("CRM mock não executa POST real", async () => {
@@ -184,11 +207,22 @@ test("fluxo ponta a ponta viável chega ao CRM MOCK", async () => {
   await flow.handleText("20/05/1990");
   await flow.handleText("joao@example.com");
   await flow.handleText("(51) 99999-8888");
+  assert.equal(session.step, STATES.TELEFONE_SECUNDARIO);
+  await flow.handleText("(51) 99999-8888");
+  assert.equal(session.step, STATES.TELEFONE_SECUNDARIO);
+  await flow.handleText("(51) 98888-7777");
+  await flow.handleText("dia 10");
+  await flow.handleText(tomorrowISO());
+  await flow.handleText("manhã");
   assert.equal(session.step, STATES.CONFIRMACAO);
   await flow.handleAction("confirm");
 
   assert.equal(session.step, STATES.FINALIZADO);
   assert.equal(session.crmPayload.documentoCliente, "52998224725");
+  assert.equal(session.crmPayload.telefone2Cliente, "51988887777");
+  assert.equal(session.crmPayload.diaVencimentoFatura, "10");
+  assert.equal(session.crmPayload.turnoInstalacao1, "Manhã");
+  assert.match(session.faturamento.proportional, /valor proporcional|referente aos dias utilizados/);
   assert.equal(fetchCalls, 0);
   assert.match(ui.messages.at(-1).text, /Nenhuma venda foi criada/);
 });

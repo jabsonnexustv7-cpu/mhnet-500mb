@@ -12,7 +12,7 @@ export const CHAT_CONFIG = {
   coverageRadius: 200,
   requestTimeoutMs: 10000,
   typingDelayMs: 380,
-  storageKey: "webturbo-chat-mvp-v1",
+  storageKey: "webturbo-chat-mvp-v2",
   debug: params.get("debug") === "1"
 };
 
