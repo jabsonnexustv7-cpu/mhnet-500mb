@@ -1,0 +1,43 @@
+name: Trocar Clarity WebTurbo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/trocar-clarity-webturbo.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  trocar-clarity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Trocar ID do Clarity
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('consultar-cobertura/coverage-base.html')
+          text = path.read_text(encoding='utf-8')
+          old = 'wz76kl230p'
+          new = 'y5w2b7oe66'
+          count = text.count(old)
+          if count != 1:
+              raise SystemExit(f'Esperava 1 ocorrência de {old}, encontrei {count}')
+          path.write_text(text.replace(old, new), encoding='utf-8')
+          print(f'Clarity alterado de {old} para {new}.')
+          PY
+
+      - name: Commit da alteração
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add consultar-cobertura/coverage-base.html
+          git commit -m "Troca Clarity da pagina WebTurbo"
+          git push
