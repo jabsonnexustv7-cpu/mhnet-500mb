@@ -13,7 +13,7 @@ O repositório é um site estático publicado com Jekyll/GitHub Pages e não pos
 - seis planos definidos no frontend, com substituição de 500 por 600 Mega em Sorocaba e Votorantim;
 - um endpoint separado do WebTurbo CRM para pré-vendas.
 
-O laboratório não importa os scripts da página publicada. Assim, não carrega Pixel, Google Ads, CAPI, ManyChat, notificações, retenção, WhatsApp ou CRM real.
+O laboratório não importa o JavaScript monolítico da página publicada. As integrações necessárias foram isoladas em adaptadores: CRM real, Meta Pixel `Lead`, GA4, conversões do Google Ads e pós-venda no WhatsApp. CAPI, ManyChat, notificações de cobertura e retenção continuam fora do laboratório.
 
 ## Arquivos do MVP
 
@@ -26,11 +26,13 @@ O laboratório não importa os scripts da página publicada. Assim, não carrega
 - `consultar-cobertura/chat/parser.js`: interpretação local das mensagens.
 - `consultar-cobertura/chat/plans.js`: planos reaproveitados e regra regional.
 - `consultar-cobertura/chat/integrations.js`: ViaCEP, cobertura e adaptador CRM.
+- `consultar-cobertura/chat/tracking.js`: atribuição e eventos Meta/Google equivalentes ao fluxo atual.
+- `consultar-cobertura/chat/whatsapp.js`: mensagem e redirecionamento pós-venda.
 - `consultar-cobertura/chat/flow.js`: orquestração do fluxo.
 - `consultar-cobertura/chat/ui.js`: renderização e eventos visuais.
 - `consultar-cobertura/chat/app.js`: inicialização do laboratório.
 - `consultar-cobertura/chat/tests/chat.test.mjs`: testes automatizados.
-- `tools/chat-lab-server.mjs`: servidor HTTP local, incluindo acesso pela rede.
+- `tools/chat-lab-server.mjs`: servidor HTTP local, acesso pela rede e proxy do CRM para evitar bloqueio CORS de `localhost`.
 - `package.json`: comandos de teste e servidor, sem dependências externas.
 
 ## Máquina de estados
@@ -67,24 +69,40 @@ Os defaults ficam em `consultar-cobertura/chat/config.js` e podem ser sobrescrit
 - Cobertura mock inviável: `?debug=1&coverage=mock&mockCoverage=inviavel`
 - Parser local (padrão): `chat=local`
 - Estrutura OpenAI/proxy: `chat=openai`
-- CRM: fixo em `mock` neste MVP.
+- CRM real (padrão): `crm=real`
+- Conversões reais (padrão): `conversions=real`
+- Redirecionamento real para WhatsApp (padrão): `whatsapp=real`
+- Modo totalmente seguro, sem CRM, conversões ou redirecionamento: `safe=1`
 
 Em `coverage=real`, uma indisponibilidade técnica do endpoint usa `mock-fallback` para manter o laboratório navegável. A origem efetiva aparece no painel de debug. Para impedir o fallback, use `coverageFallback=none`.
 
+Por segurança, uma cobertura `mock` ou `mock-fallback` nunca pode gerar pré-venda nem eventos de conversão reais. Para exercitar o fluxo sem efeitos externos, combine `coverage=mock` com `safe=1`. Para criar a pré-venda, use `coverage=real` e confirme no debug que a origem da cobertura é `real`.
+
 ## Persistência
 
-A sessão é salva em `localStorage` com a chave `webturbo-chat-mvp-v2`. Ao recarregar, a página oferece continuar o atendimento ou iniciar outro. O botão `Resetar sessão` aparece no painel aberto por `?debug=1`.
+A sessão é salva em `localStorage` com a chave `webturbo-chat-mvp-v3`. Ao recarregar, a página oferece continuar o atendimento ou iniciar outro. O botão `Resetar sessão` aparece no painel aberto por `?debug=1`.
 
 ## CRM
 
-O adaptador gera o mesmo conjunto principal de campos usado pelo formulário atual, incluindo dados pessoais, endereço, cobertura, plano, origem e identificador de evento. Em `crmMode = "mock"`:
+O adaptador gera o mesmo conjunto principal de campos usado pelo formulário atual, incluindo dados pessoais, endereço, cobertura, plano, origem e identificador de evento. O modo padrão é `crmMode = "real"`: ao confirmar, o chat faz POST em `/api/chat/crm`; o servidor local encaminha o corpo sem alterações ao endpoint atual de pré-vendas. Esse proxy é necessário porque o Cloud Run não autoriza o preflight CORS originado por `localhost`.
+
+Depois da confirmação do CRM, o fluxo:
+
+- registra `enviou_formulario_easy` no GA4;
+- envia a conversão final do Google Ads quando a atribuição salva é Google;
+- mostra a mensagem existente de cadastro recebido;
+- inicia a contagem de 3 segundos;
+- registra a conversão de WhatsApp e abre a mensagem `Acabei de concluir um pedido de internet, meu CPF: ...`;
+- mantém um botão manual “Continuar no WhatsApp” caso o navegador bloqueie o encaminhamento.
+
+O evento `Lead` do Meta Pixel ocorre após os dois contatos válidos, no mesmo ponto do fluxo normal. Para testes sem efeitos reais, use `safe=1`. Nesse modo:
 
 - o payload completo é mantido na sessão e mostrado no debug;
 - o console recebe uma cópia com CPF mascarado;
 - `fetch` não é chamado;
 - nenhuma pré-venda ou conversão é criada.
 
-O caminho `crmMode = "real"` está separado no adaptador, mas não deve ser ativado sem revisão de segurança e autorização de produção.
+O painel de debug sempre informa os modos efetivos de CRM, conversões e WhatsApp.
 
 ## OpenAI
 
@@ -99,8 +117,8 @@ O modo padrão usa regras locais e não precisa de chave. O modo `openai` tenta 
 5. Informe nome completo, CPF válido, nascimento, e-mail, telefone principal e um segundo contato diferente.
 6. Escolha vencimento, data de instalação a partir de amanhã e turno.
 7. Confira no resumo o valor proporcional estimado e a primeira fatura cheia.
-8. Confirme a simulação.
-9. Verifique `CRM MOCK`, o payload no debug e a ausência de requisição ao CRM na aba Network.
+8. Confirme o pré-cadastro. Sem `safe=1`, essa ação cria ou atualiza uma pré-venda real.
+9. Verifique o resultado do CRM, a mensagem de sucesso, a contagem regressiva e o WhatsApp.
 10. Recarregue durante o fluxo e teste `Continuar atendimento anterior`.
 11. Use `Resetar sessão`.
 12. Repita com `coverage=mock&mockCoverage=inviavel`.
@@ -121,7 +139,7 @@ O modo padrão usa regras locais e não precisa de chave. O modo `openai` tenta 
 - Implementar consentimento, política de privacidade e prazo de expiração da sessão.
 - Validar o contrato da cobertura e o catálogo de planos com responsáveis comerciais.
 - Implementar proxy OpenAI autenticado, rate limiting, moderação e observabilidade, se necessário.
-- Habilitar CRM real apenas no backend, com idempotência, antifraude e auditoria.
+- Revisar idempotência, antifraude e auditoria do endpoint CRM antes de integrar o chat à página publicada.
 - Adicionar testes E2E em dispositivos reais e navegadores suportados.
 - Revisar acessibilidade, LGPD, segurança, eventos de conversão e consentimento antes de qualquer deploy.
 - Homologar em ambiente separado e obter aprovação explícita antes de integrar à landing page.

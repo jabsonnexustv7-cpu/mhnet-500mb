@@ -66,8 +66,10 @@ export function createSession(idFactory = () => globalThis.crypto?.randomUUID?.(
     dataInstalacao: "",
     turnoInstalacao: "",
     faturamento: null,
+    leadEventId: "",
     messages: [],
     crmPayload: null,
+    crmResult: null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };

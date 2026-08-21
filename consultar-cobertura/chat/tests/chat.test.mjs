@@ -8,6 +8,7 @@ import { extractCep, selectPlanFromText } from "../parser.js";
 import { BASE_PLANS } from "../plans.js";
 import { createSession, loadSession, resetSession, saveSession, STATES, transition } from "../state.js";
 import { isValidCep, isValidCpf, normalizeCep } from "../validators.js";
+import { createWhatsAppService } from "../whatsapp.js";
 
 const sampleSession = () => ({
   ...createSession(() => "session-test"),
@@ -20,7 +21,7 @@ const sampleSession = () => ({
   cidade: "Canoas",
   uf: "RS",
   coordenadas: "-29.92,-51.18",
-  cobertura: { viavel: true, status: "VIAVEL", motivo: "ftth_disponivel" },
+  cobertura: { viavel: true, status: "VIAVEL", motivo: "ftth_disponivel", source: "real" },
   plano: BASE_PLANS[0],
   nome: "João da Silva",
   cpf: "52998224725",
@@ -120,7 +121,7 @@ test("gera payload final compatível com o CRM existente", () => {
   assert.equal(payload.diaVencimentoFatura, "10");
   assert.equal(payload.dataInstalacao1, "2026-08-25");
   assert.equal(payload.turnoInstalacao1, "Manhã");
-  assert.equal(payload.event_id, "chat_mvp_session-test");
+  assert.equal(payload.event_id, "chat_session-test");
 });
 
 test("data de instalação respeita o mínimo de amanhã", () => {
@@ -146,6 +147,125 @@ test("CRM mock não executa POST real", async () => {
   assert.equal(result.mock, true);
   assert.equal(result.posted, false);
   assert.equal(fetchCalls, 0);
+});
+
+test("CRM real executa um único POST com o payload completo", async () => {
+  const calls = [];
+  const service = createCrmService(
+    { crmMode: "real", crmEndpoint: "https://crm.example.test/pre-sales" },
+    {
+      fetchImpl: async (url, options) => {
+        calls.push({ url, options });
+        return { ok: true, async json() { return { ok: true, created: true }; } };
+      },
+      logger: { info() {} }
+    }
+  );
+  const result = await service.submit(sampleSession(), {});
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].options.method, "POST");
+  assert.equal(JSON.parse(calls[0].options.body).telefone2Cliente, "51988887777");
+  assert.equal(result.posted, true);
+  assert.equal(result.created, true);
+});
+
+test("pós-venda monta a mensagem existente e redireciona após três segundos", () => {
+  const callbacks = [];
+  const assigned = [];
+  const tracked = [];
+  const service = createWhatsAppService(
+    { whatsappMode: "real", whatsNumber: "555193187300" },
+    { whatsapp: (_session, mode) => tracked.push(mode) },
+    {
+      locationObject: { assign: (url) => assigned.push(url) },
+      timerApi: {
+        setInterval(callback) { callbacks.push(callback); return 7; },
+        clearInterval() {}
+      }
+    }
+  );
+  const ticks = [];
+  const started = service.startRedirect(sampleSession(), (seconds) => ticks.push(seconds));
+  callbacks[0](); callbacks[0](); callbacks[0]();
+  assert.match(decodeURIComponent(started.url), /Acabei de concluir um pedido de internet, meu CPF: 52998224725/);
+  assert.deepEqual(ticks, [3, 2, 1, 0]);
+  assert.equal(assigned[0], started.url);
+  assert.deepEqual(tracked, ["automatico"]);
+});
+
+test("confirmação real registra conversão, CRM e pós-venda", async () => {
+  Object.defineProperty(globalThis, "location", {
+    configurable: true,
+    value: { href: "http://localhost/chat-lab.html", search: "", assign() {} }
+  });
+  Object.defineProperty(globalThis, "document", { configurable: true, value: { referrer: "" } });
+  Object.defineProperty(globalThis, "navigator", { configurable: true, value: { userAgent: "node-test" } });
+  const session = sampleSession();
+  const events = [];
+  let crmCalls = 0;
+  let redirectCalls = 0;
+  const ui = {
+    addMessage() {}, updateDebug() {}, clearConversation() {}, setTyping() {}, clearActions() {},
+    setComposerEnabled() {}, setPlaceholder() {}, showQuickReplies() {}, showPlans() {}, showSummary() {},
+    showFinalPayload() {}, showPostSaleSuccess() {}, updateWhatsAppCountdown() {}
+  };
+  const flow = createChatFlow({
+    session,
+    config: { storageKey: "real-flow", typingDelayMs: 0, crmMode: "real" },
+    storage: { setItem() {}, getItem() { return null; }, removeItem() {} },
+    ui,
+    coverageService: { async check() { return { viavel: true }; } },
+    crmService: {
+      async submit(current) {
+        crmCalls += 1;
+        return { ok: true, created: true, mock: false, posted: true, payload: buildCrmPayload(current, {}) };
+      }
+    },
+    addressLookup: async () => ({}),
+    interpreter: { async interpret() { return null; } },
+    tracking: {
+      crmAttempt() { events.push("attempt"); },
+      crmSuccess() { events.push("success"); },
+      crmError() { events.push("error"); },
+      personalLead() {}, coverage() {}, whatsapp() {}
+    },
+    whatsappService: {
+      buildUrl() { return "https://wa.me/test"; },
+      startRedirect() { redirectCalls += 1; },
+      trackManual() {}
+    },
+    logger: { info() {}, warn() {}, error() {} }
+  });
+  await flow.handleAction("confirm");
+  assert.equal(crmCalls, 1);
+  assert.equal(session.step, STATES.FINALIZADO);
+  assert.deepEqual(events, ["attempt", "success"]);
+  assert.equal(redirectCalls, 1);
+});
+
+test("cobertura mock nunca cria pré-venda real", async () => {
+  const session = sampleSession();
+  session.cobertura.source = "mock";
+  let crmCalls = 0;
+  const ui = {
+    addMessage() {}, updateDebug() {}, clearConversation() {}, setTyping() {}, clearActions() {},
+    setComposerEnabled() {}, setPlaceholder() {}, showQuickReplies() {}, showPlans() {}, showSummary() {},
+    showFinalPayload() {}, showPostSaleSuccess() {}, updateWhatsAppCountdown() {}
+  };
+  const flow = createChatFlow({
+    session,
+    config: { storageKey: "mock-guard", typingDelayMs: 0, crmMode: "real" },
+    storage: { setItem() {}, getItem() { return null; }, removeItem() {} },
+    ui,
+    coverageService: { async check() { return { viavel: true }; } },
+    crmService: { async submit() { crmCalls += 1; } },
+    addressLookup: async () => ({}),
+    interpreter: { async interpret() { return null; } },
+    logger: { info() {}, warn() {}, error() {} }
+  });
+  await flow.handleAction("confirm");
+  assert.equal(crmCalls, 0);
+  assert.equal(session.step, STATES.CONFIRMACAO);
 });
 
 test("fluxo ponta a ponta viável chega ao CRM MOCK", async () => {

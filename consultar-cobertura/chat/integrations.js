@@ -191,7 +191,7 @@ export function buildCrmPayload(session, context = {}) {
     utm_campaign: context.utmCampaign || "",
     utm_content: context.utmContent || "",
     utm_term: context.utmTerm || "",
-    event_id: `chat_mvp_${session.sessionId}`
+    event_id: session.leadEventId || `chat_${session.sessionId}`
   };
 }
 

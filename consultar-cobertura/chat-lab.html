@@ -31,7 +31,7 @@
         <div class="trust-row" aria-label="Vantagens">
           <span>✓ Consulta real de cobertura</span>
           <span>✓ Sem compromisso</span>
-          <span>✓ Seus dados não são enviados neste teste</span>
+          <span id="lab-data-mode">✓ Pré-cadastro enviado ao confirmar</span>
         </div>
       </div>
       <div class="signal-art" aria-hidden="true">
@@ -47,7 +47,7 @@
     <section class="lab-steps" aria-label="Como funciona">
       <article><span>01</span><div><strong>Informe o endereço</strong><p>CEP, número e complemento.</p></div></article>
       <article><span>02</span><div><strong>Veja a cobertura</strong><p>Consulta no serviço atual.</p></div></article>
-      <article><span>03</span><div><strong>Escolha seu plano</strong><p>Finalize apenas a simulação.</p></div></article>
+      <article><span>03</span><div><strong>Escolha seu plano</strong><p>Envie seu pré-cadastro.</p></div></article>
     </section>
   </main>
 
@@ -67,7 +67,7 @@
       <button id="chat-close" class="chat-close" type="button" aria-label="Fechar chat">×</button>
     </header>
 
-    <div class="chat-safety">Ambiente de homologação · CRM em modo simulação</div>
+    <div id="chat-safety" class="chat-safety">Envio real ativado · ao confirmar, o pré-cadastro será criado no CRM</div>
     <div id="chat-messages" class="chat-messages" role="log" aria-live="polite" aria-label="Mensagens da conversa"></div>
     <div id="chat-typing" class="typing-row" hidden>
       <span class="message-avatar" aria-hidden="true">W</span>
@@ -99,7 +99,7 @@
     <header><div><span>DEVTOOLS</span><strong>WebTurbo Chat</strong></div><button data-reset-session type="button">Resetar sessão</button></header>
     <div data-debug-fields class="debug-fields"></div>
     <details open><summary>JSON da sessão</summary><pre data-debug-session></pre></details>
-    <details><summary>Payload CRM MOCK</summary><pre data-debug-payload>Payload ainda não gerado.</pre></details>
+    <details><summary>Payload CRM</summary><pre data-debug-payload>Payload ainda não gerado.</pre></details>
   </aside>
 
   <script type="module" src="/consultar-cobertura/chat/app.js"></script>

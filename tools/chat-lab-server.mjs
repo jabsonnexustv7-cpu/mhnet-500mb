@@ -8,6 +8,7 @@ const root = normalize(join(fileURLToPath(new URL(".", import.meta.url)), ".."))
 const portArg = process.argv.find((arg) => /^--port=\d+$/.test(arg));
 const port = Number(portArg?.split("=")[1] || process.env.CHAT_LAB_PORT || 4173);
 const host = "0.0.0.0";
+const crmUpstream = "https://webturbo-crm-api-964927461432.southamerica-east1.run.app/api/v1/public/site-pre-sales";
 const mime = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -32,7 +33,48 @@ function resolveRequestPath(rawUrl) {
   return requested;
 }
 
-const server = createServer((request, response) => {
+async function proxyCrm(request, response) {
+  const chunks = [];
+  let size = 0;
+  for await (const chunk of request) {
+    size += chunk.length;
+    if (size > 1024 * 1024) {
+      response.writeHead(413, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ ok: false, message: "Payload excede o limite local." }));
+      return;
+    }
+    chunks.push(chunk);
+  }
+  try {
+    const upstream = await fetch(crmUpstream, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: Buffer.concat(chunks)
+    });
+    const body = await upstream.text();
+    response.writeHead(upstream.status, {
+      "Content-Type": upstream.headers.get("content-type") || "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+      "X-Content-Type-Options": "nosniff"
+    });
+    response.end(body);
+  } catch (error) {
+    response.writeHead(502, { "Content-Type": "application/json; charset=utf-8" });
+    response.end(JSON.stringify({ ok: false, message: "Falha ao conectar com o WebTurbo CRM.", detail: error.message }));
+  }
+}
+
+const server = createServer(async (request, response) => {
+  const requestUrl = new URL(request.url || "/", `http://localhost:${port}`);
+  if (requestUrl.pathname === "/api/chat/crm") {
+    if (request.method !== "POST") {
+      response.writeHead(405, { "Content-Type": "application/json; charset=utf-8", Allow: "POST" });
+      response.end(JSON.stringify({ ok: false, message: "Método não permitido." }));
+      return;
+    }
+    await proxyCrm(request, response);
+    return;
+  }
   const filePath = resolveRequestPath(request.url || "/");
   try {
     if (!filePath || !statSync(filePath).isFile()) throw new Error("not_found");

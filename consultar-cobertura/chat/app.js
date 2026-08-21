@@ -2,10 +2,15 @@ import { CHAT_CONFIG } from "./config.js";
 import { createChatFlow } from "./flow.js";
 import { createConversationInterpreter, createCoverageService, createCrmService, lookupAddress } from "./integrations.js";
 import { createSession, loadSession, resetSession } from "./state.js";
+import { createTrackingService } from "./tracking.js";
 import { createChatUI } from "./ui.js";
+import { createWhatsAppService } from "./whatsapp.js";
 
 const ui = createChatUI();
 const storage = window.localStorage;
+const tracking = createTrackingService(CHAT_CONFIG);
+tracking.initialize();
+const whatsappService = createWhatsAppService(CHAT_CONFIG, tracking);
 let session = loadSession(storage, CHAT_CONFIG.storageKey);
 let flow;
 
@@ -18,7 +23,9 @@ function buildFlow(currentSession) {
     coverageService: createCoverageService(CHAT_CONFIG),
     crmService: createCrmService(CHAT_CONFIG),
     interpreter: createConversationInterpreter(CHAT_CONFIG),
-    addressLookup: (cep) => lookupAddress(cep, { timeoutMs: CHAT_CONFIG.requestTimeoutMs })
+    addressLookup: (cep) => lookupAddress(cep, { timeoutMs: CHAT_CONFIG.requestTimeoutMs }),
+    tracking,
+    whatsappService
   });
 }
 
@@ -65,6 +72,13 @@ document.getElementById("resume-new").addEventListener("click", async () => {
 document.querySelectorAll("[data-reset-session]").forEach((button) => button.addEventListener("click", startFresh));
 
 if (CHAT_CONFIG.debug) document.body.classList.add("debug-enabled");
+const realSubmission = CHAT_CONFIG.crmMode === "real";
+document.getElementById("chat-safety").textContent = realSubmission
+  ? "Envio real ativado · ao confirmar, o pré-cadastro será criado no CRM"
+  : "Modo seguro · CRM e conversões em simulação";
+document.getElementById("lab-data-mode").textContent = realSubmission
+  ? "✓ Pré-cadastro enviado ao confirmar"
+  : "✓ Seus dados não são enviados neste teste";
 
 if (session?.sessionId && session.messages?.length) {
   flow = buildFlow(session);

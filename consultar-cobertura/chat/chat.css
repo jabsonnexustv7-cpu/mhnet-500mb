@@ -328,6 +328,14 @@ button { cursor: pointer; }
 .final-payload-card strong { font-size: 12px; }
 .final-payload-card span { font-size: 10px; }
 
+.post-sale-card { margin: 12px 0 15px 36px; padding: 20px 16px; color: #244235; background: #f1fff6; border: 1px solid #b9edcd; border-radius: 17px; box-shadow: 0 8px 24px rgba(0,122,47,0.08); text-align: center; }
+.post-sale-icon { width: 42px; height: 42px; margin: 0 auto 10px; display: grid; place-items: center; color: white; background: var(--green-500); border-radius: 50%; font-size: 23px; font-weight: 900; }
+.post-sale-card h3 { margin: 0; color: #126433; font-size: 15px; }
+.post-sale-card p { margin: 7px 0 0; color: #557063; font-size: 11px; line-height: 1.5; }
+.post-sale-countdown strong { color: #126433; font-size: 13px; }
+.whatsapp-continue { min-height: 46px; margin: 8px 14px 14px; padding: 0 18px; display: flex; align-items: center; justify-content: center; color: white; background: var(--green-500); border-radius: 12px; box-shadow: 0 8px 20px rgba(0,200,83,0.2); font-size: 12px; font-weight: 900; text-decoration: none; }
+.whatsapp-continue:hover { background: #00ad48; }
+
 .chat-composer { min-height: 66px; padding: 10px 12px; display: flex; align-items: center; gap: 8px; background: white; border-top: 1px solid #e4eaf2; }
 .chat-composer input { width: 100%; height: 44px; padding: 0 14px; color: var(--ink); background: #f4f7fb; border: 1px solid transparent; border-radius: 13px; outline: none; font-size: 13px; }
 .chat-composer input:focus { background: white; border-color: #9eb9ed; box-shadow: 0 0 0 3px rgba(26,86,219,0.08); }

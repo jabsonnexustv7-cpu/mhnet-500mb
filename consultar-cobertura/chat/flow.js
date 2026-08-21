@@ -28,8 +28,12 @@ import {
 
 const PREFIX = "[WEBTURBO CHAT]";
 
-export function createChatFlow({ session, config, storage, ui, coverageService, crmService, interpreter, addressLookup, logger = console }) {
+export function createChatFlow({ session, config, storage, ui, coverageService, crmService, interpreter, addressLookup, tracking, whatsappService, logger = console }) {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const analytics = tracking || {
+    attribution() { return {}; }, personalLead() {}, crmAttempt() {}, crmSuccess() {}, crmError() {}, coverage() {}, whatsapp() {}
+  };
+  let submitting = false;
 
   function persist() {
     saveSession(session, storage, config.storageKey);
@@ -143,7 +147,14 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     if (session.step === STATES.COBERTURA_VIAVEL) changeStep(STATES.ESCOLHA_PLANO);
     ui.updateDebug(session, config);
     if (session.step === STATES.CONFIRMACAO) ui.showSummary(session);
-    if (session.step === STATES.FINALIZADO && session.crmPayload) ui.showFinalPayload(session.crmPayload);
+    if (session.step === STATES.FINALIZADO && session.crmPayload) {
+      if (session.crmResult?.mock === false && whatsappService) {
+        ui.showPostSaleSuccess?.(whatsappService.buildUrl(session), 0);
+        ui.setComposerEnabled(false);
+        return;
+      }
+      ui.showFinalPayload(session.crmPayload);
+    }
     showControlsForStep();
   }
 
@@ -163,6 +174,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       const coverage = await coverageService.check(session);
       session.cobertura = coverage;
       session.coordenadas = coverage.coords || "";
+      if (coverage.source === "real" || config.conversionMode !== "real") analytics.coverage(session, coverage);
       logger.info(`${PREFIX} Coverage result: ${coverage.status}`, { source: coverage.source, motivo: coverage.motivo });
       changeStep(coverage.viavel ? STATES.COBERTURA_VIAVEL : STATES.COBERTURA_INVIAVEL);
       if (!coverage.viavel) {
@@ -195,31 +207,68 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
 
   function contextFromLocation() {
     const params = new URLSearchParams(location.search);
+    const saved = analytics.attribution?.() || {};
     return {
       pageUrl: location.href,
-      landingPage: location.href,
-      referrer: document.referrer,
+      landingPage: saved.landing_page || location.href,
+      referrer: document.referrer || saved.referrer || "",
       userAgent: navigator.userAgent,
-      gclid: params.get("gclid") || "",
-      gbraid: params.get("gbraid") || "",
-      wbraid: params.get("wbraid") || "",
-      fbclid: params.get("fbclid") || "",
-      utmSource: params.get("utm_source") || "",
-      utmMedium: params.get("utm_medium") || "",
-      utmCampaign: params.get("utm_campaign") || "",
-      utmContent: params.get("utm_content") || "",
-      utmTerm: params.get("utm_term") || ""
+      gclid: params.get("gclid") || saved.gclid || "",
+      gbraid: params.get("gbraid") || saved.gbraid || "",
+      wbraid: params.get("wbraid") || saved.wbraid || "",
+      fbclid: params.get("fbclid") || saved.fbclid || "",
+      utmSource: params.get("utm_source") || saved.utm_source || "",
+      utmMedium: params.get("utm_medium") || saved.utm_medium || "",
+      utmCampaign: params.get("utm_campaign") || saved.utm_campaign || "",
+      utmContent: params.get("utm_content") || saved.utm_content || "",
+      utmTerm: params.get("utm_term") || saved.utm_term || ""
     };
   }
 
   async function confirm() {
-    const result = await crmService.submit(session, contextFromLocation());
-    session.crmPayload = result.payload;
-    persist();
-    changeStep(STATES.FINALIZADO);
-    ui.showFinalPayload(result.payload);
-    await assistant("Simulação concluída! Nenhuma venda foi criada e nenhum dado foi enviado ao CRM. O payload está disponível no painel de debug.");
-    showControlsForStep();
+    if (submitting) return;
+    if (config.crmMode === "real" && session.cobertura?.source !== "real") {
+      await assistant("O envio real ao CRM exige uma consulta de cobertura real e viável. Reinicie o atendimento sem o parâmetro coverage=mock ou use safe=1 para simular.");
+      showControlsForStep();
+      return;
+    }
+    submitting = true;
+    ui.clearActions();
+    ui.setComposerEnabled(false);
+    analytics.crmAttempt(session);
+    await assistant(config.crmMode === "real" ? "Enviando seu pré-cadastro para a WebTurbo…" : "Gerando a simulação do CRM…", { kind: "status" });
+    try {
+      const result = await crmService.submit(session, contextFromLocation());
+      session.crmPayload = result.payload;
+      session.crmResult = {
+        ok: result.ok === true,
+        created: result.created === true,
+        mock: result.mock === true,
+        posted: result.posted === true
+      };
+      persist();
+      changeStep(STATES.FINALIZADO);
+
+      if (result.mock) {
+        ui.showFinalPayload(result.payload);
+        await assistant("Simulação concluída! Nenhuma venda foi criada e nenhum dado foi enviado ao CRM. O payload está disponível no painel de debug.");
+        showControlsForStep();
+        return;
+      }
+
+      analytics.crmSuccess(session, result);
+      addMessage("assistant", "Cadastro recebido com sucesso! Sua solicitação foi enviada para nossa equipe de agendamento.");
+      const whatsappUrl = whatsappService.buildUrl(session);
+      ui.showPostSaleSuccess?.(whatsappUrl, 3);
+      whatsappService.startRedirect(session, (seconds) => ui.updateWhatsAppCountdown?.(seconds));
+    } catch (error) {
+      logger.error(`${PREFIX} CRM submission failed`, error);
+      analytics.crmError(session, error);
+      await assistant(error?.message || "Não foi possível enviar ao CRM. Confira os dados e tente novamente.");
+      showControlsForStep();
+    } finally {
+      submitting = false;
+    }
   }
 
   async function handleText(text) {
@@ -368,6 +417,10 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
           break;
         }
         session.telefoneSecundario = phone;
+        if (session.cobertura?.source === "real" || config.conversionMode !== "real") {
+          analytics.personalLead(session);
+        }
+        persist();
         changeStep(STATES.VENCIMENTO);
         await askCurrentStep();
         break;
@@ -447,6 +500,10 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     }
     if (["select-due-date", "select-installation-date", "select-shift"].includes(action)) {
       return handleText(value);
+    }
+    if (action === "open-whatsapp") {
+      whatsappService?.trackManual(session);
+      return;
     }
     if (action === "change-plan") {
       ui.removeSummary?.();

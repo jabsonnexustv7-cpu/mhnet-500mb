@@ -149,6 +149,35 @@ export function createChatUI() {
     scrollToBottom();
   }
 
+  function showPostSaleSuccess(whatsappUrl, seconds = 3) {
+    messages.querySelector(".post-sale-card")?.remove();
+    const card = element("section", "post-sale-card");
+    card.appendChild(element("span", "post-sale-icon", "✓"));
+    card.appendChild(element("h3", "", "Cadastro recebido com sucesso!"));
+    card.appendChild(element("p", "", "Sua solicitação foi enviada para nossa equipe de agendamento."));
+    const countdown = element("p", "post-sale-countdown");
+    countdown.append("Você será direcionado para o WhatsApp em ");
+    const counter = element("strong", "", String(seconds));
+    counter.dataset.whatsappCountdown = "true";
+    countdown.append(counter, " segundos para confirmar o pedido.");
+    card.appendChild(countdown);
+    messages.appendChild(card);
+
+    actions.replaceChildren();
+    const link = element("a", "whatsapp-continue", "Continuar no WhatsApp");
+    link.href = whatsappUrl;
+    link.target = "_self";
+    link.rel = "noopener";
+    link.dataset.action = "open-whatsapp";
+    actions.appendChild(link);
+    scrollToBottom();
+  }
+
+  function updateWhatsAppCountdown(seconds) {
+    const counter = messages.querySelector("[data-whatsapp-countdown]");
+    if (counter) counter.textContent = String(Math.max(0, seconds));
+  }
+
   function setComposerEnabled(enabled) {
     input.disabled = !enabled;
     send.disabled = !enabled;
@@ -174,6 +203,8 @@ export function createChatUI() {
       Vencimento: session.diaVencimentoFatura || "-",
       Instalação: session.dataInstalacao ? `${session.dataInstalacao} · ${session.turnoInstalacao || "-"}` : "-",
       "CRM mode": config.crmMode,
+      "Conversion mode": config.conversionMode,
+      "WhatsApp mode": config.whatsappMode,
       "Chat mode": config.chatMode,
       "Coverage mode": `${config.coverageMode}${session.cobertura?.source ? ` (${session.cobertura.source})` : ""}`
     };
@@ -214,6 +245,8 @@ export function createChatUI() {
     showSummary,
     removeSummary,
     showFinalPayload,
+    showPostSaleSuccess,
+    updateWhatsAppCountdown,
     setComposerEnabled,
     setPlaceholder,
     updateDebug,
