@@ -63,7 +63,7 @@ export function createChatUI() {
     scrollToBottom();
   }
 
-  function showPlans(plans, { showMore = false } = {}) {
+  function showPlans(plans, { showMore = false, showPromotions = false } = {}) {
     clearActions();
     const track = element("div", "chat-plan-track");
     plans.forEach((plan) => {
@@ -91,6 +91,12 @@ export function createChatUI() {
       more.type = "button";
       more.dataset.action = "show-more-plans";
       actions.appendChild(more);
+    }
+    if (showPromotions) {
+      const back = element("button", "chat-more-plans chat-back-promotions", "← Voltar às promoções");
+      back.type = "button";
+      back.dataset.action = "show-promotions";
+      actions.appendChild(back);
     }
     scrollToBottom();
   }
@@ -213,6 +219,15 @@ export function createChatUI() {
       "Conversion mode": config.conversionMode,
       "WhatsApp mode": config.whatsappMode,
       "Chat mode": config.chatMode,
+      "AI mode": config.aiMode,
+      "OpenAI configured": session.ai?.openAiConfigured === true ? "yes" : session.ai?.openAiConfigured === false ? "no" : "checking",
+      "AI calls this session": session.ai?.calls || 0,
+      "Last routing decision": session.ai?.lastRoutingDecision || "-",
+      "Last AI intent": session.ai?.lastIntent || "-",
+      "Current flowStep": session.flowStep || session.step,
+      conversationMode: session.conversationMode || "FLOW",
+      "Last systemAction": session.ai?.lastSystemAction || "NONE",
+      "AI latency": session.ai?.latencyMs ? `${session.ai.latencyMs} ms` : "-",
       "Coverage mode": `${config.coverageMode}${session.cobertura?.source ? ` (${session.cobertura.source})` : ""}`
     };
     const list = debug.querySelector("[data-debug-fields]");

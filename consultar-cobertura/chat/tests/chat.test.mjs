@@ -167,6 +167,12 @@ test("seleção de planos começa nas promoções e expande para o catálogo", a
   assert.equal(session.planSelectionView, PLAN_SELECTION_VIEWS.CATALOG);
   assert.deepEqual(rendered.at(-1).ids, BASE_PLANS.map((plan) => plan.id));
   assert.equal(rendered.at(-1).options.showMore, false);
+  assert.equal(rendered.at(-1).options.showPromotions, true);
+
+  await flow.handleAction("show-promotions");
+  assert.equal(session.planSelectionView, PLAN_SELECTION_VIEWS.PROMOTIONS);
+  assert.deepEqual(rendered.at(-1).ids, PROMOTIONAL_PLANS.map((plan) => plan.id));
+  assert.equal(rendered.at(-1).options.showMore, true);
 });
 
 test("gera payload final compatível com o CRM existente", () => {

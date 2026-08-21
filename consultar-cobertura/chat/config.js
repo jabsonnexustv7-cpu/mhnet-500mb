@@ -3,6 +3,7 @@ const safeMode = params.get("safe") === "1";
 
 export const CHAT_CONFIG = {
   chatMode: params.get("chat") || "local",
+  aiMode: params.get("ai") === "openai" ? "openai" : "off",
   coverageMode: params.get("coverage") || "real",
   coverageFallback: params.get("coverageFallback") || "mock",
   mockCoverageResult: params.get("mockCoverage") || "viavel",
@@ -12,11 +13,13 @@ export const CHAT_CONFIG = {
   coverageEndpoint: "https://consulta-cobertura-mhnet-br-964927461432.southamerica-east1.run.app",
   crmEndpoint: "/api/chat/crm",
   whatsNumber: "555193187300",
-  openAiProxyEndpoint: "/api/chat/parse",
+  aiAssistEndpoint: "/api/chat/assist",
+  aiTimeoutMs: 12000,
+  aiMaxMessageLength: 500,
   coverageRadius: 200,
   requestTimeoutMs: 10000,
   typingDelayMs: 380,
-  storageKey: "webturbo-chat-mvp-v3",
+  storageKey: "webturbo-chat-mvp-v4",
   debug: params.get("debug") === "1"
 };
 

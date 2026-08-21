@@ -219,24 +219,4 @@ export function createCrmService(config, { fetchImpl = fetch, logger = console }
   };
 }
 
-export function createConversationInterpreter(config, { fetchImpl = fetch, logger = console } = {}) {
-  return {
-    async interpret(text, context) {
-      if (config.chatMode !== "openai") return null;
-      try {
-        const response = await fetchImpl(config.openAiProxyEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, context })
-        });
-        if (!response.ok) throw new Error("Proxy OpenAI indisponível");
-        return await response.json();
-      } catch (error) {
-        logger.warn(`${LOG_PREFIX} OpenAI mode unavailable; using local parser`, error.message);
-        return null;
-      }
-    }
-  };
-}
-
 export { createCoveragePayload, createMinimalFallbackPayload, normalizeCoverage };

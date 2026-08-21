@@ -13,7 +13,7 @@ O repositório é um site estático publicado com Jekyll/GitHub Pages e não pos
 - três ofertas promocionais prioritárias (300, 500 e 700 Mega) e um catálogo adicional de seis planos, com substituição de 500 por 600 Mega em Sorocaba e Votorantim;
 - um endpoint separado do WebTurbo CRM para pré-vendas.
 
-O laboratório não importa o JavaScript monolítico da página publicada. As integrações necessárias foram isoladas em adaptadores: CRM real, Meta Pixel `Lead`, GA4, conversões do Google Ads e pós-venda no WhatsApp. CAPI, ManyChat, notificações de cobertura e retenção continuam fora do laboratório.
+O laboratório não importa o JavaScript monolítico da página publicada. As integrações necessárias foram isoladas em adaptadores: CRM real, Meta Pixel `Lead`, GA4, conversões do Google Ads, pós-venda no WhatsApp e assistência opcional pela OpenAI Responses API. CAPI, ManyChat, notificações de cobertura e retenção continuam fora do laboratório.
 
 ## Arquivos do MVP
 
@@ -24,6 +24,10 @@ O laboratório não importa o JavaScript monolítico da página publicada. As in
 - `consultar-cobertura/chat/state.js`: sessão, persistência e máquina de estados.
 - `consultar-cobertura/chat/validators.js`: validações e normalizações.
 - `consultar-cobertura/chat/parser.js`: interpretação local das mensagens.
+- `consultar-cobertura/chat/message-router.js`: decisão local, mensagem mista, comandos e remoção de dados sensíveis.
+- `consultar-cobertura/chat/ai-service.js`: cliente do endpoint local de assistência.
+- `consultar-cobertura/chat/ai-schema.js`: contrato estruturado da resposta da IA.
+- `consultar-cobertura/chat/knowledge.js`: conhecimento comercial estável e retomadas determinísticas.
 - `consultar-cobertura/chat/plans.js`: três ofertas promocionais, catálogo adicional reaproveitado e regra regional.
 - `consultar-cobertura/chat/integrations.js`: ViaCEP, cobertura e adaptador CRM.
 - `consultar-cobertura/chat/tracking.js`: atribuição e eventos Meta/Google equivalentes ao fluxo atual.
@@ -31,8 +35,12 @@ O laboratório não importa o JavaScript monolítico da página publicada. As in
 - `consultar-cobertura/chat/flow.js`: orquestração do fluxo.
 - `consultar-cobertura/chat/ui.js`: renderização e eventos visuais.
 - `consultar-cobertura/chat/app.js`: inicialização do laboratório.
-- `consultar-cobertura/chat/tests/chat.test.mjs`: testes automatizados.
-- `tools/chat-lab-server.mjs`: servidor HTTP local, acesso pela rede e proxy do CRM para evitar bloqueio CORS de `localhost`.
+- `consultar-cobertura/chat/tests/*.test.mjs`: testes do fluxo, router, privacidade e backend OpenAI.
+- `tools/chat-lab-server.mjs`: servidor HTTP local, acesso pela rede, endpoint de IA e proxy do CRM.
+- `tools/chat-ai/system-prompt.mjs`: regras rígidas e isoladas do assistente comercial.
+- `tools/chat-ai/openai-assist.mjs`: validação server-side e integração com `POST /v1/responses`.
+- `tools/chat-ai/smoke-test.mjs`: teste real opcional, bloqueado sem flag explícita.
+- `.env.example`: nomes das variáveis, sem credenciais.
 - `package.json`: comandos de teste e servidor, sem dependências externas.
 
 ## Máquina de estados
@@ -41,7 +49,7 @@ O laboratório não importa o JavaScript monolítico da página publicada. As in
 
 O segundo contato é obrigatório e deve ser diferente do principal. Os vencimentos disponíveis são `05`, `10`, `15`, `20` e `25`; a data de instalação começa em amanhã e os turnos disponíveis são `Manhã` e `Tarde`, iguais ao formulário normal.
 
-Transições de correção voltam para `CEP`, `NUMERO` ou `ESCOLHA_PLANO`. Transições não permitidas geram erro explícito.
+`step` e `flowStep` permanecem sob autoridade determinística. Durante uma dúvida, `conversationMode` muda temporariamente de `FLOW` para `AI_HELP` e volta para `FLOW` sem aceitar alteração de etapa sugerida pela IA. O comando `voltar` usa transições permitidas e o catálogo adicional oferece `Voltar às promoções`.
 
 ## Como executar no Windows PowerShell
 
@@ -67,8 +75,8 @@ Os defaults ficam em `consultar-cobertura/chat/config.js` e podem ser sobrescrit
 - Cobertura real (padrão): `?debug=1&coverage=real`
 - Cobertura mock viável: `?debug=1&coverage=mock&mockCoverage=viavel`
 - Cobertura mock inviável: `?debug=1&coverage=mock&mockCoverage=inviavel`
-- Parser local (padrão): `chat=local`
-- Estrutura OpenAI/proxy: `chat=openai`
+- Parser local sempre ativo; assistência desligada (padrão): `ai=off`
+- Assistência OpenAI para dúvidas/objeções: `ai=openai`
 - CRM real (padrão): `crm=real`
 - Conversões reais (padrão): `conversions=real`
 - Redirecionamento real para WhatsApp (padrão): `whatsapp=real`
@@ -80,7 +88,7 @@ Por segurança, uma cobertura `mock` ou `mock-fallback` nunca pode gerar pré-ve
 
 ## Persistência
 
-A sessão é salva em `localStorage` com a chave `webturbo-chat-mvp-v3`. Ao recarregar, a página oferece continuar o atendimento ou iniciar outro. O botão `Resetar sessão` aparece no painel aberto por `?debug=1`.
+A sessão é salva em `localStorage` com a chave `webturbo-chat-mvp-v4`. Ao recarregar, a página oferece continuar o atendimento ou iniciar outro. O botão `Resetar sessão` aparece no painel aberto por `?debug=1`.
 
 ## CRM
 
@@ -106,28 +114,77 @@ O painel de debug sempre informa os modos efetivos de CRM, conversões e WhatsAp
 
 ## OpenAI
 
-O modo padrão usa regras locais e não precisa de chave. O modo `openai` tenta um proxy seguro em `/api/chat/parse` e volta ao parser local se o proxy não existir. Não há chave no frontend. Uma versão futura deve implementar esse proxy no backend, ler `OPENAI_API_KEY` de variável de ambiente e devolver somente intenção/entidades; cobertura, preço, planos e aprovações continuam sendo definidos pelas APIs/regras do sistema.
+O parser local continua sendo executado primeiro. A OpenAI só é chamada para perguntas, objeções, ajuda, mensagens não reconhecidas e a parte interrogativa de uma mensagem mista. CEP, CPF, e-mail, telefone, nascimento, seleções de plano e comandos conhecidos não dependem da API.
+
+O frontend chama `POST /api/chat/assist` com:
+
+```json
+{
+  "sessionId": "...",
+  "step": "CPF",
+  "message": "a instalação é grátis?",
+  "context": {
+    "cidade": "Canoas",
+    "uf": "RS",
+    "coverageStatus": "VIAVEL",
+    "selectedPlan": "FIBRA 500MB (Combate)",
+    "selectedPlanValue": 89.9,
+    "availablePlans": []
+  }
+}
+```
+
+CPF, telefone, e-mail, nascimento e CEP são removidos no router e novamente no servidor. O endpoint valida tamanho, JSON, `step` e catálogo; depois usa a Responses API com `store: false`, limite de saída e JSON Schema. O retorno tem `type`, `answer`, `resumeFlow`, `resumeStep`, `systemAction` e `handoffSuggested`. `resumeStep` divergente é rejeitado e nenhuma `systemAction` é executada diretamente.
+
+### Configuração
+
+Copie `.env.example` para `.env` e preencha no servidor local:
+
+```dotenv
+OPENAI_API_KEY=sua_chave_somente_no_backend
+OPENAI_MODEL=modelo_disponivel_na_sua_conta
+```
+
+Não existe modelo comercial fixo no frontend. Se a chave ou o modelo estiver ausente, o endpoint retorna `OPENAI_NOT_CONFIGURED` e o chat usa uma resposta amigável sem quebrar o fluxo. A chave não entra no HTML, módulos do navegador, payload, debug ou logs.
+
+URL segura com assistência habilitada:
+
+`http://localhost:4173/consultar-cobertura/chat-lab.html?debug=1&safe=1&coverage=mock&ai=openai`
+
+O smoke test real nunca roda no `npm test`. Para autorizá-lo explicitamente no PowerShell:
+
+```powershell
+$env:OPENAI_API_KEY="..."
+$env:OPENAI_MODEL="..."
+$env:OPENAI_SMOKE_TEST="1"
+npm run chat:ai-smoke
+```
+
+No debug aparecem `AI mode`, configuração sim/não, quantidade de chamadas, última decisão do router, intenção, `flowStep`, `conversationMode`, ação sugerida e latência. A chave nunca aparece.
 
 ## Roteiro manual
 
 1. Abra o chat e informe `meu cep é 92120141`.
 2. Informe `o número é 1186`.
 3. Informe `não tenho complemento`.
-4. Em modo mock viável, escolha um card ou escreva `quero o mais barato`.
-5. Informe nome completo, CPF válido, nascimento, e-mail, telefone principal e um segundo contato diferente.
-6. Escolha vencimento, data de instalação a partir de amanhã e turno.
-7. Confira no resumo o valor proporcional estimado e a primeira fatura cheia.
-8. Confirme o pré-cadastro. Sem `safe=1`, essa ação cria ou atualiza uma pré-venda real.
-9. Verifique o resultado do CRM, a mensagem de sucesso, a contagem regressiva e o WhatsApp.
-10. Recarregue durante o fluxo e teste `Continuar atendimento anterior`.
-11. Use `Resetar sessão`.
-12. Repita com `coverage=mock&mockCoverage=inviavel`.
-13. Envie CEP, CPF, telefones repetidos e datas inválidas e confirme que o estado não avança.
+4. Em modo mock viável, confira as três promoções, clique em `Ver mais ofertas` e depois em `Voltar às promoções`.
+5. Escolha um card ou escreva `quero o mais barato`.
+6. Informe o nome completo e aguarde a etapa CPF.
+7. Na etapa CPF, pergunte `a instalação é grátis?` e confirme no debug que o estado continua CPF.
+8. Teste `meu cpf é 529.982.247-25 e tem fidelidade?` com CPF de teste e confirme que apenas a dúvida aparece no request mockado/log de desenvolvimento.
+9. Depois da mensagem mista, informe nascimento, e-mail, telefone principal, um segundo contato diferente, vencimento, data de instalação a partir de amanhã e turno.
+10. Confira no resumo o valor proporcional estimado e a primeira fatura cheia.
+11. Confirme o pré-cadastro. Sem `safe=1`, essa ação cria ou atualiza uma pré-venda real.
+12. Verifique o resultado do CRM, a mensagem de sucesso, a contagem regressiva e o WhatsApp.
+13. Teste `quero falar com atendente`, `voltar` e uma mensagem de prompt injection.
+14. Recarregue durante o fluxo, teste `Continuar atendimento anterior` e depois `Resetar sessão`.
+15. Repita com `coverage=mock&mockCoverage=inviavel` e com dados inválidos.
 
 ## Limitações atuais
 
 - O ViaCEP pode retornar CEP geral sem rua/bairro; o MVP mantém o fluxo, mas uma segunda versão deve solicitar esses campos no chat.
-- O proxy OpenAI ainda não foi implementado; o modo continua funcional por fallback local.
+- O endpoint de IA é local e não possui autenticação de usuário nem rate limiting distribuído; antes de produção, deve migrar para um backend autenticado com sessão server-side.
+- O servidor valida o `step`, mas neste MVP não mantém uma cópia server-side da sessão para confrontar o estado enviado pelo navegador.
 - Ponto de referência ainda não é coletado e fica vazio no payload.
 - O cálculo proporcional espelha a regra atual da landing, que estima a instalação em D+2 mesmo quando o cliente escolhe outra data preferida.
 - O mock de cobertura serve apenas para homologação e nunca deve ser tratado como decisão técnica real.
@@ -138,7 +195,7 @@ O modo padrão usa regras locais e não precisa de chave. O modo `openai` tenta 
 - Remover/segregar o painel de debug e revisar retenção de dados pessoais no `localStorage`.
 - Implementar consentimento, política de privacidade e prazo de expiração da sessão.
 - Validar o contrato da cobertura e o catálogo de planos com responsáveis comerciais.
-- Implementar proxy OpenAI autenticado, rate limiting, moderação e observabilidade, se necessário.
+- Migrar o endpoint OpenAI para backend autenticado, com rate limiting, moderação, observabilidade e sessão server-side.
 - Revisar idempotência, antifraude e auditoria do endpoint CRM antes de integrar o chat à página publicada.
 - Adicionar testes E2E em dispositivos reais e navegadores suportados.
 - Revisar acessibilidade, LGPD, segurança, eventos de conversão e consentimento antes de qualquer deploy.
@@ -148,6 +205,6 @@ O modo padrão usa regras locais e não precisa de chave. O modo `openai` tenta 
 
 1. Solicitar rua/bairro quando o CEP for geral e permitir confirmação estruturada do endereço.
 2. Buscar planos de uma fonte única versionada, em vez de manter dados no HTML.
-3. Criar um backend de sessão para OpenAI e CRM, sem expor segredos.
+3. Criar um backend de sessão persistente para confrontar `flowStep` e aplicar limites por usuário.
 4. Substituir a data mínima local por uma agenda real de disponibilidade, quando existir um serviço para isso.
 5. Criar suíte E2E com cenários reais controlados de cobertura.

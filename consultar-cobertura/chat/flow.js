@@ -9,9 +9,10 @@ import {
   extractPhone,
   selectPlanFromText,
   wantsAddressCorrection,
-  wantsConfirmation,
-  wantsMorePlans
+  wantsConfirmation
 } from "./parser.js";
+import { resumePromptForStep } from "./knowledge.js";
+import { routeMessage, ROUTE_KINDS, ROUTER_COMMANDS } from "./message-router.js";
 import { getPlansForCity, getPromotionalPlans, isPromotionalPlan, PLAN_SELECTION_VIEWS } from "./plans.js";
 import { calculateBillingSummary, DUE_DATE_OPTIONS, INSTALLATION_SHIFT_OPTIONS, parseInstallationDate, tomorrowISO } from "./billing.js";
 import { clearAddress, saveSession, STATES, transition } from "./state.js";
@@ -29,12 +30,29 @@ import {
 
 const PREFIX = "[WEBTURBO CHAT]";
 
-export function createChatFlow({ session, config, storage, ui, coverageService, crmService, interpreter, addressLookup, tracking, whatsappService, logger = console }) {
+const BACK_STEPS = Object.freeze({
+  [STATES.NUMERO]: STATES.CEP,
+  [STATES.COMPLEMENTO]: STATES.NUMERO,
+  [STATES.NOME]: STATES.ESCOLHA_PLANO,
+  [STATES.CPF]: STATES.NOME,
+  [STATES.DATA_NASCIMENTO]: STATES.CPF,
+  [STATES.EMAIL]: STATES.DATA_NASCIMENTO,
+  [STATES.TELEFONE]: STATES.EMAIL,
+  [STATES.TELEFONE_SECUNDARIO]: STATES.TELEFONE,
+  [STATES.VENCIMENTO]: STATES.TELEFONE_SECUNDARIO,
+  [STATES.DATA_INSTALACAO]: STATES.VENCIMENTO,
+  [STATES.TURNO_INSTALACAO]: STATES.DATA_INSTALACAO,
+  [STATES.CONFIRMACAO]: STATES.TURNO_INSTALACAO
+});
+
+export function createChatFlow({ session, config, storage, ui, coverageService, crmService, aiService, messageRouter, addressLookup, tracking, whatsappService, logger = console }) {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const analytics = tracking || {
     attribution() { return {}; }, personalLead() {}, crmAttempt() {}, crmSuccess() {}, crmError() {}, coverage() {}, whatsapp() {}
   };
   let submitting = false;
+  let aiInFlight = false;
+  const router = messageRouter || { route: routeMessage };
 
   function persist() {
     saveSession(session, storage, config.storageKey);
@@ -119,7 +137,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       ]);
     } else if (session.step === STATES.ESCOLHA_PLANO) {
       const promotions = planSelectionView() === PLAN_SELECTION_VIEWS.PROMOTIONS;
-      ui.showPlans(visiblePlans(), { showMore: promotions });
+      ui.showPlans(visiblePlans(), { showMore: promotions, showPromotions: !promotions });
     } else if (session.step === STATES.VENCIMENTO) {
       ui.showQuickReplies(DUE_DATE_OPTIONS.map((day) => ({ label: `Dia ${day}`, action: "select-due-date", value: day })));
     } else if (session.step === STATES.DATA_INSTALACAO) {
@@ -255,6 +273,94 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     showControlsForStep();
   }
 
+  async function showPromotions({ recordUser = true } = {}) {
+    if (planSelectionView() === PLAN_SELECTION_VIEWS.PROMOTIONS) return;
+    if (recordUser) addMessage("user", "Voltar às promoções");
+    session.planSelectionView = PLAN_SELECTION_VIEWS.PROMOTIONS;
+    persist();
+    trackPromotionsDisplayed();
+    await assistant("Estas são novamente as três condições especiais disponíveis.");
+    showControlsForStep();
+  }
+
+  async function goBack() {
+    if (session.step === STATES.ESCOLHA_PLANO && planSelectionView() === PLAN_SELECTION_VIEWS.CATALOG) {
+      await showPromotions({ recordUser: false });
+      return;
+    }
+    const previous = BACK_STEPS[session.step];
+    if (!previous) {
+      await assistant("Não há uma etapa anterior disponível aqui. Você pode continuar ou corrigir o endereço.");
+      showControlsForStep();
+      return;
+    }
+    ui.removeSummary?.();
+    changeStep(previous);
+    await assistant("Tudo bem, voltamos uma etapa.");
+    await askCurrentStep();
+  }
+
+  async function handoffToHuman() {
+    const result = whatsappService?.openHandoff?.(session);
+    if (result?.mock) {
+      await assistant("O atendimento humano pelo WhatsApp está em simulação neste modo de teste. Ative o modo real para abrir a conversa.");
+    } else {
+      await assistant("Vou direcionar você para um atendente no WhatsApp.");
+    }
+    showControlsForStep();
+  }
+
+  async function handleAiAssistance(question) {
+    if (aiInFlight) return;
+    const preservedStep = session.step;
+    session.flowStep = preservedStep;
+    session.conversationMode = "AI_HELP";
+    session.ai.lastRoutingDecision = session.ai.lastRoutingDecision || `AI_FALLBACK:${preservedStep}`;
+    persist();
+
+    const resume = resumePromptForStep(preservedStep);
+    if (config.aiMode !== "openai" || !aiService) {
+      logger.info(`${PREFIX} AI unavailable, fallback used`, { step: preservedStep, reason: "disabled" });
+      session.conversationMode = "FLOW";
+      session.ai.lastIntent = "FALLBACK";
+      session.ai.lastSystemAction = "NONE";
+      persist();
+      await assistant(`Não consegui responder essa dúvida agora, mas podemos continuar sua contratação ou falar com um atendente. ${resume}`);
+      return;
+    }
+
+    aiInFlight = true;
+    session.ai.calls += 1;
+    ui.setComposerEnabled(false);
+    ui.setTyping(true);
+    const started = Date.now();
+    try {
+      const result = await aiService.assist(session, question, visiblePlans());
+      ui.setTyping(false);
+      session.ai.openAiConfigured = result.configured;
+      session.ai.lastIntent = result.type;
+      session.ai.lastSystemAction = result.systemAction;
+      session.ai.latencyMs = result.latencyMs || (Date.now() - started);
+      logger.info(`${PREFIX} AI intent: ${result.type}`, { systemAction: result.systemAction });
+      addMessage("assistant", `${result.answer} ${resume}`.trim(), { kind: "ai-assist" });
+      logger.info(`${PREFIX} AI answered, resuming: ${preservedStep}`);
+    } catch (error) {
+      ui.setTyping(false);
+      session.ai.lastIntent = "FALLBACK";
+      session.ai.lastSystemAction = "NONE";
+      session.ai.latencyMs = Date.now() - started;
+      logger.info(`${PREFIX} AI unavailable, fallback used`, { step: preservedStep, reason: error?.message || "unknown" });
+      addMessage("assistant", `Não consegui responder essa dúvida agora, mas podemos continuar sua contratação ou falar com um atendente. ${resume}`);
+    } finally {
+      session.step = preservedStep;
+      session.flowStep = preservedStep;
+      session.conversationMode = "FLOW";
+      aiInFlight = false;
+      persist();
+      showControlsForStep();
+    }
+  }
+
   function contextFromLocation() {
     const params = new URLSearchParams(location.search);
     const saved = analytics.attribution?.() || {};
@@ -323,23 +429,77 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
 
   async function handleText(text) {
     const trimmed = String(text || "").trim();
-    if (!trimmed || session.step === STATES.CONSULTANDO_COBERTURA) return;
+    if (!trimmed || session.step === STATES.CONSULTANDO_COBERTURA || aiInFlight) return;
     addMessage("user", trimmed);
 
     if (wantsAddressCorrection(trimmed) && session.step !== STATES.CEP) {
+      session.ai.lastRoutingDecision = "COMMAND:ADDRESS_CORRECTION";
+      persist();
       await correctAddress();
       return;
     }
 
-    let parsedText = trimmed;
-    if (interpreter) {
-      try {
-        const interpretation = await interpreter.interpret(trimmed, { step: session.step, session });
-        if (interpretation?.normalizedText) parsedText = interpretation.normalizedText;
-      } catch {
-        // O parser local continua sendo a fonte de verdade do MVP.
+    const routedStep = session.step;
+    const route = router.route(trimmed, { step: routedStep, session, plans: visiblePlans() });
+    session.ai.lastRoutingDecision = route.decision;
+    persist();
+
+    if (route.kind === ROUTE_KINDS.COMMAND) {
+      logger.info(`${PREFIX} Local parser matched: ${route.command}`);
+      switch (route.command) {
+        case ROUTER_COMMANDS.HANDOFF:
+          await handoffToHuman();
+          return;
+        case ROUTER_COMMANDS.RESTART:
+          return "restart";
+        case ROUTER_COMMANDS.BACK:
+          await goBack();
+          return;
+        case ROUTER_COMMANDS.CHANGE_PLAN:
+          if (session.step === STATES.FINALIZADO) {
+            await assistant("Este atendimento já foi finalizado. Inicie uma nova contratação para escolher outro plano.");
+          } else if (session.plano || session.step === STATES.ESCOLHA_PLANO) {
+            ui.removeSummary?.();
+            session.planSelectionView = PLAN_SELECTION_VIEWS.PROMOTIONS;
+            if (session.step !== STATES.ESCOLHA_PLANO) changeStep(STATES.ESCOLHA_PLANO);
+            await assistant("Claro. Escolha uma das condições especiais ou veja mais ofertas:");
+            trackPromotionsDisplayed();
+          } else {
+            await assistant(`A escolha do plano aparece depois da cobertura. ${resumePromptForStep(session.step)}`);
+          }
+          showControlsForStep();
+          return;
+        case ROUTER_COMMANDS.MORE_PLANS:
+          if (session.step === STATES.ESCOLHA_PLANO) await showMorePlans({ recordUser: false });
+          else await assistant(`Os planos serão exibidos depois da consulta de cobertura. ${resumePromptForStep(session.step)}`);
+          showControlsForStep();
+          return;
+        case ROUTER_COMMANDS.SHOW_PROMOTIONS:
+          if (session.step === STATES.ESCOLHA_PLANO) await showPromotions({ recordUser: false });
+          else await assistant(`As promoções serão exibidas depois da consulta de cobertura. ${resumePromptForStep(session.step)}`);
+          showControlsForStep();
+          return;
+        case ROUTER_COMMANDS.CANCEL:
+          await assistant("Tudo bem. O atendimento ficou pausado e você pode retomá-lo quando quiser.");
+          showControlsForStep();
+          return;
       }
     }
+
+    if (route.kind === ROUTE_KINDS.AI_ONLY) {
+      await handleAiAssistance(route.aiText);
+      showControlsForStep();
+      return;
+    }
+
+    const parsedText = route.localText || trimmed;
+    const hasAiFollowUp = route.kind === ROUTE_KINDS.MIXED && Boolean(route.aiText);
+    let localAccepted = false;
+    const completeLocalStep = async () => {
+      localAccepted = true;
+      logger.info(`${PREFIX} Local parser matched: ${routedStep}`);
+      if (!hasAiFollowUp) await askCurrentStep();
+    };
 
     switch (session.step) {
       case STATES.CEP: {
@@ -356,7 +516,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
           Object.assign(session, { logradouro: "", bairro: "", cidade: "", uf: "" });
         }
         changeStep(STATES.NUMERO);
-        await askCurrentStep();
+        await completeLocalStep();
         break;
       }
       case STATES.NUMERO: {
@@ -367,7 +527,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         }
         session.numero = number;
         changeStep(STATES.COMPLEMENTO);
-        await askCurrentStep();
+        await completeLocalStep();
         break;
       }
       case STATES.COMPLEMENTO: {
@@ -377,6 +537,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
           break;
         }
         session.complemento = complement;
+        localAccepted = true;
         await consultCoverage();
         break;
       }
@@ -384,10 +545,6 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         await assistant("Use uma das opções abaixo para tentar outro endereço.");
         break;
       case STATES.ESCOLHA_PLANO: {
-        if (wantsMorePlans(parsedText)) {
-          await showMorePlans({ recordUser: false });
-          break;
-        }
         const plan = selectPlanFromText(parsedText, visiblePlans());
         if (!plan) {
           await assistant("Não consegui identificar esse plano. Toque em um card ou diga a velocidade, como “quero 500 mega”.");
@@ -404,7 +561,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         }
         changeStep(STATES.NOME);
         await assistant(`Boa escolha: ${plan.title} por ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(plan.price)}/mês.`);
-        await askCurrentStep();
+        await completeLocalStep();
         break;
       }
       case STATES.NOME: {
@@ -415,7 +572,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         }
         session.nome = name;
         changeStep(STATES.CPF);
-        await askCurrentStep();
+        await completeLocalStep();
         break;
       }
       case STATES.CPF: {
@@ -427,7 +584,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         session.cpf = cpf;
         logger.info(`${PREFIX} CPF validated: ${maskCpf(cpf)}`);
         changeStep(STATES.DATA_NASCIMENTO);
-        await askCurrentStep();
+        await completeLocalStep();
         break;
       }
       case STATES.DATA_NASCIMENTO: {
@@ -438,7 +595,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         }
         session.dataNascimento = birthDate.iso;
         changeStep(STATES.EMAIL);
-        await askCurrentStep();
+        await completeLocalStep();
         break;
       }
       case STATES.EMAIL: {
@@ -449,7 +606,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         }
         session.email = email;
         changeStep(STATES.TELEFONE);
-        await askCurrentStep();
+        await completeLocalStep();
         break;
       }
       case STATES.TELEFONE: {
@@ -460,7 +617,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         }
         session.telefone = phone;
         changeStep(STATES.TELEFONE_SECUNDARIO);
-        await askCurrentStep();
+        await completeLocalStep();
         break;
       }
       case STATES.TELEFONE_SECUNDARIO: {
@@ -479,7 +636,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         }
         persist();
         changeStep(STATES.VENCIMENTO);
-        await askCurrentStep();
+        await completeLocalStep();
         break;
       }
       case STATES.VENCIMENTO: {
@@ -491,7 +648,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         }
         session.diaVencimentoFatura = dueDay;
         changeStep(STATES.DATA_INSTALACAO);
-        await askCurrentStep();
+        await completeLocalStep();
         break;
       }
       case STATES.DATA_INSTALACAO: {
@@ -505,7 +662,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         }
         session.dataInstalacao = installationDate.iso;
         changeStep(STATES.TURNO_INSTALACAO);
-        await askCurrentStep();
+        await completeLocalStep();
         break;
       }
       case STATES.TURNO_INSTALACAO: {
@@ -519,7 +676,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         session.faturamento = calculateBillingSummary(session.plano?.price, session.diaVencimentoFatura);
         changeStep(STATES.CONFIRMACAO);
         ui.showSummary(session);
-        await askCurrentStep();
+        await completeLocalStep();
         break;
       }
       case STATES.CONFIRMACAO:
@@ -531,10 +688,12 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       default:
         await assistant("Vamos continuar de onde paramos.");
     }
+    if (hasAiFollowUp && localAccepted) await handleAiAssistance(route.aiText);
     showControlsForStep();
   }
 
   async function handleAction(action, value) {
+    if (aiInFlight) return;
     if (action === "no-complement") return handleText("não tenho complemento");
     if (action === "new-address") return correctAddress();
     if (action === "fix-number") {
@@ -556,6 +715,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       return;
     }
     if (action === "show-more-plans") return showMorePlans();
+    if (action === "show-promotions") return showPromotions();
     if (["select-due-date", "select-installation-date", "select-shift"].includes(action)) {
       return handleText(value);
     }
@@ -563,6 +723,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       whatsappService?.trackManual(session);
       return;
     }
+    if (action === "human-handoff") return handoffToHuman();
     if (action === "change-plan") {
       ui.removeSummary?.();
       session.planSelectionView = PLAN_SELECTION_VIEWS.PROMOTIONS;

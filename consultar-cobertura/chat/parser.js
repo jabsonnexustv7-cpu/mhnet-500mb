@@ -54,7 +54,7 @@ export function extractPhone(text) {
 }
 
 export function wantsAddressCorrection(text) {
-  return /\b(corrigir|alterar|trocar|mudar|refazer)\b.*\b(endereco|cep|numero)\b|\b(endereco|cep|numero)\b.*\b(errado|incorreto)\b/.test(plain(text));
+  return /\b(corrigir|alterar|trocar|mudar|refazer)\b.*\b(endereco|cep|numero)\b|\b(endereco|cep|numero)\b.*\b(errado|incorreto)\b|\b(outro|novo)\s+endereco\b/.test(plain(text));
 }
 
 export function wantsConfirmation(text) {

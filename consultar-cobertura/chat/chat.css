@@ -322,6 +322,8 @@ button { cursor: pointer; }
 .chat-plan-card.is-featured .chat-plan-cta { background: linear-gradient(90deg, var(--blue-600), #049945 140%); }
 .chat-more-plans { width: calc(100% - 28px); min-height: 38px; margin: -3px 14px 13px; color: var(--blue-700); background: white; border: 1px solid #b9caed; border-radius: 11px; font-size: 11px; font-weight: 900; }
 .chat-more-plans:hover, .chat-more-plans:focus-visible { color: white; background: var(--blue-600); border-color: var(--blue-600); outline: none; }
+.chat-back-promotions { color: #087a39; border-color: #9bd9b4; }
+.chat-back-promotions:hover, .chat-back-promotions:focus-visible { background: #087a39; border-color: #087a39; }
 
 .chat-summary { margin: 10px 0 14px 36px; padding: 15px; background: white; border: 1px solid #dbe4f1; border-radius: 16px; box-shadow: 0 8px 24px rgba(10,36,99,0.07); }
 .chat-summary h3 { margin: 0 0 10px; color: var(--navy-900); font-size: 14px; }

@@ -1,6 +1,8 @@
 import { CHAT_CONFIG } from "./config.js";
+import { createAiAssistService } from "./ai-service.js";
 import { createChatFlow } from "./flow.js";
-import { createConversationInterpreter, createCoverageService, createCrmService, lookupAddress } from "./integrations.js";
+import { createCoverageService, createCrmService, lookupAddress } from "./integrations.js";
+import { routeMessage } from "./message-router.js";
 import { createSession, loadSession, resetSession } from "./state.js";
 import { createTrackingService } from "./tracking.js";
 import { createChatUI } from "./ui.js";
@@ -11,6 +13,7 @@ const storage = window.localStorage;
 const tracking = createTrackingService(CHAT_CONFIG);
 tracking.initialize();
 const whatsappService = createWhatsAppService(CHAT_CONFIG, tracking);
+const aiService = createAiAssistService(CHAT_CONFIG);
 let session = loadSession(storage, CHAT_CONFIG.storageKey);
 let flow;
 
@@ -22,7 +25,8 @@ function buildFlow(currentSession) {
     ui,
     coverageService: createCoverageService(CHAT_CONFIG),
     crmService: createCrmService(CHAT_CONFIG),
-    interpreter: createConversationInterpreter(CHAT_CONFIG),
+    aiService,
+    messageRouter: { route: routeMessage },
     addressLookup: (cep) => lookupAddress(cep, { timeoutMs: CHAT_CONFIG.requestTimeoutMs }),
     tracking,
     whatsappService
@@ -48,7 +52,8 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const text = ui.input.value;
   ui.input.value = "";
-  await flow.handleText(text);
+  const result = await flow.handleText(text);
+  if (result === "restart") await startFresh();
 });
 
 document.getElementById("chat-actions").addEventListener("click", async (event) => {
@@ -91,6 +96,11 @@ if (session?.sessionId && session.messages?.length) {
 }
 
 if (new URLSearchParams(location.search).get("autostart") === "1") ui.open();
+
+aiService.status().then((status) => {
+  session.ai.openAiConfigured = status.configured;
+  ui.updateDebug(session, CHAT_CONFIG);
+});
 
 window.webturboChat = {
   getSession: () => flow.getSession(),

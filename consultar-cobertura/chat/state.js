@@ -24,21 +24,21 @@ const ALLOWED_TRANSITIONS = {
   [STATES.WELCOME]: [STATES.CEP],
   [STATES.CEP]: [STATES.NUMERO],
   [STATES.NUMERO]: [STATES.COMPLEMENTO, STATES.CEP],
-  [STATES.COMPLEMENTO]: [STATES.CONSULTANDO_COBERTURA, STATES.CEP],
+  [STATES.COMPLEMENTO]: [STATES.CONSULTANDO_COBERTURA, STATES.CEP, STATES.NUMERO],
   [STATES.CONSULTANDO_COBERTURA]: [STATES.COBERTURA_VIAVEL, STATES.COBERTURA_INVIAVEL, STATES.COMPLEMENTO],
   [STATES.COBERTURA_INVIAVEL]: [STATES.CEP, STATES.NUMERO],
   [STATES.COBERTURA_VIAVEL]: [STATES.ESCOLHA_PLANO, STATES.CEP],
   [STATES.ESCOLHA_PLANO]: [STATES.NOME, STATES.CEP],
   [STATES.NOME]: [STATES.CPF, STATES.CEP, STATES.ESCOLHA_PLANO],
-  [STATES.CPF]: [STATES.DATA_NASCIMENTO, STATES.CEP, STATES.ESCOLHA_PLANO],
-  [STATES.DATA_NASCIMENTO]: [STATES.EMAIL, STATES.CEP, STATES.ESCOLHA_PLANO],
-  [STATES.EMAIL]: [STATES.TELEFONE, STATES.CEP, STATES.ESCOLHA_PLANO],
-  [STATES.TELEFONE]: [STATES.TELEFONE_SECUNDARIO, STATES.CEP, STATES.ESCOLHA_PLANO],
-  [STATES.TELEFONE_SECUNDARIO]: [STATES.VENCIMENTO, STATES.CEP, STATES.ESCOLHA_PLANO],
-  [STATES.VENCIMENTO]: [STATES.DATA_INSTALACAO, STATES.CEP, STATES.ESCOLHA_PLANO],
-  [STATES.DATA_INSTALACAO]: [STATES.TURNO_INSTALACAO, STATES.CEP, STATES.ESCOLHA_PLANO],
-  [STATES.TURNO_INSTALACAO]: [STATES.CONFIRMACAO, STATES.CEP, STATES.ESCOLHA_PLANO],
-  [STATES.CONFIRMACAO]: [STATES.FINALIZADO, STATES.CEP, STATES.ESCOLHA_PLANO],
+  [STATES.CPF]: [STATES.DATA_NASCIMENTO, STATES.NOME, STATES.CEP, STATES.ESCOLHA_PLANO],
+  [STATES.DATA_NASCIMENTO]: [STATES.EMAIL, STATES.CPF, STATES.CEP, STATES.ESCOLHA_PLANO],
+  [STATES.EMAIL]: [STATES.TELEFONE, STATES.DATA_NASCIMENTO, STATES.CEP, STATES.ESCOLHA_PLANO],
+  [STATES.TELEFONE]: [STATES.TELEFONE_SECUNDARIO, STATES.EMAIL, STATES.CEP, STATES.ESCOLHA_PLANO],
+  [STATES.TELEFONE_SECUNDARIO]: [STATES.VENCIMENTO, STATES.TELEFONE, STATES.CEP, STATES.ESCOLHA_PLANO],
+  [STATES.VENCIMENTO]: [STATES.DATA_INSTALACAO, STATES.TELEFONE_SECUNDARIO, STATES.CEP, STATES.ESCOLHA_PLANO],
+  [STATES.DATA_INSTALACAO]: [STATES.TURNO_INSTALACAO, STATES.VENCIMENTO, STATES.CEP, STATES.ESCOLHA_PLANO],
+  [STATES.TURNO_INSTALACAO]: [STATES.CONFIRMACAO, STATES.DATA_INSTALACAO, STATES.CEP, STATES.ESCOLHA_PLANO],
+  [STATES.CONFIRMACAO]: [STATES.FINALIZADO, STATES.TURNO_INSTALACAO, STATES.CEP, STATES.ESCOLHA_PLANO],
   [STATES.FINALIZADO]: [STATES.CEP]
 };
 
@@ -46,6 +46,8 @@ export function createSession(idFactory = () => globalThis.crypto?.randomUUID?.(
   return {
     sessionId: idFactory(),
     step: STATES.WELCOME,
+    flowStep: STATES.WELCOME,
+    conversationMode: "FLOW",
     cep: "",
     numero: "",
     complemento: "",
@@ -71,6 +73,14 @@ export function createSession(idFactory = () => globalThis.crypto?.randomUUID?.(
     messages: [],
     crmPayload: null,
     crmResult: null,
+    ai: {
+      openAiConfigured: null,
+      calls: 0,
+      lastRoutingDecision: "",
+      lastIntent: "",
+      lastSystemAction: "NONE",
+      latencyMs: 0
+    },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
@@ -82,6 +92,8 @@ export function transition(session, nextStep) {
   }
   const previous = session.step;
   session.step = nextStep;
+  session.flowStep = nextStep;
+  session.conversationMode = "FLOW";
   session.updatedAt = new Date().toISOString();
   return { previous, next: nextStep };
 }
@@ -112,7 +124,19 @@ export function saveSession(session, storage, key) {
 export function loadSession(storage, key) {
   try {
     const parsed = JSON.parse(storage.getItem(key));
-    return parsed && parsed.sessionId && parsed.step ? parsed : null;
+    if (!parsed?.sessionId || !parsed?.step) return null;
+    parsed.flowStep = parsed.step;
+    parsed.conversationMode = parsed.conversationMode === "AI_HELP" ? "FLOW" : (parsed.conversationMode || "FLOW");
+    parsed.ai = {
+      openAiConfigured: null,
+      calls: 0,
+      lastRoutingDecision: "",
+      lastIntent: "",
+      lastSystemAction: "NONE",
+      latencyMs: 0,
+      ...(parsed.ai || {})
+    };
+    return parsed;
   } catch {
     return null;
   }

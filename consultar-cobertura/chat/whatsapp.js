@@ -8,6 +8,18 @@ export function createWhatsAppService(config, tracking, { locationObject = windo
     return `https://wa.me/${config.whatsNumber}?text=${encodeURIComponent(message)}`;
   }
 
+  function buildHandoffUrl(session) {
+    const details = [session.cidade ? `Cidade: ${session.cidade}/${session.uf}` : "", session.plano?.title ? `Plano de interesse: ${session.plano.title}` : ""].filter(Boolean).join(". ");
+    const message = `Olá! Quero falar com um atendente sobre uma nova contratação de internet.${details ? ` ${details}.` : ""}`;
+    return `https://wa.me/${config.whatsNumber}?text=${encodeURIComponent(message)}`;
+  }
+
+  function openHandoff(session) {
+    const url = buildHandoffUrl(session);
+    if (config.whatsappMode === "real") locationObject.assign(url);
+    return { url, redirected: config.whatsappMode === "real", mock: config.whatsappMode !== "real" };
+  }
+
   function startRedirect(session, onTick = () => {}) {
     const url = buildUrl(session);
     if (config.whatsappMode !== "real") return { url, redirected: false, mock: true };
@@ -30,5 +42,5 @@ export function createWhatsAppService(config, tracking, { locationObject = windo
     tracking.whatsapp(session, "manual");
   }
 
-  return { buildUrl, startRedirect, trackManual };
+  return { buildUrl, buildHandoffUrl, openHandoff, startRedirect, trackManual };
 }
