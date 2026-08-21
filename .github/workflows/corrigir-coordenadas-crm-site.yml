@@ -1,19 +1,20 @@
 name: Corrigir coordenadas CRM site
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/corrigir-coordenadas-crm-site.yml'
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
 
 jobs:
   corrigir:
+    if: github.event.issue.title == 'trigger-coordenadas-crm-site'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Aplicar fallback das coordenadas da cobertura
         shell: bash
         run: |
@@ -30,8 +31,7 @@ jobs:
           count = s.count(old)
           if count != 1:
               raise SystemExit(f'Bloco alvo: esperava 1 ocorrência, encontrei {count}')
-          s = s.replace(old, new, 1)
-          p.write_text(s, encoding='utf-8')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
           PY
       - name: Commit e push
         shell: bash
@@ -40,6 +40,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add consultar-cobertura/coverage-base.html
           git commit -m "Grava coordenadas da cobertura no CRM"
-          git push
-
-# execução 2
+          git push origin HEAD:main
