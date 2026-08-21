@@ -4116,13 +4116,13 @@
       const trackingData = fluxoWhatsapp ? {} : montarDadosRastreamentoMeta(eventId);
 
       const payload = {
-        action: "notifyConsulta",
+        action: viavel === true ? "notifyConsulta" : "notifyConsultaInviavel",
         cep: cepLimpo,
         fachada: fachada || "-",
         nomeCidade: cidade || "",
         uf: uf || "",
         origemConsulta,
-        siteOrigem: "mhnet",
+        siteOrigem: "webturbo",
         resultadoConsulta: viavel === true ? "viavel" : "inviavel",
         statusCobertura: viavel === true ? "VIAVEL" : "INVIAVEL",
         viavel: viavel === true,
