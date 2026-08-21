@@ -34,7 +34,6 @@
     if (hasMetaClick && !hasGoogleClick) return "meta";
     if (hasGoogleClick && !hasMetaClick) return "google";
 
-    // Em uma URL anômala com IDs das duas plataformas, evita herdar um toque antigo.
     if (hasGoogleClick && hasMetaClick) return "ambiguous";
     return "";
   }
@@ -104,7 +103,6 @@
       return data;
     }
 
-    // Corrige legado em que um gclid antigo e um fbclid novo podiam coexistir.
     if ((data.gclid || data.gbraid || data.wbraid) && data.fbclid && !data.paid_source) {
       data = clearPaidFields(data);
       data.last_seen_at = now.toISOString();
@@ -116,7 +114,6 @@
 
   normalizeTrafficAttribution();
 
-  // Nunca usa somente utm_medium=cpc/ppc para classificar Google.
   window.vendaVeioDoGoogleSite = function () {
     const origem = normalizeTrafficAttribution();
     const utmSource = String(origem.utm_source || "").toLowerCase();
@@ -129,26 +126,13 @@
     );
   };
 
-  // Mantém o mesmo ponto do funil que antes enviava Lead ao servidor/Zapier,
-  // mas agora registra o Lead diretamente no navegador pelo Meta Pixel.
+  // Substitui o envio server-side/Zapier do Lead da página.
+  // O mesmo ponto do funil passa a disparar o evento padrão Lead diretamente pelo Meta Pixel.
   window.enviarLeadDadosPessoais = async function () {
     if (leadDadosPessoaisEnviado || leadDadosPessoaisEmEnvio) return;
 
     if (!leadDadosPessoaisEventId) {
       leadDadosPessoaisEventId = `lead_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-    }
-
-    // Mantém Meta e Google separados caso Google Ads volte a ser usado no futuro.
-    if (window.vendaVeioDoGoogleSite()) {
-      leadDadosPessoaisEnviado = true;
-      if (typeof trackGA4 === "function") {
-        trackGA4("lead_meta_ignorado_origem_google", {
-          event_id: leadDadosPessoaisEventId,
-          cidade: $("mCidade").value.trim(),
-          uf: $("mUf").value.trim().toUpperCase()
-        });
-      }
-      return;
     }
 
     if (typeof fbq !== "function") {
