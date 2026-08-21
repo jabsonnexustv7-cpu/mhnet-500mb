@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#071c4a">
+  <title>Chat de contratação | WebTurbo Lab</title>
+  <link rel="icon" href="/favicon.png">
+  <link rel="stylesheet" href="/consultar-cobertura/chat/chat.css">
+</head>
+<body>
+  <main class="lab-page">
+    <nav class="lab-nav" aria-label="Navegação do laboratório">
+      <a class="lab-brand" href="/consultar-cobertura/chat-lab.html" aria-label="WebTurbo Lab">
+        <span class="brand-mark" aria-hidden="true">W</span>
+        <span><strong>WebTurbo</strong><small>Chat Lab</small></span>
+      </a>
+      <span class="lab-only-badge">Ambiente de teste</span>
+    </nav>
+
+    <section class="lab-hero">
+      <div class="lab-copy">
+        <span class="eyebrow"><i></i> Atendimento online</span>
+        <h1>Sua internet nova começa com uma conversa.</h1>
+        <p>Consulte a cobertura, compare planos e simule sua contratação pelo chat da WebTurbo.</p>
+        <button id="hero-open-chat" class="hero-cta" type="button">
+          Conversar com a WebTurbo
+          <span aria-hidden="true">→</span>
+        </button>
+        <div class="trust-row" aria-label="Vantagens">
+          <span>✓ Consulta real de cobertura</span>
+          <span>✓ Sem compromisso</span>
+          <span>✓ Seus dados não são enviados neste teste</span>
+        </div>
+      </div>
+      <div class="signal-art" aria-hidden="true">
+        <div class="signal-ring signal-ring--1"></div>
+        <div class="signal-ring signal-ring--2"></div>
+        <div class="signal-ring signal-ring--3"></div>
+        <div class="signal-core">W</div>
+        <span class="signal-chip signal-chip--top">Fibra disponível?</span>
+        <span class="signal-chip signal-chip--bottom">Resposta em instantes</span>
+      </div>
+    </section>
+
+    <section class="lab-steps" aria-label="Como funciona">
+      <article><span>01</span><div><strong>Informe o endereço</strong><p>CEP, número e complemento.</p></div></article>
+      <article><span>02</span><div><strong>Veja a cobertura</strong><p>Consulta no serviço atual.</p></div></article>
+      <article><span>03</span><div><strong>Escolha seu plano</strong><p>Finalize apenas a simulação.</p></div></article>
+    </section>
+  </main>
+
+  <button id="chat-launcher" class="chat-launcher" type="button" aria-label="Abrir chat da WebTurbo">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v11H8l-4 4V4Zm4 5h8M8 12h5"/></svg>
+    <span>Fale com a gente</span>
+    <i aria-label="Online"></i>
+  </button>
+
+  <section id="chat-panel" class="chat-panel" aria-label="Chat da WebTurbo" aria-hidden="true">
+    <header class="chat-header">
+      <div class="chat-header-avatar" aria-hidden="true">W</div>
+      <div class="chat-header-copy">
+        <strong>WebTurbo</strong>
+        <span><i></i> Atendimento online</span>
+      </div>
+      <button id="chat-close" class="chat-close" type="button" aria-label="Fechar chat">×</button>
+    </header>
+
+    <div class="chat-safety">Ambiente de homologação · CRM em modo simulação</div>
+    <div id="chat-messages" class="chat-messages" role="log" aria-live="polite" aria-label="Mensagens da conversa"></div>
+    <div id="chat-typing" class="typing-row" hidden>
+      <span class="message-avatar" aria-hidden="true">W</span>
+      <span class="typing-bubble" aria-label="WebTurbo está digitando"><i></i><i></i><i></i></span>
+    </div>
+    <div id="chat-actions" class="chat-actions"></div>
+
+    <form id="chat-form" class="chat-composer">
+      <label class="sr-only" for="chat-input">Digite sua mensagem</label>
+      <input id="chat-input" type="text" autocomplete="off" maxlength="180" placeholder="Digite sua mensagem">
+      <button id="chat-send" type="submit" aria-label="Enviar mensagem">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 18-8-8 18-2-7-8-3Zm8 3 4-4"/></svg>
+      </button>
+    </form>
+    <footer class="chat-footer">Protegido pela WebTurbo · MVP local</footer>
+  </section>
+
+  <section id="resume-dialog" class="resume-dialog" role="dialog" aria-modal="true" aria-labelledby="resume-title" hidden>
+    <div class="resume-card">
+      <span class="resume-icon" aria-hidden="true">↻</span>
+      <h2 id="resume-title">Atendimento anterior encontrado</h2>
+      <p>Quer continuar de onde parou ou iniciar uma nova contratação?</p>
+      <button id="resume-continue" class="primary-button" type="button">Continuar atendimento</button>
+      <button id="resume-new" class="secondary-button" type="button">Iniciar nova contratação</button>
+    </div>
+  </section>
+
+  <aside id="debug-panel" class="debug-panel" aria-label="Painel de debug">
+    <header><div><span>DEVTOOLS</span><strong>WebTurbo Chat</strong></div><button data-reset-session type="button">Resetar sessão</button></header>
+    <div data-debug-fields class="debug-fields"></div>
+    <details open><summary>JSON da sessão</summary><pre data-debug-session></pre></details>
+    <details><summary>Payload CRM MOCK</summary><pre data-debug-payload>Payload ainda não gerado.</pre></details>
+  </aside>
+
+  <script type="module" src="/consultar-cobertura/chat/app.js"></script>
+</body>
+</html>

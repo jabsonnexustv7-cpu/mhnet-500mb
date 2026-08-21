@@ -1,0 +1,9 @@
+{
+  "name": "webturbo-landing",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test consultar-cobertura/chat/tests/*.test.mjs",
+    "chat:serve": "node tools/chat-lab-server.mjs"
+  }
+}
