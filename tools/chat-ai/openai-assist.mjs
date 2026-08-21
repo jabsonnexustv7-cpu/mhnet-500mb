@@ -4,42 +4,81 @@ import { STATES } from "../../consultar-cobertura/chat/state.js";
 import { WEBTURBO_AI_SYSTEM_PROMPT } from "./system-prompt.mjs";
 
 const VALID_STEPS = new Set(Object.values(STATES));
-const MAX_BODY_BYTES = 16 * 1024;
+export const MAX_BODY_BYTES = 16 * 1024;
+export const MAX_MESSAGE_LENGTH = 500;
+export const MAX_SESSION_ID_LENGTH = 100;
+export const MAX_AVAILABLE_PLANS = 12;
+export const MAX_PLAN_FEATURES = 5;
+const REQUEST_KEYS = new Set(["sessionId", "step", "message", "context"]);
+const CONTEXT_KEYS = new Set(["cidade", "uf", "coverageStatus", "selectedPlan", "selectedPlanValue", "availablePlans"]);
+const PLAN_KEYS = new Set(["id", "name", "speed", "price", "features"]);
 
 function cleanString(value, maxLength) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
 }
 
+function isStringWithin(value, maxLength, { required = false } = {}) {
+  if (value === undefined || value === null) return !required;
+  if (typeof value !== "string" || value.length > maxLength) return false;
+  return !required || Boolean(value.trim());
+}
+
+function hasOnlyKeys(value, allowed) {
+  return Object.keys(value).every((key) => allowed.has(key));
+}
+
 export function sanitizeServerMessage(value) {
-  return cleanString(value, 500)
+  return cleanString(value, MAX_MESSAGE_LENGTH)
     .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, "[E-MAIL REMOVIDO]")
     .replace(/(?:\d[.\s-]?){11}/g, "[DOCUMENTO REMOVIDO]")
     .replace(/(?:\+?55\s*)?(?:\(?\d{2}\)?[\s.-]*)?\d{4,5}[\s.-]?\d{4}/g, "[TELEFONE REMOVIDO]")
     .replace(/\b\d{2}[/-]\d{2}[/-]\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g, "[DATA REMOVIDA]")
     .replace(/\b\d{5}[-.\s]?\d{3}\b/g, "[CEP REMOVIDO]")
+    .replace(/\b(?:rua|avenida|av\.?|travessa|alameda)\s+[^,;!?]+/gi, "[ENDEREÇO REMOVIDO]")
     .replace(/\b\d{7,}\b/g, "[DADO REMOVIDO]")
     .trim();
 }
 
-function sanitizePlans(value) {
-  if (!Array.isArray(value)) return [];
-  return value.slice(0, 12).map((plan) => ({
+function validatePlans(value) {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.length > MAX_AVAILABLE_PLANS) return null;
+  const valid = value.every((plan) => {
+    if (!plan || typeof plan !== "object" || Array.isArray(plan)) return false;
+    if (!hasOnlyKeys(plan, PLAN_KEYS)) return false;
+    if (!isStringWithin(plan.id, 120) || !isStringWithin(plan.name, 120)) return false;
+    if (plan.speed !== undefined && (typeof plan.speed !== "number" || !Number.isFinite(plan.speed) || plan.speed < 0)) return false;
+    if (plan.price !== undefined && (typeof plan.price !== "number" || !Number.isFinite(plan.price) || plan.price < 0)) return false;
+    if (plan.features !== undefined && (!Array.isArray(plan.features) || plan.features.length > MAX_PLAN_FEATURES)) return false;
+    return (plan.features || []).every((item) => isStringWithin(item, 80));
+  });
+  if (!valid) return null;
+  return value.map((plan) => ({
     id: cleanString(plan?.id, 120),
     name: cleanString(plan?.name, 120),
-    speed: Number.isFinite(Number(plan?.speed)) ? Number(plan.speed) : 0,
-    price: Number.isFinite(Number(plan?.price)) ? Number(plan.price) : 0,
-    features: Array.isArray(plan?.features) ? plan.features.slice(0, 5).map((item) => cleanString(item, 80)) : []
+    speed: plan.speed ?? 0,
+    price: plan.price ?? 0,
+    features: (plan.features || []).map((item) => cleanString(item, 80))
   }));
 }
 
 export function validateAssistRequest(value) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  if (!hasOnlyKeys(value, REQUEST_KEYS)) return null;
+  if (!isStringWithin(value.sessionId, MAX_SESSION_ID_LENGTH, { required: true })) return null;
+  if (!isStringWithin(value.step, 40, { required: true })) return null;
+  if (!isStringWithin(value.message, MAX_MESSAGE_LENGTH, { required: true })) return null;
   const step = cleanString(value.step, 40);
   const message = sanitizeServerMessage(value.message);
   if (!VALID_STEPS.has(step) || !message) return null;
-  const context = value.context && typeof value.context === "object" && !Array.isArray(value.context) ? value.context : {};
+  if (value.context !== undefined && (!value.context || typeof value.context !== "object" || Array.isArray(value.context))) return null;
+  const context = value.context || {};
+  if (!hasOnlyKeys(context, CONTEXT_KEYS)) return null;
+  if (!isStringWithin(context.cidade, 80) || !isStringWithin(context.uf, 2) || !isStringWithin(context.coverageStatus, 20) || !isStringWithin(context.selectedPlan, 120)) return null;
+  if (context.selectedPlanValue !== undefined && (typeof context.selectedPlanValue !== "number" || !Number.isFinite(context.selectedPlanValue) || context.selectedPlanValue < 0)) return null;
+  const availablePlans = validatePlans(context.availablePlans);
+  if (!availablePlans) return null;
   return {
-    sessionId: cleanString(value.sessionId, 100),
+    sessionId: cleanString(value.sessionId, MAX_SESSION_ID_LENGTH),
     step,
     message,
     context: {
@@ -47,8 +86,8 @@ export function validateAssistRequest(value) {
       uf: cleanString(context.uf, 2).toUpperCase(),
       coverageStatus: ["VIAVEL", "INVIAVEL", "NAO_CONSULTADA"].includes(context.coverageStatus) ? context.coverageStatus : "NAO_CONSULTADA",
       selectedPlan: cleanString(context.selectedPlan, 120),
-      selectedPlanValue: Number.isFinite(Number(context.selectedPlanValue)) ? Number(context.selectedPlanValue) : 0,
-      availablePlans: sanitizePlans(context.availablePlans)
+      selectedPlanValue: context.selectedPlanValue ?? 0,
+      availablePlans
     }
   };
 }
@@ -109,7 +148,16 @@ export function createOpenAiAssist({ apiKey, model, fetchImpl = fetch, timeoutMs
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
-        return { status: 502, body: { ok: false, code: "OPENAI_UPSTREAM_ERROR", configured: true, latencyMs: Date.now() - started } };
+        return {
+          status: 502,
+          body: {
+            ok: false,
+            code: "OPENAI_UPSTREAM_ERROR",
+            configured: true,
+            upstreamStatus: Number(response.status || 0),
+            latencyMs: Date.now() - started
+          }
+        };
       }
       let parsed;
       try {

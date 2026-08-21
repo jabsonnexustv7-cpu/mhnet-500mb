@@ -20,6 +20,8 @@ export const STATES = Object.freeze({
   FINALIZADO: "FINALIZADO"
 });
 
+export const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
+
 const ALLOWED_TRANSITIONS = {
   [STATES.WELCOME]: [STATES.CEP],
   [STATES.CEP]: [STATES.NUMERO],
@@ -42,7 +44,11 @@ const ALLOWED_TRANSITIONS = {
   [STATES.FINALIZADO]: [STATES.CEP]
 };
 
-export function createSession(idFactory = () => globalThis.crypto?.randomUUID?.() || `wt-${Date.now()}-${Math.random().toString(36).slice(2)}`) {
+export function createSession(
+  idFactory = () => globalThis.crypto?.randomUUID?.() || `wt-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  now = Date.now()
+) {
+  const createdAt = new Date(now).toISOString();
   return {
     sessionId: idFactory(),
     step: STATES.WELCOME,
@@ -81,8 +87,9 @@ export function createSession(idFactory = () => globalThis.crypto?.randomUUID?.(
       lastSystemAction: "NONE",
       latencyMs: 0
     },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    createdAt,
+    updatedAt: createdAt,
+    expiresAt: new Date(now + SESSION_TTL_MS).toISOString()
   };
 }
 
@@ -116,15 +123,26 @@ export function clearAddress(session) {
   return session;
 }
 
-export function saveSession(session, storage, key) {
-  session.updatedAt = new Date().toISOString();
+export function saveSession(session, storage, key, now = Date.now()) {
+  session.updatedAt = new Date(now).toISOString();
+  session.expiresAt = new Date(now + SESSION_TTL_MS).toISOString();
   storage.setItem(key, JSON.stringify(session));
 }
 
-export function loadSession(storage, key) {
+export function loadSession(storage, key, now = Date.now()) {
   try {
     const parsed = JSON.parse(storage.getItem(key));
     if (!parsed?.sessionId || !parsed?.step) return null;
+    const reference = Date.parse(parsed.updatedAt || parsed.createdAt || "");
+    const expiresAt = Date.parse(parsed.expiresAt || "");
+    const effectiveExpiry = Number.isFinite(expiresAt)
+      ? expiresAt
+      : (Number.isFinite(reference) ? reference + SESSION_TTL_MS : 0);
+    if (!effectiveExpiry || now >= effectiveExpiry) {
+      storage.removeItem(key);
+      return null;
+    }
+    parsed.expiresAt = new Date(effectiveExpiry).toISOString();
     parsed.flowStep = parsed.step;
     parsed.conversationMode = parsed.conversationMode === "AI_HELP" ? "FLOW" : (parsed.conversationMode || "FLOW");
     parsed.ai = {

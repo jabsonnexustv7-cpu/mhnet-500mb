@@ -88,7 +88,7 @@ Por segurança, uma cobertura `mock` ou `mock-fallback` nunca pode gerar pré-ve
 
 ## Persistência
 
-A sessão é salva em `localStorage` com a chave `webturbo-chat-mvp-v4`. Ao recarregar, a página oferece continuar o atendimento ou iniciar outro. O botão `Resetar sessão` aparece no painel aberto por `?debug=1`.
+A sessão é salva em `localStorage` com a chave `webturbo-chat-mvp-v5`, incluindo `createdAt`, `updatedAt` e `expiresAt`. A validade é renovada por 24 horas a cada gravação; sessões expiradas são removidas automaticamente. Ao recarregar dentro do prazo, a página oferece continuar o atendimento ou iniciar outro. O botão `Resetar sessão` aparece no painel aberto por `?debug=1` somente em ambiente local.
 
 ## CRM
 
@@ -142,7 +142,7 @@ Copie `.env.example` para `.env` e preencha no servidor local:
 
 ```dotenv
 OPENAI_API_KEY=sua_chave_somente_no_backend
-OPENAI_MODEL=modelo_disponivel_na_sua_conta
+OPENAI_MODEL=gpt-5.4-mini
 ```
 
 Não existe modelo comercial fixo no frontend. Se a chave ou o modelo estiver ausente, o endpoint retorna `OPENAI_NOT_CONFIGURED` e o chat usa uma resposta amigável sem quebrar o fluxo. A chave não entra no HTML, módulos do navegador, payload, debug ou logs.
@@ -160,7 +160,9 @@ $env:OPENAI_SMOKE_TEST="1"
 npm run chat:ai-smoke
 ```
 
-No debug aparecem `AI mode`, configuração sim/não, quantidade de chamadas, última decisão do router, intenção, `flowStep`, `conversationMode`, ação sugerida e latência. A chave nunca aparece.
+No debug local aparecem `AI mode`, configuração sim/não, quantidade de chamadas, última decisão do router, intenção, `flowStep`, `conversationMode`, ação sugerida e latência. Em hostname de produção o painel completo é bloqueado e os JSONs com dados pessoais não são escritos no DOM. A chave nunca aparece.
+
+O backend Cloud Run, a configuração dev/prod, CORS, rate limiting, Secret Manager e o checklist de implantação estão documentados em `CHAT_AI_PRODUCTION.md`.
 
 ## Roteiro manual
 
@@ -183,7 +185,7 @@ No debug aparecem `AI mode`, configuração sim/não, quantidade de chamadas, ú
 ## Limitações atuais
 
 - O ViaCEP pode retornar CEP geral sem rua/bairro; o MVP mantém o fluxo, mas uma segunda versão deve solicitar esses campos no chat.
-- O endpoint de IA é local e não possui autenticação de usuário nem rate limiting distribuído; antes de produção, deve migrar para um backend autenticado com sessão server-side.
+- O backend Cloud Run está preparado, mas ainda não foi implantado. O rate limiting em memória não é distribuído entre instâncias e o endpoint ainda não possui autenticação de usuário.
 - O servidor valida o `step`, mas neste MVP não mantém uma cópia server-side da sessão para confrontar o estado enviado pelo navegador.
 - Ponto de referência ainda não é coletado e fica vazio no payload.
 - O cálculo proporcional espelha a regra atual da landing, que estima a instalação em D+2 mesmo quando o cliente escolhe outra data preferida.
@@ -192,10 +194,10 @@ No debug aparecem `AI mode`, configuração sim/não, quantidade de chamadas, ú
 
 ## Checklist antes de produção
 
-- Remover/segregar o painel de debug e revisar retenção de dados pessoais no `localStorage`.
-- Implementar consentimento, política de privacidade e prazo de expiração da sessão.
+- Homologar a proteção do painel de debug e a expiração de 24 horas do `localStorage` em navegadores suportados.
+- Implementar consentimento e política de privacidade antes da publicação.
 - Validar o contrato da cobertura e o catálogo de planos com responsáveis comerciais.
-- Migrar o endpoint OpenAI para backend autenticado, com rate limiting, moderação, observabilidade e sessão server-side.
+- Implantar o backend preparado somente após aprovação e evoluir rate limiting, autenticação, observabilidade e sessão server-side conforme a escala.
 - Revisar idempotência, antifraude e auditoria do endpoint CRM antes de integrar o chat à página publicada.
 - Adicionar testes E2E em dispositivos reais e navegadores suportados.
 - Revisar acessibilidade, LGPD, segurança, eventos de conversão e consentimento antes de qualquer deploy.

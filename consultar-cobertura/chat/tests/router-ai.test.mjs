@@ -102,6 +102,19 @@ test("mensagem mista salva CEP e envia somente a pergunta", async () => {
   assert.doesNotMatch(sentMessage, /92120|92120141/);
 });
 
+test("roteiro A salva CEP 94035190, responde a dúvida e avança para NUMERO", async () => {
+  let sentMessage = "";
+  const { flow, session } = createHarness(STATES.CEP, {
+    aiService: { async assist(current, message) { sentMessage = message; return aiResult(current.step); } }
+  });
+  await flow.handleText("meu cep 94035190 mas paga instalação?");
+  assert.equal(session.cep, "94035190");
+  assert.equal(session.cidade, "Canoas");
+  assert.equal(session.step, STATES.NUMERO);
+  assert.equal(sentMessage, "paga instalação?");
+  assert.doesNotMatch(sentMessage, /94035190/);
+});
+
 test("mensagem mista salva CPF sem enviá-lo à assistência", async () => {
   let sentMessage = "";
   const { flow, session } = createHarness(STATES.CPF, {
@@ -112,6 +125,18 @@ test("mensagem mista salva CPF sem enviá-lo à assistência", async () => {
   assert.equal(session.step, STATES.DATA_NASCIMENTO);
   assert.equal(sentMessage, "tem fidelidade?");
   assert.doesNotMatch(sentMessage, /529|982|247|25/);
+});
+
+test("roteiro C responde pergunta antes do CPF e mantém flowStep em CPF", async () => {
+  let calls = 0;
+  const { flow, session } = createHarness(STATES.CPF, {
+    aiService: { async assist(current) { calls += 1; return aiResult(current.step); } }
+  });
+  await flow.handleText("antes de passar meu CPF, tem fidelidade?");
+  assert.equal(calls, 1);
+  assert.equal(session.cpf, "");
+  assert.equal(session.step, STATES.CPF);
+  assert.equal(session.flowStep, STATES.CPF);
 });
 
 test("assistência indisponível usa fallback sem quebrar o fluxo", async () => {

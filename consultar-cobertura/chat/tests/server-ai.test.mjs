@@ -35,10 +35,19 @@ function responseWithOutput(value, ok = true) {
   };
 }
 
-test("backend rejeita step não reconhecido e limita o contexto", () => {
+test("backend rejeita step não reconhecido e campos acima do limite", () => {
   assert.equal(validateAssistRequest({ ...request, step: "IGNORE_TUDO" }), null);
-  const clean = validateAssistRequest({ ...request, message: "x".repeat(800), context: { ...request.context, availablePlans: Array(20).fill(request.context.availablePlans[0]) } });
-  assert.equal(clean.message.length, 500);
+  assert.equal(validateAssistRequest({ ...request, message: "x".repeat(501) }), null);
+  assert.equal(validateAssistRequest({ ...request, sessionId: "x".repeat(101) }), null);
+  assert.equal(validateAssistRequest({ ...request, context: { ...request.context, availablePlans: Array(13).fill(request.context.availablePlans[0]) } }), null);
+  assert.equal(validateAssistRequest({ ...request, campoInesperado: true }), null);
+});
+
+test("backend aceita catálogo e features dentro dos limites", () => {
+  const clean = validateAssistRequest({
+    ...request,
+    context: { ...request.context, availablePlans: Array(12).fill(request.context.availablePlans[0]) }
+  });
   assert.equal(clean.context.availablePlans.length, 12);
 });
 
@@ -47,6 +56,20 @@ test("backend repete a sanitização mesmo sem confiar no navegador", () => {
   assert.doesNotMatch(clean, /529|99999/);
   assert.match(clean, /instalação é grátis/);
 });
+
+for (const [label, value, forbidden] of [
+  ["CPF", "meu CPF é 529.982.247-25 e tem fidelidade?", /529|982|247/],
+  ["telefone", "meu telefone é (51) 99999-8888 e tem fidelidade?", /99999|8888/],
+  ["e-mail", "meu e-mail é pessoa@example.com e tem fidelidade?", /pessoa@example/],
+  ["data", "nasci em 20/05/1990 e tem fidelidade?", /20\/05|1990/],
+  ["CEP", "meu CEP é 92120-141 e tem fidelidade?", /92120|141/]
+]) {
+  test(`sanitização server-side remove ${label}`, () => {
+    const clean = sanitizeServerMessage(value);
+    assert.doesNotMatch(clean, forbidden);
+    assert.match(clean, /fidelidade/);
+  });
+}
 
 test("payload da Responses API usa structured output e não armazena resposta", () => {
   const payload = buildOpenAiPayload(validateAssistRequest(request), "modelo-configurado");
@@ -80,6 +103,34 @@ test("mock da Responses API retorna objeto validado", async () => {
   assert.equal(result.body.result.type, "FAQ");
   assert.equal(authorization, "Bearer test-key-not-real");
   assert.doesNotMatch(JSON.stringify(result.body), /test-key-not-real/);
+});
+
+test("OpenAI recebe mensagem sanitizada e não recebe CPF misturado", async () => {
+  let upstreamBody;
+  const service = createOpenAiAssist({
+    apiKey: "fake",
+    model: "test",
+    fetchImpl: async (_url, options) => {
+      upstreamBody = JSON.parse(options.body);
+      return responseWithOutput(validResult);
+    }
+  });
+  await service.assist({ ...request, message: "meu CPF é 529.982.247-25 e tem fidelidade?" });
+  assert.doesNotMatch(upstreamBody.input, /529|982|247/);
+  assert.match(upstreamBody.input, /fidelidade/);
+});
+
+test("erro HTTP da OpenAI retorna código e status upstream controlados", async () => {
+  const service = createOpenAiAssist({
+    apiKey: "fake",
+    model: "test",
+    fetchImpl: async () => ({ ok: false, status: 429, async json() { return { error: { message: "não expor" } }; } })
+  });
+  const result = await service.assist(request);
+  assert.equal(result.status, 502);
+  assert.equal(result.body.code, "OPENAI_UPSTREAM_ERROR");
+  assert.equal(result.body.upstreamStatus, 429);
+  assert.doesNotMatch(JSON.stringify(result.body), /não expor|fake/);
 });
 
 test("resposta malformada da OpenAI usa erro controlado", async () => {

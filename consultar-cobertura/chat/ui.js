@@ -203,6 +203,13 @@ export function createChatUI() {
 
   function updateDebug(session, config) {
     if (!debug) return;
+    if (!config.debug) {
+      debug.hidden = true;
+      debug.querySelector("[data-debug-session]").textContent = "";
+      debug.querySelector("[data-debug-payload]").textContent = "";
+      return;
+    }
+    debug.hidden = false;
     const coverage = session.cobertura?.status || "-";
     const fields = {
       "Session ID": session.sessionId,

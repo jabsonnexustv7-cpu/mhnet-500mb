@@ -6,7 +6,7 @@ import { createCoverageService, createCrmService, buildCrmPayload } from "../int
 import { createChatFlow } from "../flow.js";
 import { extractCep, selectPlanFromText, wantsMorePlans } from "../parser.js";
 import { BASE_PLANS, PLAN_SELECTION_VIEWS, PROMOTIONAL_PLANS } from "../plans.js";
-import { createSession, loadSession, resetSession, saveSession, STATES, transition } from "../state.js";
+import { createSession, loadSession, resetSession, saveSession, SESSION_TTL_MS, STATES, transition } from "../state.js";
 import { isValidCep, isValidCpf, normalizeCep } from "../validators.js";
 import { createWhatsAppService } from "../whatsapp.js";
 
@@ -129,6 +129,21 @@ test("sessão persistida pode ser retomada após recarregar", () => {
   assert.equal(restored.sessionId, "session-test");
   assert.equal(restored.step, STATES.CONFIRMACAO);
   assert.equal(restored.plano.id, "FIBRA 500MB");
+});
+
+test("sessão expira após 24 horas e é removida do localStorage", () => {
+  const now = Date.parse("2026-08-21T12:00:00.000Z");
+  const values = new Map();
+  const storage = {
+    getItem: (key) => values.get(key) || null,
+    setItem: (key, value) => values.set(key, value),
+    removeItem: (key) => values.delete(key)
+  };
+  const session = createSession(() => "expiring-session", now);
+  saveSession(session, storage, "chat", now);
+  assert.equal(loadSession(storage, "chat", now + SESSION_TTL_MS - 1)?.sessionId, "expiring-session");
+  assert.equal(loadSession(storage, "chat", now + SESSION_TTL_MS), null);
+  assert.equal(values.has("chat"), false);
 });
 
 test("seleção de planos começa nas promoções e expande para o catálogo", async () => {

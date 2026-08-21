@@ -3,7 +3,8 @@ import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
 import { extname, join, normalize, relative } from "node:path";
 import { networkInterfaces } from "node:os";
 import { fileURLToPath } from "node:url";
-import { createOpenAiAssist, readJsonBody } from "./chat-ai/openai-assist.mjs";
+import { createChatAiHttpHandler } from "../services/chat-ai/app.mjs";
+import { createOpenAiAssist } from "./chat-ai/openai-assist.mjs";
 
 const root = normalize(join(fileURLToPath(new URL(".", import.meta.url)), ".."));
 const portArg = process.argv.find((arg) => /^--port=\d+$/.test(arg));
@@ -35,19 +36,17 @@ function loadLocalEnv() {
 loadLocalEnv();
 const openAiAssist = createOpenAiAssist({
   apiKey: process.env.OPENAI_API_KEY,
-  model: process.env.OPENAI_MODEL,
+  model: process.env.OPENAI_MODEL || "gpt-5.4-mini",
   timeoutMs: Number(process.env.OPENAI_TIMEOUT_MS || 10000)
 });
-
-function sendJson(response, status, body, extraHeaders = {}) {
-  response.writeHead(status, {
-    "Content-Type": "application/json; charset=utf-8",
-    "Cache-Control": "no-store",
-    "X-Content-Type-Options": "nosniff",
-    ...extraHeaders
-  });
-  response.end(JSON.stringify(body));
-}
+const chatAiHandler = createChatAiHttpHandler({
+  assistService: openAiAssist,
+  allowedOrigins: process.env.ALLOWED_ORIGINS || "http://localhost:4173,http://127.0.0.1:4173",
+  allowDevelopmentOrigins: true,
+  rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 60000),
+  rateLimitMax: Number(process.env.RATE_LIMIT_MAX || 10),
+  serviceVersion: "local"
+});
 
 function resolveRequestPath(rawUrl) {
   const pathname = decodeURIComponent(new URL(rawUrl, `http://localhost:${port}`).pathname);
@@ -94,28 +93,7 @@ async function proxyCrm(request, response) {
 
 const server = createServer(async (request, response) => {
   const requestUrl = new URL(request.url || "/", `http://localhost:${port}`);
-  if (requestUrl.pathname === "/api/chat/assist/status") {
-    if (request.method !== "GET") {
-      sendJson(response, 405, { ok: false, message: "Método não permitido." }, { Allow: "GET" });
-      return;
-    }
-    sendJson(response, 200, { ok: true, configured: openAiAssist.configured, model: openAiAssist.model });
-    return;
-  }
-  if (requestUrl.pathname === "/api/chat/assist") {
-    if (request.method !== "POST") {
-      sendJson(response, 405, { ok: false, message: "Método não permitido." }, { Allow: "POST" });
-      return;
-    }
-    try {
-      const body = await readJsonBody(request);
-      const result = await openAiAssist.assist(body);
-      sendJson(response, result.status, result.body);
-    } catch (error) {
-      sendJson(response, error?.status || 400, { ok: false, code: error?.message || "INVALID_REQUEST" });
-    }
-    return;
-  }
+  if (await chatAiHandler(request, response)) return;
   if (requestUrl.pathname === "/api/chat/crm") {
     if (request.method !== "POST") {
       response.writeHead(405, { "Content-Type": "application/json; charset=utf-8", Allow: "POST" });
