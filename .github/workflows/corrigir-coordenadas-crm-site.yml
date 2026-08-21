@@ -41,3 +41,5 @@ jobs:
           git add consultar-cobertura/coverage-base.html
           git commit -m "Grava coordenadas da cobertura no CRM"
           git push
+
+# execução 2
