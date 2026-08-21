@@ -56,6 +56,7 @@ export function createSession(idFactory = () => globalThis.crypto?.randomUUID?.(
     coordenadas: "",
     cobertura: null,
     plano: null,
+    planSelectionView: "promotions",
     nome: "",
     cpf: "",
     dataNascimento: "",
@@ -97,6 +98,7 @@ export function clearAddress(session) {
     coordenadas: "",
     cobertura: null,
     plano: null,
+    planSelectionView: "promotions",
     crmPayload: null
   });
   return session;

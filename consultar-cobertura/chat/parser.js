@@ -61,6 +61,10 @@ export function wantsConfirmation(text) {
   return /^(sim|confirmo|confirmar|pode finalizar|esta certo|tudo certo|ok|fechado)[.!\s]*$/.test(plain(text));
 }
 
+export function wantsMorePlans(text) {
+  return /\b(ver|mostrar|quero|conhecer|exibir)\b.*\b(mais|outr[oa]s?)\b.*\b(planos?|ofertas?)\b|\b(mais|outr[oa]s?)\b.*\b(planos?|ofertas?)\b/.test(plain(text));
+}
+
 export function selectPlanFromText(text, plans) {
   const normalized = plain(text);
   if (!Array.isArray(plans) || !plans.length) return null;
@@ -70,7 +74,7 @@ export function selectPlanFromText(text, plans) {
   }
 
   const giga = /\b(?:1\s*)?(?:giga|gb)\b/.test(normalized);
-  const speedMatch = normalized.match(/\b(500|600|700|1000)\s*(?:mega|mb|m)?\b/);
+  const speedMatch = normalized.match(/\b(300|500|600|700|1000)\s*(?:mega|mb|m)?\b/);
   const speed = giga ? 1000 : speedMatch ? Number(speedMatch[1]) : 0;
   if (!speed) return null;
 

@@ -63,11 +63,12 @@ export function createChatUI() {
     scrollToBottom();
   }
 
-  function showPlans(plans) {
+  function showPlans(plans, { showMore = false } = {}) {
     clearActions();
     const track = element("div", "chat-plan-track");
     plans.forEach((plan) => {
       const card = element("button", "chat-plan-card");
+      if (plan.featured) card.classList.add("is-featured");
       card.type = "button";
       card.dataset.action = "select-plan";
       card.dataset.value = plan.id;
@@ -85,6 +86,12 @@ export function createChatUI() {
       track.appendChild(card);
     });
     actions.appendChild(track);
+    if (showMore) {
+      const more = element("button", "chat-more-plans", "Ver mais ofertas");
+      more.type = "button";
+      more.dataset.action = "show-more-plans";
+      actions.appendChild(more);
+    }
     scrollToBottom();
   }
 

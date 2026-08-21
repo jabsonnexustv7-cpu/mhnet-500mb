@@ -9,9 +9,10 @@ import {
   extractPhone,
   selectPlanFromText,
   wantsAddressCorrection,
-  wantsConfirmation
+  wantsConfirmation,
+  wantsMorePlans
 } from "./parser.js";
-import { getPlansForCity } from "./plans.js";
+import { getPlansForCity, getPromotionalPlans, isPromotionalPlan, PLAN_SELECTION_VIEWS } from "./plans.js";
 import { calculateBillingSummary, DUE_DATE_OPTIONS, INSTALLATION_SHIFT_OPTIONS, parseInstallationDate, tomorrowISO } from "./billing.js";
 import { clearAddress, saveSession, STATES, transition } from "./state.js";
 import {
@@ -53,6 +54,34 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     persist();
   }
 
+  function planSelectionView() {
+    return session.planSelectionView === PLAN_SELECTION_VIEWS.CATALOG
+      ? PLAN_SELECTION_VIEWS.CATALOG
+      : PLAN_SELECTION_VIEWS.PROMOTIONS;
+  }
+
+  function visiblePlans() {
+    return planSelectionView() === PLAN_SELECTION_VIEWS.CATALOG
+      ? getPlansForCity(session.cidade)
+      : getPromotionalPlans();
+  }
+
+  function trackPlanEvent(name, params = {}) {
+    if (session.cobertura?.source !== "real" && config.conversionMode === "real") return;
+    analytics.ga4?.(name, {
+      origem_consulta: "chat_lab",
+      campanha: "ofertas_combate",
+      cidade: session.cidade || "",
+      uf: session.uf || "",
+      ...params
+    });
+  }
+
+  function trackPromotionsDisplayed() {
+    trackPlanEvent("cobertura_opcoes_exibidas", { tipo_opcao: "ofertas_combate" });
+    trackPlanEvent("cobertura_ofertas_combate_exibidas");
+  }
+
   async function assistant(text, meta = {}) {
     ui.setTyping(true);
     await delay(config.typingDelayMs || 0);
@@ -89,7 +118,8 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         { label: "Corrigir número", action: "fix-number" }
       ]);
     } else if (session.step === STATES.ESCOLHA_PLANO) {
-      ui.showPlans(getPlansForCity(session.cidade));
+      const promotions = planSelectionView() === PLAN_SELECTION_VIEWS.PROMOTIONS;
+      ui.showPlans(visiblePlans(), { showMore: promotions });
     } else if (session.step === STATES.VENCIMENTO) {
       ui.showQuickReplies(DUE_DATE_OPTIONS.map((day) => ({ label: `Dia ${day}`, action: "select-due-date", value: day })));
     } else if (session.step === STATES.DATA_INSTALACAO) {
@@ -145,6 +175,10 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       addMessage("assistant", "A consulta foi interrompida pelo recarregamento. Envie o complemento novamente para continuar.");
     }
     if (session.step === STATES.COBERTURA_VIAVEL) changeStep(STATES.ESCOLHA_PLANO);
+    if (session.step === STATES.ESCOLHA_PLANO && !session.planSelectionView) {
+      session.planSelectionView = PLAN_SELECTION_VIEWS.PROMOTIONS;
+      persist();
+    }
     ui.updateDebug(session, config);
     if (session.step === STATES.CONFIRMACAO) ui.showSummary(session);
     if (session.step === STATES.FINALIZADO && session.crmPayload) {
@@ -183,8 +217,10 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         return;
       }
       await assistant("Ótima notícia! Temos fibra disponível no seu endereço. 🎉");
+      session.planSelectionView = PLAN_SELECTION_VIEWS.PROMOTIONS;
       changeStep(STATES.ESCOLHA_PLANO);
-      await assistant("Estes são os planos disponíveis. Você pode tocar em um card ou escrever, por exemplo, “quero o mais barato”.");
+      await assistant("Escolha uma das três condições especiais abaixo. Se preferir, toque em “Ver mais ofertas” para consultar os demais planos.");
+      trackPromotionsDisplayed();
       showControlsForStep();
     } catch (error) {
       logger.error(`${PREFIX} Coverage request failed`, error);
@@ -199,10 +235,24 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     session.faturamento = null;
     session.crmPayload = null;
     logger.info(`${PREFIX} Plan selected: ${plan.id}`);
+    if (isPromotionalPlan(plan)) {
+      trackPlanEvent("cobertura_oferta_combate_selecionada", { plano: plan.id, valor: plan.price });
+    }
     addMessage("user", `Quero o plano ${plan.title}.`, { planId: plan.id });
     changeStep(STATES.NOME);
     await assistant(`Boa escolha: ${plan.title} por ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(plan.price)}/mês.`);
     await askCurrentStep();
+  }
+
+  async function showMorePlans({ recordUser = true } = {}) {
+    if (planSelectionView() === PLAN_SELECTION_VIEWS.CATALOG) return;
+    if (recordUser) addMessage("user", "Ver mais ofertas");
+    session.planSelectionView = PLAN_SELECTION_VIEWS.CATALOG;
+    persist();
+    trackPlanEvent("cobertura_ofertas_combate_fechadas", { motivo: "ver_mais_ofertas" });
+    trackPlanEvent("cobertura_opcoes_exibidas", { tipo_opcao: "outros_planos" });
+    await assistant("Claro! Aqui estão os demais planos disponíveis para o seu endereço.");
+    showControlsForStep();
   }
 
   function contextFromLocation() {
@@ -334,7 +384,11 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         await assistant("Use uma das opções abaixo para tentar outro endereço.");
         break;
       case STATES.ESCOLHA_PLANO: {
-        const plan = selectPlanFromText(parsedText, getPlansForCity(session.cidade));
+        if (wantsMorePlans(parsedText)) {
+          await showMorePlans({ recordUser: false });
+          break;
+        }
+        const plan = selectPlanFromText(parsedText, visiblePlans());
         if (!plan) {
           await assistant("Não consegui identificar esse plano. Toque em um card ou diga a velocidade, como “quero 500 mega”.");
           showControlsForStep();
@@ -345,6 +399,9 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         session.faturamento = null;
         session.crmPayload = null;
         logger.info(`${PREFIX} Plan selected: ${plan.id}`);
+        if (isPromotionalPlan(plan)) {
+          trackPlanEvent("cobertura_oferta_combate_selecionada", { plano: plan.id, valor: plan.price });
+        }
         changeStep(STATES.NOME);
         await assistant(`Boa escolha: ${plan.title} por ${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(plan.price)}/mês.`);
         await askCurrentStep();
@@ -494,10 +551,11 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       return;
     }
     if (action === "select-plan") {
-      const plan = getPlansForCity(session.cidade).find((item) => item.id === value);
+      const plan = visiblePlans().find((item) => item.id === value);
       if (plan) await choosePlan(plan);
       return;
     }
+    if (action === "show-more-plans") return showMorePlans();
     if (["select-due-date", "select-installation-date", "select-shift"].includes(action)) {
       return handleText(value);
     }
@@ -507,8 +565,10 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     }
     if (action === "change-plan") {
       ui.removeSummary?.();
+      session.planSelectionView = PLAN_SELECTION_VIEWS.PROMOTIONS;
       changeStep(STATES.ESCOLHA_PLANO);
-      await assistant("Claro. Escolha outro plano:");
+      await assistant("Claro. Escolha uma das condições especiais ou veja mais ofertas:");
+      trackPromotionsDisplayed();
       showControlsForStep();
       return;
     }

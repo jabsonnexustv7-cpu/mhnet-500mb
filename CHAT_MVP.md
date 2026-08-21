@@ -10,7 +10,7 @@ O repositório é um site estático publicado com Jekyll/GitHub Pages e não pos
 - Cloud Run `consulta-cobertura-mhnet-br` para a decisão real de viabilidade FTTH;
 - raio de 200 metros;
 - uma segunda tentativa mínima (`cep`, `fachada`, `radius`) quando o motivo é `sem_ftth_no_raio`;
-- seis planos definidos no frontend, com substituição de 500 por 600 Mega em Sorocaba e Votorantim;
+- três ofertas promocionais prioritárias (300, 500 e 700 Mega) e um catálogo adicional de seis planos, com substituição de 500 por 600 Mega em Sorocaba e Votorantim;
 - um endpoint separado do WebTurbo CRM para pré-vendas.
 
 O laboratório não importa o JavaScript monolítico da página publicada. As integrações necessárias foram isoladas em adaptadores: CRM real, Meta Pixel `Lead`, GA4, conversões do Google Ads e pós-venda no WhatsApp. CAPI, ManyChat, notificações de cobertura e retenção continuam fora do laboratório.
@@ -24,7 +24,7 @@ O laboratório não importa o JavaScript monolítico da página publicada. As in
 - `consultar-cobertura/chat/state.js`: sessão, persistência e máquina de estados.
 - `consultar-cobertura/chat/validators.js`: validações e normalizações.
 - `consultar-cobertura/chat/parser.js`: interpretação local das mensagens.
-- `consultar-cobertura/chat/plans.js`: planos reaproveitados e regra regional.
+- `consultar-cobertura/chat/plans.js`: três ofertas promocionais, catálogo adicional reaproveitado e regra regional.
 - `consultar-cobertura/chat/integrations.js`: ViaCEP, cobertura e adaptador CRM.
 - `consultar-cobertura/chat/tracking.js`: atribuição e eventos Meta/Google equivalentes ao fluxo atual.
 - `consultar-cobertura/chat/whatsapp.js`: mensagem e redirecionamento pós-venda.

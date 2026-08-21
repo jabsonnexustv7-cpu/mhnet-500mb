@@ -1,3 +1,42 @@
+const PROMOTIONAL_PLANS = [
+  {
+    id: "FIBRA 300MB",
+    speed: 300,
+    title: "300 Mega",
+    badge: "Menor mensalidade",
+    price: 79.9,
+    description: "Internet fibra para navegar, assistir e usar seus aplicativos no dia a dia.",
+    features: ["Instalação grátis", "Wi-Fi incluso"],
+    promotional: true
+  },
+  {
+    id: "FIBRA 500MB (Combate)",
+    speed: 500,
+    title: "500 Mega",
+    badge: "Mais escolhido",
+    price: 89.9,
+    description: "Mais velocidade por apenas R$ 10 a mais que o plano de 300 Mega.",
+    features: ["Instalação grátis", "Wi-Fi incluso"],
+    promotional: true,
+    featured: true
+  },
+  {
+    id: "FIBRA 700MB",
+    speed: 700,
+    title: "700 Mega",
+    badge: "Mais velocidade",
+    price: 99.9,
+    description: "Alta velocidade para vários aparelhos, streaming, trabalho e jogos.",
+    features: ["Instalação grátis", "Wi-Fi incluso"],
+    promotional: true
+  }
+];
+
+const PLAN_SELECTION_VIEWS = Object.freeze({
+  PROMOTIONS: "promotions",
+  CATALOG: "catalog"
+});
+
 const BASE_PLANS = [
   {
     id: "FIBRA 500MB",
@@ -79,8 +118,16 @@ export function getPlansForCity(city) {
   return plans;
 }
 
+export function getPromotionalPlans() {
+  return structuredClone(PROMOTIONAL_PLANS);
+}
+
+export function isPromotionalPlan(plan) {
+  return Boolean(plan?.promotional || PROMOTIONAL_PLANS.some((offer) => offer.id === plan?.id));
+}
+
 export function formatPrice(value) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 }
 
-export { BASE_PLANS };
+export { BASE_PLANS, PLAN_SELECTION_VIEWS, PROMOTIONAL_PLANS };

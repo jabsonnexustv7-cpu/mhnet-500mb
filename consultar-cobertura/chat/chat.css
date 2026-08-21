@@ -310,6 +310,8 @@ button { cursor: pointer; }
 .chat-plan-track { padding: 8px 14px 14px; display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; }
 .chat-plan-card { min-width: 238px; padding: 15px; display: flex; flex-direction: column; align-items: flex-start; gap: 7px; color: var(--ink); background: white; border: 1px solid #dae4f2; border-radius: 16px; box-shadow: 0 8px 22px rgba(10,36,99,0.07); scroll-snap-align: start; text-align: left; }
 .chat-plan-card:hover, .chat-plan-card:focus-visible { border-color: var(--blue-600); transform: translateY(-1px); outline: none; }
+.chat-plan-card.is-featured { border: 2px solid var(--green-500); background: linear-gradient(180deg, #f3fff7, #fff 45%); box-shadow: 0 10px 24px rgba(0, 200, 83, 0.12); }
+.chat-plan-card.is-featured .chat-plan-badge { color: #087a39; background: #ddf9e8; }
 .chat-plan-badge { padding: 4px 7px; color: var(--blue-700); background: #eef4ff; border-radius: 6px; font-size: 9px; font-weight: 900; letter-spacing: 0.4px; text-transform: uppercase; }
 .chat-plan-title { margin-top: 2px; color: var(--navy-900); font-size: 17px; }
 .chat-plan-price { color: var(--navy-950); font-size: 22px; font-weight: 900; letter-spacing: -0.7px; }
@@ -317,6 +319,9 @@ button { cursor: pointer; }
 .chat-plan-description { min-height: 35px; color: var(--muted); font-size: 10px; line-height: 1.45; }
 .chat-plan-features { color: #4d5d74; font-size: 9px; font-weight: 700; }
 .chat-plan-cta { width: 100%; margin-top: 5px; padding: 8px; color: white; background: var(--blue-600); border-radius: 9px; font-size: 10px; font-weight: 800; text-align: center; }
+.chat-plan-card.is-featured .chat-plan-cta { background: linear-gradient(90deg, var(--blue-600), #049945 140%); }
+.chat-more-plans { width: calc(100% - 28px); min-height: 38px; margin: -3px 14px 13px; color: var(--blue-700); background: white; border: 1px solid #b9caed; border-radius: 11px; font-size: 11px; font-weight: 900; }
+.chat-more-plans:hover, .chat-more-plans:focus-visible { color: white; background: var(--blue-600); border-color: var(--blue-600); outline: none; }
 
 .chat-summary { margin: 10px 0 14px 36px; padding: 15px; background: white; border: 1px solid #dbe4f1; border-radius: 16px; box-shadow: 0 8px 24px rgba(10,36,99,0.07); }
 .chat-summary h3 { margin: 0 0 10px; color: var(--navy-900); font-size: 14px; }

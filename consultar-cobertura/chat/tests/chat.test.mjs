@@ -4,8 +4,8 @@ import test from "node:test";
 import { calculateBillingSummary, parseInstallationDate, tomorrowISO } from "../billing.js";
 import { createCoverageService, createCrmService, buildCrmPayload } from "../integrations.js";
 import { createChatFlow } from "../flow.js";
-import { extractCep, selectPlanFromText } from "../parser.js";
-import { BASE_PLANS } from "../plans.js";
+import { extractCep, selectPlanFromText, wantsMorePlans } from "../parser.js";
+import { BASE_PLANS, PLAN_SELECTION_VIEWS, PROMOTIONAL_PLANS } from "../plans.js";
 import { createSession, loadSession, resetSession, saveSession, STATES, transition } from "../state.js";
 import { isValidCep, isValidCpf, normalizeCep } from "../validators.js";
 import { createWhatsAppService } from "../whatsapp.js";
@@ -63,6 +63,25 @@ test("seleciona plano por velocidade", () => {
   assert.equal(selectPlanFromText("quero 500 mega", BASE_PLANS)?.id, "FIBRA 500MB");
 });
 
+test("ofertas iniciais reproduzem as três promoções do fluxo atual", () => {
+  assert.deepEqual(
+    PROMOTIONAL_PLANS.map(({ id, price }) => [id, price]),
+    [
+      ["FIBRA 300MB", 79.9],
+      ["FIBRA 500MB (Combate)", 89.9],
+      ["FIBRA 700MB", 99.9]
+    ]
+  );
+  assert.equal(selectPlanFromText("quero o mais barato", PROMOTIONAL_PLANS)?.id, "FIBRA 300MB");
+  assert.equal(selectPlanFromText("quero 500 mega", PROMOTIONAL_PLANS)?.id, "FIBRA 500MB (Combate)");
+});
+
+test("reconhece pedido escrito para ver mais ofertas", () => {
+  assert.equal(wantsMorePlans("quero ver mais ofertas"), true);
+  assert.equal(wantsMorePlans("mostrar outros planos"), true);
+  assert.equal(wantsMorePlans("quero 500 mega"), false);
+});
+
 test("máquina de estados aceita a transição prevista e rejeita salto inválido", () => {
   const session = createSession(() => "state-test");
   transition(session, STATES.CEP);
@@ -110,6 +129,44 @@ test("sessão persistida pode ser retomada após recarregar", () => {
   assert.equal(restored.sessionId, "session-test");
   assert.equal(restored.step, STATES.CONFIRMACAO);
   assert.equal(restored.plano.id, "FIBRA 500MB");
+});
+
+test("seleção de planos começa nas promoções e expande para o catálogo", async () => {
+  const session = createSession(() => "plan-view-test");
+  session.step = STATES.ESCOLHA_PLANO;
+  session.cidade = "Canoas";
+  session.uf = "RS";
+  session.cobertura = { viavel: true, source: "real" };
+  const rendered = [];
+  const ui = {
+    addMessage() {}, updateDebug() {}, clearConversation() {}, setTyping() {}, clearActions() {},
+    setComposerEnabled() {}, setPlaceholder() {}, showQuickReplies() {}, showSummary() {},
+    showFinalPayload() {},
+    showPlans(plans, options) {
+      rendered.push({ ids: plans.map((plan) => plan.id), options });
+    }
+  };
+  const flow = createChatFlow({
+    session,
+    config: { storageKey: "plan-view", typingDelayMs: 0, conversionMode: "mock" },
+    storage: { setItem() {}, getItem() { return null; }, removeItem() {} },
+    ui,
+    coverageService: { async check() { return { viavel: true }; } },
+    crmService: { async submit() { return { ok: true }; } },
+    addressLookup: async () => ({}),
+    interpreter: { async interpret() { return null; } },
+    tracking: { ga4() {}, attribution() { return {}; } },
+    logger: { info() {}, warn() {}, error() {} }
+  });
+
+  flow.resume();
+  assert.deepEqual(rendered.at(-1).ids, PROMOTIONAL_PLANS.map((plan) => plan.id));
+  assert.equal(rendered.at(-1).options.showMore, true);
+
+  await flow.handleAction("show-more-plans");
+  assert.equal(session.planSelectionView, PLAN_SELECTION_VIEWS.CATALOG);
+  assert.deepEqual(rendered.at(-1).ids, BASE_PLANS.map((plan) => plan.id));
+  assert.equal(rendered.at(-1).options.showMore, false);
 });
 
 test("gera payload final compatível com o CRM existente", () => {
