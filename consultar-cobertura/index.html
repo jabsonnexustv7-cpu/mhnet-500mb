@@ -9,7 +9,7 @@ layout: null
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+if(!f._fbq)f._fbq=n.push=n;n.loaded=!0;n.version='2.0';
 n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
@@ -56,7 +56,7 @@ src="https://www.facebook.com/tr?id=907334254744897&ev=PageView&noscript=1"
 {% assign coverage_html = coverage_html | replace: 'Olá! Consultei a cobertura no site da WebTurbo, parceira de vendas autorizada MhNet, e quero contratar.', 'Olá! Consultei a cobertura no site da WebTurbo e quero contratar.' %}
 {% assign coverage_html = coverage_html | replace: 'MhNet', 'WebTurbo' %}
 
-{{ coverage_html | replace: '</body>', '<script src="/consultar-cobertura/regional-plans.js"></script><script src="/consultar-cobertura/location-capture-ui.js"></script><script src="/consultar-cobertura/coverage-friction-reduction.js?v=1"></script><script src="/consultar-cobertura/landing-hero-redesign.js?v=3"></script><script src="/consultar-cobertura/coverage-choice-modal-v3.js?v=3"></script><script src="/consultar-cobertura/coverage-choice-bridge.js?v=1"></script><script src="/consultar-cobertura/normal-plans-catalog.js?v=1"></script><script src="/consultar-cobertura/retention-offers.js"></script><script src="/consultar-cobertura/crm-coordinates-fallback.js?v=2"></script><script src="/consultar-cobertura/tracking-v2.js?v=4"></script><script type="module" src="/consultar-cobertura/chat/embed.js?v=6"></script></body>' }}
+{{ coverage_html | replace: '</body>', '<script src="/consultar-cobertura/regional-plans.js"></script><script src="/consultar-cobertura/location-capture-ui.js"></script><script src="/consultar-cobertura/coverage-friction-reduction.js?v=1"></script><script src="/consultar-cobertura/landing-hero-redesign.js?v=3"></script><script src="/consultar-cobertura/coverage-choice-modal-v3.js?v=3"></script><script src="/consultar-cobertura/coverage-choice-bridge.js?v=1"></script><script src="/consultar-cobertura/normal-plans-catalog.js?v=1"></script><script src="/consultar-cobertura/retention-offers.js"></script><script src="/consultar-cobertura/crm-coordinates-fallback.js?v=2"></script><script src="/consultar-cobertura/tracking-v2.js?v=4"></script><script type="module" src="/consultar-cobertura/chat/embed.js?v=7"></script></body>' }}
 <!-- retention-offers-v1 -->
 <!-- landing-hero-redesign-v3 -->
 <!-- coverage-choice-modal-v3-v3 -->
