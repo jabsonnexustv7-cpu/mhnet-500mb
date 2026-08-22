@@ -106,7 +106,7 @@ test("cards de planos viáveis são renderizados dentro da conversa", () => {
   const ui = read("../ui.js");
   assert.match(ui, /chat-plan-selection/);
   assert.match(ui, /messages\.appendChild\(selection\)/);
-  assert.match(ui, /data-action/);
+  assert.match(ui, /card\.dataset\.action\s*=\s*["']select-plan["']/);
   assert.match(ui, /select-plan/);
 });
 
