@@ -9,7 +9,7 @@
 
   const ENDPOINT = "https://modal-easy-964927461432.southamerica-east1.run.app";
   const CHECK_INTERVAL_MS = 900;
-  const SENT_PREFIX = "wt_lead_recovery_sent_v4:";
+  const SENT_PREFIX = "wt_lead_recovery_sent_v5:";
   const VISIT_ID = `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 
   function clean(value) {
@@ -49,8 +49,6 @@
   }
 
   function buildKey(source, cpf, phone, cep, sessionId) {
-    // Uma notificação por visita/sessão do funil. Antes a chave era apenas CPF+telefone+CEP,
-    // o que bloqueava novos testes e novas tentativas do mesmo cliente na mesma aba.
     return [source, clean(sessionId) || VISIT_ID, digits(cpf), digits(phone).slice(-11), digits(cep)].join(":");
   }
 
@@ -62,11 +60,15 @@
 
   function recoveryPayload(data) {
     const endereco = buildAddress(data.logradouro, data.numero, data.bairro, data.cidade, data.uf);
+    const etapa = "dados_pessoais_concluidos";
 
     return {
       action: "notifyAbandonoModal",
       evento: "lead_recuperacao_dados_completos",
-      etapa_abandono: "dados_pessoais_concluidos",
+      // O Cloud Run legado lê etapaAbandono/etapa; mantemos também snake_case.
+      etapa_abandono: etapa,
+      etapaAbandono: etapa,
+      etapa,
       origem: data.origem,
       finalizacao: data.source,
       horario_site: new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }),
@@ -230,7 +232,9 @@
         keepalive: true
       });
       const responseData = await response.clone().json().catch(() => ({}));
-      if (!response.ok || responseData?.ok === false) throw new Error(`http_${response.status}`);
+      if (!response.ok || responseData?.ok === false || responseData?.telegramSent === false) {
+        throw new Error(responseData?.message || `http_${response.status}`);
+      }
       clarityEvent("lead_recuperacao_telegram_enviado");
       gaEvent("lead_recuperacao_telegram_enviado", {
         origem_fluxo: lead.source.toLowerCase(),
@@ -255,7 +259,6 @@
     void send(chatLead(), reason);
   }
 
-  // API explícita para os fluxos chamarem no exato momento em que os dados mínimos ficam completos.
   window.webturboLeadRecovery = {
     notifyNow(source) {
       const normalized = clean(source).toUpperCase();
