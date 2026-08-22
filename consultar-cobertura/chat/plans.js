@@ -37,60 +37,63 @@ const PLAN_SELECTION_VIEWS = Object.freeze({
   CATALOG: "catalog"
 });
 
+// Ordem comercial deliberada: primeiro o plano recomendado, depois a alternativa
+// básica e, em seguida, as opções de maior valor percebido/ticket.
 const BASE_PLANS = [
+  {
+    id: "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI",
+    speed: 500,
+    title: "500 Mega + 1 Ponto extra",
+    badge: "Mais popular",
+    price: 119.9,
+    description: "Mais cobertura de Wi-Fi pela casa com um ponto extra.",
+    features: ["Ponto extra de Wi-Fi", "Instalação grátis"],
+    featured: true
+  },
   {
     id: "FIBRA 500MB",
     speed: 500,
     title: "500 Mega",
-    badge: "Plano econômico",
+    badge: "",
     price: 99.9,
-    description: "Boa performance para vídeos, redes sociais e uso diário.",
-    features: ["Instalação grátis", "Wi-Fi incluso"]
+    description: "Internet fibra para navegação, vídeos e uso diário.",
+    features: ["Wi-Fi incluso", "Instalação grátis"]
+  },
+  {
+    id: "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY",
+    speed: 600,
+    title: "600 Mega + Ponto extra + Globoplay",
+    badge: "Completo",
+    price: 139.9,
+    description: "Mais velocidade, cobertura de Wi-Fi e Globoplay no mesmo plano.",
+    features: ["Ponto extra de Wi-Fi", "Globoplay incluso", "Instalação grátis"]
   },
   {
     id: "FIBRA 500MB + GLOBOPLAY",
     speed: 500,
     title: "500 Mega + Globoplay",
-    badge: "Com streaming",
+    badge: "Globoplay",
     price: 114.8,
-    description: "Internet fibra com Globoplay para seus conteúdos favoritos.",
-    features: ["Instalação grátis", "Globoplay incluso"]
-  },
-  {
-    id: "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI",
-    speed: 500,
-    title: "500 Mega + ponto extra",
-    badge: "Mais vendido",
-    price: 119.9,
-    description: "Mais alcance com um segundo ponto de Wi-Fi cabeado.",
-    features: ["Instalação grátis", "Ponto extra incluso"]
-  },
-  {
-    id: "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY",
-    speed: 600,
-    title: "600 Mega + ponto extra",
-    badge: "Combo streaming",
-    price: 139.9,
-    description: "Velocidade, alcance e Globoplay no mesmo plano.",
-    features: ["Ponto extra", "Globoplay incluso"]
+    description: "Internet fibra com Globoplay incluso.",
+    features: ["Globoplay incluso", "Instalação grátis"]
   },
   {
     id: "FIBRA 700MB + 1 PONTO EXTRA DE WI-FI",
     speed: 700,
-    title: "700 Mega + ponto extra",
-    badge: "Alta performance",
+    title: "700 Mega + 1 Ponto extra",
+    badge: "Alta velocidade",
     price: 149.9,
-    description: "Mais velocidade e alcance para vários aparelhos.",
-    features: ["Instalação grátis", "Ponto extra incluso"]
+    description: "Mais velocidade e cobertura para vários aparelhos.",
+    features: ["Ponto extra de Wi-Fi", "Instalação grátis"]
   },
   {
     id: "FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI",
     speed: 1000,
-    title: "1 Giga + ponto extra",
-    badge: "Combo destaque",
+    title: "1 Giga + 1 Ponto extra",
+    badge: "Máxima velocidade",
     price: 159.9,
-    description: "Alta performance para casas muito conectadas.",
-    features: ["Instalação grátis", "Ponto extra incluso"]
+    description: "Máxima performance para casas com muitos dispositivos.",
+    features: ["Ponto extra de Wi-Fi", "Instalação grátis"]
   }
 ];
 
@@ -108,13 +111,20 @@ export function getPlansForCity(city) {
   const plans = structuredClone(BASE_PLANS);
   if (!REGIONAL_CITIES.has(normalizeCity(city))) return plans;
 
-  plans[0] = { ...plans[0], id: "FIBRA 600MB", speed: 600, title: "600 Mega" };
-  plans[2] = {
-    ...plans[2],
-    id: "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI",
-    speed: 600,
-    title: "600 Mega + ponto extra"
-  };
+  const basicIndex = plans.findIndex((plan) => plan.id === "FIBRA 500MB");
+  if (basicIndex >= 0) {
+    plans[basicIndex] = { ...plans[basicIndex], id: "FIBRA 600MB", speed: 600, title: "600 Mega" };
+  }
+
+  const extraIndex = plans.findIndex((plan) => plan.id === "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI");
+  if (extraIndex >= 0) {
+    plans[extraIndex] = {
+      ...plans[extraIndex],
+      id: "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI",
+      speed: 600,
+      title: "600 Mega + 1 Ponto extra"
+    };
+  }
   return plans;
 }
 
