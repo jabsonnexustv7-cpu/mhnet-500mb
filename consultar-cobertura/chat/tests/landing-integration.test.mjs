@@ -8,15 +8,15 @@ test("landing carrega o chat reutilizável sem iframe", () => {
   const landing = read("../../index.html");
   const embed = read("../embed.js");
   assert.match(landing, /chat\/chat\.css\?v=6/);
-  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=7"/);
-  assert.match(embed, /await import\("\.\/app\.js\?v=7"\)/);
+  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=8"/);
+  assert.match(embed, /await import\("\.\/app\.js\?v=8"\)/);
   assert.doesNotMatch(embed, /iframe/i);
 });
 
 test("versão nova invalida o cache dos módulos internos críticos", () => {
   const app = read("../app.js");
   for (const moduleName of ["config", "ai-service", "flow", "integrations", "message-router", "state", "tracking", "ui", "whatsapp"]) {
-    assert.match(app, new RegExp(`\\./${moduleName}\\.js\\?v=7`));
+    assert.match(app, new RegExp(`\\./${moduleName}\\.js\\?v=8`));
   }
 });
 
@@ -61,6 +61,21 @@ test("confirmação do endereço mantém as ações dentro do próprio card", ()
   assert.match(ui, /label: "Corrigir endereço", action: "new-address"/);
   assert.match(app, /chat-messages"\)\.addEventListener\("click", handleActionClick\)/);
   assert.match(css, /\.address-confirmation-actions/);
+});
+
+test("opções rápidas ficam visíveis dentro da conversa até a próxima etapa", () => {
+  const ui = read("../ui.js");
+  assert.match(ui, /className,? "chat-inline-actions"|"chat-inline-actions"/);
+  assert.match(ui, /selection\.appendChild\(wrap\)/);
+  assert.match(ui, /messages\.appendChild\(selection\)/);
+  assert.match(ui, /chat-inline-actions, \.chat-inline-date/);
+});
+
+test("seletor de data também fica dentro da conversa", () => {
+  const ui = read("../ui.js");
+  assert.match(ui, /"chat-inline-date"/);
+  assert.match(ui, /dateInput\.id = "installation-date-input"/);
+  assert.match(ui, /messages\.appendChild\(selection\)/);
 });
 
 test("cards de planos viáveis são renderizados dentro da conversa", () => {
