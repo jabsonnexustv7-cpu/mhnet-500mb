@@ -17,6 +17,7 @@ export const CHAT_CONFIG = {
   crmMode: safeMode ? "mock" : (params.get("crm") || "real"),
   conversionMode: safeMode ? "mock" : (params.get("conversions") || "real"),
   whatsappMode: safeMode ? "mock" : (params.get("whatsapp") || "real"),
+  postSaleWhatsAppRedirect: false,
   coverageEndpoint: "https://consulta-cobertura-mhnet-br-964927461432.southamerica-east1.run.app",
   crmEndpoint: "/api/chat/crm",
   whatsNumber: "555193187300",
