@@ -63,6 +63,34 @@ export function createChatUI() {
     scrollToBottom();
   }
 
+  function showAddressConfirmation(session) {
+    messages.querySelector(".address-confirmation-card")?.remove();
+    const card = element("section", "chat-summary address-confirmation-card");
+    card.setAttribute("aria-label", "Endereço localizado para conferência");
+    card.appendChild(element("h3", "", "Confira o endereço localizado"));
+    const rows = [
+      ["Endereço", `${session.logradouro || "Logradouro não identificado"}${session.numero ? `, ${session.numero}` : ""}`],
+      ["Bairro", session.bairro || "-"],
+      ["Cidade", session.cidade ? `${session.cidade}/${session.uf || ""}` : "-"],
+      ["CEP", session.cep ? formatCep(session.cep) : "Localizado pelas coordenadas"]
+    ];
+    rows.forEach(([label, value]) => {
+      const row = element("div", "summary-row");
+      row.appendChild(element("span", "", label));
+      row.appendChild(element("strong", "", value));
+      card.appendChild(row);
+    });
+    if (session.addressSource === "geolocation" && session.locationAccuracy) {
+      card.appendChild(element("small", "", `Localização do aparelho · precisão aproximada de ${session.locationAccuracy} m`));
+    }
+    messages.appendChild(card);
+    showQuickReplies([
+      { label: "Está correto", action: "confirm-address" },
+      { label: "Corrigir endereço", action: "new-address" }
+    ]);
+    scrollToBottom();
+  }
+
   function showPlans(plans, { showMore = false, showPromotions = false } = {}) {
     clearActions();
     const track = element("div", "chat-plan-track");
@@ -120,7 +148,7 @@ export function createChatUI() {
   }
 
   function showSummary(session) {
-    messages.querySelector(".chat-summary")?.remove();
+    messages.querySelector(".chat-summary:not(.address-confirmation-card)")?.remove();
     const summary = element("section", "chat-summary");
     summary.setAttribute("aria-label", "Resumo da contratação");
     summary.appendChild(element("h3", "", "Resumo da simulação"));
@@ -150,7 +178,7 @@ export function createChatUI() {
   }
 
   function removeSummary() {
-    messages.querySelector(".chat-summary")?.remove();
+    messages.querySelectorAll(".chat-summary").forEach((node) => node.remove());
   }
 
   function showFinalPayload(payload) {
@@ -216,6 +244,9 @@ export function createChatUI() {
       "Estado atual": session.step,
       CEP: session.cep ? formatCep(session.cep) : "-",
       Cidade: session.cidade ? `${session.cidade}/${session.uf}` : "-",
+      "Origem do endereço": session.addressSource || "-",
+      "Endereço confirmado": session.addressConfirmed ? "yes" : "no",
+      Coordenadas: session.coordenadas || "-",
       Cobertura: coverage,
       Plano: session.plano?.id || "-",
       Nome: session.nome || "-",
@@ -269,6 +300,7 @@ export function createChatUI() {
     setTyping,
     clearActions,
     showQuickReplies,
+    showAddressConfirmation,
     showPlans,
     showDatePicker,
     showSummary,
