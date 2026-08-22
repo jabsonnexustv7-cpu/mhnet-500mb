@@ -8,8 +8,9 @@
   window.__webturboLeadRecoveryNotificationInstalled = true;
 
   const ENDPOINT = "https://modal-easy-964927461432.southamerica-east1.run.app";
-  const CHECK_INTERVAL_MS = 1200;
-  const SENT_PREFIX = "wt_lead_recovery_sent:";
+  const CHECK_INTERVAL_MS = 900;
+  const SENT_PREFIX = "wt_lead_recovery_sent_v4:";
+  const VISIT_ID = `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 
   function clean(value) {
     return String(value || "").trim();
@@ -43,8 +44,14 @@
     try { sessionStorage.setItem(SENT_PREFIX + key, "1"); } catch (_) {}
   }
 
-  function buildKey(source, cpf, phone, cep) {
-    return [source, digits(cpf), digits(phone).slice(-11), digits(cep)].join(":");
+  function clearSent(key) {
+    try { sessionStorage.removeItem(SENT_PREFIX + key); } catch (_) {}
+  }
+
+  function buildKey(source, cpf, phone, cep, sessionId) {
+    // Uma notificação por visita/sessão do funil. Antes a chave era apenas CPF+telefone+CEP,
+    // o que bloqueava novos testes e novas tentativas do mesmo cliente na mesma aba.
+    return [source, clean(sessionId) || VISIT_ID, digits(cpf), digits(phone).slice(-11), digits(cep)].join(":");
   }
 
   function buildAddress(logradouro, numero, bairro, cidade, uf) {
@@ -56,8 +63,6 @@
   function recoveryPayload(data) {
     const endereco = buildAddress(data.logradouro, data.numero, data.bairro, data.cidade, data.uf);
 
-    // Mantemos os nomes antigos e também aliases compatíveis com os payloads
-    // usados pelas demais notificações do backend (ex.: notifyVendaConcluida).
     return {
       action: "notifyAbandonoModal",
       evento: "lead_recuperacao_dados_completos",
@@ -110,7 +115,7 @@
   function heroLead() {
     const nome = value("mNome");
     const cpf = value("mCpf");
-    const nascimento = value("mNascimento");
+    const nascimento = value("mNascimento") || value("mNascimentoTexto");
     const telefone1 = value("mTelefone1");
     const telefone2 = value("mTelefone2");
     const email = value("mEmail");
@@ -122,9 +127,6 @@
     const cidade = value("mCidade");
     const uf = value("mUf");
 
-    // O segundo telefone é útil, mas não pode bloquear a recuperação.
-    // Assim que já temos identidade para análise, contato principal, plano e endereço,
-    // o lead deve ser enviado ao Telegram mesmo que abandone antes do telefone 2.
     if (!nome || digits(cpf).length !== 11 || !nascimento || !email) return null;
     if (digits(telefone1).length < 10) return null;
     if (!plano || !numero || !cidade || !uf || (!logradouro && digits(cep).length !== 8)) return null;
@@ -212,13 +214,13 @@
 
     return {
       source: "CHAT",
-      key: buildKey("CHAT", cpf, telefone1, cep),
+      key: buildKey("CHAT", cpf, telefone1, cep, session.sessionId),
       payload: recoveryPayload(data)
     };
   }
 
-  async function send(lead) {
-    if (!lead || alreadySent(lead.key)) return;
+  async function send(lead, reason = "automatic") {
+    if (!lead || alreadySent(lead.key)) return false;
     markSent(lead.key);
     try {
       const response = await fetch(ENDPOINT, {
@@ -227,25 +229,52 @@
         body: JSON.stringify(lead.payload),
         keepalive: true
       });
-      if (!response.ok) throw new Error(`http_${response.status}`);
+      const responseData = await response.clone().json().catch(() => ({}));
+      if (!response.ok || responseData?.ok === false) throw new Error(`http_${response.status}`);
       clarityEvent("lead_recuperacao_telegram_enviado");
-      gaEvent("lead_recuperacao_telegram_enviado", { origem_fluxo: lead.source.toLowerCase(), cidade: lead.payload.cidade || "" });
+      gaEvent("lead_recuperacao_telegram_enviado", {
+        origem_fluxo: lead.source.toLowerCase(),
+        cidade: lead.payload.cidade || "",
+        gatilho: reason
+      });
+      return true;
     } catch (error) {
-      try { sessionStorage.removeItem(SENT_PREFIX + lead.key); } catch (_) {}
+      clearSent(lead.key);
       clarityEvent("lead_recuperacao_telegram_erro");
-      gaEvent("lead_recuperacao_telegram_erro", { origem_fluxo: lead.source.toLowerCase(), erro: error?.message || "erro_envio" });
+      gaEvent("lead_recuperacao_telegram_erro", {
+        origem_fluxo: lead.source.toLowerCase(),
+        erro: error?.message || "erro_envio",
+        gatilho: reason
+      });
+      return false;
     }
   }
 
-  function check() {
-    void send(heroLead());
-    void send(chatLead());
+  function check(reason = "poll") {
+    void send(heroLead(), reason);
+    void send(chatLead(), reason);
   }
 
-  document.addEventListener("change", check, true);
-  document.addEventListener("input", () => setTimeout(check, 120), true);
-  document.addEventListener("click", () => setTimeout(check, 180), true);
-  document.addEventListener("blur", () => setTimeout(check, 80), true);
-  setInterval(check, CHECK_INTERVAL_MS);
-  setTimeout(check, 900);
+  // API explícita para os fluxos chamarem no exato momento em que os dados mínimos ficam completos.
+  window.webturboLeadRecovery = {
+    notifyNow(source) {
+      const normalized = clean(source).toUpperCase();
+      if (normalized === "CHAT") return send(chatLead(), "explicit_chat");
+      if (normalized === "HERO") return send(heroLead(), "explicit_hero");
+      check("explicit_any");
+      return Promise.resolve(true);
+    },
+    check
+  };
+
+  document.addEventListener("change", () => check("change"), true);
+  document.addEventListener("input", () => setTimeout(() => check("input"), 100), true);
+  document.addEventListener("click", () => setTimeout(() => check("click"), 140), true);
+  document.addEventListener("blur", () => setTimeout(() => check("blur"), 60), true);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") check("visibility_hidden");
+  });
+  window.addEventListener("pagehide", () => check("pagehide"));
+  setInterval(() => check("poll"), CHECK_INTERVAL_MS);
+  setTimeout(() => check("boot"), 700);
 })();
