@@ -2,7 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { calculateBillingSummary, parseInstallationDate, tomorrowISO } from "../billing.js";
-import { createCoverageService, createCrmService, buildCrmPayload } from "../integrations.js";
+import {
+  buildCoverageNotificationPayload,
+  buildCrmPayload,
+  createCoverageNotificationService,
+  createCoverageService,
+  createCrmService
+} from "../integrations.js";
 import { createChatFlow } from "../flow.js";
 import { extractCep, selectPlanFromText, wantsMorePlans } from "../parser.js";
 import { BASE_PLANS, PLAN_SELECTION_VIEWS, PROMOTIONAL_PLANS } from "../plans.js";
@@ -101,6 +107,48 @@ test("mock de cobertura retorna cenário inviável", async () => {
   const result = await service.check(sampleSession());
   assert.equal(result.viavel, false);
   assert.equal(result.status, "INVIAVEL");
+});
+
+test("notificação de cobertura usa as mesmas ações do fluxo tradicional", () => {
+  const viable = buildCoverageNotificationPayload(sampleSession(), sampleSession().cobertura, { origin: "chat_atendimento_online" });
+  const unviable = buildCoverageNotificationPayload(sampleSession(), { viavel: false, status: "INVIAVEL", motivo: "sem_ftth_no_raio" });
+  assert.equal(viable.action, "notifyConsulta");
+  assert.equal(unviable.action, "notifyConsultaInviavel");
+  assert.equal(viable.skipInitiateCheckout, true);
+  assert.equal(viable.origemConsulta, "chat_atendimento_online");
+  assert.equal(viable.cobertura.status, "VIAVEL");
+  assert.equal(unviable.cobertura.status, "INVIAVEL");
+});
+
+test("notificação mock não envia Telegram ou e-mail real", async () => {
+  let fetchCalls = 0;
+  const service = createCoverageNotificationService(
+    { notificationMode: "mock", notificationEndpoint: "https://example.invalid/notify" },
+    { fetchImpl: async () => { fetchCalls += 1; }, logger: { info() {}, warn() {} } }
+  );
+  const result = await service.notify(sampleSession(), sampleSession().cobertura);
+  assert.equal(result.mock, true);
+  assert.equal(result.posted, false);
+  assert.equal(fetchCalls, 0);
+});
+
+test("notificação real envia resultados viável e inviável ao backend atual", async () => {
+  const requests = [];
+  const service = createCoverageNotificationService(
+    { notificationMode: "real", notificationEndpoint: "https://coverage.example.test", requestTimeoutMs: 1000 },
+    {
+      fetchImpl: async (url, options) => {
+        requests.push({ url, body: JSON.parse(options.body) });
+        return { ok: true, status: 200, async json() { return { ok: true }; } };
+      },
+      logger: { info() {}, warn() {} }
+    }
+  );
+  await service.notify(sampleSession(), sampleSession().cobertura);
+  await service.notify(sampleSession(), { viavel: false, status: "INVIAVEL", motivo: "sem_ftth_no_raio", source: "real" });
+  assert.equal(requests.length, 2);
+  assert.deepEqual(requests.map(({ body }) => body.action), ["notifyConsulta", "notifyConsultaInviavel"]);
+  assert.ok(requests.every(({ body }) => body.skipInitiateCheckout === true));
 });
 
 test("reset remove a sessão anterior e cria uma nova", () => {
@@ -375,6 +423,7 @@ test("fluxo ponta a ponta viável chega ao CRM MOCK", async () => {
     crmMode: "mock"
   };
   let fetchCalls = 0;
+  let notificationCalls = 0;
   const session = createSession(() => "e2e-session");
   const flow = createChatFlow({
     session,
@@ -382,6 +431,7 @@ test("fluxo ponta a ponta viável chega ao CRM MOCK", async () => {
     storage,
     ui,
     coverageService: createCoverageService(config, { logger: { info() {}, warn() {} } }),
+    coverageNotificationService: { async notify() { notificationCalls += 1; return { ok: true, mock: true }; } },
     crmService: createCrmService(config, { fetchImpl: async () => { fetchCalls += 1; }, logger: { info() {} } }),
     interpreter: { async interpret() { return null; } },
     addressLookup: async () => ({ logradouro: "Rua Exemplo", bairro: "Centro", cidade: "Canoas", uf: "RS" }),
@@ -417,6 +467,7 @@ test("fluxo ponta a ponta viável chega ao CRM MOCK", async () => {
   assert.equal(session.crmPayload.turnoInstalacao1, "Manhã");
   assert.match(session.faturamento.proportional, /valor proporcional|referente aos dias utilizados/);
   assert.equal(fetchCalls, 0);
+  assert.equal(notificationCalls, 1);
   assert.match(ui.messages.at(-1).text, /Nenhuma venda foi criada/);
 });
 
@@ -427,10 +478,12 @@ test("fluxo inviável oferece nova consulta sem avançar para planos", async () 
     setComposerEnabled() {}, setPlaceholder() {}, showQuickReplies() {}, showPlans() {}, showSummary() {}, showFinalPayload() {}
   };
   const config = { storageKey: "inviavel", typingDelayMs: 0, coverageMode: "mock", mockCoverageResult: "inviavel", crmMode: "mock" };
+  let notificationCalls = 0;
   const session = createSession(() => "inviavel-session");
   const flow = createChatFlow({
     session, config, storage, ui,
     coverageService: createCoverageService(config, { logger: { info() {}, warn() {} } }),
+    coverageNotificationService: { async notify() { notificationCalls += 1; return { ok: true, mock: true }; } },
     crmService: createCrmService(config, { logger: { info() {} } }),
     interpreter: { async interpret() { return null; } },
     addressLookup: async () => ({ logradouro: "Rua Exemplo", bairro: "Centro", cidade: "Canoas", uf: "RS" }),
@@ -443,4 +496,5 @@ test("fluxo inviável oferece nova consulta sem avançar para planos", async () 
   await flow.handleText("não tenho complemento");
   assert.equal(session.step, STATES.COBERTURA_INVIAVEL);
   assert.equal(session.plano, null);
+  assert.equal(notificationCalls, 1);
 });

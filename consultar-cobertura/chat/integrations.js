@@ -224,6 +224,95 @@ export function createCoverageService(config, { fetchImpl = fetch, logger = cons
   };
 }
 
+export function buildCoverageNotificationPayload(session, coverage, context = {}) {
+  const cep = onlyDigits(session.cep);
+  const viavel = coverage?.viavel === true;
+  const origem = context.origin || "chat_atendimento_online";
+  const fachada = [session.logradouro, session.numero, session.bairro, session.cidade, session.uf]
+    .filter(Boolean)
+    .join(", ");
+  const eventId = `ic_${cep || "sem_cep"}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+
+  return {
+    action: viavel ? "notifyConsulta" : "notifyConsultaInviavel",
+    cep,
+    fachada: fachada || "-",
+    nomeCidade: session.cidade || "",
+    uf: session.uf || "",
+    origemConsulta: origem,
+    origem,
+    siteOrigem: "webturbo",
+    resultadoConsulta: viavel ? "viavel" : "inviavel",
+    statusCobertura: viavel ? "VIAVEL" : "INVIAVEL",
+    viavel,
+    skipInitiateCheckout: true,
+    page_url: context.pageUrl || "",
+    landing_page: context.landingPage || context.pageUrl || "",
+    referrer: context.referrer || "",
+    user_agent: context.userAgent || "",
+    gclid: context.gclid || "",
+    gbraid: context.gbraid || "",
+    wbraid: context.wbraid || "",
+    fbclid: context.fbclid || "",
+    utm_source: context.utmSource || "",
+    utm_medium: context.utmMedium || "",
+    utm_campaign: context.utmCampaign || "",
+    utm_content: context.utmContent || "",
+    utm_term: context.utmTerm || "",
+    event_id: eventId,
+    cobertura: {
+      viavel,
+      status: viavel ? "VIAVEL" : "INVIAVEL",
+      motivo: coverage?.motivo || "-",
+      coords: coverage?.coords || session.coordenadas || ""
+    }
+  };
+}
+
+export function createCoverageNotificationService(config, { fetchImpl = fetch, logger = console } = {}) {
+  return {
+    async notify(session, coverage, context = {}) {
+      const payload = buildCoverageNotificationPayload(session, coverage, context);
+      if (config.notificationMode !== "real") {
+        logger.info(`${LOG_PREFIX} COVERAGE NOTIFICATION MOCK`, {
+          action: payload.action,
+          cep: payload.cep,
+          posted: false
+        });
+        return { ok: true, mock: true, posted: false, payload };
+      }
+
+      if (coverage?.source !== "real") {
+        logger.warn(`${LOG_PREFIX} Coverage notification skipped for non-real result`, { source: coverage?.source || "unknown" });
+        return { ok: false, mock: false, posted: false, skipped: true, payload };
+      }
+
+      if (payload.viavel && payload.cep.length !== 8) {
+        logger.warn(`${LOG_PREFIX} Viable coverage notification skipped: invalid CEP`);
+        return { ok: false, mock: false, posted: false, skipped: true, payload };
+      }
+
+      try {
+        const response = await withTimeout(fetchImpl, config.notificationEndpoint || config.coverageEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }, config.requestTimeoutMs || 10000);
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || data?.ok === false) {
+          logger.warn(`${LOG_PREFIX} Coverage notification failed`, { action: payload.action, status: response.status });
+          return { ok: false, mock: false, posted: true, status: response.status, payload, data };
+        }
+        logger.info(`${LOG_PREFIX} Coverage notification sent`, { action: payload.action, cep: payload.cep });
+        return { ok: true, mock: false, posted: true, payload, data };
+      } catch (error) {
+        logger.warn(`${LOG_PREFIX} Coverage notification unavailable`, error?.message || error);
+        return { ok: false, mock: false, posted: false, payload, error: error?.message || "unknown" };
+      }
+    }
+  };
+}
+
 export function buildCrmPayload(session, context = {}) {
   const coords = session.coordenadas || "";
   const semCep = !onlyDigits(session.cep);

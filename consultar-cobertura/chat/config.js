@@ -19,7 +19,9 @@ export const CHAT_CONFIG = {
   crmMode: safeMode ? "mock" : (params.get("crm") || runtimeConfig.crmMode || "real"),
   conversionMode: safeMode ? "mock" : (params.get("conversions") || runtimeConfig.conversionMode || "real"),
   whatsappMode: safeMode ? "mock" : (params.get("whatsapp") || runtimeConfig.whatsappMode || "real"),
+  notificationMode: safeMode ? "mock" : (params.get("notifications") || runtimeConfig.notificationMode || "real"),
   coverageEndpoint: "https://consulta-cobertura-mhnet-br-964927461432.southamerica-east1.run.app",
+  notificationEndpoint: runtimeConfig.notificationEndpoint || "https://consulta-cobertura-mhnet-br-964927461432.southamerica-east1.run.app",
   crmEndpoint: runtimeConfig.crmEndpoint || "https://webturbo-crm-api-964927461432.southamerica-east1.run.app/api/v1/public/site-pre-sales",
   whatsNumber: "555193187300",
   aiAssistEndpoint: resolveAiAssistEndpoint(window.location, {

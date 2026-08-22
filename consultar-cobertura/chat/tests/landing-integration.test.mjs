@@ -7,9 +7,9 @@ const read = (relative) => readFileSync(new URL(relative, import.meta.url), "utf
 test("landing carrega o chat reutilizável sem iframe", () => {
   const landing = read("../../index.html");
   const embed = read("../embed.js");
-  assert.match(landing, /chat\/chat\.css\?v=4/);
-  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=4"/);
-  assert.match(embed, /await import\("\.\/app\.js"\)/);
+  assert.match(landing, /chat\/chat\.css\?v=5/);
+  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=5"/);
+  assert.match(embed, /await import\("\.\/app\.js\?v=5"\)/);
   assert.doesNotMatch(embed, /iframe/i);
 });
 
@@ -39,6 +39,11 @@ test("mobile mantém o modal acima do hero e respeita a área segura", () => {
   assert.match(css, /top: max\(8px, env\(safe-area-inset-top\)\)/);
   assert.match(css, /bottom: max\(8px, env\(safe-area-inset-bottom\)\)/);
   assert.match(legacyLanding, /viewport-fit=cover/);
+});
+
+test("campos mobile usam 16px e evitam o zoom automático do Safari", () => {
+  const css = read("../chat.css");
+  assert.match(css, /@media \(max-width: 640px\)[\s\S]*\.webturbo-chat-root input,[\s\S]*font-size: 16px/);
 });
 
 test("produção não exibe aviso técnico e retomada não bloqueia o hero ao recarregar", () => {
@@ -72,9 +77,23 @@ test("configuração da landing ativa apenas os modos reais esperados", () => {
   assert.match(embed, /crmMode: "real"/);
   assert.match(embed, /conversionMode: "real"/);
   assert.match(embed, /whatsappMode: "real"/);
+  assert.match(embed, /notificationMode: "real"/);
   assert.match(embed, /webturbo-chat-ai-hydcvtcuga-rj\.a\.run\.app\/api\/chat\/assist/);
   assert.match(config, /webturbo-crm-api-964927461432\.southamerica-east1\.run\.app\/api\/v1\/public\/site-pre-sales/);
+  assert.match(config, /notificationEndpoint:[\s\S]*consulta-cobertura-mhnet-br-964927461432\.southamerica-east1\.run\.app/);
   assert.doesNotMatch(embed, /safe=1|debug=1/);
+});
+
+test("chat notifica o backend de cobertura sem duplicar InitiateCheckout", () => {
+  const app = read("../app.js");
+  const flow = read("../flow.js");
+  const integrations = read("../integrations.js");
+
+  assert.match(app, /createCoverageNotificationService\(CHAT_CONFIG\)/);
+  assert.match(flow, /coverageNotifications\.notify\(session, coverage/);
+  assert.match(integrations, /action: viavel \? "notifyConsulta" : "notifyConsultaInviavel"/);
+  assert.match(integrations, /skipInitiateCheckout: true/);
+  assert.match(integrations, /coverage\?\.source !== "real"/);
 });
 
 test("CTAs permanentes de WhatsApp são convertidos em atendimento on-line", () => {

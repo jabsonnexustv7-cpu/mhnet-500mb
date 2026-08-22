@@ -408,6 +408,13 @@ body.chat-lab {
 }
 
 @media (max-width: 640px) {
+  .chat-lab input,
+  .chat-lab textarea,
+  .chat-lab select,
+  .webturbo-chat-root input,
+  .webturbo-chat-root textarea,
+  .webturbo-chat-root select { font-size: 16px; }
+
   .lab-nav, .lab-hero, .lab-steps { width: min(100% - 32px, 1180px); }
   .lab-nav { height: 72px; }
   .lab-only-badge { padding: 7px 10px; font-size: 10px; }

@@ -114,6 +114,7 @@ window.WEBTURBO_CHAT_CONFIG = {
   crmMode: "real",
   conversionMode: "real",
   whatsappMode: "real",
+  notificationMode: "real",
   aiAssistEndpoint: "https://webturbo-chat-ai-hydcvtcuga-rj.a.run.app/api/chat/assist"
 };
 
@@ -128,5 +129,5 @@ document.addEventListener("click", (event) => {
 replacePrimaryWhatsAppCtas();
 new MutationObserver(() => replacePrimaryWhatsAppCtas()).observe(document.body, { childList: true, subtree: true });
 
-await import("./app.js");
+await import("./app.js?v=5");
 if (pendingOpen) window.webturboChat?.open?.();

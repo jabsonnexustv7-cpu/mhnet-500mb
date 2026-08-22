@@ -1,7 +1,7 @@
 import { CHAT_CONFIG } from "./config.js";
 import { createAiAssistService } from "./ai-service.js";
 import { createChatFlow } from "./flow.js";
-import { createBrowserLocationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js";
+import { createBrowserLocationService, createCoverageNotificationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js";
 import { routeMessage } from "./message-router.js";
 import { createSession, loadSession, resetSession } from "./state.js";
 import { createTrackingService } from "./tracking.js";
@@ -31,6 +31,7 @@ function buildFlow(currentSession) {
     storage,
     ui,
     coverageService: createCoverageService(CHAT_CONFIG),
+    coverageNotificationService: createCoverageNotificationService(CHAT_CONFIG),
     crmService: createCrmService(CHAT_CONFIG),
     aiService,
     messageRouter: { route: routeMessage },

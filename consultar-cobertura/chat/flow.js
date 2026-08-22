@@ -63,7 +63,7 @@ function addressLine(session) {
   return `${street}${district}${city}${cep}`;
 }
 
-export function createChatFlow({ session, config, storage, ui, coverageService, crmService, aiService, messageRouter, addressLookup, locationService, tracking, whatsappService, logger = console }) {
+export function createChatFlow({ session, config, storage, ui, coverageService, coverageNotificationService, crmService, aiService, messageRouter, addressLookup, locationService, tracking, whatsappService, logger = console }) {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const analytics = tracking || {
     attribution() { return {}; }, personalLead() {}, crmAttempt() {}, crmSuccess() {}, crmError() {}, coverage() {}, whatsapp() {}
@@ -71,6 +71,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
   let submitting = false;
   let aiInFlight = false;
   const router = messageRouter || { route: routeMessage };
+  const coverageNotifications = coverageNotificationService || { async notify() { return { ok: true, skipped: true }; } };
 
   function persist() {
     saveSession(session, storage, config.storageKey);
@@ -315,6 +316,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       session.coordenadas = coverage.coords || session.coordenadas || "";
       if (coverage.source === "real" || config.conversionMode !== "real") analytics.coverage(session, coverage);
       logger.info(`${PREFIX} Coverage result: ${coverage.status}`, { source: coverage.source, motivo: coverage.motivo });
+      void coverageNotifications.notify(session, coverage, { ...contextFromLocation(), origin: "chat_atendimento_online" });
       changeStep(coverage.viavel ? STATES.COBERTURA_VIAVEL : STATES.COBERTURA_INVIAVEL);
       if (!coverage.viavel) {
         await assistant("Neste endereço ainda não encontramos cobertura disponível.");
@@ -462,13 +464,16 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
   }
 
   function contextFromLocation() {
-    const params = new URLSearchParams(location.search);
+    const currentLocation = globalThis.location || { href: "", search: "" };
+    const currentDocument = globalThis.document || { referrer: "" };
+    const currentNavigator = globalThis.navigator || { userAgent: "" };
+    const params = new URLSearchParams(currentLocation.search || "");
     const saved = analytics.attribution?.() || {};
     return {
-      pageUrl: location.href,
-      landingPage: saved.landing_page || location.href,
-      referrer: document.referrer || saved.referrer || "",
-      userAgent: navigator.userAgent,
+      pageUrl: currentLocation.href || "",
+      landingPage: saved.landing_page || currentLocation.href || "",
+      referrer: currentDocument.referrer || saved.referrer || "",
+      userAgent: currentNavigator.userAgent || "",
       gclid: params.get("gclid") || saved.gclid || "",
       gbraid: params.get("gbraid") || saved.gbraid || "",
       wbraid: params.get("wbraid") || saved.wbraid || "",
