@@ -10,22 +10,17 @@ layout: null
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
 if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
+n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '907334254744897');
 fbq('track', 'PageView');
 </script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=907334254744897&ev=PageView&noscript=1"
-/></noscript>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=907334254744897&ev=PageView&noscript=1"/></noscript>
 <!-- End Meta Pixel Code -->
 </head>
 {% endcapture %}
 {% assign coverage_html = coverage_html | replace: '</head>', meta_pixel_head %}
 {% assign coverage_html = coverage_html | replace: '<body class="meta-coverage-landing">', '<body class="meta-coverage-landing wt-hero-step1-active">' %}
-{% assign coverage_html = coverage_html | replace: '</head>', '<style id="wt-hero-boot-style">body.wt-hero-step1-active:not(.wt-hero-ready) .meta-landing-header,body.wt-hero-step1-active:not(.wt-hero-ready) .meta-landing-intro,body.wt-hero-step1-active:not(.wt-hero-ready) #modalOverlay{visibility:hidden}</style><link rel="stylesheet" href="/consultar-cobertura/chat/chat.css?v=6"></head>' %}
+{% assign coverage_html = coverage_html | replace: '</head>', '<style id="wt-hero-boot-style">body.wt-hero-step1-active:not(.wt-hero-ready) .meta-landing-header,body.wt-hero-step1-active:not(.wt-hero-ready) .meta-landing-intro,body.wt-hero-step1-active:not(.wt-hero-ready) #modalOverlay{visibility:hidden}</style><link rel="stylesheet" href="/consultar-cobertura/chat/chat.css?v=6"><link rel="stylesheet" href="/consultar-cobertura/chat/plan-strategy.css?v=1"></head>' %}
 
 {% comment %} Planos regionais de Sorocaba/Votorantim. {% endcomment %}
 {% assign coverage_html = coverage_html | replace: '"FIBRA 500MB": "FIBRA 500MB — R$ 99,90/mês",', '"FIBRA 500MB": "FIBRA 500MB — R$ 99,90/mês", "FIBRA 600MB": "FIBRA 600MB — R$ 99,90/mês",' %}
@@ -56,12 +51,10 @@ src="https://www.facebook.com/tr?id=907334254744897&ev=PageView&noscript=1"
 {% assign coverage_html = coverage_html | replace: 'Olá! Consultei a cobertura no site da WebTurbo, parceira de vendas autorizada MhNet, e quero contratar.', 'Olá! Consultei a cobertura no site da WebTurbo e quero contratar.' %}
 {% assign coverage_html = coverage_html | replace: 'MhNet', 'WebTurbo' %}
 
-{{ coverage_html | replace: '</body>', '<link rel="stylesheet" href="/consultar-cobertura/chat/launcher-invite.css?v=1"><script src="/consultar-cobertura/regional-plans.js"></script><script src="/consultar-cobertura/location-capture-ui.js"></script><script src="/consultar-cobertura/coverage-friction-reduction.js?v=1"></script><script src="/consultar-cobertura/landing-hero-redesign.js?v=3"></script><script src="/consultar-cobertura/coverage-choice-modal-v3.js?v=3"></script><script src="/consultar-cobertura/coverage-choice-bridge.js?v=1"></script><script src="/consultar-cobertura/normal-plans-catalog.js?v=1"></script><script src="/consultar-cobertura/retention-offers.js"></script><script src="/consultar-cobertura/conversion-funnel-ux.js?v=1"></script><script src="/consultar-cobertura/crm-coordinates-fallback.js?v=2"></script><script src="/consultar-cobertura/tracking-v2.js?v=4"></script><script src="/consultar-cobertura/hero-submit-resilience.js?v=1"></script><script src="/consultar-cobertura/hero-finalization-ux.js?v=2"></script><script src="/consultar-cobertura/direct-checkout-submit.js?v=1"></script><script src="/consultar-cobertura/lead-recovery-notification.js?v=3"></script><script src="/consultar-cobertura/sale-completion-notification.js?v=2"></script><script type="module" src="/consultar-cobertura/chat/embed.js?v=11"></script><script src="/consultar-cobertura/chat/launcher-invite.js?v=1"></script></body>' }}
+{{ coverage_html | replace: '</body>', '<link rel="stylesheet" href="/consultar-cobertura/chat/launcher-invite.css?v=1"><script src="/consultar-cobertura/regional-plans.js"></script><script src="/consultar-cobertura/location-capture-ui.js"></script><script src="/consultar-cobertura/coverage-friction-reduction.js?v=1"></script><script src="/consultar-cobertura/landing-hero-redesign.js?v=3"></script><script src="/consultar-cobertura/retention-offers.js"></script><script src="/consultar-cobertura/plan-presentation-v2.js?v=1"></script><script src="/consultar-cobertura/conversion-funnel-ux.js?v=1"></script><script src="/consultar-cobertura/crm-coordinates-fallback.js?v=2"></script><script src="/consultar-cobertura/tracking-v2.js?v=4"></script><script src="/consultar-cobertura/hero-submit-resilience.js?v=1"></script><script src="/consultar-cobertura/hero-finalization-ux.js?v=2"></script><script src="/consultar-cobertura/direct-checkout-submit.js?v=1"></script><script src="/consultar-cobertura/lead-recovery-notification.js?v=3"></script><script src="/consultar-cobertura/sale-completion-notification.js?v=2"></script><script type="module" src="/consultar-cobertura/chat/embed.js?v=11"></script><script src="/consultar-cobertura/chat/plan-strategy.js?v=1"></script><script src="/consultar-cobertura/chat/launcher-invite.js?v=1"></script></body>' }}
 <!-- retention-offers-v1 -->
+<!-- plan-presentation-v2 -->
 <!-- landing-hero-redesign-v3 -->
-<!-- coverage-choice-modal-v3-v3 -->
-<!-- coverage-choice-bridge-v1 -->
-<!-- normal-plans-catalog-v1 -->
 <!-- conversion-funnel-ux-v1 -->
 <!-- coverage-friction-reduction-v1 -->
 <!-- crm-coordinates-fallback-v2 -->
@@ -71,4 +64,5 @@ src="https://www.facebook.com/tr?id=907334254744897&ev=PageView&noscript=1"
 <!-- direct-checkout-submit-v1 -->
 <!-- lead-recovery-notification-v3 -->
 <!-- sale-completion-notification-v2 -->
+<!-- chat-plan-strategy-v1 -->
 <!-- launcher-invite-v1 -->
