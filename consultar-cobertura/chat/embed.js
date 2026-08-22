@@ -92,9 +92,7 @@ function replacePrimaryWhatsAppCtas(root = document) {
     element.setAttribute("aria-label", "Abrir atendimento on-line da WebTurbo");
     element.removeAttribute("target");
     element.setAttribute("href", "#");
-    if (/whatsapp|falar com|contratar/i.test(element.textContent || "")) {
-      element.textContent = "Atendimento";
-    }
+    if (/whatsapp|falar com|contratar/i.test(element.textContent || "")) element.textContent = "Atendimento";
   }
 }
 
@@ -115,6 +113,7 @@ window.WEBTURBO_CHAT_CONFIG = {
   conversionMode: "real",
   whatsappMode: "real",
   notificationMode: "real",
+  notificationEndpoint: "https://modal-easy-964927461432.southamerica-east1.run.app",
   aiAssistEndpoint: "https://webturbo-chat-ai-hydcvtcuga-rj.a.run.app/api/chat/assist"
 };
 
@@ -129,5 +128,5 @@ document.addEventListener("click", (event) => {
 replacePrimaryWhatsAppCtas();
 new MutationObserver(() => replacePrimaryWhatsAppCtas()).observe(document.body, { childList: true, subtree: true });
 
-await import("./app.js?v=6");
+await import("./app.js?v=7");
 if (pendingOpen) window.webturboChat?.open?.();
