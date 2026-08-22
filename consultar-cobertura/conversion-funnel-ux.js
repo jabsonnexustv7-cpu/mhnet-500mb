@@ -40,32 +40,34 @@
     sessionSet(COMBATE_FLAG, "1");
   }
 
+  function escapeHtml(value) {
+    return String(value || "").replace(/[&<>'\"]/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+    }[c]));
+  }
+
   function personalizePlanConfirmation() {
     const step = byId("etapa2");
     if (!step) return;
     const plan = byId("mPlano")?.value || "";
     if (!plan) return;
 
-    let label = plan
+    const label = plan
       .replace(/^FIBRA\s+/i, "")
       .replace(/\s*\(Combate\)\s*/i, "")
       .trim();
 
     const success = step.querySelector(".meta-coverage-success");
     if (success) {
-      success.innerHTML = `Ótima notícia! O plano <strong>${escapeHtml(label)}</strong> está disponível no seu endereço.`;
+      const html = `Ótima notícia! O plano <strong>${escapeHtml(label)}</strong> está disponível no seu endereço.`;
+      if (success.innerHTML !== html) success.innerHTML = html;
     }
 
     const subtitle = step.querySelector(".modal-subtitle");
     if (subtitle) {
-      subtitle.textContent = "Seu plano já está selecionado. Você pode continuar ou comparar outras opções.";
+      const text = "Seu plano já está selecionado. Você pode continuar ou comparar outras opções.";
+      if (subtitle.textContent !== text) subtitle.textContent = text;
     }
-  }
-
-  function escapeHtml(value) {
-    return String(value || "").replace(/[&<>'\"]/g, (c) => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
-    }[c]));
   }
 
   function hideInstallationPreferenceFields() {
@@ -80,8 +82,8 @@
 
     const date = byId("mDataInstalacao");
     const shift = byId("mTurnoInstalacao");
-    if (date) date.value = "";
-    if (shift) shift.value = "";
+    if (date && date.value) date.value = "";
+    if (shift && shift.value) shift.value = "";
   }
 
   function removeInstallationSummary() {
@@ -178,16 +180,17 @@
 
   function improveCombateUi(modal) {
     if (!modal) return;
-    releaseRetentionFlagFromCombate();
 
     // Mantém apenas o ribbon "Mais escolhido" e elimina o espaço vazio do badge oculto.
     const featuredBadge = modal.querySelector(".wt-choice-v3-offer.is-featured .wt-choice-v3-badge");
-    if (featuredBadge) featuredBadge.style.display = "none";
+    if (featuredBadge && featuredBadge.style.display !== "none") featuredBadge.style.display = "none";
 
     const morePlans = byId("wt-choice-v3-more-plans");
     if (morePlans) {
-      morePlans.textContent = "Ver todos os planos e adicionais";
-      morePlans.setAttribute("aria-label", "Ver todos os planos, opções com mais velocidade, Wi-Fi extra e Globoplay");
+      const label = "Ver todos os planos e adicionais";
+      const aria = "Ver todos os planos, opções com mais velocidade, Wi-Fi extra e Globoplay";
+      if (morePlans.textContent !== label) morePlans.textContent = label;
+      if (morePlans.getAttribute("aria-label") !== aria) morePlans.setAttribute("aria-label", aria);
     }
   }
 
@@ -199,6 +202,7 @@
 
       if (open && !combateAberto) {
         combateAberto = true;
+        releaseRetentionFlagFromCombate();
         track("combate_exibido", planContext());
       } else if (!open && combateAberto) {
         combateAberto = false;
@@ -249,9 +253,7 @@
     }
 
     const normalPlanButton = event.target.closest?.("#conteudo-principal .plans-section .btn-contratar-plano");
-    if (normalPlanButton) {
-      track("catalogo_plano_selecionado", planContext());
-    }
+    if (normalPlanButton) track("catalogo_plano_selecionado", planContext());
   }, true);
 
   function install() {
