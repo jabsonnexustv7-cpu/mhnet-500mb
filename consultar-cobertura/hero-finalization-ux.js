@@ -9,6 +9,7 @@
   const WHATS_NUMBER = "555193187300";
   const originalFetch = window.fetch.bind(window);
   let redirectScheduled = false;
+  let observerQueued = false;
 
   function clean(value) {
     return String(value || "").trim();
@@ -69,11 +70,15 @@
     } catch (_) {}
   }
 
+  function setTextIfChanged(element, text) {
+    if (element && clean(element.textContent) !== text) element.textContent = text;
+  }
+
   function renameButtons() {
     const submit = document.getElementById("btnSubmit");
-    if (submit && submit.textContent.trim() !== "Concluir pedido") {
-      submit.textContent = "Concluir pedido";
-      submit.setAttribute("aria-label", "Concluir pedido");
+    if (submit) {
+      setTextIfChanged(submit, "Concluir pedido");
+      if (submit.getAttribute("aria-label") !== "Concluir pedido") submit.setAttribute("aria-label", "Concluir pedido");
     }
 
     const stage4 = document.getElementById("etapa4");
@@ -81,8 +86,8 @@
       stage4.querySelectorAll("button, a").forEach((element) => {
         const text = clean(element.textContent);
         if (/revisar\s*(dados)?/i.test(text)) {
-          element.textContent = "Avançar";
-          element.setAttribute("aria-label", "Avançar");
+          setTextIfChanged(element, "Avançar");
+          if (element.getAttribute("aria-label") !== "Avançar") element.setAttribute("aria-label", "Avançar");
         }
       });
     }
@@ -116,12 +121,11 @@
       success.appendChild(button);
     }
 
-    // href deliberadamente não contém wa.me: o embed do Chat não deve converter este CTA em gatilho do Chat.
-    button.href = "#";
-    button.target = "_self";
-    button.rel = "noopener";
-    button.textContent = "Falar com atendente";
-    button.dataset.webturboDirectWhatsapp = "true";
+    if (button.getAttribute("href") !== "#") button.setAttribute("href", "#");
+    if (button.getAttribute("target") !== "_self") button.setAttribute("target", "_self");
+    if (button.getAttribute("rel") !== "noopener") button.setAttribute("rel", "noopener");
+    setTextIfChanged(button, "Falar com atendente");
+    if (button.dataset.webturboDirectWhatsapp !== "true") button.dataset.webturboDirectWhatsapp = "true";
     button.removeAttribute("data-webturbo-chat-trigger");
 
     if (button.dataset.webturboDirectBound !== "true") {
@@ -129,9 +133,10 @@
       button.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
+        event.stopImmediatePropagation();
         track("pos_venda_falar_com_atendente", { origem_fluxo: "hero" });
         window.location.assign(buildWhatsUrl());
-      });
+      }, true);
     }
     return button;
   }
@@ -142,7 +147,6 @@
     ensureDirectWhatsButton();
     track("hero_pos_venda_redirecionamento_whatsapp", { modo: "automatico" });
 
-    // Pequeno atraso apenas para permitir a renderização da confirmação antes da navegação.
     window.setTimeout(() => {
       try {
         window.location.assign(buildWhatsUrl());
@@ -155,11 +159,20 @@
 
   function refreshUi() {
     renameButtons();
-    if (document.getElementById("etapaSucesso")) ensureDirectWhatsButton();
+    ensureDirectWhatsButton();
   }
 
-  document.addEventListener("DOMContentLoaded", refreshUi);
-  new MutationObserver(refreshUi).observe(document.documentElement, { childList: true, subtree: true });
+  function queueRefresh() {
+    if (observerQueued) return;
+    observerQueued = true;
+    window.requestAnimationFrame(() => {
+      observerQueued = false;
+      refreshUi();
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", refreshUi, { once: true });
+  new MutationObserver(queueRefresh).observe(document.body || document.documentElement, { childList: true, subtree: true });
   window.setTimeout(refreshUi, 300);
 
   window.fetch = async function webturboHeroFinalizationFetch(input, init) {
@@ -170,9 +183,7 @@
       try {
         const copy = response.clone();
         const data = await copy.json().catch(() => ({}));
-        if (response.ok && data?.ok === true) {
-          scheduleWhatsappRedirect();
-        }
+        if (response.ok && data?.ok === true) scheduleWhatsappRedirect();
       } catch (error) {
         console.warn("[WebTurbo] Não foi possível preparar o pós-venda do HERO.", error);
       }
