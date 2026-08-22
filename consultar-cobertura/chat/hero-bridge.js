@@ -200,6 +200,7 @@ export function applyHeroSnapshotToSession(session, snapshot) {
     source: "hero",
     stage: snapshot.stage,
     step: snapshot.step,
+    promptedAt: session.heroSync?.promptedAt || "",
     syncedAt: new Date().toISOString()
   };
   return { applied: true, step: session.step, importedStep: snapshot.step };
@@ -209,7 +210,9 @@ function setHeroField(documentObject, id, value, { dispatch = true } = {}) {
   if (value === undefined || value === null || value === "") return;
   const element = documentObject?.getElementById?.(id);
   if (!element) return;
-  element.value = String(value);
+  const next = String(value);
+  if (String(element.value || "") === next) return;
+  element.value = next;
   if (dispatch && typeof element.dispatchEvent === "function" && globalThis.Event) {
     element.dispatchEvent(new Event("input", { bubbles: true }));
     element.dispatchEvent(new Event("change", { bubbles: true }));
@@ -227,7 +230,8 @@ function heroStageForChatStep(step) {
 
 export function syncChatSessionToHero(session, { documentObject = globalThis.document, windowObject = globalThis.window } = {}) {
   if (!session || !documentObject?.getElementById?.("etapa1")) return false;
-  setHeroField(documentObject, "mCep", session.cep);
+  const formattedCep = String(session.cep || "").replace(/\D/g, "").replace(/^(\d{5})(\d{3})$/, "$1-$2");
+  setHeroField(documentObject, "mCep", formattedCep);
   setHeroField(documentObject, "mNumero", session.numero);
   setHeroField(documentObject, "mLogradouro", session.logradouro);
   setHeroField(documentObject, "mBairro", session.bairro);
