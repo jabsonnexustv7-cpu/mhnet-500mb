@@ -136,6 +136,7 @@
     moveTrustRow();
     updateStepState();
     observeSteps();
+    document.body.classList.add("wt-hero-ready");
   }
 
   if (document.readyState === "loading") {

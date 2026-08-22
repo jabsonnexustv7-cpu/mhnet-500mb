@@ -1,12 +1,12 @@
-import { CHAT_CONFIG } from "./config.js";
-import { createAiAssistService } from "./ai-service.js";
-import { createChatFlow } from "./flow.js";
-import { createBrowserLocationService, createCoverageNotificationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js";
-import { routeMessage } from "./message-router.js";
-import { createSession, loadSession, resetSession } from "./state.js";
-import { createTrackingService } from "./tracking.js";
-import { createChatUI } from "./ui.js";
-import { createWhatsAppService } from "./whatsapp.js";
+import { CHAT_CONFIG } from "./config.js?v=6";
+import { createAiAssistService } from "./ai-service.js?v=6";
+import { createChatFlow } from "./flow.js?v=6";
+import { createBrowserLocationService, createCoverageNotificationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js?v=6";
+import { routeMessage } from "./message-router.js?v=6";
+import { createSession, loadSession, resetSession } from "./state.js?v=6";
+import { createTrackingService } from "./tracking.js?v=6";
+import { createChatUI } from "./ui.js?v=6";
+import { createWhatsAppService } from "./whatsapp.js?v=6";
 
 const ui = createChatUI();
 const storage = window.localStorage;
@@ -87,7 +87,7 @@ form.addEventListener("submit", async (event) => {
   if (result === "restart") await startFresh();
 });
 
-document.getElementById("chat-actions").addEventListener("click", async (event) => {
+async function handleActionClick(event) {
   const button = event.target.closest("[data-action]");
   if (!button) return;
   const value = button.dataset.action === "select-installation-date"
@@ -95,7 +95,10 @@ document.getElementById("chat-actions").addEventListener("click", async (event) 
     : button.dataset.value;
   const result = await flow.handleAction(button.dataset.action, value);
   if (result === "restart") await startFresh();
-});
+}
+
+document.getElementById("chat-actions").addEventListener("click", handleActionClick);
+document.getElementById("chat-messages").addEventListener("click", handleActionClick);
 
 document.getElementById("chat-launcher").addEventListener("click", openChat);
 document.getElementById("hero-open-chat")?.addEventListener("click", openChat);

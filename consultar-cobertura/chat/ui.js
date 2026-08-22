@@ -95,11 +95,18 @@ export function createChatUI() {
     if (session.addressSource === "geolocation" && session.locationAccuracy) {
       card.appendChild(element("small", "", `Localização do aparelho · precisão aproximada de ${session.locationAccuracy} m`));
     }
+    const confirmationActions = element("div", "address-confirmation-actions");
+    [
+      { label: "Está correto", action: "confirm-address", primary: true },
+      { label: "Corrigir endereço", action: "new-address", primary: false }
+    ].forEach((item) => {
+      const button = element("button", `address-confirmation-button${item.primary ? " is-primary" : ""}`, item.label);
+      button.type = "button";
+      button.dataset.action = item.action;
+      confirmationActions.appendChild(button);
+    });
+    card.appendChild(confirmationActions);
     messages.appendChild(card);
-    showQuickReplies([
-      { label: "Está correto", action: "confirm-address" },
-      { label: "Corrigir endereço", action: "new-address" }
-    ]);
     scrollToBottom();
   }
 

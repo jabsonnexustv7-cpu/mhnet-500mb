@@ -7,10 +7,17 @@ const read = (relative) => readFileSync(new URL(relative, import.meta.url), "utf
 test("landing carrega o chat reutilizável sem iframe", () => {
   const landing = read("../../index.html");
   const embed = read("../embed.js");
-  assert.match(landing, /chat\/chat\.css\?v=5/);
-  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=5"/);
-  assert.match(embed, /await import\("\.\/app\.js\?v=5"\)/);
+  assert.match(landing, /chat\/chat\.css\?v=6/);
+  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=6"/);
+  assert.match(embed, /await import\("\.\/app\.js\?v=6"\)/);
   assert.doesNotMatch(embed, /iframe/i);
+});
+
+test("versão nova invalida o cache dos módulos internos críticos", () => {
+  const app = read("../app.js");
+  for (const moduleName of ["config", "ai-service", "flow", "integrations", "message-router", "state", "tracking", "ui", "whatsapp"]) {
+    assert.match(app, new RegExp(`\\./${moduleName}\\.js\\?v=6`));
+  }
 });
 
 test("chat abre como modal na mesma página e possui retorno claro", () => {
@@ -44,6 +51,28 @@ test("mobile mantém o modal acima do hero e respeita a área segura", () => {
 test("campos mobile usam 16px e evitam o zoom automático do Safari", () => {
   const css = read("../chat.css");
   assert.match(css, /@media \(max-width: 640px\)[\s\S]*\.webturbo-chat-root input,[\s\S]*font-size: 16px/);
+});
+
+test("confirmação do endereço mantém as ações dentro do próprio card", () => {
+  const app = read("../app.js");
+  const ui = read("../ui.js");
+  const css = read("../chat.css");
+
+  assert.match(ui, /address-confirmation-actions/);
+  assert.match(ui, /label: "Está correto", action: "confirm-address"/);
+  assert.match(ui, /label: "Corrigir endereço", action: "new-address"/);
+  assert.match(app, /chat-messages"\)\.addEventListener\("click", handleActionClick\)/);
+  assert.match(css, /\.address-confirmation-actions/);
+});
+
+test("landing esconde o layout antigo até o redesign do hero estar pronto", () => {
+  const landing = read("../../index.html");
+  const redesign = read("../../landing-hero-redesign.js");
+
+  assert.match(landing, /meta-coverage-landing wt-hero-step1-active/);
+  assert.match(landing, /wt-hero-step1-active:not\(\.wt-hero-ready\)/);
+  assert.match(landing, /landing-hero-redesign\.js\?v=3/);
+  assert.match(redesign, /document\.body\.classList\.add\("wt-hero-ready"\)/);
 });
 
 test("produção não exibe aviso técnico e retomada não bloqueia o hero ao recarregar", () => {
