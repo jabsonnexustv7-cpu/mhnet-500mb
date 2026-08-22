@@ -45,7 +45,25 @@ const BACK_STEPS = Object.freeze({
   [STATES.CONFIRMACAO]: STATES.TURNO_INSTALACAO
 });
 
-export function createChatFlow({ session, config, storage, ui, coverageService, crmService, aiService, messageRouter, addressLookup, tracking, whatsappService, logger = console }) {
+function plain(value) {
+  return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+}
+
+function doesNotKnowCep(text) {
+  const normalized = plain(text);
+  return /\b(nao sei|nao tenho|nao lembro|desconheco)\b.*\bcep\b|\bcep\b.*\b(nao sei|nao tenho|nao lembro|desconheco)\b/.test(normalized)
+    || /^(nao sei|nao tenho|nao lembro)[.!\s]*$/.test(normalized);
+}
+
+function addressLine(session) {
+  const street = session.logradouro || "endereço localizado";
+  const district = session.bairro ? ` · ${session.bairro}` : "";
+  const city = session.cidade ? ` · ${session.cidade}/${session.uf || ""}` : "";
+  const cep = session.cep ? ` · CEP ${formatCep(session.cep)}` : "";
+  return `${street}${district}${city}${cep}`;
+}
+
+export function createChatFlow({ session, config, storage, ui, coverageService, crmService, aiService, messageRouter, addressLookup, locationService, tracking, whatsappService, logger = console }) {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const analytics = tracking || {
     attribution() { return {}; }, personalLead() {}, crmAttempt() {}, crmSuccess() {}, crmError() {}, coverage() {}, whatsapp() {}
@@ -113,7 +131,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     const placeholders = {
       [STATES.CEP]: "Digite seu CEP",
       [STATES.NUMERO]: "Número do imóvel",
-      [STATES.COMPLEMENTO]: "Complemento ou 'não tenho'",
+      [STATES.COMPLEMENTO]: session.addressConfirmed ? "Complemento ou 'não tenho'" : "Confirme o endereço localizado",
       [STATES.ESCOLHA_PLANO]: "Ex.: quero o mais barato",
       [STATES.NOME]: "Seu nome completo",
       [STATES.CPF]: "Seu CPF",
@@ -128,7 +146,11 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     };
     ui.setPlaceholder(placeholders[session.step] || "Digite sua mensagem");
 
-    if (session.step === STATES.COMPLEMENTO) {
+    if (session.step === STATES.CEP) {
+      ui.showQuickReplies([{ label: "Não sei meu CEP", action: "offer-location" }]);
+    } else if (session.step === STATES.COMPLEMENTO && !session.addressConfirmed) {
+      ui.showAddressConfirmation?.(session);
+    } else if (session.step === STATES.COMPLEMENTO) {
       ui.showQuickReplies([{ label: "Não tenho complemento", action: "no-complement" }]);
     } else if (session.step === STATES.COBERTURA_INVIAVEL) {
       ui.showQuickReplies([
@@ -156,9 +178,14 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
   }
 
   async function askCurrentStep() {
+    if (session.step === STATES.COMPLEMENTO && !session.addressConfirmed) {
+      await assistant("Antes de consultar a cobertura, confira se o endereço abaixo está correto.");
+      showControlsForStep();
+      return;
+    }
     const prompts = {
-      [STATES.CEP]: "Para começar, qual é o seu CEP?",
-      [STATES.NUMERO]: `Encontrei ${session.cidade ? `${session.cidade}/${session.uf}` : "a região"}. Qual é o número do imóvel?`,
+      [STATES.CEP]: "Para começar, qual é o seu CEP? Se não souber, posso localizar seu endereço pelo aparelho.",
+      [STATES.NUMERO]: `Encontrei ${addressLine(session)}. Qual é o número da casa ou prédio?`,
       [STATES.COMPLEMENTO]: "Tem complemento? Pode ser apartamento, bloco ou casa dos fundos.",
       [STATES.NOME]: "Perfeito. Qual é o seu nome completo?",
       [STATES.CPF]: "Agora me informe seu CPF.",
@@ -190,7 +217,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     if (session.step === STATES.WELCOME) changeStep(STATES.CEP);
     if (session.step === STATES.CONSULTANDO_COBERTURA) {
       changeStep(STATES.COMPLEMENTO);
-      addMessage("assistant", "A consulta foi interrompida pelo recarregamento. Envie o complemento novamente para continuar.");
+      addMessage("assistant", "A consulta foi interrompida pelo recarregamento. Confira o endereço e continue.");
     }
     if (session.step === STATES.COBERTURA_VIAVEL) changeStep(STATES.ESCOLHA_PLANO);
     if (session.step === STATES.ESCOLHA_PLANO && !session.planSelectionView) {
@@ -199,7 +226,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     }
     ui.updateDebug(session, config);
     if (session.step === STATES.CONFIRMACAO) ui.showSummary(session);
-    if (session.step === STATES.FINALIZADO && session.crmPayload) {
+    if (session.step === STATES.FINALIZADO && session.crmPayload && config.postSaleWhatsAppRedirect !== false) {
       if (session.crmResult?.mock === false && whatsappService) {
         ui.showPostSaleSuccess?.(whatsappService.buildUrl(session), 0);
         ui.setComposerEnabled(false);
@@ -218,6 +245,60 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     await askCurrentStep();
   }
 
+  async function offerLocation({ recordUser = false } = {}) {
+    if (recordUser) addMessage("user", "Não sei meu CEP");
+    await assistant("Sem problema. Posso usar a localização do seu aparelho para encontrar o endereço aproximado. Você poderá conferir antes da consulta de cobertura.");
+    ui.showQuickReplies([
+      { label: "Usar minha localização", action: "use-location" },
+      { label: "Digitar CEP", action: "enter-cep" }
+    ]);
+  }
+
+  async function captureLocation() {
+    if (session.step !== STATES.CEP) return;
+    if (!locationService?.locate) {
+      await assistant("A localização não está disponível neste navegador. Informe o CEP para continuar.");
+      showControlsForStep();
+      return;
+    }
+    ui.clearActions();
+    ui.setComposerEnabled(false);
+    await assistant("Vou solicitar a permissão de localização do navegador. Só usarei esse ponto para identificar e conferir o endereço.", { kind: "status" });
+    try {
+      const located = await locationService.locate();
+      Object.assign(session, {
+        cep: located.cep || "",
+        logradouro: located.logradouro || "",
+        bairro: located.bairro || "",
+        cidade: located.cidade || "",
+        uf: located.uf || "",
+        coordenadas: located.coordenadas || "",
+        addressSource: "geolocation",
+        addressConfirmed: false,
+        locationAccuracy: located.locationAccuracy || null,
+        numero: "",
+        complemento: ""
+      });
+      persist();
+      changeStep(STATES.NUMERO);
+      await assistant("Localização encontrada. Registrei os dados do endereço e preciso apenas do número do imóvel antes da conferência.");
+      await askCurrentStep();
+    } catch (error) {
+      logger.warn(`${PREFIX} Location lookup failed`, error?.message || error);
+      ui.setComposerEnabled(true);
+      await assistant(error?.message || "Não foi possível localizar seu endereço. Informe o CEP para continuar.");
+      showControlsForStep();
+    }
+  }
+
+  async function confirmAddress({ recordUser = false } = {}) {
+    if (recordUser) addMessage("user", "Está correto");
+    session.addressConfirmed = true;
+    persist();
+    await assistant("Perfeito, endereço confirmado.");
+    await askCurrentStep();
+  }
+
   async function consultCoverage() {
     changeStep(STATES.CONSULTANDO_COBERTURA);
     ui.setComposerEnabled(false);
@@ -225,7 +306,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     try {
       const coverage = await coverageService.check(session);
       session.cobertura = coverage;
-      session.coordenadas = coverage.coords || "";
+      session.coordenadas = coverage.coords || session.coordenadas || "";
       if (coverage.source === "real" || config.conversionMode !== "real") analytics.coverage(session, coverage);
       logger.info(`${PREFIX} Coverage result: ${coverage.status}`, { source: coverage.source, motivo: coverage.motivo });
       changeStep(coverage.viavel ? STATES.COBERTURA_VIAVEL : STATES.COBERTURA_INVIAVEL);
@@ -296,16 +377,23 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     }
     ui.removeSummary?.();
     changeStep(previous);
+    if (previous === STATES.NUMERO) session.addressConfirmed = false;
+    persist();
     await assistant("Tudo bem, voltamos uma etapa.");
     await askCurrentStep();
   }
 
-  async function handoffToHuman() {
+  async function offerHumanHandoff() {
+    await assistant("Posso transferir este atendimento para nossa equipe no WhatsApp. O chat só abrirá o WhatsApp se você confirmar abaixo.");
+    ui.showQuickReplies([{ label: "Seguir com atendente", action: "human-handoff" }]);
+  }
+
+  async function openHumanHandoff() {
     const result = whatsappService?.openHandoff?.(session);
     if (result?.mock) {
-      await assistant("O atendimento humano pelo WhatsApp está em simulação neste modo de teste. Ative o modo real para abrir a conversa.");
+      await assistant("O atendimento humano pelo WhatsApp está em simulação neste modo de teste.");
     } else {
-      await assistant("Vou direcionar você para um atendente no WhatsApp.");
+      await assistant("Abrindo o atendimento com nossa equipe no WhatsApp.");
     }
     showControlsForStep();
   }
@@ -325,7 +413,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       session.ai.lastIntent = "FALLBACK";
       session.ai.lastSystemAction = "NONE";
       persist();
-      await assistant(`Não consegui responder essa dúvida agora, mas podemos continuar sua contratação ou falar com um atendente. ${resume}`);
+      await assistant(`Não consegui responder essa dúvida agora, mas podemos continuar sua contratação por aqui. ${resume}`);
       return;
     }
 
@@ -334,6 +422,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     ui.setComposerEnabled(false);
     ui.setTyping(true);
     const started = Date.now();
+    let shouldOfferHuman = false;
     try {
       const result = await aiService.assist(session, question, visiblePlans());
       ui.setTyping(false);
@@ -341,8 +430,9 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       session.ai.lastIntent = result.type;
       session.ai.lastSystemAction = result.systemAction;
       session.ai.latencyMs = result.latencyMs || (Date.now() - started);
+      shouldOfferHuman = result.handoffSuggested === true || result.systemAction === "HUMAN_HANDOFF" || result.type === "HUMAN_HANDOFF";
       logger.info(`${PREFIX} AI intent: ${result.type}`, { systemAction: result.systemAction });
-      addMessage("assistant", `${result.answer} ${resume}`.trim(), { kind: "ai-assist" });
+      addMessage("assistant", `${result.answer} ${shouldOfferHuman ? "" : resume}`.trim(), { kind: "ai-assist" });
       logger.info(`${PREFIX} AI answered, resuming: ${preservedStep}`);
     } catch (error) {
       ui.setTyping(false);
@@ -350,14 +440,18 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       session.ai.lastSystemAction = "NONE";
       session.ai.latencyMs = Date.now() - started;
       logger.info(`${PREFIX} AI unavailable, fallback used`, { step: preservedStep, reason: error?.message || "unknown" });
-      addMessage("assistant", `Não consegui responder essa dúvida agora, mas podemos continuar sua contratação ou falar com um atendente. ${resume}`);
+      addMessage("assistant", `Não consegui responder essa dúvida agora, mas podemos continuar sua contratação por aqui. ${resume}`);
     } finally {
       session.step = preservedStep;
       session.flowStep = preservedStep;
       session.conversationMode = "FLOW";
       aiInFlight = false;
       persist();
-      showControlsForStep();
+      if (shouldOfferHuman) {
+        ui.showQuickReplies([{ label: "Seguir com atendente", action: "human-handoff" }]);
+      } else {
+        showControlsForStep();
+      }
     }
   }
 
@@ -414,9 +508,13 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
 
       analytics.crmSuccess(session, result);
       addMessage("assistant", "Cadastro recebido com sucesso! Sua solicitação foi enviada para nossa equipe de agendamento.");
-      const whatsappUrl = whatsappService.buildUrl(session);
-      ui.showPostSaleSuccess?.(whatsappUrl, 3);
-      whatsappService.startRedirect(session, (seconds) => ui.updateWhatsAppCountdown?.(seconds));
+      if (config.postSaleWhatsAppRedirect !== false) {
+        const whatsappUrl = whatsappService.buildUrl(session);
+        ui.showPostSaleSuccess?.(whatsappUrl, 3);
+        whatsappService.startRedirect(session, (seconds) => ui.updateWhatsAppCountdown?.(seconds));
+      } else {
+        showControlsForStep();
+      }
     } catch (error) {
       logger.error(`${PREFIX} CRM submission failed`, error);
       analytics.crmError(session, error);
@@ -431,6 +529,20 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     const trimmed = String(text || "").trim();
     if (!trimmed || session.step === STATES.CONSULTANDO_COBERTURA || aiInFlight) return;
     addMessage("user", trimmed);
+
+    if (session.step === STATES.CEP && doesNotKnowCep(trimmed)) {
+      session.ai.lastRoutingDecision = "LOCAL:CEP_UNKNOWN";
+      persist();
+      await offerLocation();
+      return;
+    }
+
+    if (session.step === STATES.COMPLEMENTO && !session.addressConfirmed && wantsConfirmation(trimmed)) {
+      session.ai.lastRoutingDecision = "LOCAL:ADDRESS_CONFIRMATION";
+      persist();
+      await confirmAddress();
+      return;
+    }
 
     if (wantsAddressCorrection(trimmed) && session.step !== STATES.CEP) {
       session.ai.lastRoutingDecision = "COMMAND:ADDRESS_CORRECTION";
@@ -448,7 +560,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       logger.info(`${PREFIX} Local parser matched: ${route.command}`);
       switch (route.command) {
         case ROUTER_COMMANDS.HANDOFF:
-          await handoffToHuman();
+          await offerHumanHandoff();
           return;
         case ROUTER_COMMANDS.RESTART:
           return "restart";
@@ -505,10 +617,14 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       case STATES.CEP: {
         const cep = extractCep(parsedText);
         if (!isValidCep(cep)) {
-          await assistant("Esse CEP parece incompleto. Confira os 8 números e me envie novamente.");
+          await assistant("Esse CEP parece incompleto. Confira os 8 números e me envie novamente. Se não souber o CEP, use a opção de localização abaixo.");
           break;
         }
         session.cep = cep;
+        session.addressSource = "cep";
+        session.addressConfirmed = false;
+        session.locationAccuracy = null;
+        session.coordenadas = "";
         try {
           const address = await addressLookup(cep);
           Object.assign(session, address);
@@ -526,6 +642,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
           break;
         }
         session.numero = number;
+        session.addressConfirmed = false;
         changeStep(STATES.COMPLEMENTO);
         await completeLocalStep();
         break;
@@ -533,10 +650,15 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       case STATES.COMPLEMENTO: {
         const complement = extractComplement(parsedText);
         if (!complement) {
-          await assistant("Se não houver complemento, é só responder “não tenho complemento”.");
+          await assistant(session.addressConfirmed
+            ? "Se não houver complemento, é só responder “não tenho complemento”."
+            : "Primeiro confira o endereço localizado. Se estiver correto, toque em “Está correto”.");
           break;
         }
+        // Compatibilidade com quem já envia o complemento diretamente: isso também confirma o endereço exibido.
+        if (!session.addressConfirmed) session.addressConfirmed = true;
         session.complemento = complement;
+        persist();
         localAccepted = true;
         await consultCoverage();
         break;
@@ -551,7 +673,6 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
           showControlsForStep();
           break;
         }
-        // A mensagem digitada já foi registrada; evita duplicar como acontece no clique.
         session.plano = plan;
         session.faturamento = null;
         session.crmPayload = null;
@@ -694,13 +815,21 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
 
   async function handleAction(action, value) {
     if (aiInFlight) return;
+    if (action === "offer-location") return offerLocation({ recordUser: true });
+    if (action === "use-location") return captureLocation();
+    if (action === "enter-cep") {
+      await assistant("Tudo bem. Digite o CEP com 8 números.");
+      showControlsForStep();
+      return;
+    }
+    if (action === "confirm-address") return confirmAddress({ recordUser: true });
     if (action === "no-complement") return handleText("não tenho complemento");
     if (action === "new-address") return correctAddress();
     if (action === "fix-number") {
       Object.assign(session, {
         numero: "",
         complemento: "",
-        coordenadas: "",
+        addressConfirmed: false,
         cobertura: null,
         plano: null,
         crmPayload: null
@@ -723,7 +852,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       whatsappService?.trackManual(session);
       return;
     }
-    if (action === "human-handoff") return handoffToHuman();
+    if (action === "human-handoff") return openHumanHandoff();
     if (action === "change-plan") {
       ui.removeSummary?.();
       session.planSelectionView = PLAN_SELECTION_VIEWS.PROMOTIONS;
