@@ -1,7 +1,7 @@
 import { CHAT_CONFIG } from "./config.js";
 import { createAiAssistService } from "./ai-service.js";
 import { createChatFlow } from "./flow.js";
-import { createCoverageService, createCrmService, lookupAddress } from "./integrations.js";
+import { createBrowserLocationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js";
 import { routeMessage } from "./message-router.js";
 import { createSession, loadSession, resetSession } from "./state.js";
 import { createTrackingService } from "./tracking.js";
@@ -14,6 +14,7 @@ const tracking = createTrackingService(CHAT_CONFIG);
 tracking.initialize();
 const whatsappService = createWhatsAppService(CHAT_CONFIG, tracking);
 const aiService = createAiAssistService(CHAT_CONFIG);
+const locationService = createBrowserLocationService({ timeoutMs: CHAT_CONFIG.requestTimeoutMs });
 let session = loadSession(storage, CHAT_CONFIG.storageKey);
 let flow;
 
@@ -28,6 +29,7 @@ function buildFlow(currentSession) {
     aiService,
     messageRouter: { route: routeMessage },
     addressLookup: (cep) => lookupAddress(cep, { timeoutMs: CHAT_CONFIG.requestTimeoutMs }),
+    locationService,
     tracking,
     whatsappService
   });
