@@ -1,3 +1,5 @@
+import "./notification-payload-normalizer.js?v=1";
+
 const ROOT_ID = "webturbo-chat-root";
 const ASSISTANT_AVATAR = "/consultar-cobertura/chat/assets/webturbo-assistente.png";
 const DIRECT_WHATSAPP_IDS = [
