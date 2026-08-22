@@ -1,11 +1,23 @@
 import { formatCep, formatPhone, maskCpf } from "./validators.js";
 import { formatPrice } from "./plans.js";
 
+const ASSISTANT_AVATAR_SRC = "/consultar-cobertura/chat/assets/webturbo-assistente.png";
+
 function element(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
   if (text !== undefined) node.textContent = text;
   return node;
+}
+
+function assistantAvatar(className = "message-avatar", { decorative = true } = {}) {
+  const avatar = element("img", className);
+  avatar.src = ASSISTANT_AVATAR_SRC;
+  avatar.width = className === "chat-header-avatar" ? 44 : 30;
+  avatar.height = avatar.width;
+  avatar.alt = decorative ? "" : "Atendente virtual WebTurbo";
+  if (decorative) avatar.setAttribute("aria-hidden", "true");
+  return avatar;
 }
 
 export function createChatUI() {
@@ -24,9 +36,7 @@ export function createChatUI() {
   function addMessage(message) {
     const row = element("div", `message-row message-row--${message.role}`);
     if (message.role === "assistant") {
-      const avatar = element("span", "message-avatar", "W");
-      avatar.setAttribute("aria-hidden", "true");
-      row.appendChild(avatar);
+      row.appendChild(assistantAvatar());
     }
     const bubble = element("div", `message-bubble${message.meta?.kind === "status" ? " message-bubble--status" : ""}`);
     bubble.textContent = message.text;
@@ -190,33 +200,14 @@ export function createChatUI() {
     scrollToBottom();
   }
 
-  function showPostSaleSuccess(whatsappUrl, seconds = 3) {
+  function showPostSaleSuccess() {
     messages.querySelector(".post-sale-card")?.remove();
     const card = element("section", "post-sale-card");
     card.appendChild(element("span", "post-sale-icon", "✓"));
     card.appendChild(element("h3", "", "Cadastro recebido com sucesso!"));
     card.appendChild(element("p", "", "Sua solicitação foi enviada para nossa equipe de agendamento."));
-    const countdown = element("p", "post-sale-countdown");
-    countdown.append("Você será direcionado para o WhatsApp em ");
-    const counter = element("strong", "", String(seconds));
-    counter.dataset.whatsappCountdown = "true";
-    countdown.append(counter, " segundos para confirmar o pedido.");
-    card.appendChild(countdown);
     messages.appendChild(card);
-
-    actions.replaceChildren();
-    const link = element("a", "whatsapp-continue", "Continuar no WhatsApp");
-    link.href = whatsappUrl;
-    link.target = "_self";
-    link.rel = "noopener";
-    link.dataset.action = "open-whatsapp";
-    actions.appendChild(link);
     scrollToBottom();
-  }
-
-  function updateWhatsAppCountdown(seconds) {
-    const counter = messages.querySelector("[data-whatsapp-countdown]");
-    if (counter) counter.textContent = String(Math.max(0, seconds));
   }
 
   function setComposerEnabled(enabled) {
@@ -307,7 +298,6 @@ export function createChatUI() {
     removeSummary,
     showFinalPayload,
     showPostSaleSuccess,
-    updateWhatsAppCountdown,
     setComposerEnabled,
     setPlaceholder,
     updateDebug,

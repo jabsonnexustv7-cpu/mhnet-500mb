@@ -61,13 +61,14 @@ function normalizeTrafficAttribution() {
 }
 
 function installGoogleTags() {
+  const alreadyInstalled = typeof window.gtag === "function";
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function gtag() { window.dataLayer.push(arguments); };
-  window.gtag("js", new Date());
-  window.gtag("config", "AW-17075496858");
-  window.gtag("config", "AW-18209661462");
-  window.gtag("config", "G-FQ4D45L8CS");
-  if (!document.querySelector('script[data-webturbo-google-tag]')) {
+  if (!alreadyInstalled) {
+    window.gtag("js", new Date());
+    window.gtag("config", "AW-17075496858");
+    window.gtag("config", "AW-18209661462");
+    window.gtag("config", "G-FQ4D45L8CS");
     const script = document.createElement("script");
     script.async = true;
     script.src = "https://www.googletagmanager.com/gtag/js?id=AW-17075496858";
@@ -77,7 +78,8 @@ function installGoogleTags() {
 }
 
 function installMetaPixel() {
-  if (!window.fbq) {
+  const alreadyInstalled = typeof window.fbq === "function";
+  if (!alreadyInstalled) {
     const fbq = function () { fbq.callMethod ? fbq.callMethod.apply(fbq, arguments) : fbq.queue.push(arguments); };
     fbq.push = fbq;
     fbq.loaded = true;
@@ -86,15 +88,17 @@ function installMetaPixel() {
     window.fbq = fbq;
     window._fbq = fbq;
   }
-  if (!document.querySelector('script[data-webturbo-meta-pixel]')) {
+  if (!alreadyInstalled) {
     const script = document.createElement("script");
     script.async = true;
     script.src = "https://connect.facebook.net/en_US/fbevents.js";
     script.dataset.webturboMetaPixel = "true";
     document.head.appendChild(script);
   }
-  window.fbq("init", META_PIXEL_ID);
-  window.fbq("track", "PageView");
+  if (!alreadyInstalled) {
+    window.fbq("init", META_PIXEL_ID);
+    window.fbq("track", "PageView");
+  }
 }
 
 export function createTrackingService(config, { logger = console } = {}) {
@@ -189,15 +193,9 @@ export function createTrackingService(config, { logger = console } = {}) {
   }
 
   function whatsapp(session, mode) {
-    ga4("tentou_redirecionar_whatsapp_pos_venda", {
-      origem_botao: "pos_envio_formulario_crm",
-      modo_redirecionamento: mode,
-      plano: session.plano?.id || "",
-      cidade: session.cidade || "",
-      uf: session.uf || ""
-    });
     ga4("clique_whatsapp", {
-      origem_botao: mode === "manual" ? "pos_envio_formulario_crm_manual" : "pos_envio_formulario_crm",
+      origem_botao: "chat_handoff_humano",
+      modo_redirecionamento: mode,
       plano: session.plano?.id || "",
       cidade: session.cidade || "",
       uf: session.uf || ""

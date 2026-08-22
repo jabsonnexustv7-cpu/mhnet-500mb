@@ -178,6 +178,22 @@ test("pedido de atendente é determinístico e não chama assistência", async (
   });
   await flow.handleText("quero falar com atendente");
   assert.equal(aiCalls, 0);
+  assert.equal(handoffs, 0);
+  await flow.handleAction("human-handoff");
+  assert.equal(handoffs, 1);
+});
+
+test("handoff sugerido pela IA exige confirmação antes de abrir WhatsApp", async () => {
+  let handoffs = 0;
+  const { flow, session } = createHarness(STATES.CPF, {
+    aiService: { async assist(current) { return aiResult(current.step, { type: "HUMAN_HANDOFF", handoffSuggested: true }); } },
+    whatsappService: { openHandoff() { handoffs += 1; return { mock: true }; } }
+  });
+  await flow.handleText("preciso de ajuda de uma pessoa");
+  assert.equal(session.step, STATES.CPF);
+  assert.equal(session.conversationMode, "FLOW");
+  assert.equal(handoffs, 0);
+  await flow.handleAction("human-handoff");
   assert.equal(handoffs, 1);
 });
 

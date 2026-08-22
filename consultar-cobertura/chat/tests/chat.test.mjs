@@ -247,28 +247,21 @@ test("CRM real executa um único POST com o payload completo", async () => {
   assert.equal(result.created, true);
 });
 
-test("pós-venda monta a mensagem existente e redireciona após três segundos", () => {
-  const callbacks = [];
+test("WhatsApp real só abre quando o handoff é confirmado explicitamente", () => {
   const assigned = [];
   const tracked = [];
   const service = createWhatsAppService(
     { whatsappMode: "real", whatsNumber: "555193187300" },
     { whatsapp: (_session, mode) => tracked.push(mode) },
     {
-      locationObject: { assign: (url) => assigned.push(url) },
-      timerApi: {
-        setInterval(callback) { callbacks.push(callback); return 7; },
-        clearInterval() {}
-      }
+      locationObject: { assign: (url) => assigned.push(url) }
     }
   );
-  const ticks = [];
-  const started = service.startRedirect(sampleSession(), (seconds) => ticks.push(seconds));
-  callbacks[0](); callbacks[0](); callbacks[0]();
-  assert.match(decodeURIComponent(started.url), /Acabei de concluir um pedido de internet, meu CPF: 52998224725/);
-  assert.deepEqual(ticks, [3, 2, 1, 0]);
-  assert.equal(assigned[0], started.url);
-  assert.deepEqual(tracked, ["automatico"]);
+  assert.equal(assigned.length, 0);
+  const opened = service.openHandoff(sampleSession());
+  assert.match(decodeURIComponent(opened.url), /Quero falar com um atendente/);
+  assert.equal(assigned[0], opened.url);
+  assert.deepEqual(tracked, ["handoff_confirmado"]);
 });
 
 test("confirmação real registra conversão, CRM e pós-venda", async () => {
@@ -282,10 +275,11 @@ test("confirmação real registra conversão, CRM e pós-venda", async () => {
   const events = [];
   let crmCalls = 0;
   let redirectCalls = 0;
+  let successCards = 0;
   const ui = {
     addMessage() {}, updateDebug() {}, clearConversation() {}, setTyping() {}, clearActions() {},
     setComposerEnabled() {}, setPlaceholder() {}, showQuickReplies() {}, showPlans() {}, showSummary() {},
-    showFinalPayload() {}, showPostSaleSuccess() {}, updateWhatsAppCountdown() {}
+    showFinalPayload() {}, showPostSaleSuccess() { successCards += 1; }, updateWhatsAppCountdown() {}
   };
   const flow = createChatFlow({
     session,
@@ -308,9 +302,8 @@ test("confirmação real registra conversão, CRM e pós-venda", async () => {
       personalLead() {}, coverage() {}, whatsapp() {}
     },
     whatsappService: {
-      buildUrl() { return "https://wa.me/test"; },
       startRedirect() { redirectCalls += 1; },
-      trackManual() {}
+      openHandoff() { redirectCalls += 1; }
     },
     logger: { info() {}, warn() {}, error() {} }
   });
@@ -318,7 +311,8 @@ test("confirmação real registra conversão, CRM e pós-venda", async () => {
   assert.equal(crmCalls, 1);
   assert.equal(session.step, STATES.FINALIZADO);
   assert.deepEqual(events, ["attempt", "success"]);
-  assert.equal(redirectCalls, 1);
+  assert.equal(successCards, 1);
+  assert.equal(redirectCalls, 0);
 });
 
 test("cobertura mock nunca cria pré-venda real", async () => {
@@ -397,6 +391,7 @@ test("fluxo ponta a ponta viável chega ao CRM MOCK", async () => {
   await flow.start();
   await flow.handleText("meu cep é 92120-141");
   await flow.handleText("o número é 1186");
+  await flow.handleAction("confirm-address");
   await flow.handleText("não tenho complemento");
   assert.equal(session.step, STATES.ESCOLHA_PLANO);
   await flow.handleText("quero o mais barato");
@@ -444,6 +439,7 @@ test("fluxo inviável oferece nova consulta sem avançar para planos", async () 
   await flow.start();
   await flow.handleText("92120-141");
   await flow.handleText("1186");
+  await flow.handleAction("confirm-address");
   await flow.handleText("não tenho complemento");
   assert.equal(session.step, STATES.COBERTURA_INVIAVEL);
   assert.equal(session.plano, null);

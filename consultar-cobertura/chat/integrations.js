@@ -66,7 +66,7 @@ export async function reverseGeocodeLocation(lat, lng, { fetchImpl = fetch, time
   return normalizeReverseAddress(data);
 }
 
-export function createBrowserLocationService({ navigatorObject = globalThis.navigator, fetchImpl = globalThis.fetch, timeoutMs = 10000 } = {}) {
+export function createBrowserLocationService({ navigatorObject = globalThis.navigator, fetchImpl = globalThis.fetch, timeoutMs = 10000, maxAccuracyMeters = 250 } = {}) {
   return {
     async locate() {
       if (!navigatorObject?.geolocation?.getCurrentPosition) {
@@ -84,6 +84,10 @@ export function createBrowserLocationService({ navigatorObject = globalThis.navi
       });
       const latitude = Number(position.coords.latitude);
       const longitude = Number(position.coords.longitude);
+      const accuracy = Math.round(Number(position.coords.accuracy) || 0);
+      if (accuracy > maxAccuracyMeters) {
+        throw new Error("A localização ficou imprecisa. Tente novamente em um local aberto ou informe o CEP.");
+      }
       const address = await reverseGeocodeLocation(latitude, longitude, { fetchImpl, timeoutMs });
       if (!address.logradouro || !address.cidade || !address.uf) {
         throw new Error("Localizei sua posição, mas não consegui identificar o endereço completo. Informe o CEP para continuar.");
@@ -91,7 +95,7 @@ export function createBrowserLocationService({ navigatorObject = globalThis.navi
       return {
         ...address,
         coordenadas: `${latitude.toFixed(6)},${longitude.toFixed(6)}`,
-        locationAccuracy: Math.round(Number(position.coords.accuracy) || 0),
+        locationAccuracy: accuracy,
         addressSource: "geolocation"
       };
     }

@@ -9,7 +9,7 @@
   <link rel="icon" href="/favicon.png">
   <link rel="stylesheet" href="/consultar-cobertura/chat/chat.css">
 </head>
-<body>
+<body class="chat-lab">
   <main class="lab-page">
     <nav class="lab-nav" aria-label="Navegação do laboratório">
       <a class="lab-brand" href="/consultar-cobertura/chat-lab.html" aria-label="WebTurbo Lab">
@@ -52,14 +52,14 @@
   </main>
 
   <button id="chat-launcher" class="chat-launcher" type="button" aria-label="Abrir chat da WebTurbo">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v11H8l-4 4V4Zm4 5h8M8 12h5"/></svg>
+    <img class="chat-launcher-avatar" src="/consultar-cobertura/chat/assets/webturbo-assistente.png" width="38" height="38" alt="">
     <span>Fale com a gente</span>
     <i aria-label="Online"></i>
   </button>
 
   <section id="chat-panel" class="chat-panel" aria-label="Chat da WebTurbo" aria-hidden="true">
     <header class="chat-header">
-      <div class="chat-header-avatar" aria-hidden="true">W</div>
+      <img class="chat-header-avatar" src="/consultar-cobertura/chat/assets/webturbo-assistente.png" width="44" height="44" alt="Atendente virtual WebTurbo">
       <div class="chat-header-copy">
         <strong>WebTurbo</strong>
         <span><i></i> Atendimento online</span>
@@ -70,7 +70,7 @@
     <div id="chat-safety" class="chat-safety">Envio real ativado · ao confirmar, o pré-cadastro será criado no CRM</div>
     <div id="chat-messages" class="chat-messages" role="log" aria-live="polite" aria-label="Mensagens da conversa"></div>
     <div id="chat-typing" class="typing-row" hidden>
-      <span class="message-avatar" aria-hidden="true">W</span>
+      <img class="message-avatar" src="/consultar-cobertura/chat/assets/webturbo-assistente.png" width="30" height="30" alt="" aria-hidden="true">
       <span class="typing-bubble" aria-label="WebTurbo está digitando"><i></i><i></i><i></i></span>
     </div>
     <div id="chat-actions" class="chat-actions"></div>

@@ -14,7 +14,10 @@ const tracking = createTrackingService(CHAT_CONFIG);
 tracking.initialize();
 const whatsappService = createWhatsAppService(CHAT_CONFIG, tracking);
 const aiService = createAiAssistService(CHAT_CONFIG);
-const locationService = createBrowserLocationService({ timeoutMs: CHAT_CONFIG.requestTimeoutMs });
+const locationService = createBrowserLocationService({
+  timeoutMs: CHAT_CONFIG.requestTimeoutMs,
+  maxAccuracyMeters: CHAT_CONFIG.locationMaxAccuracyMeters
+});
 let session = loadSession(storage, CHAT_CONFIG.storageKey);
 let flow;
 
@@ -69,7 +72,7 @@ document.getElementById("chat-actions").addEventListener("click", async (event) 
 });
 
 document.getElementById("chat-launcher").addEventListener("click", ui.open);
-document.getElementById("hero-open-chat").addEventListener("click", ui.open);
+document.getElementById("hero-open-chat")?.addEventListener("click", ui.open);
 document.getElementById("chat-close").addEventListener("click", ui.close);
 document.getElementById("resume-continue").addEventListener("click", continuePrevious);
 document.getElementById("resume-new").addEventListener("click", async () => {
@@ -83,9 +86,12 @@ const realSubmission = CHAT_CONFIG.crmMode === "real";
 document.getElementById("chat-safety").textContent = realSubmission
   ? "Envio real ativado · ao confirmar, o pré-cadastro será criado no CRM"
   : "Modo seguro · CRM e conversões em simulação";
-document.getElementById("lab-data-mode").textContent = realSubmission
-  ? "✓ Pré-cadastro enviado ao confirmar"
-  : "✓ Seus dados não são enviados neste teste";
+const labDataMode = document.getElementById("lab-data-mode");
+if (labDataMode) {
+  labDataMode.textContent = realSubmission
+    ? "✓ Pré-cadastro enviado ao confirmar"
+    : "✓ Seus dados não são enviados neste teste";
+}
 
 if (session?.sessionId && session.messages?.length) {
   flow = buildFlow(session);
@@ -107,5 +113,7 @@ aiService.status().then((status) => {
 window.webturboChat = {
   getSession: () => flow.getSession(),
   reset: startFresh,
+  open: ui.open,
+  close: ui.close,
   config: CHAT_CONFIG
 };

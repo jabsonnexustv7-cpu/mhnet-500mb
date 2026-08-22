@@ -1,4 +1,4 @@
-:root {
+.chat-lab, .webturbo-chat-root {
   --navy-950: #061638;
   --navy-900: #0a2463;
   --blue-700: #1645bd;
@@ -18,17 +18,18 @@
 
 * { box-sizing: border-box; }
 
-html, body { margin: 0; min-height: 100%; }
+html { min-height: 100%; }
 
-body {
+body.chat-lab {
+  margin: 0;
   min-height: 100vh;
   background:
     radial-gradient(circle at 78% 16%, rgba(32, 199, 232, 0.14), transparent 26rem),
     linear-gradient(135deg, #f8fbff 0%, #eaf1fb 100%);
 }
 
-button, input { font: inherit; }
-button { cursor: pointer; }
+.chat-lab button, .chat-lab input, .webturbo-chat-root button, .webturbo-chat-root input { font: inherit; }
+.chat-lab button, .webturbo-chat-root button { cursor: pointer; }
 
 .sr-only {
   position: absolute;
@@ -61,7 +62,7 @@ button { cursor: pointer; }
   text-decoration: none;
 }
 
-.brand-mark, .chat-header-avatar, .signal-core {
+.brand-mark, .signal-core {
   display: grid;
   place-items: center;
   color: white;
@@ -218,8 +219,8 @@ button { cursor: pointer; }
   font-weight: 800;
 }
 
-.chat-launcher svg { width: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.chat-launcher i { position: absolute; top: 1px; left: 47px; width: 11px; height: 11px; background: var(--green-500); border: 2px solid white; border-radius: 50%; }
+.chat-launcher-avatar { width: 38px; height: 38px; flex: 0 0 auto; display: block; object-fit: cover; border: 2px solid rgba(255,255,255,0.9); border-radius: 50%; }
+.chat-launcher i { position: absolute; top: 1px; left: 43px; width: 11px; height: 11px; background: var(--green-500); border: 2px solid white; border-radius: 50%; }
 
 .chat-panel {
   position: fixed;
@@ -257,7 +258,7 @@ button { cursor: pointer; }
     linear-gradient(135deg, var(--navy-950), var(--navy-900));
 }
 
-.chat-header-avatar { width: 44px; height: 44px; flex: 0 0 auto; background: linear-gradient(145deg, #2e7aff, #1c4bc2); border: 1px solid rgba(255,255,255,0.26); border-radius: 14px; }
+.chat-header-avatar { width: 44px; height: 44px; flex: 0 0 auto; display: block; object-fit: cover; background: #eef6ff; border: 2px solid rgba(255,255,255,0.72); border-radius: 50%; }
 .chat-header-copy { display: flex; flex: 1; flex-direction: column; gap: 5px; }
 .chat-header-copy strong { font-size: 16px; }
 .chat-header-copy span { display: flex; align-items: center; gap: 7px; color: rgba(255,255,255,0.76); font-size: 11px; }
@@ -283,7 +284,7 @@ button { cursor: pointer; }
 
 .message-row { margin: 0 0 12px; display: flex; align-items: flex-end; gap: 8px; animation: message-in 180ms ease both; }
 .message-row--user { justify-content: flex-end; }
-.message-avatar { width: 28px; height: 28px; flex: 0 0 auto; display: grid; place-items: center; color: white; background: var(--navy-900); border-radius: 9px; font-size: 11px; font-style: italic; font-weight: 900; }
+.message-avatar { width: 30px; height: 30px; flex: 0 0 auto; display: block; object-fit: cover; background: #eef6ff; border: 1px solid #c9d9ef; border-radius: 50%; }
 
 .message-bubble { max-width: 79%; padding: 11px 13px; color: #263650; background: white; border: 1px solid #e3e9f2; border-radius: 16px 16px 16px 5px; box-shadow: 0 4px 15px rgba(10,36,99,0.06); font-size: 13px; line-height: 1.5; white-space: pre-line; }
 .message-row--user .message-bubble { color: white; background: linear-gradient(135deg, var(--blue-600), var(--blue-700)); border: 0; border-radius: 16px 16px 5px 16px; }
@@ -339,9 +340,6 @@ button { cursor: pointer; }
 .post-sale-icon { width: 42px; height: 42px; margin: 0 auto 10px; display: grid; place-items: center; color: white; background: var(--green-500); border-radius: 50%; font-size: 23px; font-weight: 900; }
 .post-sale-card h3 { margin: 0; color: #126433; font-size: 15px; }
 .post-sale-card p { margin: 7px 0 0; color: #557063; font-size: 11px; line-height: 1.5; }
-.post-sale-countdown strong { color: #126433; font-size: 13px; }
-.whatsapp-continue { min-height: 46px; margin: 8px 14px 14px; padding: 0 18px; display: flex; align-items: center; justify-content: center; color: white; background: var(--green-500); border-radius: 12px; box-shadow: 0 8px 20px rgba(0,200,83,0.2); font-size: 12px; font-weight: 900; text-decoration: none; }
-.whatsapp-continue:hover { background: #00ad48; }
 
 .chat-composer { min-height: 66px; padding: 10px 12px; display: flex; align-items: center; gap: 8px; background: white; border-top: 1px solid #e4eaf2; }
 .chat-composer input { width: 100%; height: 44px; padding: 0 14px; color: var(--ink); background: #f4f7fb; border: 1px solid transparent; border-radius: 13px; outline: none; font-size: 13px; }

@@ -226,13 +226,12 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     }
     ui.updateDebug(session, config);
     if (session.step === STATES.CONFIRMACAO) ui.showSummary(session);
-    if (session.step === STATES.FINALIZADO && session.crmPayload && config.postSaleWhatsAppRedirect !== false) {
+    if (session.step === STATES.FINALIZADO && session.crmPayload) {
       if (session.crmResult?.mock === false && whatsappService) {
-        ui.showPostSaleSuccess?.(whatsappService.buildUrl(session), 0);
-        ui.setComposerEnabled(false);
-        return;
+        ui.showPostSaleSuccess?.();
+      } else {
+        ui.showFinalPayload(session.crmPayload);
       }
-      ui.showFinalPayload(session.crmPayload);
     }
     showControlsForStep();
   }
@@ -258,7 +257,10 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     if (session.step !== STATES.CEP) return;
     if (!locationService?.locate) {
       await assistant("A localização não está disponível neste navegador. Informe o CEP para continuar.");
-      showControlsForStep();
+      ui.showQuickReplies([
+        { label: "Tentar localização novamente", action: "use-location" },
+        { label: "Digitar CEP", action: "enter-cep" }
+      ]);
       return;
     }
     ui.clearActions();
@@ -287,11 +289,15 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       logger.warn(`${PREFIX} Location lookup failed`, error?.message || error);
       ui.setComposerEnabled(true);
       await assistant(error?.message || "Não foi possível localizar seu endereço. Informe o CEP para continuar.");
-      showControlsForStep();
+      ui.showQuickReplies([
+        { label: "Tentar localização novamente", action: "use-location" },
+        { label: "Digitar CEP", action: "enter-cep" }
+      ]);
     }
   }
 
   async function confirmAddress({ recordUser = false } = {}) {
+    if (session.step !== STATES.COMPLEMENTO || !session.numero) return;
     if (recordUser) addMessage("user", "Está correto");
     session.addressConfirmed = true;
     persist();
@@ -384,7 +390,7 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
   }
 
   async function offerHumanHandoff() {
-    await assistant("Posso transferir este atendimento para nossa equipe no WhatsApp. O chat só abrirá o WhatsApp se você confirmar abaixo.");
+    await assistant("Posso encaminhar seu atendimento para nossa equipe.");
     ui.showQuickReplies([{ label: "Seguir com atendente", action: "human-handoff" }]);
   }
 
@@ -508,13 +514,8 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
 
       analytics.crmSuccess(session, result);
       addMessage("assistant", "Cadastro recebido com sucesso! Sua solicitação foi enviada para nossa equipe de agendamento.");
-      if (config.postSaleWhatsAppRedirect !== false) {
-        const whatsappUrl = whatsappService.buildUrl(session);
-        ui.showPostSaleSuccess?.(whatsappUrl, 3);
-        whatsappService.startRedirect(session, (seconds) => ui.updateWhatsAppCountdown?.(seconds));
-      } else {
-        showControlsForStep();
-      }
+      ui.showPostSaleSuccess?.();
+      showControlsForStep();
     } catch (error) {
       logger.error(`${PREFIX} CRM submission failed`, error);
       analytics.crmError(session, error);
@@ -648,6 +649,11 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         break;
       }
       case STATES.COMPLEMENTO: {
+        if (!session.addressConfirmed) {
+          await assistant("Primeiro confira o endereço localizado. Se estiver correto, toque em “Está correto”.");
+          showControlsForStep();
+          break;
+        }
         const complement = extractComplement(parsedText);
         if (!complement) {
           await assistant(session.addressConfirmed
@@ -655,8 +661,6 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
             : "Primeiro confira o endereço localizado. Se estiver correto, toque em “Está correto”.");
           break;
         }
-        // Compatibilidade com quem já envia o complemento diretamente: isso também confirma o endereço exibido.
-        if (!session.addressConfirmed) session.addressConfirmed = true;
         session.complemento = complement;
         persist();
         localAccepted = true;
@@ -847,10 +851,6 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     if (action === "show-promotions") return showPromotions();
     if (["select-due-date", "select-installation-date", "select-shift"].includes(action)) {
       return handleText(value);
-    }
-    if (action === "open-whatsapp") {
-      whatsappService?.trackManual(session);
-      return;
     }
     if (action === "human-handoff") return openHumanHandoff();
     if (action === "change-plan") {
