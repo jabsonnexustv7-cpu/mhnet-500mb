@@ -1,12 +1,12 @@
-import { CHAT_CONFIG } from "./config.js?v=7";
-import { createAiAssistService } from "./ai-service.js?v=7";
-import { createChatFlow } from "./flow.js?v=7";
-import { createBrowserLocationService, createCoverageNotificationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js?v=7";
-import { routeMessage } from "./message-router.js?v=7";
-import { createSession, loadSession, resetSession } from "./state.js?v=7";
-import { createTrackingService } from "./tracking.js?v=7";
-import { createChatUI } from "./ui.js?v=7";
-import { createWhatsAppService } from "./whatsapp.js?v=7";
+import { CHAT_CONFIG } from "./config.js?v=8";
+import { createAiAssistService } from "./ai-service.js?v=8";
+import { createChatFlow } from "./flow.js?v=8";
+import { createBrowserLocationService, createCoverageNotificationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js?v=8";
+import { routeMessage } from "./message-router.js?v=8";
+import { createSession, loadSession, resetSession } from "./state.js?v=8";
+import { createTrackingService } from "./tracking.js?v=8";
+import { createChatUI } from "./ui.js?v=8";
+import { createWhatsAppService } from "./whatsapp.js?v=8";
 
 const ui = createChatUI();
 const storage = window.localStorage;
