@@ -61,6 +61,9 @@ function appendAssistantMessage(text, meta = {}) {
 function heroSyncPrompt(snapshot) {
   const label = heroStageLabel(snapshot.stage);
   const planText = snapshot.plano?.title ? ` O plano ${snapshot.plano.title} já está selecionado.` : "";
+  if (snapshot.stage === 5) {
+    return `Vi que seu pedido já está na revisão final.${planText} Você não precisa preencher tudo novamente. Posso tentar finalizar o envio agora.`;
+  }
   return `Vi que você já iniciou sua contratação pelo formulário e está na etapa de ${label}.${planText} Pode tirar sua dúvida aqui sem perder o que já foi preenchido.`;
 }
 
@@ -83,10 +86,17 @@ function synchronizeHeroIntoChat() {
   resumeAvailable = false;
 
   if (!alreadyPrompted) {
-    ui.showQuickReplies([
-      { label: "Continuar preenchendo aqui", action: "continue-from-hero" },
-      { label: "Voltar para o formulário", action: "return-to-hero" }
-    ]);
+    if (snapshot.stage === 5) {
+      ui.showQuickReplies([
+        { label: "Tentar finalizar meu pedido", action: "finalize-hero-order" },
+        { label: "Voltar para o formulário", action: "return-to-hero" }
+      ]);
+    } else {
+      ui.showQuickReplies([
+        { label: "Continuar preenchendo aqui", action: "continue-from-hero" },
+        { label: "Voltar para o formulário", action: "return-to-hero" }
+      ]);
+    }
   }
   return true;
 }
@@ -157,6 +167,23 @@ async function handleActionClick(event) {
     appendAssistantMessage(resumePromptForStep(session.step), { kind: "hero-resume" });
     flow = buildFlow(session);
     flow.resume();
+    return;
+  }
+
+  if (action === "finalize-hero-order") {
+    ui.clearActions();
+    syncChatSessionToHero(session);
+    appendAssistantMessage("Certo. Vou tentar finalizar o envio do seu pedido agora.", { kind: "hero-finalize" });
+    try { window.clarity?.("event", "chat_tentou_finalizar_hero"); } catch (_) {}
+    try { window.gtag?.("event", "chat_tentou_finalizar_hero", { origem: "chat_webturbo" }); } catch (_) {}
+    closeChat({ syncHero: false });
+    setTimeout(() => {
+      const submit = document.getElementById("btnSubmit");
+      if (submit && !submit.disabled) submit.click();
+      else {
+        try { window.clarity?.("event", "chat_finalizar_hero_indisponivel"); } catch (_) {}
+      }
+    }, 180);
     return;
   }
 
