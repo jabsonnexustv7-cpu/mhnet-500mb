@@ -89,6 +89,23 @@
     });
   }
 
+  function clearIdentityForNewCpf() {
+    const nome = byId("mNome");
+    const nascimentoTexto = byId("mNascimentoTexto");
+    const nascimento = byId("mNascimento");
+    if (nome) {
+      nome.value = "";
+      delete nome.dataset.wtUserEdited;
+    }
+    if (nascimentoTexto) {
+      nascimentoTexto.value = "";
+      delete nascimentoTexto.dataset.wtUserEdited;
+    }
+    if (nascimento) nascimento.value = "";
+    try { window.fieldReset?.("mNome"); } catch (_) {}
+    try { window.fieldReset?.("mNascimento"); } catch (_) {}
+  }
+
   function applyResult(result) {
     const nome = byId("mNome");
     const nascimentoTexto = byId("mNascimentoTexto");
@@ -97,18 +114,16 @@
 
     revealIdentityFields();
 
-    if (result.nome && nome && !nome.dataset.wtUserEdited) {
-      nome.value = result.nome;
-      nome.dispatchEvent(new Event("input", { bubbles: true }));
-      nome.dispatchEvent(new Event("change", { bubbles: true }));
-    }
-
+    if (result.nome && nome && !nome.dataset.wtUserEdited) nome.value = result.nome;
     if (birth.display && nascimentoTexto && !nascimentoTexto.dataset.wtUserEdited) {
       nascimentoTexto.value = birth.display;
       if (nascimento) nascimento.value = birth.iso;
-      nascimentoTexto.dispatchEvent(new Event("input", { bubbles: true }));
-      nascimentoTexto.dispatchEvent(new Event("change", { bubbles: true }));
     }
+
+    // Sincroniza validadores sem marcar o preenchimento automático como edição manual.
+    try { window.sincronizarNascimentoTexto?.(); } catch (_) {}
+    try { if (nome?.value) window.fieldOk?.("mNome"); } catch (_) {}
+    try { if (nascimento?.value) window.fieldOk?.("mNascimento"); } catch (_) {}
 
     const hasName = Boolean(nome?.value.trim());
     const hasBirth = Boolean(nascimento?.value || nascimentoTexto?.value.trim());
@@ -157,10 +172,13 @@
 
     lookupPromise = fetchCpf(cpf)
       .then((result) => {
+        // Ignora resposta atrasada se o cliente já trocou o CPF.
+        if (digits(byId("mCpf")?.value) !== cpf) return null;
         applyResult(result);
         return result;
       })
       .catch((error) => {
+        if (digits(byId("mCpf")?.value) !== cpf) return null;
         revealIdentityFields();
         setStatus("Não foi possível completar os dados automaticamente. Preencha nome e nascimento para continuar.", "manual");
         track("cpf_consulta_falhou", { motivo: error?.name === "AbortError" ? "timeout" : "erro" });
@@ -170,9 +188,17 @@
     return lookupPromise;
   }
 
-  function scheduleLookup() {
+  function handleCpfInput() {
+    const cpf = digits(byId("mCpf")?.value);
+    if (cpf !== lookupCpf) {
+      lookupCpf = "";
+      lookupPromise = null;
+      clearIdentityForNewCpf();
+      if (cpf.length !== 11) concealIdentityFields();
+      setStatus("", "");
+    }
     clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => void lookup(), 450);
+    if (cpf.length === 11) debounceTimer = setTimeout(() => void lookup(), 450);
   }
 
   function configureUi() {
@@ -218,9 +244,7 @@
         if (!window.isValidCpf?.(cpfInput?.value)) {
           window.fieldError?.("mCpf", "CPF inválido. Verifique os números.");
           hasError = true;
-        } else {
-          window.fieldOk?.("mCpf");
-        }
+        } else window.fieldOk?.("mCpf");
       } catch (_) {
         if (cpf.length !== 11) hasError = true;
       }
@@ -320,9 +344,10 @@
     const cpf = byId("mCpf");
     const nome = byId("mNome");
     const birth = byId("mNascimentoTexto");
-    if (!cpf) return;
+    if (!cpf || cpf.dataset.wtCpfAutofillBound === "1") return;
+    cpf.dataset.wtCpfAutofillBound = "1";
 
-    cpf.addEventListener("input", scheduleLookup);
+    cpf.addEventListener("input", handleCpfInput);
     cpf.addEventListener("blur", () => void lookup());
     nome?.addEventListener("input", () => { nome.dataset.wtUserEdited = "1"; }, { passive: true });
     birth?.addEventListener("input", () => { birth.dataset.wtUserEdited = "1"; }, { passive: true });
@@ -333,8 +358,9 @@
     configureUi();
     bind();
     patchValidation();
-    setTimeout(() => { configureUi(); patchValidation(); }, 300);
-    setTimeout(() => { configureUi(); patchValidation(); }, 1000);
+    if (digits(byId("mCpf")?.value).length === 11) void lookup();
+    setTimeout(() => { configureUi(); bind(); patchValidation(); }, 300);
+    setTimeout(() => { configureUi(); bind(); patchValidation(); }, 1000);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", install, { once: true });
