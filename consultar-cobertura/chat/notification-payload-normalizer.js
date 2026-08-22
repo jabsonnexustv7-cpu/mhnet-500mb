@@ -36,8 +36,15 @@ function extractCoords(payload = {}) {
   return "";
 }
 
+function cleanAddress(payload = {}) {
+  return String(payload.fachada || "")
+    .replace(/^\[(CHAT|HERO)\]\s*/i, "")
+    .replace(/\s*\|\s*Mapa:\s*https?:\/\/\S+$/i, "")
+    .trim();
+}
+
 async function geocodeAddress(payload, fetchImpl) {
-  const address = String(payload.fachada || "").replace(/^\[(CHAT|HERO)\]\s*/i, "").trim();
+  const address = cleanAddress(payload);
   if (!address || address === "-") return "";
   try {
     const url = new URL("https://nominatim.openstreetmap.org/search");
@@ -64,8 +71,12 @@ async function geocodeAddress(payload, fetchImpl) {
 function enrichPayload(payload, coords) {
   const label = sourceLabel(payload);
   const originalOrigin = payload.origemConsulta || payload.origem || "";
-  const mapLink = coords ? `https://www.google.com/maps?q=${coords}` : "";
-  const baseAddress = String(payload.fachada || "-").replace(/^\[(CHAT|HERO)\]\s*/i, "").trim() || "-";
+  const baseAddress = cleanAddress(payload) || "-";
+  const mapLink = coords
+    ? `https://www.google.com/maps?q=${coords}`
+    : baseAddress !== "-"
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(baseAddress)}`
+      : "";
   const isUnviable = payload.action === "notifyConsultaInviavel" || payload.viavel === false;
   const addressWithSource = `[${label}] ${baseAddress}`;
   const addressForMessage = isUnviable && mapLink
@@ -132,4 +143,4 @@ if (!window.__webturboNotificationFetchPatched) {
   };
 }
 
-export { enrichPayload, extractCoords, sourceLabel };
+export { cleanAddress, enrichPayload, extractCoords, sourceLabel };
