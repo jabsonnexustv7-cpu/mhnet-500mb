@@ -1,6 +1,6 @@
 import { CHAT_CONFIG } from "./config.js?v=9";
 import { createAiAssistService } from "./ai-service.js?v=9";
-import { createChatFlow } from "./flow.js?v=9";
+import { createChatFlow } from "./flow-friction-v2.js?v=1";
 import { readHeroSnapshot, applyHeroSnapshotToSession, syncChatSessionToHero, heroStageLabel } from "./hero-bridge.js?v=1";
 import { createBrowserLocationService, createCoverageNotificationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js?v=9";
 import { resumePromptForStep } from "./knowledge.js?v=9";
@@ -232,7 +232,7 @@ safetyNotice.textContent = realSubmission ? "" : "Modo seguro · CRM e conversõ
 const labDataMode = document.getElementById("lab-data-mode");
 if (labDataMode) {
   labDataMode.textContent = realSubmission
-    ? "✓ Pré-cadastro enviado ao confirmar"
+    ? "✓ Pré-cadastro enviado após escolher o vencimento"
     : "✓ Seus dados não são enviados neste teste";
 }
 
