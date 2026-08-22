@@ -57,11 +57,13 @@ export function createChatUI() {
 
   function clearActions() {
     actions.replaceChildren();
-    messages.querySelector(".chat-plan-selection")?.remove();
+    messages.querySelectorAll(".chat-plan-selection, .chat-inline-actions, .chat-inline-date").forEach((node) => node.remove());
   }
 
   function showQuickReplies(items) {
     clearActions();
+    const selection = element("section", "chat-inline-actions");
+    selection.setAttribute("aria-label", "Opções disponíveis");
     const wrap = element("div", "quick-replies");
     items.forEach((item) => {
       const button = element("button", "quick-reply", item.label);
@@ -70,7 +72,8 @@ export function createChatUI() {
       if (item.value !== undefined) button.dataset.value = item.value;
       wrap.appendChild(button);
     });
-    actions.appendChild(wrap);
+    selection.appendChild(wrap);
+    messages.appendChild(selection);
     scrollToBottom();
   }
 
@@ -150,19 +153,22 @@ export function createChatUI() {
 
   function showDatePicker(minDate) {
     clearActions();
+    const selection = element("section", "chat-inline-date");
+    selection.setAttribute("aria-label", "Escolha da data de instalação");
     const wrap = element("div", "date-picker-action");
     const label = element("label", "", "Data preferida");
     label.htmlFor = "installation-date-input";
-    const input = element("input");
-    input.id = "installation-date-input";
-    input.type = "date";
-    input.min = minDate;
-    input.value = minDate;
+    const dateInput = element("input");
+    dateInput.id = "installation-date-input";
+    dateInput.type = "date";
+    dateInput.min = minDate;
+    dateInput.value = minDate;
     const button = element("button", "date-picker-submit", "Usar esta data");
     button.type = "button";
     button.dataset.action = "select-installation-date";
-    wrap.append(label, input, button);
-    actions.appendChild(wrap);
+    wrap.append(label, dateInput, button);
+    selection.appendChild(wrap);
+    messages.appendChild(selection);
     scrollToBottom();
   }
 
