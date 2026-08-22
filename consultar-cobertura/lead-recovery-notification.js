@@ -9,7 +9,7 @@
 
   const ENDPOINT = "https://modal-easy-964927461432.southamerica-east1.run.app";
   const CHECK_INTERVAL_MS = 900;
-  const SENT_PREFIX = "wt_lead_recovery_sent_v5:";
+  const SENT_PREFIX = "wt_lead_recovery_sent_v6:";
   const VISIT_ID = `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 
   function clean(value) {
@@ -58,6 +58,44 @@
     return [streetNumber, clean(bairro), cityUf].filter(Boolean).join(" - ");
   }
 
+  // O coverage-base ainda possui a rotina antiga de abandono. Ela pode disparar
+  // o mesmo lead depois que a recuperação antecipada já enviou o Telegram.
+  // Interceptamos apenas a duplicata da etapa de dados pessoais; outros usos do
+  // endpoint permanecem intactos.
+  (function installLegacyAbandonmentGuard() {
+    if (window.__webturboLegacyAbandonmentGuardInstalled) return;
+    window.__webturboLegacyAbandonmentGuardInstalled = true;
+    const nativeFetch = window.fetch.bind(window);
+
+    window.fetch = function guardedFetch(input, init) {
+      try {
+        const url = typeof input === "string" ? input : String(input?.url || "");
+        if (url === ENDPOINT && init?.body) {
+          const payload = typeof init.body === "string" ? JSON.parse(init.body) : null;
+          const etapa = clean(payload?.etapaAbandono || payload?.etapa || payload?.etapa_abandono).toLowerCase();
+          const isLegacyDuplicate = payload?.action === "notifyAbandonoModal"
+            && payload?.evento !== "lead_recuperacao_dados_completos"
+            && etapa === "dados_pessoais_concluidos";
+
+          if (isLegacyDuplicate) {
+            clarityEvent("lead_recuperacao_telegram_duplicata_bloqueada");
+            gaEvent("lead_recuperacao_telegram_duplicata_bloqueada", { etapa });
+            return Promise.resolve(new Response(JSON.stringify({
+              ok: true,
+              skipped: true,
+              telegramSent: true,
+              reason: "legacy_duplicate_blocked"
+            }), {
+              status: 200,
+              headers: { "Content-Type": "application/json" }
+            }));
+          }
+        }
+      } catch (_) {}
+      return nativeFetch(input, init);
+    };
+  })();
+
   function recoveryPayload(data) {
     const endereco = buildAddress(data.logradouro, data.numero, data.bairro, data.cidade, data.uf);
     const etapa = "dados_pessoais_concluidos";
@@ -65,7 +103,6 @@
     return {
       action: "notifyAbandonoModal",
       evento: "lead_recuperacao_dados_completos",
-      // O Cloud Run legado lê etapaAbandono/etapa; mantemos também snake_case.
       etapa_abandono: etapa,
       etapaAbandono: etapa,
       etapa,
