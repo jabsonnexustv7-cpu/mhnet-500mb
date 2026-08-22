@@ -8,15 +8,15 @@ test("landing carrega o chat reutilizável sem iframe", () => {
   const landing = read("../../index.html");
   const embed = read("../embed.js");
   assert.match(landing, /chat\/chat\.css\?v=6/);
-  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=6"/);
-  assert.match(embed, /await import\("\.\/app\.js\?v=6"\)/);
+  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=7"/);
+  assert.match(embed, /await import\("\.\/app\.js\?v=7"\)/);
   assert.doesNotMatch(embed, /iframe/i);
 });
 
 test("versão nova invalida o cache dos módulos internos críticos", () => {
   const app = read("../app.js");
   for (const moduleName of ["config", "ai-service", "flow", "integrations", "message-router", "state", "tracking", "ui", "whatsapp"]) {
-    assert.match(app, new RegExp(`\\./${moduleName}\\.js\\?v=6`));
+    assert.match(app, new RegExp(`\\./${moduleName}\\.js\\?v=7`));
   }
 });
 
@@ -40,7 +40,6 @@ test("chat abre como modal na mesma página e possui retorno claro", () => {
 test("mobile mantém o modal acima do hero e respeita a área segura", () => {
   const css = read("../chat.css");
   const legacyLanding = read("../../coverage-base.html");
-
   assert.match(css, /\.chat-backdrop \{[\s\S]*z-index: 2147483500/);
   assert.match(css, /\.chat-panel \{[\s\S]*z-index: 2147483501/);
   assert.match(css, /top: max\(8px, env\(safe-area-inset-top\)\)/);
@@ -57,7 +56,6 @@ test("confirmação do endereço mantém as ações dentro do próprio card", ()
   const app = read("../app.js");
   const ui = read("../ui.js");
   const css = read("../chat.css");
-
   assert.match(ui, /address-confirmation-actions/);
   assert.match(ui, /label: "Está correto", action: "confirm-address"/);
   assert.match(ui, /label: "Corrigir endereço", action: "new-address"/);
@@ -65,10 +63,17 @@ test("confirmação do endereço mantém as ações dentro do próprio card", ()
   assert.match(css, /\.address-confirmation-actions/);
 });
 
+test("cards de planos viáveis são renderizados dentro da conversa", () => {
+  const ui = read("../ui.js");
+  assert.match(ui, /chat-plan-selection/);
+  assert.match(ui, /messages\.appendChild\(selection\)/);
+  assert.match(ui, /data-action/);
+  assert.match(ui, /select-plan/);
+});
+
 test("landing esconde o layout antigo até o redesign do hero estar pronto", () => {
   const landing = read("../../index.html");
   const redesign = read("../../landing-hero-redesign.js");
-
   assert.match(landing, /meta-coverage-landing wt-hero-step1-active/);
   assert.match(landing, /wt-hero-step1-active:not\(\.wt-hero-ready\)/);
   assert.match(landing, /landing-hero-redesign\.js\?v=3/);
@@ -78,7 +83,6 @@ test("landing esconde o layout antigo até o redesign do hero estar pronto", () 
 test("produção não exibe aviso técnico e retomada não bloqueia o hero ao recarregar", () => {
   const embed = read("../embed.js");
   const app = read("../app.js");
-
   assert.match(embed, /id="chat-safety" class="chat-safety" hidden/);
   assert.match(embed, /id="resume-close"/);
   assert.match(app, /safetyNotice\.hidden = realSubmission/);
@@ -91,7 +95,6 @@ test("launcher é compacto e localização externa não aparece na etapa inicial
   const embed = read("../embed.js");
   const css = read("../chat.css");
   const legacyLanding = read("../../coverage-base.html");
-
   assert.match(embed, /class="sr-only">Atendimento on-line/);
   assert.match(css, /\.chat-launcher \{[\s\S]*width: 54px;[\s\S]*height: 54px;/);
   assert.doesNotMatch(legacyLanding, /<button[^>]+id="btnNaoSeiCepModal"/);
@@ -107,22 +110,24 @@ test("configuração da landing ativa apenas os modos reais esperados", () => {
   assert.match(embed, /conversionMode: "real"/);
   assert.match(embed, /whatsappMode: "real"/);
   assert.match(embed, /notificationMode: "real"/);
+  assert.match(embed, /notificationEndpoint: "https:\/\/modal-easy-964927461432\.southamerica-east1\.run\.app"/);
   assert.match(embed, /webturbo-chat-ai-hydcvtcuga-rj\.a\.run\.app\/api\/chat\/assist/);
   assert.match(config, /webturbo-crm-api-964927461432\.southamerica-east1\.run\.app\/api\/v1\/public\/site-pre-sales/);
-  assert.match(config, /notificationEndpoint:[\s\S]*consulta-cobertura-mhnet-br-964927461432\.southamerica-east1\.run\.app/);
+  assert.match(config, /notificationEndpoint:[\s\S]*modal-easy-964927461432\.southamerica-east1\.run\.app/);
   assert.doesNotMatch(embed, /safe=1|debug=1/);
 });
 
-test("chat notifica o backend de cobertura sem duplicar InitiateCheckout", () => {
+test("chat notifica o backend legado correto sem duplicar InitiateCheckout", () => {
   const app = read("../app.js");
   const flow = read("../flow.js");
   const integrations = read("../integrations.js");
-
+  const legacyLanding = read("../../coverage-base.html");
   assert.match(app, /createCoverageNotificationService\(CHAT_CONFIG\)/);
   assert.match(flow, /coverageNotifications\.notify\(session, coverage/);
   assert.match(integrations, /action: viavel \? "notifyConsulta" : "notifyConsultaInviavel"/);
   assert.match(integrations, /skipInitiateCheckout: true/);
   assert.match(integrations, /coverage\?\.source !== "real"/);
+  assert.match(legacyLanding, /const CLOUD_RUN_URL = "https:\/\/modal-easy-964927461432\.southamerica-east1\.run\.app"/);
 });
 
 test("CTAs permanentes de WhatsApp são convertidos em atendimento on-line", () => {
