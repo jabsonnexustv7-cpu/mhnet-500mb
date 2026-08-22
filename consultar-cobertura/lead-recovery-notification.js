@@ -43,12 +43,14 @@
     try { sessionStorage.setItem(SENT_PREFIX + key, "1"); } catch (_) {}
   }
 
-  function buildKey(source, phone, cep) {
-    return [source, digits(phone).slice(-11), digits(cep)].join(":");
+  function buildKey(source, cpf, phone, cep) {
+    return [source, digits(cpf), digits(phone).slice(-11), digits(cep)].join(":");
   }
 
   function heroLead() {
     const nome = value("mNome");
+    const cpf = value("mCpf");
+    const nascimento = value("mNascimento");
     const telefone1 = value("mTelefone1");
     const telefone2 = value("mTelefone2");
     const email = value("mEmail");
@@ -60,12 +62,14 @@
     const cidade = value("mCidade");
     const uf = value("mUf");
 
-    if (!nome || digits(telefone1).length < 10 || digits(telefone2).length < 10) return null;
+    // O alerta só é disparado quando já há dados suficientes para contato e análise cadastral.
+    if (!nome || digits(cpf).length !== 11 || !nascimento || !email) return null;
+    if (digits(telefone1).length < 10 || digits(telefone2).length < 10) return null;
     if (!plano || !numero || !cidade || !uf || (!logradouro && digits(cep).length !== 8)) return null;
 
     return {
       source: "HERO",
-      key: buildKey("HERO", telefone1, cep),
+      key: buildKey("HERO", cpf, telefone1, cep),
       payload: {
         action: "notifyAbandonoModal",
         evento: "lead_recuperacao_dados_completos",
@@ -73,6 +77,8 @@
         origem: "site_webturbo_hero",
         horario_site: new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }),
         nome,
+        cpf,
+        nascimento,
         email,
         telefone1,
         telefone2,
@@ -88,6 +94,11 @@
         vencimento: value("mVencimento"),
         data_instalacao: value("mDataInstalacao"),
         turno_instalacao: value("mTurnoInstalacao"),
+        coordenadas: value("mCoordenadasFixas"),
+        latitude: value("mLatitudeFixa"),
+        longitude: value("mLongitudeFixa"),
+        endereco_detectado: value("mEnderecoDetectadoLocalizacao"),
+        link_localizacao: value("mLinkLocalizacaoFixa"),
         cobertura_validada: true,
         url_pagina: location.href,
         user_agent: navigator.userAgent
@@ -101,6 +112,9 @@
     if (!session) return null;
 
     const nome = clean(session.nome);
+    const cpf = clean(session.cpf);
+    const nascimento = clean(session.dataNascimento);
+    const email = clean(session.email);
     const telefone1 = clean(session.telefone);
     const telefone2 = clean(session.telefoneSecundario);
     const plano = clean(session.plano?.title || session.plano?.id);
@@ -109,12 +123,13 @@
     const cidade = clean(session.cidade);
     const uf = clean(session.uf);
 
-    if (!nome || digits(telefone1).length < 10 || digits(telefone2).length < 10) return null;
+    if (!nome || digits(cpf).length !== 11 || !nascimento || !email) return null;
+    if (digits(telefone1).length < 10 || digits(telefone2).length < 10) return null;
     if (!plano || !numero || !cidade || !uf) return null;
 
     return {
       source: "CHAT",
-      key: buildKey("CHAT", telefone1, cep),
+      key: buildKey("CHAT", cpf, telefone1, cep),
       payload: {
         action: "notifyAbandonoModal",
         evento: "lead_recuperacao_dados_completos",
@@ -122,7 +137,9 @@
         origem: "site_webturbo_chat",
         horario_site: new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }),
         nome,
-        email: clean(session.email),
+        cpf,
+        nascimento,
+        email,
         telefone1,
         telefone2,
         plano,
@@ -133,9 +150,11 @@
         cidade,
         uf,
         complemento: clean(session.complemento),
+        ponto_referencia: clean(session.pontoReferencia),
         vencimento: clean(session.diaVencimentoFatura),
         data_instalacao: clean(session.dataInstalacao),
         turno_instalacao: clean(session.turnoInstalacao),
+        coordenadas: clean(session.coordenadas || session.cobertura?.coords),
         cobertura_validada: session.cobertura?.viavel === true,
         cobertura_motivo: clean(session.cobertura?.motivo),
         cobertura_coords: clean(session.cobertura?.coords || session.coordenadas),
