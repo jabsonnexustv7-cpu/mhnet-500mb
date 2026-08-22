@@ -3515,7 +3515,6 @@
             <div class="mfield" id="field-mCep">
               <label for="mCep">CEP *</label>
               <input id="mCep" type="text" inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="postal-code" />
-              <button type="button" class="btn-nao-sei-cep" id="btnNaoSeiCepModal">Não sei meu CEP</button>
               <span class="mfield-error-msg" id="err-mCep">Informe um CEP válido.</span>
             </div>
             <div class="mfield" id="field-mNumero">
@@ -6197,7 +6196,7 @@
       const usandoLocalizacaoSemCep = modalSemCepMode && coordsFixas;
 
       if (!modalSemCepMode && !cepValido) {
-        fieldError("mCep", "Informe um CEP válido ou clique em Não sei meu CEP.");
+        fieldError("mCep", "Informe um CEP válido.");
         hasError = true;
       } else if (cepValido) {
         fieldOk("mCep");
@@ -6269,7 +6268,7 @@
       });
 
       if (cep.length !== 8 && !modalSemCepMode) {
-        fieldError("mCep", "Informe um CEP válido ou clique em Não sei meu CEP.");
+        fieldError("mCep", "Informe um CEP válido.");
         return;
       }
 

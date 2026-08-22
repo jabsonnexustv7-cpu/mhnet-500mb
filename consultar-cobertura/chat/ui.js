@@ -22,6 +22,8 @@ function assistantAvatar(className = "message-avatar", { decorative = true } = {
 
 export function createChatUI() {
   const panel = document.getElementById("chat-panel");
+  const backdrop = document.getElementById("chat-backdrop");
+  const launcher = document.getElementById("chat-launcher");
   const messages = document.getElementById("chat-messages");
   const actions = document.getElementById("chat-actions");
   const typing = document.getElementById("chat-typing");
@@ -274,6 +276,9 @@ export function createChatUI() {
   function open() {
     panel.classList.add("is-open");
     panel.setAttribute("aria-hidden", "false");
+    backdrop?.classList.add("is-open");
+    backdrop?.setAttribute("aria-hidden", "false");
+    launcher?.setAttribute("aria-expanded", "true");
     document.body.classList.add("chat-open");
     input.focus({ preventScroll: true });
     scrollToBottom();
@@ -282,7 +287,11 @@ export function createChatUI() {
   function close() {
     panel.classList.remove("is-open");
     panel.setAttribute("aria-hidden", "true");
+    backdrop?.classList.remove("is-open");
+    backdrop?.setAttribute("aria-hidden", "true");
+    launcher?.setAttribute("aria-expanded", "false");
     document.body.classList.remove("chat-open");
+    launcher?.focus({ preventScroll: true });
   }
 
   return {

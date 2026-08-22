@@ -49,10 +49,6 @@
       body.${ACTIVE_CLASS} #etapa1 .btn-modal-next::after{content:"→";font-size:18px;line-height:1;margin-left:3px}
       body.${ACTIVE_CLASS} #etapa1 .btn-modal-next:hover{filter:brightness(1.05);transform:translateY(-1px)}
 
-      .wt-hero-geo{grid-column:1/-1!important;width:100%;min-height:42px;margin:0 0 15px!important;border:1.5px solid #b9f2cd!important;border-radius:12px!important;background:#eafff3!important;color:#049945!important;display:flex!important;align-items:center;justify-content:center;gap:7px;padding:9px 12px!important;text-align:center!important;font-size:12.5px!important;font-weight:800!important;text-decoration:none!important}
-      .wt-hero-geo::before{content:"⌖";font-size:17px;line-height:1}
-      .wt-hero-geo:hover{background:#dffcea!important;text-decoration:none!important}
-
       body.${ACTIVE_CLASS} .meta-trust-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0 0;padding:0}
       body.${ACTIVE_CLASS} .meta-trust-row span{min-height:48px;padding:8px 9px;border:1px solid #e2e7f0;border-radius:12px;background:#fff;justify-content:center;text-align:center;color:#0f1b3d;font-size:10.8px;font-weight:800;line-height:1.25;box-shadow:0 5px 14px -9px rgba(10,36,99,.24)}
       body.${ACTIVE_CLASS} .meta-trust-row span:nth-child(1){background:#f5f8ff}
@@ -102,20 +98,6 @@
     trust.dataset.wtHeroMoved = "1";
   }
 
-  function enhanceGeoButton() {
-    const button = byId("btnNaoSeiCepModal");
-    const grid = document.querySelector("#etapa1 .mgrid");
-    const numberField = byId("field-mNumero");
-    if (!button) return;
-
-    button.textContent = "Não sabe seu CEP? Use sua localização";
-    button.classList.add("wt-hero-geo");
-
-    if (grid && numberField && button.parentElement !== grid) {
-      numberField.insertAdjacentElement("afterend", button);
-    }
-  }
-
   function isStepOneVisible() {
     const step = byId("etapa1");
     if (!step) return false;
@@ -152,7 +134,6 @@
   function install() {
     injectStyles();
     moveTrustRow();
-    enhanceGeoButton();
     updateStepState();
     observeSteps();
   }

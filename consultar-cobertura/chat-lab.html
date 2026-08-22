@@ -53,15 +53,17 @@
 
   <button id="chat-launcher" class="chat-launcher" type="button" aria-label="Abrir chat da WebTurbo">
     <img class="chat-launcher-avatar" src="/consultar-cobertura/chat/assets/webturbo-assistente.png" width="38" height="38" alt="">
-    <span>Fale com a gente</span>
+    <span class="sr-only">Fale com a gente</span>
     <i aria-label="Online"></i>
   </button>
 
-  <section id="chat-panel" class="chat-panel" aria-label="Chat da WebTurbo" aria-hidden="true">
+  <div id="chat-backdrop" class="chat-backdrop" aria-hidden="true"></div>
+
+  <section id="chat-panel" class="chat-panel" role="dialog" aria-modal="true" aria-labelledby="chat-title" aria-hidden="true">
     <header class="chat-header">
       <img class="chat-header-avatar" src="/consultar-cobertura/chat/assets/webturbo-assistente.png" width="44" height="44" alt="Atendente virtual WebTurbo">
       <div class="chat-header-copy">
-        <strong>WebTurbo</strong>
+        <strong id="chat-title">WebTurbo</strong>
         <span><i></i> Atendimento online</span>
       </div>
       <button id="chat-close" class="chat-close" type="button" aria-label="Fechar chat">×</button>

@@ -13,15 +13,17 @@ function chatMarkup() {
   return `
     <button id="chat-launcher" class="chat-launcher" type="button" aria-label="Abrir atendimento on-line da WebTurbo">
       <img class="chat-launcher-avatar" src="${ASSISTANT_AVATAR}" width="38" height="38" alt="">
-      <span>Atendimento on-line</span>
+      <span class="sr-only">Atendimento on-line</span>
       <i aria-label="Online"></i>
     </button>
 
-    <section id="chat-panel" class="chat-panel" aria-label="Chat da WebTurbo" aria-hidden="true">
+    <div id="chat-backdrop" class="chat-backdrop" aria-hidden="true"></div>
+
+    <section id="chat-panel" class="chat-panel" role="dialog" aria-modal="true" aria-labelledby="chat-title" aria-hidden="true">
       <header class="chat-header">
         <img class="chat-header-avatar" src="${ASSISTANT_AVATAR}" width="44" height="44" alt="Atendente virtual WebTurbo">
         <div class="chat-header-copy">
-          <strong>WebTurbo</strong>
+          <strong id="chat-title">WebTurbo</strong>
           <span><i></i> Atendimento on-line</span>
         </div>
         <button id="chat-close" class="chat-close" type="button" aria-label="Fechar chat">×</button>
@@ -78,8 +80,8 @@ function replacePrimaryWhatsAppCtas(root = document) {
       element.setAttribute("aria-hidden", "true");
       element.style.setProperty("display", "none", "important");
     } else {
-      element.textContent = "Atendimento on-line";
-      if (element.tagName === "A") element.setAttribute("href", "#atendimento-online");
+      element.textContent = "Atendimento";
+      if (element.tagName === "A") element.setAttribute("href", "#");
     }
   }
 
@@ -88,9 +90,9 @@ function replacePrimaryWhatsAppCtas(root = document) {
     element.dataset.webturboChatTrigger = "true";
     element.setAttribute("aria-label", "Abrir atendimento on-line da WebTurbo");
     element.removeAttribute("target");
-    element.setAttribute("href", "#atendimento-online");
+    element.setAttribute("href", "#");
     if (/whatsapp|falar com|contratar/i.test(element.textContent || "")) {
-      element.textContent = "Atendimento on-line";
+      element.textContent = "Atendimento";
     }
   }
 }

@@ -74,6 +74,12 @@ document.getElementById("chat-actions").addEventListener("click", async (event) 
 document.getElementById("chat-launcher").addEventListener("click", ui.open);
 document.getElementById("hero-open-chat")?.addEventListener("click", ui.open);
 document.getElementById("chat-close").addEventListener("click", ui.close);
+document.getElementById("chat-backdrop")?.addEventListener("click", ui.close);
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && document.getElementById("chat-panel")?.classList.contains("is-open")) {
+    ui.close();
+  }
+});
 document.getElementById("resume-continue").addEventListener("click", continuePrevious);
 document.getElementById("resume-new").addEventListener("click", async () => {
   await startFresh();
