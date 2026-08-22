@@ -15,10 +15,12 @@ export function extractCep(text) {
 
 export function extractAddressNumber(text) {
   const normalized = plain(text);
-  if (/\b(s\/?n|sem numero)\b/.test(normalized)) return "S/N";
-  const explicit = normalized.match(/(?:numero|n[º°o]?|casa)\s*(?:e|eh|:|=)?\s*(\d+[a-z]?)/i);
-  if (explicit) return explicit[1].toUpperCase();
-  const match = normalized.match(/\b\d{1,7}[a-z]?\b/i);
+  if (/^(?:s\/?n|sem numero)$/.test(normalized)) return "S/N";
+
+  const explicit = normalized.match(/(?:numero|n[º°o]?|casa)\s*(?:e|eh|:|=)?\s*(\d{1,7}(?:[-\s]?[a-z]{1,3})?)/i);
+  if (explicit) return explicit[1].toUpperCase().replace(/\s+/g, "");
+
+  const match = normalized.match(/\b\d{1,7}(?:-[a-z]{1,3}|[a-z]{1,3})?\b/i);
   return match ? match[0].toUpperCase() : "";
 }
 
