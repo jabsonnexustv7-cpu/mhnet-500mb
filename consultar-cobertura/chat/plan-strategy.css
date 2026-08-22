@@ -1,0 +1,89 @@
+/* WebTurbo Chat — catálogo principal com recomendação visível e leitura vertical. */
+#webturbo-chat-root .chat-plan-track{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  padding:8px 14px 14px;
+  overflow:visible;
+  scroll-snap-type:none;
+}
+
+#webturbo-chat-root .chat-plan-card{
+  min-width:0;
+  width:100%;
+  padding:14px 15px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  column-gap:12px;
+  row-gap:5px;
+  align-items:start;
+}
+
+#webturbo-chat-root .chat-plan-card .chat-plan-badge,
+#webturbo-chat-root .chat-plan-card .chat-plan-title,
+#webturbo-chat-root .chat-plan-card .chat-plan-description,
+#webturbo-chat-root .chat-plan-card .chat-plan-features,
+#webturbo-chat-root .chat-plan-card .chat-plan-cta{
+  grid-column:1;
+}
+
+#webturbo-chat-root .chat-plan-card .chat-plan-price{
+  grid-column:2;
+  grid-row:1 / span 2;
+  align-self:center;
+  white-space:nowrap;
+  font-size:20px;
+}
+
+#webturbo-chat-root .chat-plan-card .chat-plan-title{
+  font-size:15px;
+  line-height:1.25;
+}
+
+#webturbo-chat-root .chat-plan-card .chat-plan-description{
+  min-height:0;
+  margin-top:2px;
+  font-size:10px;
+}
+
+#webturbo-chat-root .chat-plan-card .chat-plan-features{
+  margin-top:2px;
+  font-size:9px;
+}
+
+#webturbo-chat-root .chat-plan-card .chat-plan-cta{
+  margin-top:4px;
+  padding:8px 10px;
+}
+
+#webturbo-chat-root .chat-plan-card.is-featured{
+  border:2px solid var(--green-500);
+  background:linear-gradient(180deg,#f3fff7,#fff 56%);
+  box-shadow:0 10px 24px rgba(0,200,83,.14);
+}
+
+#webturbo-chat-root .chat-plan-card.is-featured .chat-plan-badge{
+  color:#fff;
+  background:#168a45;
+}
+
+@media (min-width:430px){
+  #webturbo-chat-root .chat-plan-track{
+    grid-template-columns:1fr 1fr;
+  }
+  #webturbo-chat-root .chat-plan-card{
+    display:flex;
+    min-height:205px;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  #webturbo-chat-root .chat-plan-card .chat-plan-price{
+    align-self:auto;
+  }
+  #webturbo-chat-root .chat-plan-card .chat-plan-description{
+    min-height:30px;
+  }
+  #webturbo-chat-root .chat-plan-card .chat-plan-cta{
+    margin-top:auto;
+  }
+}
