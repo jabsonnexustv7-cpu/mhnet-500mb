@@ -1,12 +1,14 @@
-import { CHAT_CONFIG } from "./config.js?v=8";
-import { createAiAssistService } from "./ai-service.js?v=8";
-import { createChatFlow } from "./flow.js?v=8";
-import { createBrowserLocationService, createCoverageNotificationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js?v=8";
-import { routeMessage } from "./message-router.js?v=8";
-import { createSession, loadSession, resetSession } from "./state.js?v=8";
-import { createTrackingService } from "./tracking.js?v=8";
-import { createChatUI } from "./ui.js?v=8";
-import { createWhatsAppService } from "./whatsapp.js?v=8";
+import { CHAT_CONFIG } from "./config.js?v=9";
+import { createAiAssistService } from "./ai-service.js?v=9";
+import { createChatFlow } from "./flow.js?v=9";
+import { readHeroSnapshot, applyHeroSnapshotToSession, syncChatSessionToHero, heroStageLabel } from "./hero-bridge.js?v=1";
+import { createBrowserLocationService, createCoverageNotificationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js?v=9";
+import { resumePromptForStep } from "./knowledge.js?v=9";
+import { routeMessage } from "./message-router.js?v=9";
+import { createSession, loadSession, resetSession, saveSession } from "./state.js?v=9";
+import { createTrackingService } from "./tracking.js?v=9";
+import { createChatUI } from "./ui.js?v=9";
+import { createWhatsAppService } from "./whatsapp.js?v=9";
 
 const ui = createChatUI();
 const storage = window.localStorage;
@@ -42,6 +44,53 @@ function buildFlow(currentSession) {
   });
 }
 
+function appendAssistantMessage(text, meta = {}) {
+  const message = {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    role: "assistant",
+    text,
+    meta,
+    at: new Date().toISOString()
+  };
+  session.messages ||= [];
+  session.messages.push(message);
+  saveSession(session, storage, CHAT_CONFIG.storageKey);
+  return message;
+}
+
+function heroSyncPrompt(snapshot) {
+  const label = heroStageLabel(snapshot.stage);
+  const planText = snapshot.plano?.title ? ` O plano ${snapshot.plano.title} já está selecionado.` : "";
+  return `Vi que você já iniciou sua contratação pelo formulário e está na etapa de ${label}.${planText} Pode tirar sua dúvida aqui sem perder o que já foi preenchido.`;
+}
+
+function synchronizeHeroIntoChat() {
+  const snapshot = readHeroSnapshot();
+  if (!snapshot?.hasProgress || snapshot.stage < 2) return false;
+
+  const previousSignature = `${session?.heroSync?.stage || ""}:${session?.heroSync?.step || ""}`;
+  const nextSignature = `${snapshot.stage}:${snapshot.step}`;
+  const alreadyPrompted = previousSignature === nextSignature && Boolean(session?.heroSync?.promptedAt);
+
+  applyHeroSnapshotToSession(session, snapshot);
+  if (!alreadyPrompted) {
+    appendAssistantMessage(heroSyncPrompt(snapshot), { kind: "hero-context", heroStage: snapshot.stage });
+    session.heroSync.promptedAt = new Date().toISOString();
+  }
+  saveSession(session, storage, CHAT_CONFIG.storageKey);
+  flow = buildFlow(session);
+  flow.resume();
+  resumeAvailable = false;
+
+  if (!alreadyPrompted) {
+    ui.showQuickReplies([
+      { label: "Continuar preenchendo aqui", action: "continue-from-hero" },
+      { label: "Voltar para o formulário", action: "return-to-hero" }
+    ]);
+  }
+  return true;
+}
+
 async function startFresh() {
   resumeAvailable = false;
   closeResume({ restoreFocus: false });
@@ -70,7 +119,18 @@ function showResume() {
   requestAnimationFrame(() => document.getElementById("resume-continue")?.focus({ preventScroll: true }));
 }
 
+function closeChat({ syncHero = true } = {}) {
+  if (syncHero && session?.heroSync?.source === "hero") {
+    syncChatSessionToHero(session);
+  }
+  ui.close();
+}
+
 function openChat() {
+  if (synchronizeHeroIntoChat()) {
+    ui.open();
+    return;
+  }
   if (resumeAvailable) {
     showResume();
     return;
@@ -90,10 +150,27 @@ form.addEventListener("submit", async (event) => {
 async function handleActionClick(event) {
   const button = event.target.closest("[data-action]");
   if (!button) return;
-  const value = button.dataset.action === "select-installation-date"
+  const action = button.dataset.action;
+
+  if (action === "continue-from-hero") {
+    ui.clearActions();
+    appendAssistantMessage(resumePromptForStep(session.step), { kind: "hero-resume" });
+    flow = buildFlow(session);
+    flow.resume();
+    return;
+  }
+
+  if (action === "return-to-hero") {
+    syncChatSessionToHero(session);
+    appendAssistantMessage("Certo. Mantive seus dados no formulário para você continuar por lá.", { kind: "hero-return" });
+    closeChat({ syncHero: false });
+    return;
+  }
+
+  const value = action === "select-installation-date"
     ? document.getElementById("installation-date-input")?.value
     : button.dataset.value;
-  const result = await flow.handleAction(button.dataset.action, value);
+  const result = await flow.handleAction(action, value);
   if (result === "restart") await startFresh();
 }
 
@@ -102,8 +179,8 @@ document.getElementById("chat-messages").addEventListener("click", handleActionC
 
 document.getElementById("chat-launcher").addEventListener("click", openChat);
 document.getElementById("hero-open-chat")?.addEventListener("click", openChat);
-document.getElementById("chat-close").addEventListener("click", ui.close);
-document.getElementById("chat-backdrop")?.addEventListener("click", ui.close);
+document.getElementById("chat-close").addEventListener("click", () => closeChat());
+document.getElementById("chat-backdrop")?.addEventListener("click", () => closeChat());
 document.getElementById("resume-close")?.addEventListener("click", closeResume);
 resumeDialog.addEventListener("click", (event) => {
   if (event.target === resumeDialog) closeResume();
@@ -111,7 +188,7 @@ resumeDialog.addEventListener("click", (event) => {
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
   if (!resumeDialog.hidden) closeResume();
-  else if (document.getElementById("chat-panel")?.classList.contains("is-open")) ui.close();
+  else if (document.getElementById("chat-panel")?.classList.contains("is-open")) closeChat();
 });
 document.getElementById("resume-continue").addEventListener("click", continuePrevious);
 document.getElementById("resume-new").addEventListener("click", async () => {
@@ -154,6 +231,8 @@ window.webturboChat = {
   getSession: () => flow.getSession(),
   reset: startFresh,
   open: openChat,
-  close: ui.close,
+  close: closeChat,
+  syncFromHero: synchronizeHeroIntoChat,
+  syncToHero: () => syncChatSessionToHero(session),
   config: CHAT_CONFIG
 };
