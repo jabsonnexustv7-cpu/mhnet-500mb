@@ -62,6 +62,9 @@ export function createSession(
     cidade: "",
     uf: "",
     coordenadas: "",
+    addressSource: "",
+    addressConfirmed: false,
+    locationAccuracy: null,
     cobertura: null,
     plano: null,
     planSelectionView: "promotions",
@@ -115,6 +118,9 @@ export function clearAddress(session) {
     cidade: "",
     uf: "",
     coordenadas: "",
+    addressSource: "",
+    addressConfirmed: false,
+    locationAccuracy: null,
     cobertura: null,
     plano: null,
     planSelectionView: "promotions",
@@ -145,6 +151,9 @@ export function loadSession(storage, key, now = Date.now()) {
     parsed.expiresAt = new Date(effectiveExpiry).toISOString();
     parsed.flowStep = parsed.step;
     parsed.conversationMode = parsed.conversationMode === "AI_HELP" ? "FLOW" : (parsed.conversationMode || "FLOW");
+    parsed.addressSource = parsed.addressSource || "";
+    parsed.addressConfirmed = parsed.addressConfirmed === true;
+    parsed.locationAccuracy = Number.isFinite(parsed.locationAccuracy) ? parsed.locationAccuracy : null;
     parsed.ai = {
       openAiConfigured: null,
       calls: 0,
