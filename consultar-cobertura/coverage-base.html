@@ -3866,7 +3866,7 @@
         <div class="modal-success-icon">✅</div>
         <h3>Cadastro recebido com sucesso!</h3>
         <p>Sua solicitação foi enviada para nossa equipe de agendamento.</p>
-        <p style="margin-top:8px;">Você será direcionado para o WhatsApp em <strong id="contadorWhats">3</strong> segundos para confirmar o pedido.</p>
+        <p style="margin-top:8px;">Nossa equipe recebeu seus dados e dará continuidade ao agendamento.</p>
       </div>
     </div>
   </section>
@@ -6734,31 +6734,6 @@
       };
     }
 
-    function redirecionarWhatsAppFinal() {
-      const cpf = onlyDigits($("mCpf").value);
-      const mensagem = `Acabei de concluir um pedido de internet, meu CPF: ${cpf}`;
-      const url = `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(mensagem)}`;
-      let segundos = 3;
-      const contador = $("contadorWhats");
-      if (contador) contador.textContent = segundos;
-      const intervalo = setInterval(() => {
-        segundos--;
-        if (contador) contador.textContent = segundos;
-        if (segundos <= 0) {
-          clearInterval(intervalo);
-          trackGoogleAdsWhatsAppConversion();
-          trackGA4("clique_whatsapp", {
-            origem_botao: "pos_envio_formulario_crm",
-            plano: $("mPlano") ? $("mPlano").value : "",
-            cidade: $("mCidade") ? $("mCidade").value.trim() : "",
-            uf: $("mUf") ? $("mUf").value.trim().toUpperCase() : ""
-          });
-          window.location.href = url;
-        }
-      }, 1000);
-    }
-
-
     function dispararConversaoLeadGoogleAds() {
       if (window.googleAdsLeadConversionSent) return;
       window.googleAdsLeadConversionSent = true;
@@ -6811,7 +6786,6 @@
           mostrarEtapa(6);
           dispararConversaoLeadGoogleAds();
           hideGlobalLoading();
-          redirecionarWhatsAppFinal();
         } else {
           trackGA4("erro_envio_formulario", {
             plano: $("mPlano").value,
