@@ -8,16 +8,17 @@ test("landing carrega o chat reutilizável sem iframe", () => {
   const landing = read("../../index.html");
   const embed = read("../embed.js");
   assert.match(landing, /chat\/chat\.css\?v=6/);
-  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=8"/);
-  assert.match(embed, /await import\("\.\/app\.js\?v=8"\)/);
+  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=10"/);
+  assert.match(embed, /await import\("\.\/app\.js\?v=9"\)/);
   assert.doesNotMatch(embed, /iframe/i);
 });
 
 test("versão nova invalida o cache dos módulos internos críticos", () => {
   const app = read("../app.js");
-  for (const moduleName of ["config", "ai-service", "flow", "integrations", "message-router", "state", "tracking", "ui", "whatsapp"]) {
-    assert.match(app, new RegExp(`\\./${moduleName}\\.js\\?v=8`));
+  for (const moduleName of ["config", "ai-service", "flow", "integrations", "knowledge", "message-router", "state", "tracking", "ui", "whatsapp"]) {
+    assert.match(app, new RegExp(`\\./${moduleName}\\.js\\?v=9`));
   }
+  assert.match(app, /\.\/hero-bridge\.js\?v=1/);
 });
 
 test("chat abre como modal na mesma página e possui retorno claro", () => {
@@ -30,11 +31,34 @@ test("chat abre como modal na mesma página e possui retorno claro", () => {
   assert.match(embed, /role="dialog" aria-modal="true"/);
   assert.match(embed, /id="chat-close"/);
   assert.doesNotMatch(embed, /target="_blank"/);
-  assert.match(app, /chat-backdrop[\s\S]*ui\.close/);
+  assert.match(app, /chat-backdrop[\s\S]*closeChat/);
   assert.match(app, /event\.key !== "Escape"/);
   assert.match(ui, /backdrop\?\.classList\.add\("is-open"\)/);
   assert.match(css, /\.chat-backdrop\.is-open/);
   assert.match(css, /transform: translate\(-50%, -50%\) scale\(1\)/);
+});
+
+test("hero em andamento é importado pelo chat e permite continuar ou voltar", () => {
+  const app = read("../app.js");
+  const bridge = read("../hero-bridge.js");
+  assert.match(app, /readHeroSnapshot\(\)/);
+  assert.match(app, /applyHeroSnapshotToSession\(session, snapshot\)/);
+  assert.match(app, /Continuar preenchendo aqui/);
+  assert.match(app, /Voltar para o formulário/);
+  assert.match(app, /syncChatSessionToHero\(session\)/);
+  assert.match(bridge, /stage === 3/);
+  assert.match(bridge, /STATES\.CPF/);
+  assert.match(bridge, /STATES\.VENCIMENTO/);
+  assert.match(bridge, /coverageViable/);
+});
+
+test("sincronização Hero para Chat não envia dados pessoais ao contexto da IA", () => {
+  const ai = read("../ai-service.js");
+  assert.doesNotMatch(ai, /context:\s*\{[\s\S]*cpf:/);
+  assert.doesNotMatch(ai, /context:\s*\{[\s\S]*telefone:/);
+  assert.doesNotMatch(ai, /context:\s*\{[\s\S]*email:/);
+  assert.match(ai, /selectedPlan/);
+  assert.match(ai, /coverageStatus/);
 });
 
 test("mobile mantém o modal acima do hero e respeita a área segura", () => {
