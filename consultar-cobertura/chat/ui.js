@@ -37,9 +37,7 @@ export function createChatUI() {
 
   function addMessage(message) {
     const row = element("div", `message-row message-row--${message.role}`);
-    if (message.role === "assistant") {
-      row.appendChild(assistantAvatar());
-    }
+    if (message.role === "assistant") row.appendChild(assistantAvatar());
     const bubble = element("div", `message-bubble${message.meta?.kind === "status" ? " message-bubble--status" : ""}`);
     bubble.textContent = message.text;
     row.appendChild(bubble);
@@ -59,6 +57,7 @@ export function createChatUI() {
 
   function clearActions() {
     actions.replaceChildren();
+    messages.querySelector(".chat-plan-selection")?.remove();
   }
 
   function showQuickReplies(items) {
@@ -112,6 +111,8 @@ export function createChatUI() {
 
   function showPlans(plans, { showMore = false, showPromotions = false } = {}) {
     clearActions();
+    const selection = element("section", "chat-plan-selection");
+    selection.setAttribute("aria-label", "Planos disponíveis");
     const track = element("div", "chat-plan-track");
     plans.forEach((plan) => {
       const card = element("button", "chat-plan-card");
@@ -120,31 +121,30 @@ export function createChatUI() {
       card.dataset.action = "select-plan";
       card.dataset.value = plan.id;
       card.setAttribute("aria-label", `Selecionar ${plan.title}, ${formatPrice(plan.price)} por mês`);
-
       card.appendChild(element("span", "chat-plan-badge", plan.badge));
       card.appendChild(element("strong", "chat-plan-title", plan.title));
       const price = element("span", "chat-plan-price", formatPrice(plan.price));
       price.appendChild(element("small", "", "/mês"));
       card.appendChild(price);
       card.appendChild(element("span", "chat-plan-description", plan.description));
-      const features = element("span", "chat-plan-features", plan.features.join(" · "));
-      card.appendChild(features);
+      card.appendChild(element("span", "chat-plan-features", plan.features.join(" · ")));
       card.appendChild(element("span", "chat-plan-cta", "Escolher plano"));
       track.appendChild(card);
     });
-    actions.appendChild(track);
+    selection.appendChild(track);
     if (showMore) {
       const more = element("button", "chat-more-plans", "Ver mais ofertas");
       more.type = "button";
       more.dataset.action = "show-more-plans";
-      actions.appendChild(more);
+      selection.appendChild(more);
     }
     if (showPromotions) {
       const back = element("button", "chat-more-plans chat-back-promotions", "← Voltar às promoções");
       back.type = "button";
       back.dataset.action = "show-promotions";
-      actions.appendChild(back);
+      selection.appendChild(back);
     }
+    messages.appendChild(selection);
     scrollToBottom();
   }
 
