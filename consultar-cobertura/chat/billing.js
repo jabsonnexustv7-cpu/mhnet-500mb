@@ -1,4 +1,4 @@
-export const DUE_DATE_OPTIONS = Object.freeze(["05", "10", "15", "20", "25"]);
+export const DUE_DATE_OPTIONS = Object.freeze(["05", "08", "09", "10", "15", "25"]);
 export const INSTALLATION_SHIFT_OPTIONS = Object.freeze(["Manhã", "Tarde"]);
 
 export function localIsoDate(date) {
