@@ -7,8 +7,8 @@ const read = (relative) => readFileSync(new URL(relative, import.meta.url), "utf
 test("landing carrega o chat reutilizável sem iframe", () => {
   const landing = read("../../index.html");
   const embed = read("../embed.js");
-  assert.match(landing, /chat\/chat\.css\?v=3/);
-  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=3"/);
+  assert.match(landing, /chat\/chat\.css\?v=4/);
+  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=4"/);
   assert.match(embed, /await import\("\.\/app\.js"\)/);
   assert.doesNotMatch(embed, /iframe/i);
 });
@@ -24,10 +24,33 @@ test("chat abre como modal na mesma página e possui retorno claro", () => {
   assert.match(embed, /id="chat-close"/);
   assert.doesNotMatch(embed, /target="_blank"/);
   assert.match(app, /chat-backdrop[\s\S]*ui\.close/);
-  assert.match(app, /event\.key === "Escape"/);
+  assert.match(app, /event\.key !== "Escape"/);
   assert.match(ui, /backdrop\?\.classList\.add\("is-open"\)/);
   assert.match(css, /\.chat-backdrop\.is-open/);
   assert.match(css, /transform: translate\(-50%, -50%\) scale\(1\)/);
+});
+
+test("mobile mantém o modal acima do hero e respeita a área segura", () => {
+  const css = read("../chat.css");
+  const legacyLanding = read("../../coverage-base.html");
+
+  assert.match(css, /\.chat-backdrop \{[\s\S]*z-index: 2147483500/);
+  assert.match(css, /\.chat-panel \{[\s\S]*z-index: 2147483501/);
+  assert.match(css, /top: max\(8px, env\(safe-area-inset-top\)\)/);
+  assert.match(css, /bottom: max\(8px, env\(safe-area-inset-bottom\)\)/);
+  assert.match(legacyLanding, /viewport-fit=cover/);
+});
+
+test("produção não exibe aviso técnico e retomada não bloqueia o hero ao recarregar", () => {
+  const embed = read("../embed.js");
+  const app = read("../app.js");
+
+  assert.match(embed, /id="chat-safety" class="chat-safety" hidden/);
+  assert.match(embed, /id="resume-close"/);
+  assert.match(app, /safetyNotice\.hidden = realSubmission/);
+  assert.match(app, /resumeAvailable = true;[\s\S]*resumeDialog\.hidden = true/);
+  assert.match(app, /function openChat\(\)[\s\S]*if \(resumeAvailable\)[\s\S]*showResume\(\)/);
+  assert.match(app, /open: openChat/);
 });
 
 test("launcher é compacto e localização externa não aparece na etapa inicial", () => {

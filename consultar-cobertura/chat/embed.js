@@ -29,7 +29,7 @@ function chatMarkup() {
         <button id="chat-close" class="chat-close" type="button" aria-label="Fechar chat">×</button>
       </header>
 
-      <div id="chat-safety" class="chat-safety">Envio real ativado · ao confirmar, o pré-cadastro será criado no CRM</div>
+      <div id="chat-safety" class="chat-safety" hidden></div>
       <div id="chat-messages" class="chat-messages" role="log" aria-live="polite" aria-label="Mensagens da conversa"></div>
       <div id="chat-typing" class="typing-row" hidden>
         <img class="message-avatar" src="${ASSISTANT_AVATAR}" width="30" height="30" alt="" aria-hidden="true">
@@ -49,6 +49,7 @@ function chatMarkup() {
 
     <section id="resume-dialog" class="resume-dialog" role="dialog" aria-modal="true" aria-labelledby="resume-title" hidden>
       <div class="resume-card">
+        <button id="resume-close" class="resume-close" type="button" aria-label="Fechar e voltar para a página">×</button>
         <span class="resume-icon" aria-hidden="true">↻</span>
         <h2 id="resume-title">Atendimento anterior encontrado</h2>
         <p>Quer continuar de onde parou ou iniciar uma nova contratação?</p>

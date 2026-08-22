@@ -20,6 +20,9 @@ const locationService = createBrowserLocationService({
 });
 let session = loadSession(storage, CHAT_CONFIG.storageKey);
 let flow;
+let resumeAvailable = false;
+const resumeDialog = document.getElementById("resume-dialog");
+const launcher = document.getElementById("chat-launcher");
 
 function buildFlow(currentSession) {
   return createChatFlow({
@@ -39,16 +42,38 @@ function buildFlow(currentSession) {
 }
 
 async function startFresh() {
+  resumeAvailable = false;
+  closeResume({ restoreFocus: false });
   session = resetSession(storage, CHAT_CONFIG.storageKey);
   flow = buildFlow(session);
-  document.getElementById("resume-dialog").hidden = true;
   await flow.start();
 }
 
 function continuePrevious() {
+  resumeAvailable = false;
+  closeResume({ restoreFocus: false });
   flow = buildFlow(session);
-  document.getElementById("resume-dialog").hidden = true;
   flow.resume();
+  ui.open();
+}
+
+function closeResume({ restoreFocus = true } = {}) {
+  resumeDialog.hidden = true;
+  document.body.classList.remove("chat-open");
+  if (restoreFocus) launcher?.focus({ preventScroll: true });
+}
+
+function showResume() {
+  resumeDialog.hidden = false;
+  document.body.classList.add("chat-open");
+  requestAnimationFrame(() => document.getElementById("resume-continue")?.focus({ preventScroll: true }));
+}
+
+function openChat() {
+  if (resumeAvailable) {
+    showResume();
+    return;
+  }
   ui.open();
 }
 
@@ -71,14 +96,18 @@ document.getElementById("chat-actions").addEventListener("click", async (event) 
   if (result === "restart") await startFresh();
 });
 
-document.getElementById("chat-launcher").addEventListener("click", ui.open);
-document.getElementById("hero-open-chat")?.addEventListener("click", ui.open);
+document.getElementById("chat-launcher").addEventListener("click", openChat);
+document.getElementById("hero-open-chat")?.addEventListener("click", openChat);
 document.getElementById("chat-close").addEventListener("click", ui.close);
 document.getElementById("chat-backdrop")?.addEventListener("click", ui.close);
+document.getElementById("resume-close")?.addEventListener("click", closeResume);
+resumeDialog.addEventListener("click", (event) => {
+  if (event.target === resumeDialog) closeResume();
+});
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && document.getElementById("chat-panel")?.classList.contains("is-open")) {
-    ui.close();
-  }
+  if (event.key !== "Escape") return;
+  if (!resumeDialog.hidden) closeResume();
+  else if (document.getElementById("chat-panel")?.classList.contains("is-open")) ui.close();
 });
 document.getElementById("resume-continue").addEventListener("click", continuePrevious);
 document.getElementById("resume-new").addEventListener("click", async () => {
@@ -89,9 +118,9 @@ document.querySelectorAll("[data-reset-session]").forEach((button) => button.add
 
 if (CHAT_CONFIG.debug) document.body.classList.add("debug-enabled");
 const realSubmission = CHAT_CONFIG.crmMode === "real";
-document.getElementById("chat-safety").textContent = realSubmission
-  ? "Envio real ativado · ao confirmar, o pré-cadastro será criado no CRM"
-  : "Modo seguro · CRM e conversões em simulação";
+const safetyNotice = document.getElementById("chat-safety");
+safetyNotice.hidden = realSubmission;
+safetyNotice.textContent = realSubmission ? "" : "Modo seguro · CRM e conversões em simulação";
 const labDataMode = document.getElementById("lab-data-mode");
 if (labDataMode) {
   labDataMode.textContent = realSubmission
@@ -101,7 +130,8 @@ if (labDataMode) {
 
 if (session?.sessionId && session.messages?.length) {
   flow = buildFlow(session);
-  document.getElementById("resume-dialog").hidden = false;
+  resumeAvailable = true;
+  resumeDialog.hidden = true;
   ui.updateDebug(session, CHAT_CONFIG);
 } else {
   session = createSession();
@@ -109,7 +139,7 @@ if (session?.sessionId && session.messages?.length) {
   flow.start();
 }
 
-if (new URLSearchParams(location.search).get("autostart") === "1") ui.open();
+if (new URLSearchParams(location.search).get("autostart") === "1") openChat();
 
 aiService.status().then((status) => {
   session.ai.openAiConfigured = status.configured;
@@ -119,7 +149,7 @@ aiService.status().then((status) => {
 window.webturboChat = {
   getSession: () => flow.getSession(),
   reset: startFresh,
-  open: ui.open,
+  open: openChat,
   close: ui.close,
   config: CHAT_CONFIG
 };
