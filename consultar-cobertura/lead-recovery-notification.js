@@ -1,5 +1,5 @@
 // WebTurbo — captura antecipada para recuperação comercial.
-// Assim que endereço + plano + dados pessoais + telefones estiverem completos,
+// Assim que endereço + plano + dados pessoais mínimos estiverem completos,
 // envia uma única notificação ao Telegram. Não depende do envio final ao CRM.
 (function () {
   "use strict";
@@ -47,6 +47,66 @@
     return [source, digits(cpf), digits(phone).slice(-11), digits(cep)].join(":");
   }
 
+  function buildAddress(logradouro, numero, bairro, cidade, uf) {
+    const streetNumber = [clean(logradouro), clean(numero)].filter(Boolean).join(", ");
+    const cityUf = [clean(cidade), clean(uf).toUpperCase()].filter(Boolean).join("/");
+    return [streetNumber, clean(bairro), cityUf].filter(Boolean).join(" - ");
+  }
+
+  function recoveryPayload(data) {
+    const endereco = buildAddress(data.logradouro, data.numero, data.bairro, data.cidade, data.uf);
+
+    // Mantemos os nomes antigos e também aliases compatíveis com os payloads
+    // usados pelas demais notificações do backend (ex.: notifyVendaConcluida).
+    return {
+      action: "notifyAbandonoModal",
+      evento: "lead_recuperacao_dados_completos",
+      etapa_abandono: "dados_pessoais_concluidos",
+      origem: data.origem,
+      finalizacao: data.source,
+      horario_site: new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }),
+
+      nome: data.nome,
+      nomeCliente: data.nome,
+      cpf: data.cpf,
+      documentoCliente: data.cpf,
+      nascimento: data.nascimento,
+      dataNascimentoCliente: data.nascimento,
+      email: data.email,
+      emailCliente: data.email,
+      telefone1: data.telefone1,
+      telefone1Cliente: data.telefone1,
+      telefone2: data.telefone2 || "",
+      telefone2Cliente: data.telefone2 || "",
+
+      plano: data.plano,
+      planos: data.plano,
+
+      endereco,
+      cep: data.cep,
+      numero: data.numero,
+      logradouro: data.logradouro,
+      bairro: data.bairro,
+      cidade: data.cidade,
+      nomeCidade: data.cidade,
+      uf: clean(data.uf).toUpperCase(),
+      complemento: data.complemento || "",
+      ponto_referencia: data.pontoReferencia || "",
+
+      vencimento: data.vencimento || "",
+      coordenadas: data.coordenadas || "",
+      latitude: data.latitude || "",
+      longitude: data.longitude || "",
+      endereco_detectado: data.enderecoDetectado || "",
+      link_localizacao: data.linkLocalizacao || "",
+      cobertura_validada: data.coberturaValidada === true,
+      cobertura_motivo: data.coberturaMotivo || "",
+      cobertura_coords: data.coberturaCoords || data.coordenadas || "",
+      url_pagina: location.href,
+      user_agent: navigator.userAgent
+    };
+  }
+
   function heroLead() {
     const nome = value("mNome");
     const cpf = value("mCpf");
@@ -62,47 +122,44 @@
     const cidade = value("mCidade");
     const uf = value("mUf");
 
-    // O alerta só é disparado quando já há dados suficientes para contato e análise cadastral.
+    // O segundo telefone é útil, mas não pode bloquear a recuperação.
+    // Assim que já temos identidade para análise, contato principal, plano e endereço,
+    // o lead deve ser enviado ao Telegram mesmo que abandone antes do telefone 2.
     if (!nome || digits(cpf).length !== 11 || !nascimento || !email) return null;
-    if (digits(telefone1).length < 10 || digits(telefone2).length < 10) return null;
+    if (digits(telefone1).length < 10) return null;
     if (!plano || !numero || !cidade || !uf || (!logradouro && digits(cep).length !== 8)) return null;
+
+    const data = {
+      source: "HERO",
+      origem: "site_webturbo_hero",
+      nome,
+      cpf,
+      nascimento,
+      email,
+      telefone1,
+      telefone2,
+      plano,
+      cep,
+      numero,
+      logradouro,
+      bairro,
+      cidade,
+      uf,
+      complemento: value("mComplemento"),
+      pontoReferencia: value("mPontoRef"),
+      vencimento: value("mVencimento"),
+      coordenadas: value("mCoordenadasFixas"),
+      latitude: value("mLatitudeFixa"),
+      longitude: value("mLongitudeFixa"),
+      enderecoDetectado: value("mEnderecoDetectadoLocalizacao"),
+      linkLocalizacao: value("mLinkLocalizacaoFixa"),
+      coberturaValidada: true
+    };
 
     return {
       source: "HERO",
       key: buildKey("HERO", cpf, telefone1, cep),
-      payload: {
-        action: "notifyAbandonoModal",
-        evento: "lead_recuperacao_dados_completos",
-        etapa_abandono: "dados_pessoais_concluidos",
-        origem: "site_webturbo_hero",
-        horario_site: new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }),
-        nome,
-        cpf,
-        nascimento,
-        email,
-        telefone1,
-        telefone2,
-        plano,
-        cep,
-        numero,
-        logradouro,
-        bairro,
-        cidade,
-        uf,
-        complemento: value("mComplemento"),
-        ponto_referencia: value("mPontoRef"),
-        vencimento: value("mVencimento"),
-        data_instalacao: value("mDataInstalacao"),
-        turno_instalacao: value("mTurnoInstalacao"),
-        coordenadas: value("mCoordenadasFixas"),
-        latitude: value("mLatitudeFixa"),
-        longitude: value("mLongitudeFixa"),
-        endereco_detectado: value("mEnderecoDetectadoLocalizacao"),
-        link_localizacao: value("mLinkLocalizacaoFixa"),
-        cobertura_validada: true,
-        url_pagina: location.href,
-        user_agent: navigator.userAgent
-      }
+      payload: recoveryPayload(data)
     };
   }
 
@@ -122,51 +179,46 @@
     const numero = clean(session.numero);
     const cidade = clean(session.cidade);
     const uf = clean(session.uf);
+    const logradouro = clean(session.logradouro);
 
     if (!nome || digits(cpf).length !== 11 || !nascimento || !email) return null;
-    if (digits(telefone1).length < 10 || digits(telefone2).length < 10) return null;
+    if (digits(telefone1).length < 10) return null;
     if (!plano || !numero || !cidade || !uf) return null;
+
+    const data = {
+      source: "CHAT",
+      origem: "site_webturbo_chat",
+      nome,
+      cpf,
+      nascimento,
+      email,
+      telefone1,
+      telefone2,
+      plano,
+      cep,
+      numero,
+      logradouro,
+      bairro: clean(session.bairro),
+      cidade,
+      uf,
+      complemento: clean(session.complemento),
+      pontoReferencia: clean(session.pontoReferencia),
+      vencimento: clean(session.diaVencimentoFatura),
+      coordenadas: clean(session.coordenadas || session.cobertura?.coords),
+      coberturaValidada: session.cobertura?.viavel === true,
+      coberturaMotivo: clean(session.cobertura?.motivo),
+      coberturaCoords: clean(session.cobertura?.coords || session.coordenadas)
+    };
 
     return {
       source: "CHAT",
       key: buildKey("CHAT", cpf, telefone1, cep),
-      payload: {
-        action: "notifyAbandonoModal",
-        evento: "lead_recuperacao_dados_completos",
-        etapa_abandono: "dados_pessoais_concluidos",
-        origem: "site_webturbo_chat",
-        horario_site: new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }),
-        nome,
-        cpf,
-        nascimento,
-        email,
-        telefone1,
-        telefone2,
-        plano,
-        cep,
-        numero,
-        logradouro: clean(session.logradouro),
-        bairro: clean(session.bairro),
-        cidade,
-        uf,
-        complemento: clean(session.complemento),
-        ponto_referencia: clean(session.pontoReferencia),
-        vencimento: clean(session.diaVencimentoFatura),
-        data_instalacao: clean(session.dataInstalacao),
-        turno_instalacao: clean(session.turnoInstalacao),
-        coordenadas: clean(session.coordenadas || session.cobertura?.coords),
-        cobertura_validada: session.cobertura?.viavel === true,
-        cobertura_motivo: clean(session.cobertura?.motivo),
-        cobertura_coords: clean(session.cobertura?.coords || session.coordenadas),
-        url_pagina: location.href,
-        user_agent: navigator.userAgent
-      }
+      payload: recoveryPayload(data)
     };
   }
 
   async function send(lead) {
     if (!lead || alreadySent(lead.key)) return;
-    // Marca antes para evitar duplicidade causada por vários observadores/timers.
     markSent(lead.key);
     try {
       const response = await fetch(ENDPOINT, {
@@ -179,7 +231,6 @@
       clarityEvent("lead_recuperacao_telegram_enviado");
       gaEvent("lead_recuperacao_telegram_enviado", { origem_fluxo: lead.source.toLowerCase(), cidade: lead.payload.cidade || "" });
     } catch (error) {
-      // Permite nova tentativa caso a notificação em si tenha falhado.
       try { sessionStorage.removeItem(SENT_PREFIX + lead.key); } catch (_) {}
       clarityEvent("lead_recuperacao_telegram_erro");
       gaEvent("lead_recuperacao_telegram_erro", { origem_fluxo: lead.source.toLowerCase(), erro: error?.message || "erro_envio" });
@@ -194,6 +245,7 @@
   document.addEventListener("change", check, true);
   document.addEventListener("input", () => setTimeout(check, 120), true);
   document.addEventListener("click", () => setTimeout(check, 180), true);
+  document.addEventListener("blur", () => setTimeout(check, 80), true);
   setInterval(check, CHECK_INTERVAL_MS);
   setTimeout(check, 900);
 })();
