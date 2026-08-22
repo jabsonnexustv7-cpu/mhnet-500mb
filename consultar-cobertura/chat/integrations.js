@@ -2,6 +2,15 @@ import { maskCpf, onlyDigits } from "./validators.js";
 
 const LOG_PREFIX = "[WEBTURBO CHAT]";
 
+const BRAZIL_STATE_CODES = Object.freeze({
+  Acre: "AC", Alagoas: "AL", Amapá: "AP", Amazonas: "AM", Bahia: "BA", Ceará: "CE",
+  "Distrito Federal": "DF", "Espírito Santo": "ES", Goiás: "GO", Maranhão: "MA",
+  "Mato Grosso": "MT", "Mato Grosso do Sul": "MS", "Minas Gerais": "MG", Pará: "PA",
+  Paraíba: "PB", Paraná: "PR", Pernambuco: "PE", Piauí: "PI", "Rio de Janeiro": "RJ",
+  "Rio Grande do Norte": "RN", "Rio Grande do Sul": "RS", Rondônia: "RO", Roraima: "RR",
+  "Santa Catarina": "SC", "São Paulo": "SP", Sergipe: "SE", Tocantins: "TO"
+});
+
 function withTimeout(fetchImpl, url, options, timeoutMs) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -23,12 +32,82 @@ export async function lookupAddress(cep, { fetchImpl = fetch, timeoutMs = 8000 }
   };
 }
 
+function normalizeReverseAddress(data = {}) {
+  const address = data.address || {};
+  const isoState = String(address["ISO3166-2-lvl4"] || address["ISO3166-2-lvl6"] || "");
+  const isoCode = isoState.includes("-") ? isoState.split("-").pop() : "";
+  const uf = String(address.state_code || isoCode || BRAZIL_STATE_CODES[address.state] || "").toUpperCase().slice(0, 2);
+  return {
+    cep: onlyDigits(address.postcode || "").slice(0, 8),
+    logradouro: address.road || address.pedestrian || address.residential || address.path || address.footway || "",
+    bairro: address.suburb || address.neighbourhood || address.quarter || address.city_district || "",
+    cidade: address.city || address.town || address.municipality || address.village || address.county || "",
+    uf,
+    displayAddress: data.display_name || ""
+  };
+}
+
+export async function reverseGeocodeLocation(lat, lng, { fetchImpl = fetch, timeoutMs = 10000 } = {}) {
+  const latitude = Number(lat);
+  const longitude = Number(lng);
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) throw new Error("Coordenadas inválidas");
+  const url = new URL("https://nominatim.openstreetmap.org/reverse");
+  url.searchParams.set("format", "jsonv2");
+  url.searchParams.set("lat", String(latitude));
+  url.searchParams.set("lon", String(longitude));
+  url.searchParams.set("addressdetails", "1");
+  url.searchParams.set("zoom", "18");
+  const response = await withTimeout(fetchImpl, url.toString(), {
+    method: "GET",
+    headers: { Accept: "application/json", "Accept-Language": "pt-BR,pt;q=0.9" }
+  }, timeoutMs);
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data?.address) throw new Error("Não foi possível localizar o endereço pelas coordenadas");
+  return normalizeReverseAddress(data);
+}
+
+export function createBrowserLocationService({ navigatorObject = globalThis.navigator, fetchImpl = globalThis.fetch, timeoutMs = 10000 } = {}) {
+  return {
+    async locate() {
+      if (!navigatorObject?.geolocation?.getCurrentPosition) {
+        throw new Error("Seu navegador não oferece acesso à localização.");
+      }
+      const position = await new Promise((resolve, reject) => {
+        navigatorObject.geolocation.getCurrentPosition(resolve, (error) => {
+          const message = error?.code === 1
+            ? "A permissão de localização foi negada. Você pode informar o CEP manualmente."
+            : error?.code === 3
+              ? "A localização demorou para responder. Tente novamente ou informe o CEP."
+              : "Não foi possível obter sua localização. Tente novamente ou informe o CEP.";
+          reject(new Error(message));
+        }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 });
+      });
+      const latitude = Number(position.coords.latitude);
+      const longitude = Number(position.coords.longitude);
+      const address = await reverseGeocodeLocation(latitude, longitude, { fetchImpl, timeoutMs });
+      if (!address.logradouro || !address.cidade || !address.uf) {
+        throw new Error("Localizei sua posição, mas não consegui identificar o endereço completo. Informe o CEP para continuar.");
+      }
+      return {
+        ...address,
+        coordenadas: `${latitude.toFixed(6)},${longitude.toFixed(6)}`,
+        locationAccuracy: Math.round(Number(position.coords.accuracy) || 0),
+        addressSource: "geolocation"
+      };
+    }
+  };
+}
+
 function createCoveragePayload(session, radius) {
   const fachada = [session.logradouro, session.numero, session.bairro, session.cidade, session.uf]
     .filter(Boolean)
     .join(", ");
+  const cep = onlyDigits(session.cep);
+  const coords = String(session.coordenadas || "").trim();
+  const [latitude = "", longitude = ""] = coords.split(",").map((value) => value.trim());
+  const semCep = !cep;
   return {
-    cep: onlyDigits(session.cep),
+    cep,
     numero: session.numero,
     logradouro: session.logradouro,
     bairro: session.bairro,
@@ -37,17 +116,17 @@ function createCoveragePayload(session, radius) {
     complemento: session.complemento === "Sem complemento" ? "" : session.complemento,
     fachada,
     radius,
-    semCep: false,
-    sem_cep: false,
-    coords: "",
-    coordenadas: "",
-    coordenadasFixas: "",
-    latitude: "",
-    longitude: "",
-    latitudeFixa: "",
-    longitudeFixa: "",
-    linkLocalizacao: "",
-    enderecoLocalizacaoFixa: ""
+    semCep,
+    sem_cep: semCep,
+    coords,
+    coordenadas: coords,
+    coordenadasFixas: coords,
+    latitude,
+    longitude,
+    latitudeFixa: latitude,
+    longitudeFixa: longitude,
+    linkLocalizacao: coords ? `https://www.google.com/maps?q=${coords}` : "",
+    enderecoLocalizacaoFixa: session.addressSource === "geolocation" ? fachada : ""
   };
 }
 
@@ -87,7 +166,7 @@ export function createMockCoverageService(config = {}) {
         viavel: viable,
         status: viable ? "VIAVEL" : "INVIAVEL",
         motivo: viable ? "mock_ftth_disponivel" : "mock_sem_ftth_no_raio",
-        coords: "-29.946000,-51.184000",
+        coords: session.coordenadas || "-29.946000,-51.184000",
         source: "mock",
         raw: { ok: true, viavel: viable, mock: true, cep: session.cep }
       };
@@ -125,7 +204,7 @@ export function createCoverageService(config, { fetchImpl = fetch, logger = cons
 
   return {
     async check(session) {
-      logger.info(`${LOG_PREFIX} Coverage request started`, { mode: config.coverageMode, cep: session.cep });
+      logger.info(`${LOG_PREFIX} Coverage request started`, { mode: config.coverageMode, cep: session.cep, addressSource: session.addressSource || "cep" });
       if (config.coverageMode === "mock") return mock.check(session);
       try {
         return await realCheck(session);
@@ -143,6 +222,7 @@ export function createCoverageService(config, { fetchImpl = fetch, logger = cons
 
 export function buildCrmPayload(session, context = {}) {
   const coords = session.coordenadas || "";
+  const semCep = !onlyDigits(session.cep);
   return {
     nomeCliente: session.nome.trim(),
     tipoCliente: "Pessoa Física",
@@ -152,8 +232,8 @@ export function buildCrmPayload(session, context = {}) {
     telefone1Cliente: onlyDigits(session.telefone),
     telefone2Cliente: onlyDigits(session.telefoneSecundario),
     cep: onlyDigits(session.cep),
-    semCep: false,
-    sem_cep: false,
+    semCep,
+    sem_cep: semCep,
     uf: session.uf.trim().toUpperCase(),
     nomeCidade: session.cidade.trim(),
     cidade: session.cidade.trim(),
@@ -168,14 +248,16 @@ export function buildCrmPayload(session, context = {}) {
     coordenadasFixas: coords,
     coordenadas: coords,
     coords,
-    enderecoLocalizacaoFixa: "",
+    enderecoLocalizacaoFixa: session.addressSource === "geolocation"
+      ? [session.logradouro, session.numero, session.bairro, session.cidade, session.uf].filter(Boolean).join(", ")
+      : "",
     planos: session.plano?.id || "",
     diaVencimentoFatura: session.diaVencimentoFatura || "",
     dataInstalacao1: session.dataInstalacao || "",
     turnoInstalacao1: session.turnoInstalacao || "",
     linkLocalizacao: coords ? `https://www.google.com/maps?q=${coords}` : "",
     urlAdicional: "",
-    obsEndereco: `Cobertura validada pelo chat-lab. Motivo: ${session.cobertura?.motivo || "-"}`,
+    obsEndereco: `Cobertura validada pelo chat-lab. Origem do endereço: ${session.addressSource || "cep"}. Motivo: ${session.cobertura?.motivo || "-"}`,
     page_url: context.pageUrl || "",
     landing_page: context.landingPage || context.pageUrl || "",
     referrer: context.referrer || "",
@@ -219,4 +301,4 @@ export function createCrmService(config, { fetchImpl = fetch, logger = console }
   };
 }
 
-export { createCoveragePayload, createMinimalFallbackPayload, normalizeCoverage };
+export { createCoveragePayload, createMinimalFallbackPayload, normalizeCoverage, normalizeReverseAddress };
