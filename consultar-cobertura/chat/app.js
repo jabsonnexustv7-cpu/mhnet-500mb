@@ -1,7 +1,7 @@
 import { CHAT_CONFIG } from "./config.js?v=9";
 import { createAiAssistService } from "./ai-service.js?v=9";
 import { createChatFlow } from "./flow-friction-v2.js?v=1";
-import { readHeroSnapshot, applyHeroSnapshotToSession, syncChatSessionToHero, heroStageLabel } from "./hero-bridge.js?v=1";
+import { readHeroSnapshot, applyHeroSnapshotToSession, syncChatSessionToHero, heroStageLabel } from "./hero-bridge.js?v=2";
 import { createBrowserLocationService, createCoverageNotificationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js?v=9";
 import { resumePromptForStep } from "./knowledge.js?v=9";
 import { routeMessage } from "./message-router.js?v=9";
@@ -47,7 +47,7 @@ function buildFlow(currentSession) {
 function appendAssistantMessage(text, meta = {}) {
   const message = {
     id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    role: "assistant",
+    role,
     text,
     meta,
     at: new Date().toISOString()
@@ -164,8 +164,13 @@ async function handleActionClick(event) {
 
   if (action === "continue-from-hero") {
     ui.clearActions();
-    appendAssistantMessage(resumePromptForStep(session.step), { kind: "hero-resume" });
     flow = buildFlow(session);
+    if (session?.heroSync?.stage === 4 && session.diaVencimentoFatura) {
+      appendAssistantMessage(`Vou concluir usando o vencimento do dia ${session.diaVencimentoFatura}.`, { kind: "hero-resume-submit" });
+      await flow.handleAction("select-due-date", session.diaVencimentoFatura);
+      return;
+    }
+    appendAssistantMessage(resumePromptForStep(session.step), { kind: "hero-resume" });
     flow.resume();
     return;
   }
