@@ -5507,8 +5507,17 @@
       return r === parseInt(d[10], 10);
     }
 
+    function normalizeEmailForCrm(email) {
+      return String(email || "").trim().toLowerCase();
+    }
+
     function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || "").trim());
+      // Mesmo contrato usado pelo z.email() do WebTurbo CRM. O validador antigo
+      // aceitava, por exemplo, pontos consecutivos e caracteres acentuados,
+      // fazendo o formulário avançar para depois ser rejeitado com HTTP 400.
+      return /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+\-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/.test(
+        normalizeEmailForCrm(email)
+      );
     }
 
     function tomorrowISO() {
@@ -6684,7 +6693,7 @@
         nomeCliente:             $("mNome").value.trim(),
         tipoCliente:             "Pessoa Física",
         documentoCliente:        onlyDigits($("mCpf").value),
-        emailCliente:            $("mEmail").value.trim(),
+        emailCliente:            normalizeEmailForCrm($("mEmail").value),
         dataNascimentoCliente:   $("mNascimento").value,
         telefone1Cliente:        onlyDigits($("mTelefone1").value),
         telefone2Cliente:        onlyDigits($("mTelefone2").value),
@@ -6746,6 +6755,43 @@
       }
     }
 
+    function validarPayloadCrmSite(payload) {
+      const isoDate = /^\d{4}-\d{2}-\d{2}$/;
+      const dueDay = Number(payload.diaVencimentoFatura);
+      const checks = [
+        [String(payload.nomeCliente || "").trim().length >= 2, "mNome", 3, "Informe nome e sobrenome."],
+        [/^\d{11}$/.test(String(payload.documentoCliente || "")), "mCpf", 3, "Informe um CPF válido com 11 dígitos."],
+        [isValidEmail(payload.emailCliente), "mEmail", 3, "Revise o e-mail. Use um endereço como nome@email.com, sem acentos ou pontos repetidos."],
+        [isoDate.test(String(payload.dataNascimentoCliente || "")), "mNascimento", 3, "Revise a data de nascimento."],
+        [/^[A-Z]{2}$/.test(String(payload.uf || "")), "mUf", 1, "Revise a UF do endereço."],
+        [String(payload.cidade || "").trim().length >= 2, "mCidade", 1, "Revise a cidade do endereço."],
+        [String(payload.numero || "").trim().length >= 1, "mNumero", 1, "Revise o número do endereço."],
+        [String(payload.planos || "").trim().length >= 1, "mPlano", 2, "Selecione novamente o plano desejado."],
+        [Number.isInteger(dueDay) && dueDay >= 1 && dueDay <= 28, "mVencimento", 4, "Selecione novamente o dia de vencimento."],
+        [isoDate.test(String(payload.dataInstalacao1 || "")), "mDataInstalacao", 4, "Selecione novamente a data de instalação."],
+        [["Manhã", "Tarde"].includes(payload.turnoInstalacao1), "mTurnoInstalacao", 4, "Selecione novamente o turno de instalação."],
+        [String(payload.event_id || "").trim().length >= 8, "", 5, "Não foi possível identificar esta solicitação. Recarregue a página e tente novamente."]
+      ];
+
+      const invalid = checks.find(([valid]) => !valid);
+      if (!invalid) return null;
+      return { fieldId: invalid[1], step: invalid[2], message: invalid[3] };
+    }
+
+    function mostrarErroPayloadCrm(validation) {
+      if (!validation) return;
+      if (validation.step && typeof mostrarEtapa === "function") mostrarEtapa(validation.step);
+      if (validation.fieldId && typeof fieldError === "function") {
+        fieldError(validation.fieldId, validation.message);
+        setTimeout(() => $(validation.fieldId)?.focus(), 80);
+      }
+      const erroEl = $(validation.step === 1 ? "modalErro1" : "modalErro");
+      if (erroEl) {
+        erroEl.textContent = validation.message;
+        erroEl.classList.add("show");
+      }
+    }
+
     async function enviarFormulario() {
       const erroEl = $("modalErro");
       erroEl.classList.remove("show");
@@ -6760,6 +6806,16 @@
         erroEl.classList.add("show");
         return;
       }
+      const payload = buildModalPayload();
+      const payloadValidation = validarPayloadCrmSite(payload);
+      if (payloadValidation) {
+        trackGA4("erro_envio_formulario", {
+          erro: "payload_frontend_invalido",
+          campo: payloadValidation.fieldId || "event_id"
+        });
+        mostrarErroPayloadCrm(payloadValidation);
+        return;
+      }
       const btn = $("btnSubmit");
       const original = btn.innerHTML;
       btn.disabled = true;
@@ -6768,7 +6824,7 @@
         const response = await fetch(CRM_PRE_SALE_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(buildModalPayload())
+          body: JSON.stringify(payload)
         });
         const data = await response.json().catch(() => ({}));
         if (response.ok && data.ok) {
@@ -6790,10 +6846,27 @@
             plano: $("mPlano").value,
             cidade: $("mCidade").value.trim(),
             uf: $("mUf").value.trim().toUpperCase(),
-            erro: data.message || data.motivo || "erro_envio"
+            erro: data.message || data.error?.message || data.motivo || "erro_envio"
           });
-          erroEl.textContent = data.message || "Erro ao enviar. Tente novamente.";
-          erroEl.classList.add("show");
+          const crmDetail = Array.isArray(data.error?.details) ? data.error.details[0] : null;
+          const crmFieldMap = {
+            emailCliente: ["mEmail", 3, "Revise o e-mail informado."],
+            dataNascimentoCliente: ["mNascimento", 3, "Revise a data de nascimento."],
+            uf: ["mUf", 1, "Revise a UF do endereço."],
+            cidade: ["mCidade", 1, "Revise a cidade do endereço."],
+            numero: ["mNumero", 1, "Revise o número do endereço."],
+            planos: ["mPlano", 2, "Selecione novamente o plano desejado."],
+            diaVencimentoFatura: ["mVencimento", 4, "Selecione novamente o dia de vencimento."],
+            dataInstalacao1: ["mDataInstalacao", 4, "Selecione novamente a data de instalação."],
+            turnoInstalacao1: ["mTurnoInstalacao", 4, "Selecione novamente o turno de instalação."]
+          };
+          const mapped = crmDetail && crmFieldMap[crmDetail.path];
+          if (mapped) {
+            mostrarErroPayloadCrm({ fieldId: mapped[0], step: mapped[1], message: mapped[2] });
+          } else {
+            erroEl.textContent = data.message || data.error?.message || "Erro ao enviar. Tente novamente.";
+            erroEl.classList.add("show");
+          }
           btn.disabled = false;
           btn.innerHTML = original;
           hideGlobalLoading();
@@ -6886,6 +6959,7 @@
     });
     $("mEmail").addEventListener("blur", function() {
       if (!this.value.trim()) return;
+      this.value = normalizeEmailForCrm(this.value);
       isValidEmail(this.value) ? fieldOk("mEmail") : fieldError("mEmail", "E-mail inválido. Ex: nome@email.com");
     });
     if ($("mDataInstalacao")) $("mDataInstalacao").min = tomorrowISO();
