@@ -90,10 +90,9 @@ export function mapHeroSnapshotToStep(snapshot = {}) {
   if (stage >= 6) return STATES.FINALIZADO;
   if (stage === 5) return STATES.CONFIRMACAO;
   if (stage === 4) {
-    if (!snapshot.diaVencimentoFatura) return STATES.VENCIMENTO;
-    if (!snapshot.dataInstalacao) return STATES.DATA_INSTALACAO;
-    if (!snapshot.turnoInstalacao) return STATES.TURNO_INSTALACAO;
-    return STATES.CONFIRMACAO;
+    // O fluxo atual não solicita data nem turno de instalação.
+    // Ao importar o Hero para o Chat, a etapa 4 representa somente vencimento.
+    return STATES.VENCIMENTO;
   }
   if (stage === 3) {
     if (!snapshot.nome) return STATES.NOME;
@@ -144,8 +143,8 @@ export function readHeroSnapshot({ documentObject = globalThis.document, windowO
     telefone: fieldValue(documentObject, "mTelefone1").replace(/\D/g, ""),
     telefoneSecundario: fieldValue(documentObject, "mTelefone2").replace(/\D/g, ""),
     diaVencimentoFatura: fieldValue(documentObject, "mVencimento"),
-    dataInstalacao: fieldValue(documentObject, "mDataInstalacao"),
-    turnoInstalacao: fieldValue(documentObject, "mTurnoInstalacao")
+    dataInstalacao: "",
+    turnoInstalacao: ""
   };
   snapshot.step = mapHeroSnapshotToStep(snapshot);
   snapshot.hasProgress = rank(snapshot.step) > rank(STATES.WELCOME);
@@ -173,8 +172,8 @@ export function applyHeroSnapshotToSession(session, snapshot) {
     telefone: snapshot.telefone || session.telefone || "",
     telefoneSecundario: snapshot.telefoneSecundario || session.telefoneSecundario || "",
     diaVencimentoFatura: snapshot.diaVencimentoFatura || session.diaVencimentoFatura || "",
-    dataInstalacao: snapshot.dataInstalacao || session.dataInstalacao || "",
-    turnoInstalacao: snapshot.turnoInstalacao || session.turnoInstalacao || ""
+    dataInstalacao: "",
+    turnoInstalacao: ""
   };
   Object.assign(session, merge);
 
@@ -222,7 +221,7 @@ function setHeroField(documentObject, id, value, { dispatch = true } = {}) {
 function heroStageForChatStep(step) {
   if ([STATES.ESCOLHA_PLANO].includes(step)) return 2;
   if ([STATES.NOME, STATES.CPF, STATES.DATA_NASCIMENTO, STATES.EMAIL, STATES.TELEFONE, STATES.TELEFONE_SECUNDARIO].includes(step)) return 3;
-  if ([STATES.VENCIMENTO, STATES.DATA_INSTALACAO, STATES.TURNO_INSTALACAO].includes(step)) return 4;
+  if ([STATES.VENCIMENTO].includes(step)) return 4;
   if (step === STATES.CONFIRMACAO) return 5;
   if (step === STATES.FINALIZADO) return 6;
   return 1;
@@ -247,8 +246,6 @@ export function syncChatSessionToHero(session, { documentObject = globalThis.doc
   setHeroField(documentObject, "mTelefone1", session.telefone);
   setHeroField(documentObject, "mTelefone2", session.telefoneSecundario);
   setHeroField(documentObject, "mVencimento", session.diaVencimentoFatura);
-  setHeroField(documentObject, "mDataInstalacao", session.dataInstalacao);
-  setHeroField(documentObject, "mTurnoInstalacao", session.turnoInstalacao);
 
   windowObject?.sincronizarCardsPlanoLanding?.();
   windowObject?.atualizarConfirmacaoLanding?.();
@@ -262,7 +259,7 @@ export function heroStageLabel(stage) {
     1: "endereço",
     2: "escolha do plano",
     3: "dados pessoais",
-    4: "preferências de instalação",
+    4: "vencimento da fatura",
     5: "revisão final",
     6: "solicitação concluída"
   })[Number(stage)] || "contratação";
