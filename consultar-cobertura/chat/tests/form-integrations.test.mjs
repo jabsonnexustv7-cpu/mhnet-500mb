@@ -29,5 +29,7 @@ for (const [name, source] of [["cobertura", coverage], ["home", home]]) {
     assert.match(source, /const payload = buildModalPayload\(\);[\s\S]*validarPayloadCrmSite\(payload\)/);
     assert.match(source, /body: JSON\.stringify\(payload\)/);
     assert.match(source, /data\.error\?\.message/);
+    assert.match(source, /details\.some\(\(detail\) => detail\?\.path === "emailCliente"\)/);
+    assert.match(source, /delete retryPayload\.emailCliente/);
   });
 }

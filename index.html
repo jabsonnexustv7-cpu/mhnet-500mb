@@ -5979,6 +5979,28 @@
       }
     }
 
+    async function postCrmSitePayload(payload) {
+      const request = async (body) => {
+        const response = await fetch(CRM_PRE_SALE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        const data = await response.json().catch(() => ({}));
+        return { response, data };
+      };
+
+      let result = await request(payload);
+      const details = Array.isArray(result.data?.error?.details) ? result.data.error.details : [];
+      if (!result.response.ok && payload.emailCliente && details.some((detail) => detail?.path === "emailCliente")) {
+        const retryPayload = { ...payload };
+        delete retryPayload.emailCliente;
+        trackGA4("checkout_crm_retry_sem_email", { motivo: "email_rejeitado_pelo_schema" });
+        result = await request(retryPayload);
+      }
+      return result;
+    }
+
     async function enviarFormulario() {
       const erroEl = $("modalErro");
       erroEl.classList.remove("show");
@@ -6008,12 +6030,7 @@
       btn.disabled = true;
       showGlobalLoading("Estamos enviando sua solicitação. Aguarde a confirmação na tela antes de sair.", "Finalizando sua solicitação...");
       try {
-        const response = await fetch(CRM_PRE_SALE_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        const data = await response.json().catch(() => ({}));
+        const { response, data } = await postCrmSitePayload(payload);
         if (response.ok && data.ok) {
           const planoSelecionadoEvento = $("mPlano").value;
           trackGA4("enviou_formulario_easy", {

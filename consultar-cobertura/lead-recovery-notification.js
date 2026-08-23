@@ -1,4 +1,4 @@
-// WebTurbo — captura antecipada para recuperação comercial.
+// WebTurbo — captura antecipada para recuperação comercial v8.
 // Assim que endereço + plano + dados pessoais mínimos estiverem completos,
 // envia uma única notificação ao Telegram. Não depende do envio final ao CRM.
 (function () {
@@ -9,8 +9,7 @@
 
   const ENDPOINT = "https://modal-easy-964927461432.southamerica-east1.run.app";
   const CHECK_INTERVAL_MS = 900;
-  const SENT_PREFIX = "wt_lead_recovery_sent_v6:";
-  const VISIT_ID = `${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+  const SENT_PREFIX = "wt_lead_recovery_sent_v8:";
 
   function clean(value) {
     return String(value || "").trim();
@@ -48,8 +47,10 @@
     try { sessionStorage.removeItem(SENT_PREFIX + key); } catch (_) {}
   }
 
-  function buildKey(source, cpf, phone, cep, sessionId) {
-    return [source, clean(sessionId) || VISIT_ID, digits(cpf), digits(phone).slice(-11), digits(cep)].join(":");
+  function buildKey(cpf, phone, cep) {
+    // HERO e CHAT podem conter o mesmo lead simultaneamente. A identidade precisa
+    // ser a mesma nos dois fluxos para que o primeiro envio bloqueie o segundo.
+    return [digits(cpf), digits(phone).slice(-11), digits(cep)].join(":");
   }
 
   function buildAddress(logradouro, numero, bairro, cidade, uf) {
@@ -58,10 +59,9 @@
     return [streetNumber, clean(bairro), cityUf].filter(Boolean).join(" - ");
   }
 
-  // O coverage-base ainda possui a rotina antiga de abandono. Ela pode disparar
-  // o mesmo lead depois que a recuperação antecipada já enviou o Telegram.
-  // Interceptamos apenas a duplicata da etapa de dados pessoais; outros usos do
-  // endpoint permanecem intactos.
+  // O coverage-base ainda possui uma rotina antiga de abandono. A recuperação
+  // v8 é a única responsável por notifyAbandonoModal nesta página; bloquear o
+  // legado evita um novo Telegram ao fechar o modal depois da captura antecipada.
   (function installLegacyAbandonmentGuard() {
     if (window.__webturboLegacyAbandonmentGuardInstalled) return;
     window.__webturboLegacyAbandonmentGuardInstalled = true;
@@ -72,14 +72,14 @@
         const url = typeof input === "string" ? input : String(input?.url || "");
         if (url === ENDPOINT && init?.body) {
           const payload = typeof init.body === "string" ? JSON.parse(init.body) : null;
-          const etapa = clean(payload?.etapaAbandono || payload?.etapa || payload?.etapa_abandono).toLowerCase();
           const isLegacyDuplicate = payload?.action === "notifyAbandonoModal"
-            && payload?.evento !== "lead_recuperacao_dados_completos"
-            && etapa === "dados_pessoais_concluidos";
+            && payload?.evento !== "lead_recuperacao_dados_completos";
 
           if (isLegacyDuplicate) {
             clarityEvent("lead_recuperacao_telegram_duplicata_bloqueada");
-            gaEvent("lead_recuperacao_telegram_duplicata_bloqueada", { etapa });
+            gaEvent("lead_recuperacao_telegram_duplicata_bloqueada", {
+              etapa: clean(payload?.etapaAbandono || payload?.etapa || payload?.etapa_abandono).toLowerCase()
+            });
             return Promise.resolve(new Response(JSON.stringify({
               ok: true,
               skipped: true,
@@ -98,7 +98,7 @@
 
   function recoveryPayload(data) {
     const endereco = buildAddress(data.logradouro, data.numero, data.bairro, data.cidade, data.uf);
-    const etapa = "dados_pessoais_concluidos";
+    const etapa = "whatsapp_principal_concluido";
 
     return {
       action: "notifyAbandonoModal",
@@ -199,7 +199,7 @@
 
     return {
       source: "HERO",
-      key: buildKey("HERO", cpf, telefone1, cep),
+      key: buildKey(cpf, telefone1, cep),
       payload: recoveryPayload(data)
     };
   }
@@ -253,7 +253,7 @@
 
     return {
       source: "CHAT",
-      key: buildKey("CHAT", cpf, telefone1, cep, session.sessionId),
+      key: buildKey(cpf, telefone1, cep),
       payload: recoveryPayload(data)
     };
   }
