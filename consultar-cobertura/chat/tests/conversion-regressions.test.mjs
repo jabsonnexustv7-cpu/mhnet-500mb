@@ -5,6 +5,7 @@ import vm from "node:vm";
 
 const recovery = readFileSync(new URL("../../lead-recovery-notification.js", import.meta.url), "utf8");
 const finalizer = readFileSync(new URL("../../conversion-finalizer-v4.js", import.meta.url), "utf8");
+const coverage = readFileSync(new URL("../../coverage-base.html", import.meta.url), "utf8");
 const landing = readFileSync(new URL("../../index.html", import.meta.url), "utf8");
 
 test("Telegram possui um único controlador e uma identidade comum entre Hero e Chat", () => {
@@ -88,6 +89,22 @@ test("payload final do CRM respeita instalação obrigatória e recupera rejeiç
   assert.match(finalizer, /details\.some\(\(detail\) => detail\?\.path === "emailCliente"\)/);
   assert.match(finalizer, /delete retryPayload\.emailCliente/);
   assert.match(finalizer, /const \{ response, data \} = await postCrm\(payload\)/);
+});
+
+test("cobertura viável transfere coordenadas para o pedido antes de avançar", () => {
+  assert.match(
+    coverage,
+    /modalCoverageData = coberturaPaginaData\.cobertura;\s*aplicarCoordsCoberturaNoMapa\(\);\s*\$\("coverageOkBox"\)/
+  );
+  assert.match(
+    coverage,
+    /modalCoverageData = res;\s*aplicarCoordsCoberturaNoMapa\(\);\s*\$\("coverageOkBox"\)/
+  );
+  assert.match(
+    coverage,
+    /saveModalLocationFields\(coords\.lat, coords\.lng, "Coordenadas retornadas pela consulta de cobertura\."\)/
+  );
+  assert.match(finalizer, /coordenadasFixas: coords, coordenadas: coords, coords,/);
 });
 
 test("CRM é repetido sem o e-mail opcional quando esse for o único campo rejeitado", async () => {

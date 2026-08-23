@@ -5690,6 +5690,7 @@
 
       modalCoverageValidated = true;
       modalCoverageData = coberturaPaginaData.cobertura;
+      aplicarCoordsCoberturaNoMapa();
       $("coverageOkBox").classList.add("show");
       esconderBoxLocalizacaoModal();
 
@@ -6432,6 +6433,7 @@
 
           modalCoverageValidated = true;
           modalCoverageData = res;
+          aplicarCoordsCoberturaNoMapa();
           $("coverageOkBox").classList.add("show");
           mostrarEtapa(2);
           window.atualizarConfirmacaoLanding?.();
