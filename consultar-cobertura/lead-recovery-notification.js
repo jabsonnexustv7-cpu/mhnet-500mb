@@ -1,4 +1,4 @@
-// WebTurbo — captura antecipada para recuperação comercial v8.
+// WebTurbo — captura antecipada para recuperação comercial v9.
 // Assim que endereço + plano + dados pessoais mínimos estiverem completos,
 // envia uma única notificação ao Telegram. Não depende do envio final ao CRM.
 (function () {
@@ -9,7 +9,7 @@
 
   const ENDPOINT = "https://modal-easy-964927461432.southamerica-east1.run.app";
   const CHECK_INTERVAL_MS = 900;
-  const SENT_PREFIX = "wt_lead_recovery_sent_v8:";
+  const SENT_PREFIX = "wt_lead_recovery_sent_v9:";
 
   function clean(value) {
     return String(value || "").trim();
@@ -47,10 +47,10 @@
     try { sessionStorage.removeItem(SENT_PREFIX + key); } catch (_) {}
   }
 
-  function buildKey(cpf, phone, cep) {
+  function buildKey(cpf, phone) {
     // HERO e CHAT podem conter o mesmo lead simultaneamente. A identidade precisa
     // ser a mesma nos dois fluxos para que o primeiro envio bloqueie o segundo.
-    return [digits(cpf), digits(phone).slice(-11), digits(cep)].join(":");
+    return [digits(cpf), digits(phone).slice(-11)].join(":");
   }
 
   function buildAddress(logradouro, numero, bairro, cidade, uf) {
@@ -167,7 +167,9 @@
     const uf = value("mUf");
 
     if (!nome || digits(cpf).length !== 11 || !nascimento || !email) return null;
-    if (digits(telefone1).length < 10) return null;
+    // A máscara brasileira de celular termina em 11 dígitos. Com 10, o usuário
+    // ainda está digitando e o próximo input criaria outra identidade de lead.
+    if (digits(telefone1).length !== 11) return null;
     if (!plano || !numero || !cidade || !uf || (!logradouro && digits(cep).length !== 8)) return null;
 
     const data = {
@@ -199,7 +201,7 @@
 
     return {
       source: "HERO",
-      key: buildKey(cpf, telefone1, cep),
+      key: buildKey(cpf, telefone1),
       payload: recoveryPayload(data)
     };
   }
@@ -223,7 +225,7 @@
     const logradouro = clean(session.logradouro);
 
     if (!nome || digits(cpf).length !== 11 || !nascimento || !email) return null;
-    if (digits(telefone1).length < 10) return null;
+    if (digits(telefone1).length !== 11) return null;
     if (!plano || !numero || !cidade || !uf) return null;
 
     const data = {
@@ -253,7 +255,7 @@
 
     return {
       source: "CHAT",
-      key: buildKey(cpf, telefone1, cep),
+      key: buildKey(cpf, telefone1),
       payload: recoveryPayload(data)
     };
   }

@@ -8,11 +8,11 @@ const finalizer = readFileSync(new URL("../../conversion-finalizer-v4.js", impor
 const landing = readFileSync(new URL("../../index.html", import.meta.url), "utf8");
 
 test("Telegram possui um único controlador e uma identidade comum entre Hero e Chat", () => {
-  assert.match(recovery, /const SENT_PREFIX = "wt_lead_recovery_sent_v8:"/);
-  assert.match(recovery, /function buildKey\(cpf, phone, cep\)/);
+  assert.match(recovery, /const SENT_PREFIX = "wt_lead_recovery_sent_v9:"/);
+  assert.match(recovery, /function buildKey\(cpf, phone\)/);
   assert.doesNotMatch(recovery, /function buildKey\(source,/);
   assert.match(recovery, /const etapa = "whatsapp_principal_concluido"/);
-  assert.match(recovery, /key: buildKey\(cpf, telefone1, cep\)/g);
+  assert.match(recovery, /key: buildKey\(cpf, telefone1\)/g);
   assert.match(recovery, /payload\?\.action === "notifyAbandonoModal"[\s\S]*payload\?\.evento !== "lead_recuperacao_dados_completos"/);
   assert.doesNotMatch(finalizer, /sendRecoveryNow|TELEGRAM_ENDPOINT|telegramSent/);
 });
@@ -24,10 +24,10 @@ test("deduplicação é registrada antes da chamada de rede", () => {
   assert.ok(sendStart >= 0 && mark > sendStart && fetchCall > mark);
 });
 
-test("Hero e Chat completos geram somente uma requisição real ao Telegram", async () => {
+test("somente o 11º dígito dispara e Hero/Chat geram uma requisição", async () => {
   const values = {
     mNome: "Cliente Teste", mCpf: "52998224725", mNascimento: "1990-01-01",
-    mTelefone1: "51999999999", mTelefone2: "51888888888", mEmail: "cliente@example.com",
+    mTelefone1: "5199999999", mTelefone2: "51888888888", mEmail: "cliente@example.com",
     mPlano: "FIBRA 500MB", mCep: "90000000", mNumero: "10", mLogradouro: "Rua Teste",
     mBairro: "Centro", mCidade: "Porto Alegre", mUf: "RS", mComplemento: "",
     mPontoRef: "", mVencimento: "10", mCoordenadasFixas: "", mLatitudeFixa: "",
@@ -73,6 +73,10 @@ test("Hero e Chat completos geram somente uma requisição real ao Telegram", as
   };
   context.window = context;
   vm.runInNewContext(recovery, context);
+  context.webturboLeadRecovery.check("telefone_com_10_digitos");
+  await new Promise((resolve) => setTimeout(resolve, 10));
+  assert.equal(calls, 0);
+  values.mTelefone1 = "51999999999";
   context.webturboLeadRecovery.check("teste_concorrente");
   await new Promise((resolve) => setTimeout(resolve, 10));
   assert.equal(calls, 1);
@@ -119,6 +123,6 @@ test("CRM é repetido sem o e-mail opcional quando esse for o único campo rejei
 });
 
 test("landing invalida o cache dos dois controladores corrigidos", () => {
-  assert.match(landing, /lead-recovery-notification\.js\?v=8/);
+  assert.match(landing, /lead-recovery-notification\.js\?v=9/);
   assert.match(landing, /conversion-finalizer-v4\.js\?v=3/);
 });

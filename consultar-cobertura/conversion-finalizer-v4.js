@@ -1,6 +1,6 @@
 // WebTurbo — finalização autoritativa v4.3.
 // Controla apenas vencimento -> CRM e pós-venda -> WhatsApp. A recuperação no
-// Telegram pertence exclusivamente ao lead-recovery-notification v8.
+// Telegram pertence exclusivamente ao lead-recovery-notification v9.
 (function () {
   "use strict";
 
