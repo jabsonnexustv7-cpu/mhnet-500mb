@@ -47,7 +47,7 @@ function buildFlow(currentSession) {
 function appendAssistantMessage(text, meta = {}) {
   const message = {
     id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    role,
+    role: "assistant",
     text,
     meta,
     at: new Date().toISOString()
