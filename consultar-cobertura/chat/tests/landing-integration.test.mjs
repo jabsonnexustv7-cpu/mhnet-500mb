@@ -124,8 +124,20 @@ test("landing esconde o layout antigo até o redesign do hero estar pronto", () 
   const redesign = read("../../landing-hero-redesign.js");
   assert.match(landing, /meta-coverage-landing wt-hero-step1-active/);
   assert.match(landing, /wt-hero-step1-active:not\(\.wt-hero-ready\)/);
-  assert.match(landing, /landing-hero-redesign\.js\?v=3/);
+  assert.match(landing, /landing-hero-redesign\.js\?v=4/);
   assert.match(redesign, /document\.body\.classList\.add\("wt-hero-ready"\)/);
+  assert.match(
+    redesign,
+    /if \(document\.body && byId\("etapa1"\) && byId\("meta-landing-title"\)\) \{\s*install\(\);/
+  );
+});
+
+test("Leaflet usa o hash de integridade correspondente ao CSS publicado", () => {
+  const legacyLanding = read("../../coverage-base.html");
+  assert.match(
+    legacyLanding,
+    /leaflet\.css"[\s\S]*integrity="sha256-p4NxAoJBhIIN\+hmNHrzRCf9tD\/miZyoHS5obTRR9BMY="/
+  );
 });
 
 test("produção não exibe aviso técnico e retomada não bloqueia o hero ao recarregar", () => {

@@ -139,7 +139,11 @@
     document.body.classList.add("wt-hero-ready");
   }
 
-  if (document.readyState === "loading") {
+  // Este script é injetado no fim do body; libere o conteúdo imediatamente
+  // sem esperar os demais scripts parser-blocking concluírem.
+  if (document.body && byId("etapa1") && byId("meta-landing-title")) {
+    install();
+  } else if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", install, { once: true });
   } else {
     install();
