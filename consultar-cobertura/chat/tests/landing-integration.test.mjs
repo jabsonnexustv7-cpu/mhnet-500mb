@@ -124,7 +124,13 @@ test("landing esconde o layout antigo até o redesign do hero estar pronto", () 
   const redesign = read("../../landing-hero-redesign.js");
   assert.match(landing, /meta-coverage-landing wt-hero-step1-active/);
   assert.match(landing, /wt-hero-step1-active:not\(\.wt-hero-ready\)/);
-  assert.match(landing, /landing-hero-redesign\.js\?v=4/);
+  assert.match(
+    landing,
+    /replace: '<!-- Leaflet JS -->', '<script src="\/consultar-cobertura\/landing-hero-redesign\.js\?v=5"><\/script><!-- Leaflet JS -->'/
+  );
+  const redesignIndex = landing.indexOf("landing-hero-redesign.js?v=5");
+  const endScriptsIndex = landing.indexOf("regional-plans.js");
+  assert.ok(redesignIndex >= 0 && redesignIndex < endScriptsIndex);
   assert.match(redesign, /document\.body\.classList\.add\("wt-hero-ready"\)/);
   assert.match(
     redesign,
