@@ -1,5 +1,5 @@
 import { createChatFlow as createBaseChatFlow } from "./flow.js?v=9";
-import { extractBirthDate, extractCpf, extractName } from "./parser.js?v=9";
+import { extractBirthDate, extractCpf, extractName, findPromotionalPlanMention } from "./parser.js?v=10";
 import { DUE_DATE_OPTIONS, calculateBillingSummary } from "./billing.js?v=10";
 import { getPlansForCity, getPromotionalPlans, PLAN_SELECTION_VIEWS } from "./plans.js?v=9";
 import { saveSession, STATES } from "./state.js?v=9";
@@ -315,6 +315,7 @@ export function createChatFlow(args) {
     ...base,
     async handleText(text) {
       const previousStep = session.step;
+      if (findPromotionalPlanMention(text, getPromotionalPlans())) return base.handleText(text);
       if (previousStep === STATES.CPF) return handleCpfText(text);
       if (previousStep === STATES.NOME) return handleNameText(text);
       if (previousStep === STATES.DATA_NASCIMENTO) return handleBirthText(text);
@@ -358,7 +359,7 @@ export function createChatFlow(args) {
       if (action === "select-due-date") return handleDueText(value, { recordUser: true });
 
       const result = await base.handleAction(action, value);
-      await postProcess(previousStep);
+      await postProcess(action === "select-combat-offer" ? STATES.ESCOLHA_PLANO : previousStep);
       return result;
     }
   };

@@ -4,6 +4,7 @@ import test from "node:test";
 import { buildAiRequest, createAiAssistService } from "../ai-service.js";
 import { createChatFlow } from "../flow.js";
 import { routeMessage, ROUTE_KINDS, ROUTER_COMMANDS, sanitizeForAi } from "../message-router.js";
+import { findPromotionalPlanMention } from "../parser.js";
 import { PROMOTIONAL_PLANS } from "../plans.js";
 import { createSession, resetSession, STATES } from "../state.js";
 
@@ -30,9 +31,10 @@ function createHarness(step, { aiMode = "openai", aiService, whatsappService } =
   const ui = {
     messages: [],
     plans: [],
+    quickReplies: [],
     addMessage(message) { this.messages.push(message); },
     updateDebug() {}, clearConversation() { this.messages = []; }, setTyping() {}, clearActions() {},
-    setComposerEnabled() {}, setPlaceholder() {}, showQuickReplies() {}, showSummary() {}, removeSummary() {},
+    setComposerEnabled() {}, setPlaceholder() {}, showQuickReplies(items) { this.quickReplies = items; }, showSummary() {}, removeSummary() {},
     showFinalPayload() {}, showDatePicker() {},
     showPlans(plans, options) { this.plans.push({ plans, options }); }
   };
@@ -212,6 +214,33 @@ test("catálogo enviado à assistência vem da fonte da sessão", async () => {
   });
   await flow.handleText("qual é melhor para jogar?");
   assert.deepEqual(plans.map((plan) => plan.id), PROMOTIONAL_PLANS.map((plan) => plan.id));
+});
+
+test("oferta de R$ 79,90 é reconhecida localmente sem voltar à vitrine promocional", async () => {
+  let aiCalls = 0;
+  const { flow, session, ui } = createHarness(STATES.ESCOLHA_PLANO, {
+    aiService: { async assist() { aiCalls += 1; return aiResult(STATES.ESCOLHA_PLANO); } }
+  });
+  session.cobertura = { viavel: true, status: "VIAVEL", source: "real" };
+  session.planSelectionView = "catalog";
+
+  await flow.handleText("Quero saber sobre a oferta de R$ 79,90");
+
+  assert.equal(aiCalls, 0);
+  assert.equal(session.step, STATES.ESCOLHA_PLANO);
+  assert.equal(session.planSelectionView, "catalog");
+  assert.match(ui.messages.at(-1).text, /300 Mega por R\$\s*79,90\/mês/);
+  assert.ok(ui.quickReplies.some((item) => item.action === "select-combat-offer" && item.value === "FIBRA 300MB"));
+  assert.ok(ui.quickReplies.some((item) => item.action === "show-main-plans"));
+
+  await flow.handleAction("select-combat-offer", "FIBRA 300MB");
+  assert.equal(session.plano.id, "FIBRA 300MB");
+  assert.equal(session.step, STATES.NOME);
+});
+
+test("menção genérica a 500 Mega continua pertencendo ao catálogo principal", () => {
+  assert.equal(findPromotionalPlanMention("quero 500 mega", PROMOTIONAL_PLANS), null);
+  assert.equal(findPromotionalPlanMention("vi a oferta de 500 mega", PROMOTIONAL_PLANS)?.id, "FIBRA 500MB (Combate)");
 });
 
 test("IA não decide cobertura mesmo sugerindo CHECK_COVERAGE", async () => {

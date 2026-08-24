@@ -8,17 +8,18 @@ test("landing carrega o chat reutilizável sem iframe", () => {
   const landing = read("../../index.html");
   const embed = read("../embed.js");
   assert.match(landing, /chat\/chat\.css\?v=6/);
-  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=10"/);
-  assert.match(embed, /await import\("\.\/app\.js\?v=9"\)/);
+  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=14"/);
+  assert.match(embed, /await import\("\.\/app\.js\?v=13"\)/);
   assert.doesNotMatch(embed, /iframe/i);
 });
 
 test("versão nova invalida o cache dos módulos internos críticos", () => {
   const app = read("../app.js");
-  for (const moduleName of ["config", "ai-service", "flow", "integrations", "knowledge", "message-router", "state", "tracking", "ui", "whatsapp"]) {
+  for (const moduleName of ["config", "ai-service", "integrations", "knowledge", "message-router", "state", "tracking", "ui", "whatsapp"]) {
     assert.match(app, new RegExp(`\\./${moduleName}\\.js\\?v=9`));
   }
-  assert.match(app, /\.\/hero-bridge\.js\?v=1/);
+  assert.match(app, /\.\/flow-friction-v2\.js\?v=2/);
+  assert.match(app, /\.\/hero-bridge\.js\?v=2/);
 });
 
 test("chat abre como modal na mesma página e possui retorno claro", () => {
@@ -177,7 +178,8 @@ test("configuração da landing ativa apenas os modos reais esperados", () => {
   assert.match(embed, /whatsappMode: "real"/);
   assert.match(embed, /notificationMode: "real"/);
   assert.match(embed, /notificationEndpoint: "https:\/\/modal-easy-964927461432\.southamerica-east1\.run\.app"/);
-  assert.match(embed, /webturbo-chat-ai-hydcvtcuga-rj\.a\.run\.app\/api\/chat\/assist/);
+  assert.match(embed, /PRODUCTION_AI_ASSIST_ENDPOINT/);
+  assert.match(read("../runtime-config.js"), /webturbo-chat-ai-964927461432\.southamerica-east1\.run\.app\/api\/chat\/assist/);
   assert.match(config, /webturbo-crm-api-964927461432\.southamerica-east1\.run\.app\/api\/v1\/public\/site-pre-sales/);
   assert.match(config, /notificationEndpoint:[\s\S]*modal-easy-964927461432\.southamerica-east1\.run\.app/);
   assert.doesNotMatch(embed, /safe=1|debug=1/);
@@ -225,6 +227,16 @@ test("tracking do chat reutiliza tags existentes sem duplicar PageView", () => {
   assert.match(tracking, /const alreadyInstalled = typeof window\.fbq === "function"/);
   assert.match(tracking, /if \(!alreadyInstalled\)[\s\S]*window\.fbq\("track", "PageView"\)/);
   assert.match(tracking, /chat_handoff_humano/);
+});
+
+test("ofertas de combate aguardam hesitação e não interrompem o chat", () => {
+  const retention = read("../../retention-offers.js");
+  assert.match(retention, /HESITATION_DELAY_MS\s*=\s*25000/);
+  assert.match(retention, /showModal\("inatividade_planos"\)/);
+  assert.match(retention, /activeStep\(\) !== 2/);
+  assert.match(retention, /document\.body\.classList\.contains\("chat-open"\)/);
+  assert.match(retention, /document\.getElementById\("mPlano"\)\?\.value/);
+  assert.match(retention, /sessionGet\(SHOWN_FLAG\)/);
 });
 
 test("CSS do chat não redefine o fundo global da landing", () => {

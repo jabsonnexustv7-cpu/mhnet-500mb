@@ -176,7 +176,7 @@ test("sessão persistida pode ser retomada após recarregar", () => {
   const restored = loadSession(storage, "chat");
   assert.equal(restored.sessionId, "session-test");
   assert.equal(restored.step, STATES.CONFIRMACAO);
-  assert.equal(restored.plano.id, "FIBRA 500MB");
+  assert.equal(restored.plano.id, BASE_PLANS[0].id);
 });
 
 test("sessão expira após 24 horas e é removida do localStorage", () => {
@@ -241,7 +241,7 @@ test("seleção de planos começa nas promoções e expande para o catálogo", a
 test("gera payload final compatível com o CRM existente", () => {
   const payload = buildCrmPayload(sampleSession(), { pageUrl: "http://localhost/chat-lab.html" });
   assert.equal(payload.documentoCliente, "52998224725");
-  assert.equal(payload.planos, "FIBRA 500MB");
+  assert.equal(payload.planos, BASE_PLANS[0].id);
   assert.equal(payload.nomeCidade, "Canoas");
   assert.equal(payload.telefone2Cliente, "51988887777");
   assert.equal(payload.diaVencimentoFatura, "10");

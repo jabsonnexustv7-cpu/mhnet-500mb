@@ -67,6 +67,25 @@ export function wantsMorePlans(text) {
   return /\b(ver|mostrar|quero|conhecer|exibir)\b.*\b(mais|outr[oa]s?)\b.*\b(planos?|ofertas?)\b|\b(mais|outr[oa]s?)\b.*\b(planos?|ofertas?)\b/.test(plain(text));
 }
 
+export function findPromotionalPlanMention(text, plans) {
+  const normalized = plain(text);
+  if (!normalized || !Array.isArray(plans) || !plans.length) return null;
+
+  const priceMention = normalized.match(/(?:r\$\s*)?(\d{2,3})\s*([,.])\s*(\d{2})\b/);
+  if (priceMention) {
+    const mentionedPrice = Number(`${priceMention[1]}.${priceMention[3]}`);
+    const byPrice = plans.find((plan) => Math.abs(Number(plan.price || 0) - mentionedPrice) < 0.001);
+    if (byPrice) return byPrice;
+  }
+
+  const speedMention = normalized.match(/\b(300|500|600|700|1000)\s*(?:mega|mb)\b/);
+  if (!speedMention) return null;
+  const speed = Number(speedMention[1]);
+  if (speed !== 300 && !/\b(oferta|promocao|promo|anuncio)\b/.test(normalized)) return null;
+  const matches = plans.filter((plan) => Number(plan.speed || 0) === speed);
+  return matches.length === 1 ? matches[0] : null;
+}
+
 export function selectPlanFromText(text, plans) {
   const normalized = plain(text);
   if (!Array.isArray(plans) || !plans.length) return null;

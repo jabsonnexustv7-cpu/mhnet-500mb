@@ -1,4 +1,5 @@
 import "./notification-payload-normalizer.js?v=1";
+import { PRODUCTION_AI_ASSIST_ENDPOINT } from "./runtime-config.js?v=2";
 
 const ROOT_ID = "webturbo-chat-root";
 const ASSISTANT_AVATAR = "/consultar-cobertura/chat/assets/webturbo-assistente.png";
@@ -116,7 +117,7 @@ window.WEBTURBO_CHAT_CONFIG = {
   whatsappMode: "real",
   notificationMode: "real",
   notificationEndpoint: "https://modal-easy-964927461432.southamerica-east1.run.app",
-  aiAssistEndpoint: "https://webturbo-chat-ai-hydcvtcuga-rj.a.run.app/api/chat/assist"
+  aiAssistEndpoint: PRODUCTION_AI_ASSIST_ENDPOINT
 };
 
 document.addEventListener("click", (event) => {
@@ -130,5 +131,5 @@ document.addEventListener("click", (event) => {
 replacePrimaryWhatsAppCtas();
 new MutationObserver(() => replacePrimaryWhatsAppCtas()).observe(document.body, { childList: true, subtree: true });
 
-await import("./app.js?v=12");
+await import("./app.js?v=13");
 if (pendingOpen) window.webturboChat?.open?.();

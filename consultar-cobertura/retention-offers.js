@@ -3,6 +3,7 @@
   "use strict";
 
   const SHOWN_FLAG = "wt_retention_offers_shown_v1";
+  const HESITATION_DELAY_MS = 25000;
   const OFFERS = [
     {
       plan: "FIBRA 300MB",
@@ -37,6 +38,7 @@
   let browserBackGuardArmed = false;
   let browserBackGuardConsumed = false;
   let suppressNextPopstate = false;
+  let hesitationTimer = null;
 
   function sessionGet(key) {
     try { return sessionStorage.getItem(key); } catch (_) { return null; }
@@ -249,6 +251,8 @@
     if (sessionGet(SHOWN_FLAG)) return false;
     if (!coverageValidated()) return false;
     if (![2, 3].includes(activeStep())) return false;
+    if (document.visibilityState !== "visible") return false;
+    if (document.body.classList.contains("chat-open") || document.getElementById("chat-panel")?.classList.contains("is-open")) return false;
 
     currentTrigger = trigger || "abandono_comportamental";
     sessionSet(SHOWN_FLAG, "1");
@@ -272,6 +276,36 @@
 
     requestAnimationFrame(() => modal.querySelector("[data-retention-plan]")?.focus({ preventScroll: true }));
     return true;
+  }
+
+  function clearHesitationTimer() {
+    if (!hesitationTimer) return;
+    clearTimeout(hesitationTimer);
+    hesitationTimer = null;
+  }
+
+  function canScheduleHesitation() {
+    if (sessionGet(SHOWN_FLAG) || !coverageValidated() || activeStep() !== 2) return false;
+    if (document.visibilityState !== "visible") return false;
+    if (document.getElementById("mPlano")?.value) return false;
+    if (document.body.classList.contains("chat-open") || document.getElementById("chat-panel")?.classList.contains("is-open")) return false;
+    return true;
+  }
+
+  function scheduleHesitation() {
+    clearHesitationTimer();
+    if (!canScheduleHesitation()) return;
+    hesitationTimer = setTimeout(() => {
+      hesitationTimer = null;
+      showModal("inatividade_planos");
+    }, HESITATION_DELAY_MS);
+  }
+
+  function resetHesitationFromActivity(event) {
+    if (activeStep() !== 2) return;
+    const step = document.getElementById("etapa2");
+    if (step && event.target instanceof Node && !step.contains(event.target) && event.type !== "scroll") return;
+    scheduleHesitation();
   }
 
   function hideModal(manual) {
@@ -372,6 +406,9 @@
         releaseBrowserBackGuard();
       }
 
+      if (next === 2) setTimeout(scheduleHesitation, 0);
+      else clearHesitationTimer();
+
       if (previous === 3 && next === 2) {
         setTimeout(() => showModal("voltou_dados_para_planos"), 0);
       }
@@ -400,6 +437,15 @@
     patchStepNavigation();
     patchInternalClose();
     window.addEventListener("popstate", handleBrowserBackAttempt);
+    document.addEventListener("pointerdown", resetHesitationFromActivity, { passive: true });
+    document.addEventListener("keydown", resetHesitationFromActivity);
+    document.addEventListener("input", resetHesitationFromActivity);
+    document.addEventListener("scroll", resetHesitationFromActivity, { passive: true, capture: true });
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "visible") scheduleHesitation();
+      else clearHesitationTimer();
+    });
+    scheduleHesitation();
 
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape" && overlay?.classList.contains("is-open")) {

@@ -5,6 +5,7 @@ import {
   extractComplement,
   extractCpf,
   extractEmail,
+  findPromotionalPlanMention,
   extractName,
   extractPhone,
   selectPlanFromText,
@@ -101,6 +102,14 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     return planSelectionView() === PLAN_SELECTION_VIEWS.CATALOG
       ? getPlansForCity(session.cidade)
       : getPromotionalPlans();
+  }
+
+  function promotionalPlanMention(text) {
+    return findPromotionalPlanMention(text, getPromotionalPlans());
+  }
+
+  function hasViableCoverage() {
+    return session.cobertura?.status === "VIAVEL" || session.cobertura?.viavel === true;
   }
 
   function trackPlanEvent(name, params = {}) {
@@ -351,6 +360,39 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     await askCurrentStep();
   }
 
+  async function answerPromotionalPlanQuestion(plan) {
+    const price = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(plan.price);
+    const benefits = Array.isArray(plan.features) && plan.features.length
+      ? ` Inclui ${plan.features.join(" e ").toLowerCase()}.`
+      : "";
+    await assistant(`Sim, essa oferta existe: ${plan.title} por ${price}/mês.${benefits}`);
+    trackPlanEvent("cobertura_oferta_combate_consultada_chat", { plano: plan.id, valor: plan.price });
+
+    if (!hasViableCoverage()) {
+      await assistant(`Primeiro precisamos confirmar a cobertura do endereço. ${resumePromptForStep(session.step)}`);
+      showControlsForStep();
+      return;
+    }
+
+    ui.showQuickReplies([
+      { label: `Quero essa oferta de ${price}`, action: "select-combat-offer", value: plan.id },
+      { label: "Comparar planos principais", action: "show-main-plans" }
+    ]);
+  }
+
+  async function showMainPlansAfterOfferQuestion() {
+    if (session.step === STATES.FINALIZADO) {
+      await assistant("Este atendimento já foi finalizado. Inicie uma nova contratação para escolher outro plano.");
+      showControlsForStep();
+      return;
+    }
+    if (session.step !== STATES.ESCOLHA_PLANO) changeStep(STATES.ESCOLHA_PLANO);
+    session.planSelectionView = PLAN_SELECTION_VIEWS.CATALOG;
+    persist();
+    await assistant("Claro! Compare os planos principais disponíveis para o seu endereço:");
+    showControlsForStep();
+  }
+
   async function showMorePlans({ recordUser = true } = {}) {
     if (planSelectionView() === PLAN_SELECTION_VIEWS.CATALOG) return;
     if (recordUser) addMessage("user", "Ver mais ofertas");
@@ -535,6 +577,14 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
     const trimmed = String(text || "").trim();
     if (!trimmed || session.step === STATES.CONSULTANDO_COBERTURA || aiInFlight) return;
     addMessage("user", trimmed);
+
+    const mentionedPromotion = promotionalPlanMention(trimmed);
+    if (mentionedPromotion) {
+      session.ai.lastRoutingDecision = `LOCAL:PROMOTIONAL_OFFER:${mentionedPromotion.id}`;
+      persist();
+      await answerPromotionalPlanQuestion(mentionedPromotion);
+      return;
+    }
 
     if (session.step === STATES.CEP && doesNotKnowCep(trimmed)) {
       session.ai.lastRoutingDecision = "LOCAL:CEP_UNKNOWN";
@@ -852,6 +902,13 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       if (plan) await choosePlan(plan);
       return;
     }
+    if (action === "select-combat-offer") {
+      const plan = getPromotionalPlans().find((item) => item.id === value);
+      if (!plan || !hasViableCoverage() || session.step === STATES.FINALIZADO) return;
+      if (session.step !== STATES.ESCOLHA_PLANO) changeStep(STATES.ESCOLHA_PLANO);
+      return choosePlan(plan);
+    }
+    if (action === "show-main-plans") return showMainPlansAfterOfferQuestion();
     if (action === "show-more-plans") return showMorePlans();
     if (action === "show-promotions") return showPromotions();
     if (["select-due-date", "select-installation-date", "select-shift"].includes(action)) {
