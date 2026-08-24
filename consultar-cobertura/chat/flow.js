@@ -11,7 +11,7 @@ import {
   selectPlanFromText,
   wantsAddressCorrection,
   wantsConfirmation
-} from "./parser.js";
+} from "./parser.js?v=10";
 import { resumePromptForStep } from "./knowledge.js";
 import { routeMessage, ROUTE_KINDS, ROUTER_COMMANDS } from "./message-router.js";
 import { getPlansForCity, getPromotionalPlans, isPromotionalPlan, PLAN_SELECTION_VIEWS } from "./plans.js";

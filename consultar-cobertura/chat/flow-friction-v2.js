@@ -1,4 +1,4 @@
-import { createChatFlow as createBaseChatFlow } from "./flow.js?v=9";
+import { createChatFlow as createBaseChatFlow } from "./flow.js?v=10";
 import { extractBirthDate, extractCpf, extractName, findPromotionalPlanMention } from "./parser.js?v=10";
 import { DUE_DATE_OPTIONS, calculateBillingSummary } from "./billing.js?v=10";
 import { getPlansForCity, getPromotionalPlans, PLAN_SELECTION_VIEWS } from "./plans.js?v=9";

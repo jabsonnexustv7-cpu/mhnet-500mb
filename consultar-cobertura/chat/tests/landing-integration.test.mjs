@@ -8,18 +8,22 @@ test("landing carrega o chat reutilizável sem iframe", () => {
   const landing = read("../../index.html");
   const embed = read("../embed.js");
   assert.match(landing, /chat\/chat\.css\?v=6/);
-  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=14"/);
-  assert.match(embed, /await import\("\.\/app\.js\?v=13"\)/);
+  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=15"/);
+  assert.match(embed, /await import\("\.\/app\.js\?v=14"\)/);
   assert.doesNotMatch(embed, /iframe/i);
 });
 
 test("versão nova invalida o cache dos módulos internos críticos", () => {
   const app = read("../app.js");
+  const frictionFlow = read("../flow-friction-v2.js");
+  const flow = read("../flow.js");
   for (const moduleName of ["config", "ai-service", "integrations", "knowledge", "message-router", "state", "tracking", "ui", "whatsapp"]) {
     assert.match(app, new RegExp(`\\./${moduleName}\\.js\\?v=9`));
   }
-  assert.match(app, /\.\/flow-friction-v2\.js\?v=2/);
+  assert.match(app, /\.\/flow-friction-v2\.js\?v=3/);
   assert.match(app, /\.\/hero-bridge\.js\?v=2/);
+  assert.match(frictionFlow, /\.\/flow\.js\?v=10/);
+  assert.match(flow, /\.\/parser\.js\?v=10/);
 });
 
 test("chat abre como modal na mesma página e possui retorno claro", () => {
