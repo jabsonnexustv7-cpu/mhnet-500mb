@@ -71,6 +71,15 @@ test("mobile mantém o modal acima do hero e respeita a área segura", () => {
   assert.match(legacyLanding, /viewport-fit=cover/);
 });
 
+test("banner inicial não depende de imagem ausente", () => {
+  const legacyLanding = read("../../coverage-base.html");
+  assert.doesNotMatch(legacyLanding, /hero-conectando\.png/);
+  assert.match(
+    legacyLanding,
+    /id="hero-fallback" class="hero-content-fallback container" style="display:block;"/
+  );
+});
+
 test("campos mobile usam 16px e evitam o zoom automático do Safari", () => {
   const css = read("../chat.css");
   assert.match(css, /@media \(max-width: 640px\)[\s\S]*\.webturbo-chat-root input,[\s\S]*font-size: 16px/);
