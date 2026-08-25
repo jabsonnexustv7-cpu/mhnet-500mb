@@ -198,6 +198,45 @@
     return `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(message)}`;
   }
 
+  function installEmergencyWhatsFallback(url) {
+    const success = byId("etapaSucesso");
+    if (!success) return null;
+
+    let button = byId("posVendaWhatsButton");
+    if (!button) {
+      button = document.createElement("a");
+      button.id = "posVendaWhatsButton";
+      button.textContent = "Continuar no WhatsApp";
+      button.target = "_self";
+      button.rel = "noopener";
+      button.dataset.webturboDirectWhatsapp = "true";
+      button.setAttribute("role", "button");
+      button.style.cssText = "display:inline-flex;align-items:center;justify-content:center;min-height:52px;margin-top:16px;padding:0 24px;border-radius:10px;background:#00c853;color:#fff;font-size:15px;font-weight:800;text-decoration:none";
+      success.appendChild(button);
+    }
+    button.href = url;
+    return button;
+  }
+
+  function redirectAfterSuccessfulOrder() {
+    if (typeof window.redirecionarWhatsAppFinal === "function") {
+      try {
+        window.redirecionarWhatsAppFinal();
+        return;
+      } catch (error) {
+        console.warn("[WebTurbo] Redirecionador principal do WhatsApp falhou; usando contingência.", error);
+      }
+    }
+
+    const url = buildWhatsUrl();
+    installEmergencyWhatsFallback(url);
+    try {
+      window.location.assign(url);
+    } catch (error) {
+      console.warn("[WebTurbo] Redirecionamento automático não foi aceito; botão manual preservado.", error);
+    }
+  }
+
   async function postCrm(payload) {
     const request = async (body) => {
       const response = await window.fetch(CRM_ENDPOINT, {
@@ -251,7 +290,7 @@
       submitting = false;
       if (button) { button.disabled = true; button.textContent = "Pedido concluído"; }
       try { window.mostrarEtapa?.(6); } catch (_) {}
-      window.setTimeout(() => window.location.assign(buildWhatsUrl()), 500);
+      redirectAfterSuccessfulOrder();
     } catch (error) {
       submitting = false;
       if (button) { button.disabled = false; button.textContent = originalText; }

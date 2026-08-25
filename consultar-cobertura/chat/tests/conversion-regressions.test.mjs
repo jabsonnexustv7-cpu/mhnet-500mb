@@ -5,6 +5,8 @@ import vm from "node:vm";
 
 const recovery = readFileSync(new URL("../../lead-recovery-notification.js", import.meta.url), "utf8");
 const finalizer = readFileSync(new URL("../../conversion-finalizer-v4.js", import.meta.url), "utf8");
+const postSaleWhatsApp = readFileSync(new URL("../../post-sale-whatsapp.js", import.meta.url), "utf8");
+const chatEmbed = readFileSync(new URL("../embed.js", import.meta.url), "utf8");
 const coverage = readFileSync(new URL("../../coverage-base.html", import.meta.url), "utf8");
 const landing = readFileSync(new URL("../../index.html", import.meta.url), "utf8");
 
@@ -139,7 +141,18 @@ test("CRM é repetido sem o e-mail opcional quando esse for o único campo rejei
   assert.equal(bodies[1].event_id, "event_test");
 });
 
+test("sucesso do CRM usa redirecionamento robusto e preserva fallback direto do WhatsApp", () => {
+  assert.match(finalizer, /redirectAfterSuccessfulOrder\(\)/);
+  assert.match(finalizer, /typeof window\.redirecionarWhatsAppFinal === "function"/);
+  assert.doesNotMatch(finalizer, /setTimeout\(\(\) => window\.location\.assign\(buildWhatsUrl\(\)\)/);
+  assert.match(postSaleWhatsApp, /button\.dataset\.webturboDirectWhatsapp = "true"/);
+  assert.match(chatEmbed, /target\.dataset\.webturboDirectWhatsapp === "true"/);
+  assert.match(chatEmbed, /element\.dataset\.webturboDirectWhatsapp === "true"/);
+});
+
 test("landing invalida o cache dos dois controladores corrigidos", () => {
   assert.match(landing, /lead-recovery-notification\.js\?v=9/);
-  assert.match(landing, /conversion-finalizer-v4\.js\?v=3/);
+  assert.match(landing, /post-sale-whatsapp\.js\?v=2/);
+  assert.match(landing, /chat\/embed\.js\?v=17/);
+  assert.match(landing, /conversion-finalizer-v4\.js\?v=4/);
 });

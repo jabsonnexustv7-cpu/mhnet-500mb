@@ -75,6 +75,7 @@ function replacePrimaryWhatsAppCtas(root = document) {
   for (const id of DIRECT_WHATSAPP_IDS) {
     const element = root.getElementById?.(id) || root.querySelector?.(`#${id}`);
     if (!element) continue;
+    if (element.dataset.webturboDirectWhatsapp === "true") continue;
     if (element.dataset.webturboChatTrigger === "true") continue;
     element.dataset.webturboChatTrigger = "true";
     element.setAttribute("aria-label", "Abrir atendimento on-line da WebTurbo");
@@ -90,7 +91,11 @@ function replacePrimaryWhatsAppCtas(root = document) {
   }
 
   for (const element of root.querySelectorAll?.("a[href*='wa.me']") || []) {
-    if (element.closest(`#${ROOT_ID}`) || element.dataset.webturboChatTrigger === "true") continue;
+    if (
+      element.closest(`#${ROOT_ID}`) ||
+      element.dataset.webturboChatTrigger === "true" ||
+      element.dataset.webturboDirectWhatsapp === "true"
+    ) continue;
     element.dataset.webturboChatTrigger = "true";
     element.setAttribute("aria-label", "Abrir atendimento on-line da WebTurbo");
     element.removeAttribute("target");
@@ -122,7 +127,7 @@ window.WEBTURBO_CHAT_CONFIG = {
 
 document.addEventListener("click", (event) => {
   const target = event.target.closest?.("[data-webturbo-chat-trigger='true'], a[href*='wa.me']");
-  if (!target || target.closest(`#${ROOT_ID}`)) return;
+  if (!target || target.closest(`#${ROOT_ID}`) || target.dataset.webturboDirectWhatsapp === "true") return;
   event.preventDefault();
   event.stopImmediatePropagation();
   openChat();

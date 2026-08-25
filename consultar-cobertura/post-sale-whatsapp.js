@@ -128,6 +128,7 @@
       button.href = buildWhatsUrl();
       button.target = "_self";
       button.rel = "noopener";
+      button.dataset.webturboDirectWhatsapp = "true";
       button.setAttribute("role", "button");
       button.style.cssText = [
         "display:inline-flex",

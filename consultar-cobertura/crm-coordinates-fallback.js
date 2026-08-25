@@ -69,14 +69,4 @@
 
     return originalFetch(input, init);
   };
-
-  // O wrapper da página já carrega este arquivo em todas as visitas.
-  // Aproveitamos o ponto estável para carregar a melhoria do pós-venda sem alterar o HTML monolítico.
-  if (!document.querySelector('script[data-webturbo-post-sale-whatsapp]')) {
-    const script = document.createElement("script");
-    script.src = "/consultar-cobertura/post-sale-whatsapp.js?v=1";
-    script.async = false;
-    script.dataset.webturboPostSaleWhatsapp = "1";
-    document.body.appendChild(script);
-  }
 })();

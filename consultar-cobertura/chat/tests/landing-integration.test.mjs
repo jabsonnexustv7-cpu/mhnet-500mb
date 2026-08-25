@@ -8,7 +8,7 @@ test("landing carrega o chat reutilizável sem iframe", () => {
   const landing = read("../../index.html");
   const embed = read("../embed.js");
   assert.match(landing, /chat\/chat\.css\?v=6/);
-  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=16"/);
+  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=17"/);
   assert.match(embed, /await import\("\.\/app\.js\?v=15"\)/);
   assert.doesNotMatch(embed, /iframe/i);
 });
