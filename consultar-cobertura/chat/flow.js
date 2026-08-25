@@ -14,7 +14,7 @@ import {
 } from "./parser.js?v=10";
 import { resumePromptForStep } from "./knowledge.js";
 import { routeMessage, ROUTE_KINDS, ROUTER_COMMANDS } from "./message-router.js";
-import { getPlansForCity, getPromotionalPlans, isPromotionalPlan, PLAN_SELECTION_VIEWS } from "./plans.js";
+import { getPlansForCity, getPromotionalPlans, isPromotionalPlan, PLAN_SELECTION_VIEWS } from "./plans.js?v=10";
 import { calculateBillingSummary, DUE_DATE_OPTIONS, INSTALLATION_SHIFT_OPTIONS, parseInstallationDate, tomorrowISO } from "./billing.js";
 import { clearAddress, saveSession, STATES, transition } from "./state.js";
 import {

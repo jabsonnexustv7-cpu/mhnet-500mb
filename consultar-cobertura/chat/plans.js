@@ -97,7 +97,7 @@ const BASE_PLANS = [
   }
 ];
 
-const REGIONAL_CITIES = new Set(["sorocaba", "votorantim"]);
+const REGIONAL_CITIES = new Set(["sorocaba", "votorantim", "itapetininga", "ipero"]);
 
 function normalizeCity(value) {
   return String(value || "")

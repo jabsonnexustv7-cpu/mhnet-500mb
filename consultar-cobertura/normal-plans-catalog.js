@@ -8,7 +8,7 @@
   const MORE_BUTTON_ID = "wt-choice-v3-more-plans";
   const CONTRACT_OVERLAY_ID = "modalOverlay";
   const SPECIAL_OVERLAY_ID = "wt-coverage-choice-v3";
-  const REGIONAL_CITIES = new Set(["sorocaba", "votorantim"]);
+  const REGIONAL_CITIES = new Set(["sorocaba", "votorantim", "itapetininga", "ipero"]);
 
   let normalPlanSelectionActive = false;
   let stepNavigationPatched = false;

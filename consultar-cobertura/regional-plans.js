@@ -2,7 +2,7 @@
 (function () {
   "use strict";
 
-  const REGIONAL_CITIES = new Set(["sorocaba", "votorantim"]);
+  const REGIONAL_CITIES = new Set(["sorocaba", "votorantim", "itapetininga", "ipero"]);
   const PLAN_500 = "FIBRA 500MB";
   const PLAN_600 = "FIBRA 600MB";
   const PLAN_500_EXTRA = "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI";

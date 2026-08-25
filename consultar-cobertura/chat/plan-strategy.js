@@ -7,7 +7,7 @@
   if (window.__webturboChatPlanStrategyInstalled) return;
   window.__webturboChatPlanStrategyInstalled = true;
 
-  const REGIONAL_CITIES = new Set(["sorocaba", "votorantim"]);
+  const REGIONAL_CITIES = new Set(["sorocaba", "votorantim", "itapetininga", "ipero"]);
 
   function normalize(value) {
     return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
