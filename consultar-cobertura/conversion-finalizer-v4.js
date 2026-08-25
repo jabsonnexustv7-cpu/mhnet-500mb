@@ -237,6 +237,16 @@
     }
   }
 
+  function setClarityTag(key, value) {
+    const normalized = clean(value);
+    if (!normalized) return;
+    try { window.clarity?.("set", key, normalized); } catch (_) {}
+  }
+
+  function prioritizeClarity(reason) {
+    try { window.clarity?.("upgrade", reason); } catch (_) {}
+  }
+
   async function postCrm(payload) {
     const request = async (body) => {
       const response = await window.fetch(CRM_ENDPOINT, {
@@ -281,11 +291,17 @@
     submitting = true;
     const originalText = clean(button?.textContent) || "Concluir pedido";
     if (button) { button.disabled = true; button.textContent = "Enviando pedido..."; }
+    setClarityTag("checkout_event_id", checkoutEventId);
+    setClarityTag("checkout_stage", "crm_submission");
+    prioritizeClarity("checkout_crm");
     track("checkout_crm_direto_iniciado", { cidade: payload.cidade, uf: payload.uf, vencimento: due });
     try {
       if (!payload.emailCliente) track("checkout_email_omitido_incompativel_crm");
       const { response, data } = await postCrm(payload);
       if (!response.ok || data?.ok !== true || !data?.preSaleId) throw new Error(apiErrorMessage(data, response.status) || "O CRM recusou o envio.");
+      setClarityTag("pre_sale_id", String(data.preSaleId));
+      setClarityTag("checkout_stage", "crm_success");
+      prioritizeClarity("checkout_crm_sucesso");
       track("checkout_crm_direto_sucesso", { pre_sale_id: String(data.preSaleId), created: data.created === true ? "sim" : "nao" });
       submitting = false;
       if (button) { button.disabled = true; button.textContent = "Pedido concluído"; }

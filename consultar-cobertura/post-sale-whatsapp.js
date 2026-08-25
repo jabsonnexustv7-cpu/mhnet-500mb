@@ -6,7 +6,9 @@
   window.__webturboPostSaleWhatsAppInstalled = true;
 
   const FALLBACK_WHATS_NUMBER = "555193187300";
+  const REDIRECT_DELAY_MS = 650;
   let whatsappConversionTracked = false;
+  let automaticRedirectTimer = 0;
 
   function byId(id) {
     return document.getElementById(id);
@@ -172,13 +174,17 @@
     safeTrackLegacyClick("automatico");
     safeTrackWhatsConversionOnce();
 
-    try {
-      // Sem espera de 3 segundos: tenta encaminhar assim que o CRM confirma a pré-venda.
-      window.location.assign(url);
-    } catch (error) {
-      console.warn("[WebTurbo] Redirecionamento automático para WhatsApp não foi aceito pelo navegador.", error);
-      // O botão manual permanece visível como fallback para Facebook/Instagram in-app browser.
-    }
+    if (automaticRedirectTimer) return;
+    automaticRedirectTimer = window.setTimeout(function () {
+      automaticRedirectTimer = 0;
+      try {
+        // O pequeno intervalo permite renderizar o sucesso e concluir a telemetria pendente.
+        window.location.assign(url);
+      } catch (error) {
+        console.warn("[WebTurbo] Redirecionamento automático para WhatsApp não foi aceito pelo navegador.", error);
+        // O botão manual permanece visível como fallback para Facebook/Instagram in-app browser.
+      }
+    }, REDIRECT_DELAY_MS);
   };
 
   installSuccessFallback();

@@ -145,14 +145,25 @@ test("sucesso do CRM usa redirecionamento robusto e preserva fallback direto do 
   assert.match(finalizer, /redirectAfterSuccessfulOrder\(\)/);
   assert.match(finalizer, /typeof window\.redirecionarWhatsAppFinal === "function"/);
   assert.doesNotMatch(finalizer, /setTimeout\(\(\) => window\.location\.assign\(buildWhatsUrl\(\)\)/);
+  assert.match(postSaleWhatsApp, /const REDIRECT_DELAY_MS = 650/);
+  assert.match(postSaleWhatsApp, /window\.setTimeout\(function \(\) \{[\s\S]*window\.location\.assign\(url\)[\s\S]*REDIRECT_DELAY_MS/);
   assert.match(postSaleWhatsApp, /button\.dataset\.webturboDirectWhatsapp = "true"/);
   assert.match(chatEmbed, /target\.dataset\.webturboDirectWhatsapp === "true"/);
   assert.match(chatEmbed, /element\.dataset\.webturboDirectWhatsapp === "true"/);
 });
 
+test("landing libera o formulário se o redesign falhar e prioriza vendas no Clarity", () => {
+  assert.match(landing, /@keyframes wtHeroBootReveal\{to\{visibility:visible\}\}/);
+  assert.match(landing, /visibility:hidden;animation:wtHeroBootReveal 0s 1500ms forwards/);
+  assert.match(finalizer, /window\.clarity\?\.\("set", key, normalized\)/);
+  assert.match(finalizer, /window\.clarity\?\.\("upgrade", reason\)/);
+  assert.match(finalizer, /setClarityTag\("checkout_event_id", checkoutEventId\)/);
+  assert.match(finalizer, /setClarityTag\("pre_sale_id", String\(data\.preSaleId\)\)/);
+});
+
 test("landing invalida o cache dos dois controladores corrigidos", () => {
   assert.match(landing, /lead-recovery-notification\.js\?v=9/);
-  assert.match(landing, /post-sale-whatsapp\.js\?v=2/);
+  assert.match(landing, /post-sale-whatsapp\.js\?v=3/);
   assert.match(landing, /chat\/embed\.js\?v=17/);
-  assert.match(landing, /conversion-finalizer-v4\.js\?v=4/);
+  assert.match(landing, /conversion-finalizer-v4\.js\?v=5/);
 });
