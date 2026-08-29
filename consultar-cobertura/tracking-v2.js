@@ -5,6 +5,10 @@
   const TRAFFIC_KEY = "webturbo_origem_trafego";
   const ATTRIBUTION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
   const GOOGLE_FINAL_LEAD_SEND_TO = "AW-17075496858/zJmpCO2zoM8bEJrPnc4_";
+  const TIKTOK_SERVER_EVENT_URL = "https://webturbo-crm-api-964927461432.southamerica-east1.run.app/api/v1/public/tiktok-events";
+  const TIKTOK_ATTRIBUTION_KEY = "webturbo_tiktok_attribution";
+  const TIKTOK_EVENT_DEDUP_MS = 8 * 1000;
+  const tiktokRecentCoverageEvents = new Map();
 
   function param(name) {
     return (new URLSearchParams(window.location.search).get(name) || "").trim();
@@ -112,7 +116,141 @@
     return data;
   }
 
+  function readCookie(name) {
+    try {
+      const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const match = document.cookie.match(new RegExp(`(?:^|; )${escaped}=([^;]*)`));
+      return match ? decodeURIComponent(match[1]) : "";
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function saveTikTokAttribution() {
+    const ttclid = param("ttclid");
+    if (!ttclid) return;
+
+    try {
+      localStorage.setItem(TIKTOK_ATTRIBUTION_KEY, JSON.stringify({
+        ttclid,
+        captured_at: Date.now()
+      }));
+    } catch (_) {}
+  }
+
+  function readTikTokClickId() {
+    const current = param("ttclid");
+    if (current) return current;
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(TIKTOK_ATTRIBUTION_KEY) || "{}");
+      const capturedAt = Number(saved.captured_at || 0);
+      if (!saved.ttclid || !capturedAt || Date.now() - capturedAt > ATTRIBUTION_TTL_MS) {
+        localStorage.removeItem(TIKTOK_ATTRIBUTION_KEY);
+        return "";
+      }
+      return String(saved.ttclid || "").trim();
+    } catch (_) {
+      return "";
+    }
+  }
+
+  function createTikTokEventId() {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") {
+      return `tt_cov_${window.crypto.randomUUID()}`;
+    }
+    return `tt_cov_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+  }
+
+  function shouldSendTikTokCoverageEvent(details) {
+    const cep = String(details && details.cep || "").replace(/\D+/g, "");
+    const origem = String(details && details.origem || "").slice(0, 80);
+    const status = details && details.viavel === true ? "viavel" : "inviavel";
+    const key = `${cep}|${origem}|${status}`;
+    const now = Date.now();
+    const last = Number(tiktokRecentCoverageEvents.get(key) || 0);
+
+    for (const [savedKey, timestamp] of tiktokRecentCoverageEvents.entries()) {
+      if (now - timestamp > TIKTOK_EVENT_DEDUP_MS * 3) tiktokRecentCoverageEvents.delete(savedKey);
+    }
+
+    if (last && now - last < TIKTOK_EVENT_DEDUP_MS) return false;
+    tiktokRecentCoverageEvents.set(key, now);
+    return true;
+  }
+
+  function sendTikTokCoverageLead(details = {}) {
+    if (!shouldSendTikTokCoverageEvent(details)) return;
+
+    const eventId = createTikTokEventId();
+    const eventTime = Math.floor(Date.now() / 1000);
+    const status = details.viavel === true ? "viavel" : "inviavel";
+    const source = String(details.origem || "site_webturbo").slice(0, 120);
+    const properties = {
+      content_name: "consulta_cobertura",
+      description: `consulta_${status}`
+    };
+
+    try {
+      if (window.ttq && typeof window.ttq.track === "function") {
+        window.ttq.track("Lead", properties, { event_id: eventId });
+      }
+    } catch (error) {
+      console.warn("TikTok Pixel: falha ao disparar Lead de consulta concluída.", error);
+    }
+
+    const payload = {
+      event: "Lead",
+      event_id: eventId,
+      event_time: eventTime,
+      page_url: window.location.href,
+      referrer: document.referrer || "",
+      ttclid: readTikTokClickId(),
+      ttp: readCookie("_ttp"),
+      status,
+      source
+    };
+
+    fetch(TIKTOK_SERVER_EVENT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).then(async (response) => {
+      if (response.ok) return;
+      const body = await response.json().catch(() => ({}));
+      if (response.status !== 503) {
+        console.warn("TikTok Events API: evento não confirmado pelo backend.", {
+          status: response.status,
+          code: body && body.code ? body.code : ""
+        });
+      }
+    }).catch((error) => {
+      console.warn("TikTok Events API: falha não bloqueante ao enviar evento.", error);
+    });
+  }
+
+  function patchCoverageNotificationForTikTok() {
+    const original = window.notificarConsultaViavel;
+    if (typeof original !== "function" || original.__tiktokCoveragePatched) return;
+
+    const wrapped = function (...args) {
+      const details = args[0] && typeof args[0] === "object" ? args[0] : {};
+      try {
+        sendTikTokCoverageLead(details);
+      } catch (error) {
+        console.warn("TikTok: falha não bloqueante no rastreamento de cobertura.", error);
+      }
+      return original.apply(this, args);
+    };
+
+    wrapped.__tiktokCoveragePatched = true;
+    window.notificarConsultaViavel = wrapped;
+  }
+
   normalizeTrafficAttribution();
+  saveTikTokAttribution();
+  patchCoverageNotificationForTikTok();
 
   window.vendaVeioDoGoogleSite = function () {
     const origem = normalizeTrafficAttribution();
