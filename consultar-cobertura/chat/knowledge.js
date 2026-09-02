@@ -1,81 +1,74 @@
 import { STATES } from "./state.js";
 
 export const COMMERCIAL_KNOWLEDGE = Object.freeze({
-  scope: "Nova contratação de internet fibra pela WebTurbo usando rede MhNet.",
+  scope: "Nova contratação de internet fibra pela WebTurbo com a operadora definida pelo resultado de cobertura do endereço.",
 
   companyAndPostSale: {
-    webturbo: "A WebTurbo é uma empresa de representação com atendimento em nível nacional.",
-    provider: "A ativação e a rede do serviço são da MhNet.",
-    afterSale: "Ao final da contratação, o cliente é encaminhado para um consultor humano exclusivo da WebTurbo, que acompanha a jornada de pós-venda e instalação."
+    webturbo: "A WebTurbo atua na intermediação comercial da contratação de internet fibra.",
+    provider: "A operadora responsável pelo serviço é definida pelo resultado de cobertura. Nunca assuma MhNet, TIM ou Algar sem evidência no contexto confiável da sessão.",
+    afterSale: "Ao final da contratação, a WebTurbo pode encaminhar o cliente para acompanhamento humano de pós-venda e instalação."
   },
 
   installation: {
-    price: "A instalação é gratuita.",
-    equipment: "Todos os equipamentos são fornecidos em comodato, inclusive ponto extra de Wi-Fi.",
-    router: "Os roteadores fornecidos são Wi-Fi 6.",
-    deadline: "A instalação ocorre em até 24 horas. Dependendo do horário em que a contratação for concluída, pode ocorrer no mesmo dia, embora o seletor do fluxo normalmente exiba como primeira preferência o dia seguinte.",
-    days: "Há instalações de segunda a sábado. Não há atendimento de instalação aos domingos.",
-    shifts: "Turno da manhã: 08h às 12h30. Turno da tarde: 13h30 às 18h30.",
-    reschedule: "O agendamento pode ser remarcado inclusive no mesmo dia.",
-    adultPresent: "É necessário haver alguém com 18 anos completos ou mais no imóvel para receber o técnico. Essa pessoa não precisa ser o titular.",
-    technicianContact: "No dia da instalação, o técnico chama o titular pelo WhatsApp e só inicia o deslocamento depois que o titular confirma que há alguém no imóvel.",
-    cabling: "Não há necessidade padrão de furar a parede. O cliente escolhe o ponto de preferência para entrada do cabo, respeitando a viabilidade técnica do local.",
-    apartments: "Em condomínio com regras de horário, o cliente deve verificar previamente a necessidade de autorização com o condomínio.",
-    buildings: "Prédios de um bloco com até 3 andares não precisam de adequação prévia. Nas demais situações, a necessidade de adequação é avaliada depois do envio completo da venda."
+    price: "No fluxo comercial atual, a instalação é apresentada como gratuita. Se o contexto confiável trouxer condição diferente para a oferta escolhida, prevalece o contexto.",
+    equipment: "Equipamentos, modelo de roteador, comodato, ponto extra e regras técnicas podem variar conforme a operadora e o plano. Não generalize características de uma operadora para outra.",
+    deadline: "Prazo e disponibilidade de instalação dependem da operadora, agenda e viabilidade técnica. Uma data escolhida no fluxo é preferência até a confirmação operacional.",
+    adultPresent: "No dia da instalação deve haver uma pessoa maior de idade no imóvel para receber o técnico.",
+    contact: "A forma de aviso da visita técnica varia por operadora. Não diga que o técnico sempre chama diretamente o cliente.",
+    mhnetContact: "Quando o contexto indicar MhNet, o técnico pode chamar pelo WhatsApp antes do deslocamento e aguardar a confirmação de que há alguém no local.",
+    timAlgarContact: "Quando o contexto indicar TIM ou Algar, o aviso de deslocamento é feito pelos canais oficiais da própria operadora; não atribua esse contato diretamente ao técnico.",
+    apartments: "Em condomínios, regras de acesso e horários podem exigir autorização prévia. A instalação continua sujeita à viabilidade técnica do local."
   },
 
   billing: {
-    firstInvoice: "Via de regra, a primeira fatura é proporcional aos dias utilizados e vence no dia escolhido pelo cliente no mês seguinte. Dependendo da combinação entre data de instalação e vencimento escolhido, a primeira fatura cheia pode ficar para até cerca de 60 dias.",
-    dueDate: "O vencimento é escolhido em uma etapa do próprio fluxo. Use somente as datas de vencimento realmente apresentadas pelo sistema ao cliente; não invente datas.",
-    proportionalEstimate: "Pode explicar ou fazer uma estimativa aproximada da cobrança proporcional quando houver valor do plano, data de instalação e vencimento confiáveis no contexto. Deixe claro que é uma simulação e que o valor final é calculado pelo sistema.",
-    fees: "Não há taxa de adesão nem taxa extra para iniciar o serviço.",
-    price: "O preço informado do plano é fixo e, conforme a regra comercial fornecida pela WebTurbo, não aumenta em razão do tempo de permanência do cliente.",
-    delinquency: "Com 15 dias de inadimplência o serviço já pode ser bloqueado."
+    dueDate: "Datas de vencimento e regras de cobrança devem vir das opções realmente apresentadas pelo sistema para a contratação atual.",
+    firstInvoice: "A forma de cálculo da primeira fatura pode variar conforme a operadora, data de instalação e vencimento. Não aplique automaticamente a regra de uma operadora a outra.",
+    proportionalEstimate: "Só faça estimativa proporcional quando houver regra aplicável à operadora atual e dados confiáveis suficientes. Deixe claro quando for simulação.",
+    price: "O preço do plano deve ser exatamente o valor informado em availablePlans ou no plano selecionado. Nunca recupere preço de catálogo antigo ou memória.",
+    fees: "Taxas e cobranças adicionais só podem ser afirmadas quando constarem no contexto confiável ou no conhecimento operacional aplicável à operadora atual."
   },
 
   loyaltyAndCancellation: {
-    term: "Todo plano pós-pago possui permanência mínima de 12 meses.",
-    reason: "A fidelidade existe porque a operadora assume um custo elevado para instalar e disponibilizar o serviço sem cobrança inicial de instalação e equipamentos ao cliente.",
-    cancellation: "O cliente pode cancelar quando quiser, respeitando as regras de fidelidade.",
-    penalty: "A multa padrão parte do valor do plano escolhido multiplicado por 12 e é reduzida proporcionalmente conforme o tempo já cumprido da fidelidade. Ao explicar, trate como cálculo pró-rata e evite afirmar um valor exato sem os dados do contrato.",
-    equipmentReturn: "No cancelamento, um técnico recolhe os equipamentos em comodato.",
-    addressChange: "Para mudança de endereço, o cliente deve entrar em contato com pelo menos 5 dias de antecedência. A fidelidade é mantida e o novo endereço precisa passar por verificação de cobertura."
+    term: "Fidelidade, permanência mínima, multa e cancelamento podem variar conforme operadora e oferta. Não generalize uma regra sem contexto confiável.",
+    penalty: "Nunca informe multa exata sem os dados contratuais e a regra aplicável à operadora/plano atual.",
+    equipmentReturn: "A devolução de equipamentos depende das regras contratuais da operadora responsável pelo serviço.",
+    addressChange: "Mudança de endereço exige nova verificação de cobertura e segue as regras da operadora contratada."
   },
 
   creditAndRegistration: {
-    negatives: "Clientes negativados podem contratar. Não é feita consulta ao SPC ou Serasa para esta contratação.",
-    restriction: "A restrição considerada é a existência de débito interno anterior junto à MhNet, pois a rede utilizada no serviço é da MhNet.",
-    approval: "Nunca diga que a aprovação é garantida. A validação cadastral final é da operadora e do sistema.",
-    alternateCpf: "Se um CPF não for aprovado, a contratação pode ser feita com outro CPF, desde que o novo titular autorize a contratação.",
+    negatives: "Critérios para negativados, score e restrições variam por operadora. Não diga que aprovação é garantida nem aplique automaticamente a regra da MhNet à TIM ou Algar.",
+    restriction: "Débitos internos e demais restrições devem ser avaliados pela operadora indicada no contexto. Se a regra específica não estiver disponível, diga que o sistema fará a validação.",
+    approval: "A aprovação cadastral final pertence à operadora e ao sistema.",
+    alternateCpf: "Não sugira troca de titular como forma de contornar uma reprovação sem que essa possibilidade esteja prevista no contexto operacional atual.",
     minimumAge: "O titular precisa ter 18 anos completos ou mais."
   },
 
   documentsAndPrivacy: {
-    signature: "Ao final da contratação, o titular conclui a assinatura pelo portal mediante envio das fotos solicitadas.",
-    required: "O titular precisa enviar selfie e foto de documento ao final da contratação.",
-    physicalDocuments: "São aceitos RG, CNH ou carteira de trabalho física.",
-    digitalDocuments: "Em formato digital, são aceitos somente RG e CNH.",
-    secondaryPhone: "São solicitados dois contatos para que a equipe técnica tenha uma alternativa caso não consiga falar com o contato principal no dia da instalação.",
-    email: "O e-mail é usado para atualizações do pedido e envio do contrato.",
-    lgpd: "Os dados pessoais devem ser tratados conforme a Lei nº 13.709/2018, a Lei Geral de Proteção de Dados Pessoais (LGPD). Não solicite nem repita dados pessoais para responder dúvidas comerciais."
+    required: "Documentos, aceite, assinatura e etapas de validação variam conforme a operadora. Use somente o fluxo apresentado ao cliente e não antecipe exigências de outra operadora.",
+    secondaryPhone: "Quando o fluxo solicitar um segundo contato, explique que ele serve como alternativa de comunicação durante a contratação/instalação.",
+    email: "O e-mail pode ser usado para atualizações do pedido, comunicações e documentos da contratação.",
+    lgpd: "Não solicite nem repita dados pessoais em respostas de FAQ. A coleta deve acontecer somente na etapa determinística apropriada do fluxo."
   },
 
   serviceQuality: {
-    upload: "O upload corresponde a 50% da velocidade contratada.",
-    dataCap: "Não há franquia ou limite mensal de dados.",
-    ping: "A conexão possui boa latência para jogos e aplicações em tempo real, especialmente por cabo. Não prometa um valor fixo de ping em milissegundos, pois ele varia conforme servidor, rota, equipamento e uso por Wi-Fi.",
-    wifi: "A experiência por Wi-Fi depende do ambiente, distância, interferências e quantidade de dispositivos. Não prometa cobertura total da casa sem considerar o ambiente ou um ponto extra."
+    speed: "Velocidade, upload, tecnologia de Wi-Fi e demais características técnicas devem vir do plano/contexto atual; não transplante especificações entre operadoras.",
+    dataCap: "Só afirme ausência de franquia ou limite de dados quando essa condição estiver confirmada para a oferta atual.",
+    ping: "Nunca prometa um valor fixo de ping, pois ele varia conforme servidor, rota, equipamento, cabeamento e uso por Wi-Fi.",
+    wifi: "A experiência por Wi-Fi depende do ambiente, distância, interferências e quantidade de dispositivos. Não prometa cobertura total do imóvel."
   },
 
   dynamicRules: {
     coverage: "Cobertura nunca deve ser inventada. Use exclusivamente o resultado de cobertura fornecido pelo sistema para o endereço consultado.",
-    plans: "Planos, preços e benefícios devem vir exclusivamente dos planos disponíveis no contexto atual. Não invente ofertas nem preços.",
-    schedule: "A IA pode explicar as regras gerais de instalação, mas uma data específica só deve ser tratada como confirmada quando o sistema ou a equipe confirmar.",
-    systemData: "Se uma informação depender de cobertura, agenda, plano disponível, preço atual, aprovação ou outro dado operacional não presente no contexto confiável, diga que será validada pelo sistema ou pela equipe."
+    operator: "A operadora deve ser identificada apenas pelo contexto confiável da sessão, inclusive códigos e informações dos availablePlans. Se não for possível identificar com segurança, não presuma uma operadora.",
+    plans: "Planos, preços e benefícios devem vir exclusivamente de availablePlans e do plano selecionado na sessão atual. Esses dados têm prioridade sobre qualquer conhecimento estático.",
+    planCodes: "Códigos iniciados por TIM_, ALGAR_ ou MHNET_ identificam a operadora do plano. Use essa informação somente quando o código estiver presente no contexto confiável.",
+    bestSeller: "Só chame um plano de 'Mais vendido' quando essa indicação estiver explicitamente presente nas features do plano enviado no contexto.",
+    schedule: "Uma data específica só deve ser tratada como confirmada quando o sistema ou a equipe confirmar.",
+    systemData: "Se uma resposta depender de cobertura, operadora, agenda, preço, benefício, aprovação, documento ou regra operacional não presente no contexto confiável, diga que será validada pelo sistema ou pela equipe."
   },
 
   handoff: {
-    when: "Encaminhe para atendimento humano quando o cliente pedir uma pessoa, quando a dúvida estiver fora de nova contratação, ou quando a resposta depender de uma exceção operacional não disponível no contexto.",
+    when: "Encaminhe para atendimento humano quando o cliente pedir uma pessoa, quando a dúvida estiver fora de nova contratação, ou quando a resposta depender de exceção operacional não disponível no contexto.",
     unsupported: "Suporte técnico de cliente já instalado, segunda via, cancelamento de contrato existente, troca de titularidade e exceções não previstas devem ser direcionados a um atendente."
   }
 });
