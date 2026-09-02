@@ -1,11 +1,44 @@
 import { validateAiResponse } from "./ai-schema.js";
 
 const PREFIX = "[WEBTURBO CHAT]";
+const BEST_SELLER_PLAN_CODES = new Set([
+  "TIM_RS_800_YOUTUBE_PREMIUM",
+  "TIM_SC_1000",
+  "ALGAR_800",
+  "MHNET_500_WIFI_EXTRA"
+]);
 
 function withTimeout(fetchImpl, url, options, timeoutMs) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   return fetchImpl(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
+function operatorFeature(planId) {
+  const id = String(planId || "").toUpperCase();
+  if (id.startsWith("TIM_")) return "Operadora: TIM";
+  if (id.startsWith("ALGAR_")) return "Operadora: Algar";
+  if (id.startsWith("MHNET_")) return "Operadora: MhNet";
+  return "";
+}
+
+function inferredFeatures(plan) {
+  const id = String(plan?.id || "").toUpperCase();
+  const name = String(plan?.title || "").toUpperCase();
+  const features = [];
+  const operator = operatorFeature(id);
+  if (operator) features.push(operator);
+  if (BEST_SELLER_PLAN_CODES.has(id)) features.push("⭐ Mais vendido");
+  if (name.includes("YOUTUBE PREMIUM")) features.push("YouTube Premium incluso");
+  if (name.includes("GLOBOPLAY")) features.push("Globoplay incluso");
+  if (name.includes("PARAMOUNT")) features.push("Paramount+ incluso");
+  if (name.includes("HBO MAX")) features.push("HBO Max incluso");
+  if (name.includes("PONTO EXTRA")) features.push("Ponto extra de Wi-Fi");
+  if (Array.isArray(plan?.features)) features.push(...plan.features);
+
+  return [...new Set(features.map((item) => String(item || "").trim()).filter(Boolean))]
+    .slice(0, 5)
+    .map((item) => item.slice(0, 80));
 }
 
 export function buildAiRequest(session, message, availablePlans) {
@@ -24,7 +57,7 @@ export function buildAiRequest(session, message, availablePlans) {
         name: String(plan.title || "").slice(0, 120),
         speed: Number(plan.speed || 0),
         price: Number(plan.price || 0),
-        features: Array.isArray(plan.features) ? plan.features.slice(0, 5).map((item) => String(item).slice(0, 80)) : []
+        features: inferredFeatures(plan)
       }))
     }
   };
