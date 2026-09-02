@@ -1,11 +1,17 @@
 // WebTurbo — apresentação principal dos planos no Hero.
-// Prioriza o plano de R$119,90, mantém alternativas de maior ticket visíveis
-// e deixa as ofertas de combate exclusivamente para recuperação de abandono.
+// Destaca o plano comercial escolhido como "Mais vendido" por operadora/região.
 (function () {
   "use strict";
 
   if (window.__webturboPlanPresentationV2Installed) return;
   window.__webturboPlanPresentationV2Installed = true;
+
+  const BEST_SELLER_CODES = [
+    "TIM_RS_800_YOUTUBE_PREMIUM",
+    "TIM_SC_1000",
+    "ALGAR_800",
+    "MHNET_500_WIFI_EXTRA"
+  ];
 
   const ORDER_GROUPS = [
     ["FIBRA 500MB + 1 PONTO EXTRA DE WI-FI", "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI"],
@@ -17,8 +23,8 @@
   ];
 
   const COPY = {
-    "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": { badge: "Mais popular", title: "500 Mega + 1 Ponto extra", description: "Mais cobertura de Wi-Fi pela casa com um ponto extra.", recommended: true },
-    "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI": { badge: "Mais popular", title: "600 Mega + 1 Ponto extra", description: "Mais cobertura de Wi-Fi pela casa com um ponto extra.", recommended: true },
+    "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI": { badge: "⭐ Mais vendido", title: "500 Mega + 1 Ponto extra", description: "Mais cobertura de Wi-Fi pela casa com um ponto extra.", recommended: true },
+    "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI": { badge: "⭐ Mais vendido", title: "600 Mega + 1 Ponto extra", description: "Mais cobertura de Wi-Fi pela casa com um ponto extra.", recommended: true },
     "FIBRA 500MB": { badge: "Plano econômico", title: "500 Mega", description: "Internet fibra para navegação, vídeos e uso diário." },
     "FIBRA 600MB": { badge: "Plano econômico", title: "600 Mega", description: "Internet fibra para navegação, vídeos e uso diário." },
     "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY": { badge: "Completo", title: "600 Mega + Ponto extra + Globoplay", description: "Mais velocidade, cobertura de Wi-Fi e Globoplay no mesmo plano." },
@@ -30,6 +36,48 @@
   function byId(id) { return document.getElementById(id); }
   function track(name, params) { try { window.trackGA4?.(name, params || {}); } catch (_) {} try { window.clarity?.("event", name); } catch (_) {} }
   function cardFor(plan) { return document.querySelector(`#metaPlanGrid .meta-plan-card[data-plan="${CSS.escape(plan)}"]`); }
+
+  function cleanAria(value) {
+    return String(value || "")
+      .replace(/,\s*(?:⭐\s*)?Mais vendido/gi, "")
+      .replace(/,\s*Mais popular/gi, "")
+      .replace(/,\s*Oferta em destaque/gi, "")
+      .trim();
+  }
+
+  function configureDynamicCards() {
+    const grid = byId("metaPlanGrid");
+    if (!grid) return false;
+
+    const cards = Array.from(grid.querySelectorAll(".meta-plan-card[data-plan]"));
+    const target = BEST_SELLER_CODES
+      .map((code) => cards.find((card) => card.dataset.plan === code))
+      .find(Boolean);
+
+    if (!target) return false;
+
+    cards.forEach((card) => {
+      const code = String(card.dataset.plan || "");
+      if (!/^(?:TIM|ALGAR|MHNET)_/.test(code)) return;
+
+      const recommended = card === target;
+      card.classList.toggle("is-popular", recommended);
+      card.classList.toggle("wt-plan-recommended", recommended);
+      card.classList.remove("wt-plan-premium");
+
+      const badge = card.querySelector(".meta-plan-card-badge");
+      if (badge) {
+        badge.textContent = recommended ? "⭐ Mais vendido" : "Internet fibra";
+        badge.hidden = false;
+      }
+
+      const aria = cleanAria(card.getAttribute("aria-label"));
+      card.setAttribute("aria-label", recommended ? `${aria}, Mais vendido` : aria);
+    });
+
+    if (grid.firstElementChild !== target) grid.insertBefore(target, grid.firstElementChild);
+    return true;
+  }
 
   function configureCard(plan) {
     const card = cardFor(plan);
@@ -45,11 +93,13 @@
     const description = card.querySelector(".meta-plan-card-description");
     if (description) description.textContent = copy.description;
     const priceText = card.querySelector(".meta-plan-card-price strong")?.textContent?.trim() || "";
-    const qualifiers = [copy.recommended ? "Mais popular" : ""].filter(Boolean).join(", ");
+    const qualifiers = [copy.recommended ? "Mais vendido" : ""].filter(Boolean).join(", ");
     card.setAttribute("aria-label", `${copy.title}, ${priceText} por mês${qualifiers ? `, ${qualifiers}` : ""}`);
   }
 
   function reorderCards() {
+    if (configureDynamicCards()) return;
+
     const grid = byId("metaPlanGrid");
     if (!grid) return;
     ORDER_GROUPS.forEach((group) => {
