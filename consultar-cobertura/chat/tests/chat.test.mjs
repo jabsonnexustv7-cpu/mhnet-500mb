@@ -27,8 +27,14 @@ const sampleSession = () => ({
   cidade: "Canoas",
   uf: "RS",
   coordenadas: "-29.92,-51.18",
-  cobertura: { viavel: true, status: "VIAVEL", motivo: "ftth_disponivel", source: "real" },
-  plano: BASE_PLANS[0],
+  cobertura: {
+    viavel: true,
+    status: "VIAVEL",
+    motivo: "ftth_disponivel",
+    source: "real",
+    operator: { code: "MHNET", name: "MhNet" }
+  },
+  plano: { ...BASE_PLANS[0], id: "MHNET_500_WIFI_EXTRA" },
   nome: "João da Silva",
   cpf: "52998224725",
   dataNascimento: "1990-05-20",
@@ -109,6 +115,48 @@ test("mock de cobertura retorna cenário inviável", async () => {
   assert.equal(result.status, "INVIAVEL");
 });
 
+test("consulta real usa o resolvedor público multioperadora e normaliza os planos", async () => {
+  const requests = [];
+  const service = createCoverageService(
+    { coverageMode: "real", coverageEndpoint: "https://crm.example.test/site-coverage/resolve", requestTimeoutMs: 1000 },
+    {
+      logger: { info() {}, warn() {} },
+      fetchImpl: async (url, options) => {
+        requests.push({ url, body: JSON.parse(options.body) });
+        return {
+          ok: true,
+          status: 200,
+          async json() {
+            return {
+              ok: true,
+              viable: true,
+              operator: { code: "TIM", name: "TIM" },
+              coverage: { status: "VIAVEL", reason: "endereco_elegivel", coords: "-27,-48" },
+              plans: [{ code: "TIM_SC_600", name: "FIBRA 600MB", price: 89.99, description: "Ótimo custo-benefício." }]
+            };
+          }
+        };
+      }
+    }
+  );
+
+  const result = await service.check(sampleSession());
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].url, "https://crm.example.test/site-coverage/resolve");
+  assert.deepEqual(requests[0].body, {
+    postalCode: "92120141",
+    state: "RS",
+    city: "Canoas",
+    district: "Centro",
+    street: "Rua Exemplo",
+    number: "1186",
+    complement: "Apto 302"
+  });
+  assert.equal(result.operator.code, "TIM");
+  assert.equal(result.plans[0].id, "TIM_SC_600");
+  assert.equal(result.plans[0].price, 89.99);
+});
+
 test("notificação de cobertura usa as mesmas ações do fluxo tradicional", () => {
   const viable = buildCoverageNotificationPayload(sampleSession(), sampleSession().cobertura, { origin: "chat_atendimento_online" });
   const unviable = buildCoverageNotificationPayload(sampleSession(), { viavel: false, status: "INVIAVEL", motivo: "sem_ftth_no_raio" });
@@ -176,7 +224,7 @@ test("sessão persistida pode ser retomada após recarregar", () => {
   const restored = loadSession(storage, "chat");
   assert.equal(restored.sessionId, "session-test");
   assert.equal(restored.step, STATES.CONFIRMACAO);
-  assert.equal(restored.plano.id, BASE_PLANS[0].id);
+  assert.equal(restored.plano.id, "MHNET_500_WIFI_EXTRA");
 });
 
 test("sessão expira após 24 horas e é removida do localStorage", () => {
@@ -241,7 +289,9 @@ test("seleção de planos começa nas promoções e expande para o catálogo", a
 test("gera payload final compatível com o CRM existente", () => {
   const payload = buildCrmPayload(sampleSession(), { pageUrl: "http://localhost/chat-lab.html" });
   assert.equal(payload.documentoCliente, "52998224725");
-  assert.equal(payload.planos, BASE_PLANS[0].id);
+  assert.equal(payload.operatorCode, "MHNET");
+  assert.equal(payload.planCode, "MHNET_500_WIFI_EXTRA");
+  assert.equal(payload.planos, BASE_PLANS[0].title);
   assert.equal(payload.nomeCidade, "Canoas");
   assert.equal(payload.telefone2Cliente, "51988887777");
   assert.equal(payload.diaVencimentoFatura, "10");

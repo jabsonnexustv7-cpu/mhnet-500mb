@@ -1,8 +1,8 @@
-import { CHAT_CONFIG } from "./config.js?v=9";
+import { CHAT_CONFIG } from "./config.js?v=10";
 import { createAiAssistService } from "./ai-service.js?v=9";
-import { createChatFlow } from "./flow-friction-v2.js?v=4";
-import { readHeroSnapshot, applyHeroSnapshotToSession, syncChatSessionToHero, heroStageLabel } from "./hero-bridge.js?v=3";
-import { createBrowserLocationService, createCoverageNotificationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js?v=9";
+import { createChatFlow } from "./flow-friction-v2.js?v=5";
+import { readHeroSnapshot, applyHeroSnapshotToSession, syncChatSessionToHero, heroStageLabel } from "./hero-bridge.js?v=4";
+import { createBrowserLocationService, createCoverageNotificationService, createCoverageService, createCrmService, lookupAddress } from "./integrations.js?v=10";
 import { resumePromptForStep } from "./knowledge.js?v=9";
 import { routeMessage } from "./message-router.js?v=9";
 import { createSession, loadSession, resetSession, saveSession } from "./state.js?v=9";

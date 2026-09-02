@@ -122,6 +122,7 @@ export function readHeroSnapshot({ documentObject = globalThis.document, windowO
   const coverageBox = documentObject.getElementById("coverageOkBox");
   const progressedBeyondAddress = stage >= 2;
   const coverageViable = progressedBeyondAddress || Boolean(coverageBox?.classList?.contains?.("show"));
+  const currentCoverage = windowObject?.WEBTURBO_LAST_COVERAGE || null;
 
   const snapshot = {
     source: "hero",
@@ -135,6 +136,8 @@ export function readHeroSnapshot({ documentObject = globalThis.document, windowO
     uf: fieldValue(documentObject, "mUf").toUpperCase(),
     coordenadas: coords,
     coverageViable,
+    coverageOperator: currentCoverage?.operator || null,
+    coveragePlans: Array.isArray(currentCoverage?.plans) ? currentCoverage.plans : [],
     plano: findPlan(planId, cidade, documentObject),
     nome: fieldValue(documentObject, "mNome"),
     cpf: fieldValue(documentObject, "mCpf").replace(/\D/g, ""),
@@ -186,6 +189,16 @@ export function applyHeroSnapshotToSession(session, snapshot) {
       status: "VIAVEL",
       motivo: session.cobertura?.motivo || "hero_sincronizado",
       coords: snapshot.coordenadas || session.cobertura?.coords || session.coordenadas || "",
+      operator: snapshot.coverageOperator || session.cobertura?.operator || null,
+      plans: snapshot.coveragePlans?.length ? snapshot.coveragePlans.map((plan, index) => ({
+        id: plan.code,
+        title: plan.name,
+        speed: /1\s*GIGA/i.test(plan.name || "") ? 1000 : Number(String(plan.name || "").match(/(\d+)\s*(?:MB|MEGA)/i)?.[1] || 0),
+        price: Number(plan.price || 0),
+        description: plan.description || "",
+        features: ["Internet fibra óptica"],
+        featured: index === 0
+      })) : (session.cobertura?.plans || []),
       source: "real"
     };
   }

@@ -19,6 +19,22 @@
   const digits = (value) => clean(value).replace(/\D+/g, "");
   const normalizeEmail = (value) => clean(value).normalize("NFKC").toLowerCase();
 
+  function currentCoverage() {
+    try {
+      if (typeof modalCoverageData !== "undefined" && modalCoverageData) return modalCoverageData;
+    } catch (_) {}
+    return window.WEBTURBO_LAST_COVERAGE || null;
+  }
+
+  function currentPlanLabel(planCode) {
+    try {
+      if (typeof PLAN_LABELS !== "undefined" && PLAN_LABELS[planCode]) {
+        return String(PLAN_LABELS[planCode]).split(" — ")[0];
+      }
+    } catch (_) {}
+    return planCode;
+  }
+
   function track(name, params = {}) {
     try { window.clarity?.("event", name); } catch (_) {}
     try { window.gtag?.("event", name, params); } catch (_) {}
@@ -159,6 +175,8 @@
     const coords = clean(byId("mCoordenadasFixas")?.value);
     const detected = clean(byId("mEnderecoDetectadoLocalizacao")?.value);
     const email = normalizeEmail(byId("mEmail")?.value);
+    const coverage = currentCoverage();
+    const planCode = clean(byId("mPlano")?.value);
     return {
       nomeCliente: clean(byId("mNome")?.value), tipoCliente: "Pessoa Física", documentoCliente: digits(byId("mCpf")?.value),
       ...(CRM_EMAIL_PATTERN.test(email) ? { emailCliente: email } : {}),
@@ -171,7 +189,8 @@
       coordenadasFixas: coords, coordenadas: coords, coords,
       linkLocalizacao: clean(byId("mLinkLocalizacaoFixa")?.value) || (coords ? `https://www.google.com/maps?q=${coords}` : ""),
       obsEndereco: `Cobertura validada pelo site. Data e turno de instalação serão confirmados no atendimento.${detected ? ` Endereço detectado: ${detected}.` : ""}`,
-      planos: clean(byId("mPlano")?.value), diaVencimentoFatura: clean(byId("mVencimento")?.value),
+      operatorCode: clean(coverage?.operator?.code), planCode,
+      planos: currentPlanLabel(planCode), diaVencimentoFatura: clean(byId("mVencimento")?.value),
       dataInstalacao1: clean(byId("mDataInstalacao")?.value) || tomorrowISO(),
       turnoInstalacao1: ["Manhã", "Tarde"].includes(clean(byId("mTurnoInstalacao")?.value)) ? clean(byId("mTurnoInstalacao")?.value) : "Manhã",
       page_url: location.href, landing_page: t.landing_page, referrer: t.referrer, user_agent: navigator.userAgent,
@@ -186,7 +205,8 @@
     if (payload.documentoCliente.length !== 11) return "CPF não foi carregado corretamente.";
     if (!payload.dataNascimentoCliente) return "Data de nascimento não foi carregada.";
     if (payload.telefone1Cliente.length < 10) return "WhatsApp principal não foi carregado.";
-    if (!payload.planos) return "Plano não foi carregado.";
+    if (!/^(TIM|ALGAR|MHNET)$/.test(payload.operatorCode)) return "A cobertura precisa ser validada novamente.";
+    if (!payload.planCode || !payload.planos) return "Plano não foi carregado.";
     if (!payload.cidade || payload.uf.length !== 2) return "Cidade/UF não foram carregadas.";
     if (!payload.numero) return "Número do imóvel não foi carregado.";
     return "";

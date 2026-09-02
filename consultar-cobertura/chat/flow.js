@@ -99,6 +99,9 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
   }
 
   function visiblePlans() {
+    if (Array.isArray(session.cobertura?.plans) && session.cobertura.plans.length) {
+      return session.cobertura.plans;
+    }
     return planSelectionView() === PLAN_SELECTION_VIEWS.CATALOG
       ? getPlansForCity(session.cidade)
       : getPromotionalPlans();
@@ -169,7 +172,11 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
       ]);
     } else if (session.step === STATES.ESCOLHA_PLANO) {
       const promotions = planSelectionView() === PLAN_SELECTION_VIEWS.PROMOTIONS;
-      ui.showPlans(visiblePlans(), { showMore: promotions, showPromotions: !promotions });
+      const resolvedCatalog = Array.isArray(session.cobertura?.plans) && session.cobertura.plans.length > 0;
+      ui.showPlans(visiblePlans(), {
+        showMore: !resolvedCatalog && promotions,
+        showPromotions: !resolvedCatalog && !promotions
+      });
     } else if (session.step === STATES.VENCIMENTO) {
       ui.showQuickReplies(DUE_DATE_OPTIONS.map((day) => ({ label: `Dia ${day}`, action: "select-due-date", value: day })));
     } else if (session.step === STATES.DATA_INSTALACAO) {
@@ -333,10 +340,15 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
         return;
       }
       await assistant("Ótima notícia! Temos fibra disponível no seu endereço. 🎉");
-      session.planSelectionView = PLAN_SELECTION_VIEWS.PROMOTIONS;
+      const resolvedCatalog = Array.isArray(coverage.plans) && coverage.plans.length > 0;
+      session.planSelectionView = resolvedCatalog ? PLAN_SELECTION_VIEWS.CATALOG : PLAN_SELECTION_VIEWS.PROMOTIONS;
       changeStep(STATES.ESCOLHA_PLANO);
-      await assistant("Escolha uma das três condições especiais abaixo. Se preferir, toque em “Ver mais ofertas” para consultar os demais planos.");
-      trackPromotionsDisplayed();
+      if (resolvedCatalog) {
+        await assistant("Escolha um dos planos disponíveis para o seu endereço.");
+      } else {
+        await assistant("Escolha uma das três condições especiais abaixo. Se preferir, toque em “Ver mais ofertas” para consultar os demais planos.");
+        trackPromotionsDisplayed();
+      }
       showControlsForStep();
     } catch (error) {
       logger.error(`${PREFIX} Coverage request failed`, error);
@@ -394,6 +406,12 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
   }
 
   async function showMorePlans({ recordUser = true } = {}) {
+    if (Array.isArray(session.cobertura?.plans) && session.cobertura.plans.length) {
+      session.planSelectionView = PLAN_SELECTION_VIEWS.CATALOG;
+      persist();
+      showControlsForStep();
+      return;
+    }
     if (planSelectionView() === PLAN_SELECTION_VIEWS.CATALOG) return;
     if (recordUser) addMessage("user", "Ver mais ofertas");
     session.planSelectionView = PLAN_SELECTION_VIEWS.CATALOG;
@@ -405,6 +423,11 @@ export function createChatFlow({ session, config, storage, ui, coverageService, 
   }
 
   async function showPromotions({ recordUser = true } = {}) {
+    if (Array.isArray(session.cobertura?.plans) && session.cobertura.plans.length) {
+      await assistant("Estes são os planos disponíveis para o endereço consultado.");
+      showControlsForStep();
+      return;
+    }
     if (planSelectionView() === PLAN_SELECTION_VIEWS.PROMOTIONS) return;
     if (recordUser) addMessage("user", "Voltar às promoções");
     session.planSelectionView = PLAN_SELECTION_VIEWS.PROMOTIONS;

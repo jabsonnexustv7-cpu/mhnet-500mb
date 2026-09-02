@@ -1,6 +1,15 @@
 import { maskCpf, onlyDigits } from "./validators.js";
 
 const LOG_PREFIX = "[WEBTURBO CHAT]";
+const COVERAGE_CACHE_KEY = "webturbo_site_coverage_v1";
+const MHNET_FALLBACK_PLANS = Object.freeze([
+  { code: "MHNET_500", name: "FIBRA 500MB", price: 99.9, description: "Boa performance para navegação, vídeos e uso diário." },
+  { code: "MHNET_500_GLOBOPLAY", name: "FIBRA 500MB + GLOBOPLAY", price: 114.8, description: "Internet fibra com Globoplay incluso." },
+  { code: "MHNET_500_WIFI_EXTRA", name: "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI", price: 119.9, description: "Mais alcance com um segundo ponto de Wi-Fi." },
+  { code: "MHNET_600_WIFI_EXTRA_GLOBOPLAY", name: "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY", price: 139.9, description: "Mais velocidade, alcance e Globoplay." },
+  { code: "MHNET_700_WIFI_EXTRA", name: "FIBRA 700MB + 1 PONTO EXTRA DE WI-FI", price: 149.9, description: "Mais velocidade e alcance para vários aparelhos." },
+  { code: "MHNET_1000_WIFI_EXTRA", name: "FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI", price: 159.9, description: "Máxima velocidade e cobertura Wi-Fi ampliada." }
+]);
 
 const BRAZIL_STATE_CODES = Object.freeze({
   Acre: "AC", Alagoas: "AL", Amapá: "AP", Amazonas: "AM", Bahia: "BA", Ceará: "CE",
@@ -134,28 +143,73 @@ function createCoveragePayload(session, radius) {
   };
 }
 
-function createMinimalFallbackPayload(payload) {
-  if (!payload.cep || !payload.logradouro || !payload.numero) return null;
+function createResolverPayload(payload) {
   return {
-    cep: payload.cep,
-    fachada: `${payload.logradouro} ${payload.numero}`.trim(),
-    radius: payload.radius,
-    fachada_original_site: payload.fachada,
-    tentativa_frontend: "fallback_minimo_cep_fachada"
+    postalCode: onlyDigits(payload.cep),
+    state: String(payload.uf || "").trim().toUpperCase(),
+    city: String(payload.cidade || "").trim(),
+    district: String(payload.bairro || "").trim(),
+    street: String(payload.logradouro || "").trim(),
+    number: String(payload.numero || "").trim(),
+    complement: String(payload.complemento || "").trim()
   };
 }
 
-function shouldRetryCoverage(data) {
-  return data?.viavel !== true && String(data?.motivo || data?.reason || "").toLowerCase().includes("sem_ftth_no_raio");
+function coverageAddressKey(address) {
+  return [address.postalCode, address.state, address.city, address.district, address.street, address.number, address.complement]
+    .map((value) => String(value || "").trim().toUpperCase())
+    .join("|");
+}
+
+function readCoverageCache(key) {
+  try {
+    const cached = JSON.parse(globalThis.sessionStorage?.getItem(COVERAGE_CACHE_KEY) || "null");
+    return cached && cached.addressKey === key ? cached.result : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCoverageCache(key, result) {
+  try {
+    globalThis.sessionStorage?.setItem(COVERAGE_CACHE_KEY, JSON.stringify({
+      addressKey: key,
+      operatorCode: result?.operator?.code || null,
+      state: result?.normalizedAddress?.state || "",
+      normalizedAddress: result?.normalizedAddress || null,
+      coverage: result?.coverage || null,
+      selectedPlan: "",
+      result
+    }));
+  } catch { /* cache não pode bloquear a consulta */ }
+}
+
+function normalizeCommercialPlan(plan, index) {
+  const name = String(plan?.name || plan?.code || "Plano de internet");
+  const giga = /1\s*GIGA/i.test(name);
+  const speed = giga ? 1000 : Number(name.match(/(\d+)\s*(?:MB|MEGA)/i)?.[1] || 0);
+  return {
+    id: String(plan?.code || ""),
+    speed,
+    title: name,
+    badge: index === 0 ? "Oferta em destaque" : "",
+    price: Number(plan?.price || 0),
+    description: String(plan?.description || "Oferta disponível no endereço consultado."),
+    features: ["Internet fibra óptica", "Instalação conforme viabilidade técnica"],
+    featured: index === 0
+  };
 }
 
 function normalizeCoverage(data, source) {
-  const viable = data?.ok === true && data?.viavel === true;
+  const viable = data?.ok === true && (data?.viable === true || data?.viavel === true);
+  const coverage = data?.coverage || {};
   return {
     viavel: viable,
     status: viable ? "VIAVEL" : "INVIAVEL",
-    motivo: data?.motivo || data?.reason || (viable ? "cobertura_disponivel" : "sem_viabilidade"),
-    coords: data?.coords || data?.coordenadas || "",
+    motivo: coverage.reason || data?.motivo || data?.reason || (viable ? "cobertura_disponivel" : "sem_viabilidade"),
+    coords: coverage.coords || data?.coords || data?.coordenadas || "",
+    operator: data?.operator || null,
+    plans: Array.isArray(data?.plans) ? data.plans.map(normalizeCommercialPlan).filter((plan) => plan.id) : [],
     source,
     raw: data || {}
   };
@@ -183,8 +237,16 @@ export function createCoverageService(config, { fetchImpl = fetch, logger = cons
 
   async function realCheck(session) {
     const payload = createCoveragePayload(session, config.coverageRadius || 200);
-    const request = async (body) => {
-      const response = await withTimeout(fetchImpl, config.coverageEndpoint, {
+    const legacyMhnet = !payload.cep;
+    const resolverPayload = createResolverPayload(payload);
+    const key = coverageAddressKey(resolverPayload);
+    if (!legacyMhnet) {
+      const cached = readCoverageCache(key);
+      if (cached) return normalizeCoverage(cached, "real");
+    }
+
+    const request = async (url, body) => {
+      const response = await withTimeout(fetchImpl, url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
@@ -194,16 +256,23 @@ export function createCoverageService(config, { fetchImpl = fetch, logger = cons
       return data;
     };
 
-    const first = await request(payload);
-    if (!shouldRetryCoverage(first)) return normalizeCoverage(first, "real");
-    const fallbackPayload = createMinimalFallbackPayload(payload);
-    if (!fallbackPayload) return normalizeCoverage(first, "real");
-    try {
-      const second = await request(fallbackPayload);
-      return normalizeCoverage(second?.ok === true && second?.viavel === true ? second : first, "real");
-    } catch {
-      return normalizeCoverage(first, "real");
+    if (legacyMhnet) {
+      const legacy = await request(config.legacyCoverageEndpoint || config.coverageEndpoint, payload);
+      const adapted = legacy?.ok === true && legacy?.viavel === true
+        ? {
+            ...legacy,
+            viable: true,
+            operator: { code: "MHNET", name: "MhNet" },
+            coverage: { status: "VIAVEL", reason: legacy.motivo || "", coords: legacy.coords || "" },
+            plans: MHNET_FALLBACK_PLANS
+          }
+        : legacy;
+      return normalizeCoverage(adapted, "real");
     }
+
+    const result = await request(config.coverageEndpoint, resolverPayload);
+    writeCoverageCache(key, result);
+    return normalizeCoverage(result, "real");
   }
 
   return {
@@ -344,7 +413,9 @@ export function buildCrmPayload(session, context = {}) {
     enderecoLocalizacaoFixa: session.addressSource === "geolocation"
       ? [session.logradouro, session.numero, session.bairro, session.cidade, session.uf].filter(Boolean).join(", ")
       : "",
-    planos: session.plano?.id || "",
+    operatorCode: session.cobertura?.operator?.code || "",
+    planCode: session.plano?.id || "",
+    planos: session.plano?.title || session.plano?.id || "",
     diaVencimentoFatura: session.diaVencimentoFatura || "",
     dataInstalacao1: session.dataInstalacao || "",
     turnoInstalacao1: session.turnoInstalacao || "",
@@ -394,4 +465,4 @@ export function createCrmService(config, { fetchImpl = fetch, logger = console }
   };
 }
 
-export { createCoveragePayload, createMinimalFallbackPayload, normalizeCoverage, normalizeReverseAddress };
+export { createCoveragePayload, normalizeCoverage, normalizeReverseAddress };

@@ -164,6 +164,6 @@ test("landing libera o formulário se o redesign falhar e prioriza vendas no Cla
 test("landing invalida o cache dos dois controladores corrigidos", () => {
   assert.match(landing, /lead-recovery-notification\.js\?v=9/);
   assert.match(landing, /post-sale-whatsapp\.js\?v=3/);
-  assert.match(landing, /chat\/embed\.js\?v=17/);
-  assert.match(landing, /conversion-finalizer-v4\.js\?v=5/);
+  assert.match(landing, /chat\/embed\.js\?v=18/);
+  assert.match(landing, /conversion-finalizer-v4\.js\?v=6/);
 });

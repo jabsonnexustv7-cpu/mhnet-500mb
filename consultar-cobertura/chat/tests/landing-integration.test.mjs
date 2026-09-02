@@ -8,8 +8,8 @@ test("landing carrega o chat reutilizável sem iframe", () => {
   const landing = read("../../index.html");
   const embed = read("../embed.js");
   assert.match(landing, /chat\/chat\.css\?v=6/);
-  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=17"/);
-  assert.match(embed, /await import\("\.\/app\.js\?v=15"\)/);
+  assert.match(landing, /type="module" src="\/consultar-cobertura\/chat\/embed\.js\?v=18"/);
+  assert.match(embed, /await import\("\.\/app\.js\?v=16"\)/);
   assert.doesNotMatch(embed, /iframe/i);
 });
 
@@ -18,12 +18,14 @@ test("versão nova invalida o cache dos módulos internos críticos", () => {
   const frictionFlow = read("../flow-friction-v2.js");
   const flow = read("../flow.js");
   const bridge = read("../hero-bridge.js");
-  for (const moduleName of ["config", "ai-service", "integrations", "knowledge", "message-router", "state", "tracking", "ui", "whatsapp"]) {
+  for (const moduleName of ["ai-service", "knowledge", "message-router", "state", "tracking", "ui", "whatsapp"]) {
     assert.match(app, new RegExp(`\\./${moduleName}\\.js\\?v=9`));
   }
-  assert.match(app, /\.\/flow-friction-v2\.js\?v=4/);
-  assert.match(app, /\.\/hero-bridge\.js\?v=3/);
-  assert.match(frictionFlow, /\.\/flow\.js\?v=11/);
+  assert.match(app, /\.\/config\.js\?v=10/);
+  assert.match(app, /\.\/integrations\.js\?v=10/);
+  assert.match(app, /\.\/flow-friction-v2\.js\?v=5/);
+  assert.match(app, /\.\/hero-bridge\.js\?v=4/);
+  assert.match(frictionFlow, /\.\/flow\.js\?v=12/);
   assert.match(frictionFlow, /\.\/plans\.js\?v=10/);
   assert.match(flow, /\.\/plans\.js\?v=10/);
   assert.match(bridge, /\.\/plans\.js\?v=10/);

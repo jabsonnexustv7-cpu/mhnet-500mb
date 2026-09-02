@@ -136,5 +136,5 @@ document.addEventListener("click", (event) => {
 replacePrimaryWhatsAppCtas();
 new MutationObserver(() => replacePrimaryWhatsAppCtas()).observe(document.body, { childList: true, subtree: true });
 
-await import("./app.js?v=15");
+await import("./app.js?v=16");
 if (pendingOpen) window.webturboChat?.open?.();
