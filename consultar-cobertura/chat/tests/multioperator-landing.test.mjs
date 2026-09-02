@@ -6,7 +6,7 @@ const root = new URL("../../", import.meta.url);
 
 test("landing carrega a integração multioperadora antes dos complementos do funil", async () => {
   const html = await readFile(new URL("index.html", root), "utf8");
-  assert.match(html, /multioperator-coverage\.js\?v=1/);
+  assert.match(html, /multioperator-coverage\.js\?v=2/);
   assert.match(html, /multioperator-coverage\.js[\s\S]*regional-plans\.js/);
 });
 
@@ -19,6 +19,7 @@ test("integração centraliza os três fluxos, usa cache e envia códigos confi�
   assert.match(script, /wtConsultarCoberturaEndpointComFallback\s*=\s*resolveCoverage/);
   assert.match(script, /payload\.operatorCode/);
   assert.match(script, /payload\.planCode/);
+  assert.doesNotMatch(script, /Plano \$\{escapeHtml\(operatorName\)\}|Internet fibra óptica \$\{escapeHtml\(operatorName\)\}|Escolha seu plano \$\{operatorName\}/);
   assert.doesNotMatch(script, /supabase\.co\/functions\/v1\/tim-cobertura|TIM_COVERAGE_API_KEY|service_role/i);
 });
 

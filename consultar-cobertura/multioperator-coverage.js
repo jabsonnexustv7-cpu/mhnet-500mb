@@ -90,12 +90,12 @@
     };
   }
 
-  function planCard(plan, operatorName, index) {
+  function planCard(plan, index) {
     const name = escapeHtml(plan.name);
     const description = escapeHtml(plan.description || "Oferta disponível no endereço consultado.");
     const price = formatPrice(plan.price);
     const code = escapeHtml(plan.code);
-    const badge = index === 0 ? "Oferta em destaque" : `Plano ${escapeHtml(operatorName)}`;
+    const badge = index === 0 ? "Oferta em destaque" : "Internet fibra";
     return `<div class="meta-plan-card${index === 0 ? " is-popular" : ""}" role="radio" aria-checked="false" tabindex="${index === 0 ? "0" : "-1"}" data-plan="${code}" aria-label="${name}, R$ ${price} por mês">
       <span class="meta-plan-card-check" aria-hidden="true">✓</span>
       <span class="meta-plan-card-inner">
@@ -103,20 +103,19 @@
         <h3>${name}</h3>
         <span class="meta-plan-card-description">${description}</span>
         <span class="meta-plan-card-price"><strong>R$ ${price}</strong><small>/mês</small></span>
-        <ul><li>Internet fibra óptica ${escapeHtml(operatorName)}</li><li>Oferta validada para o endereço</li><li>Instalação conforme viabilidade técnica</li></ul>
+        <ul><li>Internet fibra óptica</li><li>Oferta validada para o endereço</li><li>Instalação conforme viabilidade técnica</li></ul>
       </span>
     </div>`;
   }
 
   function applyPlans(resolution) {
     if (!resolution?.viavel || !resolution.operator || !Array.isArray(resolution.plans) || !resolution.plans.length) return;
-    const operatorName = resolution.operator.name || resolution.operator.code;
     window.WEBTURBO_LAST_COVERAGE = resolution;
 
     const grid = document.getElementById("metaPlanGrid");
     if (grid) {
-      grid.setAttribute("aria-label", `Escolha seu plano ${operatorName}`);
-      grid.innerHTML = resolution.plans.map((plan, index) => planCard(plan, operatorName, index)).join("");
+      grid.setAttribute("aria-label", "Escolha seu plano de internet");
+      grid.innerHTML = resolution.plans.map((plan, index) => planCard(plan, index)).join("");
     }
 
     const select = document.getElementById("mPlano");
