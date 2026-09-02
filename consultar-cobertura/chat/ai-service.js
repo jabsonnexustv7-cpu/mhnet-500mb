@@ -5,7 +5,9 @@ const BEST_SELLER_PLAN_CODES = new Set([
   "TIM_RS_800_YOUTUBE_PREMIUM",
   "TIM_SC_1000",
   "ALGAR_800",
-  "MHNET_500_WIFI_EXTRA"
+  "MHNET_500_WIFI_EXTRA",
+  "FIBRA 500MB + 1 PONTO EXTRA DE WI-FI",
+  "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI"
 ]);
 
 function withTimeout(fetchImpl, url, options, timeoutMs) {
