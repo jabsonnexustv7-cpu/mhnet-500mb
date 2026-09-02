@@ -170,6 +170,19 @@
     return match ? decodeURIComponent(match[1]) : "";
   }
 
+  function tiktokClickId() {
+    const current = new URLSearchParams(location.search).get("ttclid");
+    if (current) return clean(current);
+    try {
+      const saved = JSON.parse(localStorage.getItem("webturbo_tiktok_attribution") || "{}");
+      const capturedAt = Number(saved.captured_at || 0);
+      if (!saved.ttclid || !capturedAt || Date.now() - capturedAt > 30 * 24 * 60 * 60 * 1000) return "";
+      return clean(saved.ttclid);
+    } catch (_) {
+      return "";
+    }
+  }
+
   function buildCrmPayload() {
     const t = traffic();
     const coords = clean(byId("mCoordenadasFixas")?.value);
@@ -195,6 +208,7 @@
       turnoInstalacao1: ["Manhã", "Tarde"].includes(clean(byId("mTurnoInstalacao")?.value)) ? clean(byId("mTurnoInstalacao")?.value) : "Manhã",
       page_url: location.href, landing_page: t.landing_page, referrer: t.referrer, user_agent: navigator.userAgent,
       fbp: cookie("_fbp"), fbc: cookie("_fbc"), gclid: t.gclid, gbraid: t.gbraid, wbraid: t.wbraid, fbclid: t.fbclid,
+      ttclid: tiktokClickId(), ttp: cookie("_ttp"),
       utm_source: t.utm_source, utm_medium: t.utm_medium, utm_campaign: t.utm_campaign, utm_content: t.utm_content, utm_term: t.utm_term,
       event_id: checkoutEventId
     };

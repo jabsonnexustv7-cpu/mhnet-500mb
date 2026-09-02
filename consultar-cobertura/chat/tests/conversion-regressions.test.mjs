@@ -5,6 +5,12 @@ import vm from "node:vm";
 
 const recovery = readFileSync(new URL("../../lead-recovery-notification.js", import.meta.url), "utf8");
 const finalizer = readFileSync(new URL("../../conversion-finalizer-v4.js", import.meta.url), "utf8");
+
+test("final purchase forwards TikTok attribution to the CRM", () => {
+  assert.match(finalizer, /ttclid:\s*tiktokClickId\(\)/);
+  assert.match(finalizer, /ttp:\s*cookie\("_ttp"\)/);
+  assert.match(finalizer, /webturbo_tiktok_attribution/);
+});
 const postSaleWhatsApp = readFileSync(new URL("../../post-sale-whatsapp.js", import.meta.url), "utf8");
 const chatEmbed = readFileSync(new URL("../embed.js", import.meta.url), "utf8");
 const coverage = readFileSync(new URL("../../coverage-base.html", import.meta.url), "utf8");
@@ -165,5 +171,5 @@ test("landing invalida o cache dos dois controladores corrigidos", () => {
   assert.match(landing, /lead-recovery-notification\.js\?v=9/);
   assert.match(landing, /post-sale-whatsapp\.js\?v=3/);
   assert.match(landing, /chat\/embed\.js\?v=18/);
-  assert.match(landing, /conversion-finalizer-v4\.js\?v=6/);
+  assert.match(landing, /conversion-finalizer-v4\.js\?v=7/);
 });
