@@ -24,7 +24,7 @@
     "FIBRA 600MB + 1 PONTO EXTRA DE WI-FI + GLOBOPLAY": { badge: "Completo", title: "600 Mega + Ponto extra + Globoplay", description: "Mais velocidade, cobertura de Wi-Fi e Globoplay no mesmo plano." },
     "FIBRA 500MB + GLOBOPLAY": { badge: "Globoplay", title: "500 Mega + Globoplay", description: "Internet fibra com Globoplay incluso." },
     "FIBRA 700MB + 1 PONTO EXTRA DE WI-FI": { badge: "Alta velocidade", title: "700 Mega + 1 Ponto extra", description: "Mais velocidade e cobertura para vários aparelhos." },
-    "FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI": { badge: "★ Máxima performance", title: "1 Giga + 1 Ponto extra", description: "Máxima performance para casas com muitos dispositivos.", premium: true }
+    "FIBRA 1 GIGA + 1 PONTO EXTRA DE WI-FI": { badge: "Máxima performance", title: "1 Giga + 1 Ponto extra", description: "Máxima performance para casas com muitos dispositivos." }
   };
 
   function byId(id) { return document.getElementById(id); }
@@ -37,7 +37,7 @@
     if (!card || !copy) return;
     card.classList.toggle("is-popular", Boolean(copy.recommended));
     card.classList.toggle("wt-plan-recommended", Boolean(copy.recommended));
-    card.classList.toggle("wt-plan-premium", Boolean(copy.premium));
+    card.classList.remove("wt-plan-premium");
     const badge = card.querySelector(".meta-plan-card-badge");
     if (badge) { badge.textContent = copy.badge; badge.hidden = !copy.badge; }
     const title = card.querySelector("h3");
@@ -45,7 +45,7 @@
     const description = card.querySelector(".meta-plan-card-description");
     if (description) description.textContent = copy.description;
     const priceText = card.querySelector(".meta-plan-card-price strong")?.textContent?.trim() || "";
-    const qualifiers = [copy.recommended ? "Mais popular" : "", copy.premium ? "Máxima performance" : ""].filter(Boolean).join(", ");
+    const qualifiers = [copy.recommended ? "Mais popular" : ""].filter(Boolean).join(", ");
     card.setAttribute("aria-label", `${copy.title}, ${priceText} por mês${qualifiers ? `, ${qualifiers}` : ""}`);
   }
 
@@ -87,11 +87,6 @@
     style.textContent = `
       #metaPlanGrid .meta-plan-card.wt-plan-recommended{border-color:#00c853;background:linear-gradient(180deg,#f4fff8,#fff 46%);box-shadow:0 12px 30px rgba(0,200,83,.14)}
       #metaPlanGrid .meta-plan-card.wt-plan-recommended.is-selected{border-color:#1a56db;background:#f4f8ff;box-shadow:0 10px 28px rgba(26,86,219,.16)}
-      #metaPlanGrid .meta-plan-card.wt-plan-premium{border-color:#c98b00;background:linear-gradient(160deg,#fffaf0,#fff 45%);box-shadow:0 11px 28px rgba(201,139,0,.16)}
-      #metaPlanGrid .meta-plan-card.wt-plan-premium .meta-plan-card-badge{background:#c98b00;color:#fff}
-      #metaPlanGrid .meta-plan-card.wt-plan-premium h3{color:#8a5b00}
-      #metaPlanGrid .meta-plan-card.wt-plan-premium.is-selected{border-color:#1a56db;background:#f4f8ff;box-shadow:0 10px 28px rgba(26,86,219,.16)}
-      #metaPlanGrid .meta-plan-card.wt-plan-premium.is-selected h3{color:#0a2463}
       #metaPlanGrid .meta-plan-card-badge[hidden]{display:none!important}
       #etapa2 .modal-subtitle strong{color:#7ee6a8;font-weight:800}
       @media(max-width:600px){#metaPlanGrid{grid-template-columns:1fr!important}#metaPlanGrid .meta-plan-card{min-height:0}#metaPlanGrid .meta-plan-card-description{min-height:0}}

@@ -30,3 +30,11 @@ test("chat usa o resolvedor público e inclui operadora e plano na pré-venda", 
   assert.match(integrations, /operatorCode:\s*session\.cobertura\?\.operator\?\.code/);
   assert.match(integrations, /planCode:\s*session\.plano\?\.id/);
 });
+
+test("catálogo mantém somente um destaque visual", async () => {
+  const html = await readFile(new URL("index.html", root), "utf8");
+  const presentation = await readFile(new URL("plan-presentation-v2.js", root), "utf8");
+  assert.match(html, /plan-presentation-v2\.js\?v=4/);
+  assert.doesNotMatch(presentation, /premium:\s*true|#c98b00|#fffaf0/);
+  assert.match(presentation, /card\.classList\.remove\("wt-plan-premium"\)/);
+});
