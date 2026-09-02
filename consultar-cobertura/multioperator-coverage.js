@@ -90,6 +90,78 @@
     };
   }
 
+  function rememberResolution(resolution) {
+    window.WEBTURBO_LAST_COVERAGE = resolution || null;
+    return resolution;
+  }
+
+  function getPendingCoverage(resolution = window.WEBTURBO_LAST_COVERAGE) {
+    const coverage = resolution?.coverage;
+    if (!coverage || coverage.status !== "PENDENTE") return null;
+
+    const options = Array.isArray(coverage.streetOptions)
+      ? coverage.streetOptions
+          .map((option) => ({
+            street: String(option?.street || "").trim(),
+            city: String(option?.city || "").trim()
+          }))
+          .filter((option) => option.street)
+      : [];
+
+    const matchedStreet = String(coverage.matchedStreet || "").trim();
+    const candidate = options.length === 1
+      ? options[0]
+      : (options.length === 0 && matchedStreet ? { street: matchedStreet, city: "" } : null);
+
+    return {
+      reason: String(coverage.reason || "").trim(),
+      requiresStreet: coverage.requiresStreet === true,
+      requiresStreetConfirmation: coverage.requiresStreetConfirmation === true,
+      options,
+      candidate
+    };
+  }
+
+  function applyPendingSuggestion(pending, streetId, cityId) {
+    if (!pending) return;
+    if (!pending.candidate) return;
+
+    const streetInput = document.getElementById(streetId);
+    const cityInput = document.getElementById(cityId);
+    if (streetInput) streetInput.value = pending.candidate.street;
+    if (cityInput && pending.candidate.city) cityInput.value = pending.candidate.city;
+  }
+
+  function pendingMessage(pending) {
+    if (!pending) return "";
+    if (pending.candidate) {
+      return `Encontramos o logradouro "${pending.candidate.street}". Confira o nome preenchido e clique novamente em Consultar cobertura para confirmar.`;
+    }
+    if (pending.options.length > 1) {
+      const names = pending.options.slice(0, 5).map((option) => option.street).join("; ");
+      return `A TIM encontrou mais de um logradouro compatível: ${names}. Informe o nome completo da rua ou avenida e consulte novamente.`;
+    }
+    return "Não conseguimos identificar o logradouro com segurança. Informe o nome completo da rua ou avenida e consulte novamente.";
+  }
+
+  function looksLikeCoverageFailureMessage(text) {
+    const value = String(text || "").toLowerCase();
+    return value.includes("cobertura") || value.includes("viabilidade") || value.includes("logradouro");
+  }
+
+  function setPendingBoxStyle(box, pending) {
+    if (!box) return;
+    if (pending) {
+      box.style.background = "#fff8e6";
+      box.style.borderColor = "#e6b94f";
+      box.style.color = "#6f4d00";
+    } else {
+      box.style.background = "";
+      box.style.borderColor = "";
+      box.style.color = "";
+    }
+  }
+
   function planCard(plan, index) {
     const name = escapeHtml(plan.name);
     const description = escapeHtml(plan.description || "Oferta disponível no endereço consultado.");
@@ -110,7 +182,6 @@
 
   function applyPlans(resolution) {
     if (!resolution?.viavel || !resolution.operator || !Array.isArray(resolution.plans) || !resolution.plans.length) return;
-    window.WEBTURBO_LAST_COVERAGE = resolution;
 
     const grid = document.getElementById("metaPlanGrid");
     if (grid) {
@@ -158,37 +229,39 @@
   }
 
   async function resolveLegacyMhnet(payload) {
+    window.WEBTURBO_LAST_COVERAGE = null;
     const data = await fetchJson(LEGACY_MHNET_ENDPOINT, payload);
     if (data?.ok === true && data?.viavel === true) {
-      const resolution = adaptResolution({
+      const resolution = rememberResolution(adaptResolution({
         ok: true,
         viable: true,
         operator: { code: "MHNET", name: "MhNet" },
         normalizedAddress: normalizeAddress(payload),
         coverage: { status: "VIAVEL", reason: data.motivo || "", coords: data.coords || "" },
         plans: MHNET_PLANS
-      });
+      }));
       applyPlans(resolution);
       return resolution;
     }
-    return { ...data, viable: false, viavel: false, operator: null, plans: [] };
+    return rememberResolution({ ...data, viable: false, viavel: false, operator: null, plans: [] });
   }
 
   async function resolveCoverage(payload) {
+    window.WEBTURBO_LAST_COVERAGE = null;
     const address = normalizeAddress(payload);
     if (address.postalCode.length !== 8) return resolveLegacyMhnet(payload);
 
     const key = addressKey(address);
     const cached = readCache(key);
     if (cached?.result) {
-      const resolution = adaptResolution(cached.result);
+      const resolution = rememberResolution(adaptResolution(cached.result));
       applyPlans(resolution);
       return resolution;
     }
 
     const data = await fetchJson(RESOLVER_ENDPOINT, address);
     writeCache(key, data);
-    const resolution = adaptResolution(data);
+    const resolution = rememberResolution(adaptResolution(data));
     applyPlans(resolution);
     return resolution;
   }
@@ -197,6 +270,83 @@
   consultarCoberturaCloudRun = resolveCoverage;
   consultarCoberturaCloudRunComFallback = resolveCoverage;
   wtConsultarCoberturaEndpointComFallback = resolveCoverage;
+
+  // PENDENTE da TIM é uma consulta ainda não concluída, não uma cobertura inviável.
+  // Suprime métricas/notificações de inviabilidade enquanto o logradouro estiver pendente.
+  if (typeof trackGA4 === "function") {
+    const originalTrackGA4 = trackGA4;
+    trackGA4 = function (eventName, payload) {
+      if (eventName === "consulta_cobertura_inviavel" && getPendingCoverage()) return;
+      return originalTrackGA4.apply(this, arguments);
+    };
+  }
+
+  if (typeof notificarConsultaViavel === "function") {
+    const originalNotifyCoverage = notificarConsultaViavel;
+    notificarConsultaViavel = function (payload) {
+      if (getPendingCoverage() && payload?.viavel === false) return;
+      return originalNotifyCoverage.apply(this, arguments);
+    };
+  }
+
+  // Fluxo da consulta principal: troca a mensagem de "sem cobertura" pela confirmação do logradouro.
+  if (typeof setStatus === "function") {
+    const originalSetStatus = setStatus;
+    setStatus = function (text, type = "") {
+      const pending = getPendingCoverage();
+      if (pending && type === "bad" && looksLikeCoverageFailureMessage(text)) {
+        applyPendingSuggestion(pending, "consultaLogradouro", "consultaCidade");
+        return originalSetStatus(pendingMessage(pending), "");
+      }
+      return originalSetStatus.apply(this, arguments);
+    };
+  }
+
+  // Fluxo pré-WhatsApp: mesma regra de pendência.
+  if (typeof wtSetStatus === "function") {
+    const originalWtSetStatus = wtSetStatus;
+    wtSetStatus = function (text, type = "") {
+      const pending = getPendingCoverage();
+      if (pending && type === "bad" && looksLikeCoverageFailureMessage(text)) {
+        applyPendingSuggestion(pending, "wtLogradouroWhats", "wtCidadeWhats");
+        return originalWtSetStatus("Precisamos confirmar o logradouro. " + pendingMessage(pending), "");
+      }
+      return originalWtSetStatus.apply(this, arguments);
+    };
+  }
+
+  // A landing /consultar-cobertura/ usa a etapa 1 do modal como formulário principal.
+  // O botão chama validarEtapaEndereco() por onclick, então envolvemos a função original
+  // e, após a resposta, transformamos PENDENTE em confirmação/correção do logradouro.
+  if (typeof validarEtapaEndereco === "function") {
+    const originalValidateAddress = validarEtapaEndereco;
+    validarEtapaEndereco = async function () {
+      const errorBox = document.getElementById("modalErro1");
+      setPendingBoxStyle(errorBox, false);
+
+      const result = await originalValidateAddress.apply(this, arguments);
+      const pending = getPendingCoverage();
+      if (!pending) return result;
+
+      modalCoverageValidated = false;
+      modalCoverageData = window.WEBTURBO_LAST_COVERAGE;
+      applyPendingSuggestion(pending, "mLogradouro", "mCidade");
+
+      if (errorBox) {
+        errorBox.innerHTML = `<strong>Precisamos confirmar o logradouro para a TIM.</strong><br>${escapeHtml(pendingMessage(pending))}`;
+        errorBox.classList.add("show");
+        setPendingBoxStyle(errorBox, true);
+      }
+
+      const streetInput = document.getElementById("mLogradouro");
+      if (streetInput) {
+        try { streetInput.focus({ preventScroll: true }); } catch (_) { streetInput.focus(); }
+        streetInput.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+
+      return result;
+    };
+  }
 
   const originalBuildModalPayload = buildModalPayload;
   buildModalPayload = function () {
