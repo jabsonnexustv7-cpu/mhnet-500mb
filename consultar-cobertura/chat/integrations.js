@@ -184,16 +184,20 @@ function writeCoverageCache(key, result) {
   } catch { /* cache não pode bloquear a consulta */ }
 }
 
-function normalizeCommercialPlan(plan, index) {
+function normalizeCommercialPlan(plan, index, operatorCode = "") {
   const name = String(plan?.name || plan?.code || "Plano de internet");
   const giga = /1\s*GIGA/i.test(name);
   const speed = giga ? 1000 : Number(name.match(/(\d+)\s*(?:MB|MEGA)/i)?.[1] || 0);
+  const hasOutdatedPrice = Math.abs(Number(plan?.price) - 89.9) < 0.001;
+  const price = String(operatorCode).trim().toUpperCase() === "TIM" && speed === 500 && hasOutdatedPrice
+    ? 99.9
+    : Number(plan?.price || 0);
   return {
     id: String(plan?.code || ""),
     speed,
     title: name,
     badge: index === 0 ? "Oferta em destaque" : "",
-    price: Number(plan?.price || 0),
+    price,
     description: String(plan?.description || "Oferta disponível no endereço consultado."),
     features: ["Internet fibra óptica", "Instalação conforme viabilidade técnica"],
     featured: index === 0
@@ -209,7 +213,9 @@ function normalizeCoverage(data, source) {
     motivo: coverage.reason || data?.motivo || data?.reason || (viable ? "cobertura_disponivel" : "sem_viabilidade"),
     coords: coverage.coords || data?.coords || data?.coordenadas || "",
     operator: data?.operator || null,
-    plans: Array.isArray(data?.plans) ? data.plans.map(normalizeCommercialPlan).filter((plan) => plan.id) : [],
+    plans: Array.isArray(data?.plans)
+      ? data.plans.map((plan, index) => normalizeCommercialPlan(plan, index, data?.operator?.code)).filter((plan) => plan.id)
+      : [],
     source,
     raw: data || {}
   };

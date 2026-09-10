@@ -72,6 +72,19 @@
     } catch (_) {}
   }
 
+  function normalizeOperatorPlans(operator, plans) {
+    if (!Array.isArray(plans)) return [];
+    if (String(operator?.code || "").trim().toUpperCase() !== "TIM") return plans;
+
+    return plans.map((plan) => {
+      const identifier = `${plan?.code || ""} ${plan?.name || ""}`.replace(/[_-]+/g, " ");
+      const hasOutdatedPrice = Math.abs(Number(plan?.price) - 89.90) < 0.001;
+      return /\b500\s*(?:MB|MEGA)?\b/i.test(identifier) && hasOutdatedPrice
+        ? { ...plan, price: 99.90 }
+        : plan;
+    });
+  }
+
   function saveSelectedPlan(planCode) {
     try {
       const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || "null");
@@ -84,6 +97,7 @@
   function adaptResolution(data) {
     return {
       ...data,
+      plans: normalizeOperatorPlans(data?.operator, data?.plans),
       viavel: data?.viable === true,
       motivo: data?.coverage?.reason || "",
       coords: data?.coverage?.coords || ""

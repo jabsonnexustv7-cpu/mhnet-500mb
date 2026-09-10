@@ -6,7 +6,7 @@ const root = new URL("../../", import.meta.url);
 
 test("landing carrega a integração multioperadora antes dos complementos do funil", async () => {
   const html = await readFile(new URL("index.html", root), "utf8");
-  assert.match(html, /multioperator-coverage\.js\?v=2/);
+  assert.match(html, /multioperator-coverage\.js\?v=3/);
   assert.match(html, /multioperator-coverage\.js[\s\S]*regional-plans\.js/);
 });
 
@@ -19,6 +19,7 @@ test("integração centraliza os três fluxos, usa cache e envia códigos confi�
   assert.match(script, /wtConsultarCoberturaEndpointComFallback\s*=\s*resolveCoverage/);
   assert.match(script, /payload\.operatorCode/);
   assert.match(script, /payload\.planCode/);
+  assert.match(script, /operator\?\.code[\s\S]*TIM[\s\S]*price:\s*99\.90/);
   assert.doesNotMatch(script, /Plano \$\{escapeHtml\(operatorName\)\}|Internet fibra óptica \$\{escapeHtml\(operatorName\)\}|Escolha seu plano \$\{operatorName\}/);
   assert.doesNotMatch(script, /supabase\.co\/functions\/v1\/tim-cobertura|TIM_COVERAGE_API_KEY|service_role/i);
 });
@@ -34,7 +35,7 @@ test("chat usa o resolvedor público e inclui operadora e plano na pré-venda", 
 test("catálogo mantém somente um destaque visual", async () => {
   const html = await readFile(new URL("index.html", root), "utf8");
   const presentation = await readFile(new URL("plan-presentation-v2.js", root), "utf8");
-  assert.match(html, /plan-presentation-v2\.js\?v=4/);
+  assert.match(html, /plan-presentation-v2\.js\?v=5/);
   assert.doesNotMatch(presentation, /premium:\s*true|#c98b00|#fffaf0/);
   assert.match(presentation, /card\.classList\.remove\("wt-plan-premium"\)/);
 });

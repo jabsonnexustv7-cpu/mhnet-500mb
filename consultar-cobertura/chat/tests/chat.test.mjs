@@ -132,7 +132,11 @@ test("consulta real usa o resolvedor público multioperadora e normaliza os plan
               viable: true,
               operator: { code: "TIM", name: "TIM" },
               coverage: { status: "VIAVEL", reason: "endereco_elegivel", coords: "-27,-48" },
-              plans: [{ code: "TIM_SC_600", name: "FIBRA 600MB", price: 89.99, description: "Ótimo custo-benefício." }]
+              plans: [
+                { code: "TIM_SC_600", name: "FIBRA 600MB", price: 89.99, description: "Ótimo custo-benefício." },
+                { code: "TIM_SC_500", name: "FIBRA 500MB", price: 89.90, description: "Plano de 500 Mega." },
+                { code: "TIM_SC_500_COMBO", name: "FIBRA 500MB + COMBO", price: 119.90, description: "Plano combinado." }
+              ]
             };
           }
         };
@@ -155,6 +159,9 @@ test("consulta real usa o resolvedor público multioperadora e normaliza os plan
   assert.equal(result.operator.code, "TIM");
   assert.equal(result.plans[0].id, "TIM_SC_600");
   assert.equal(result.plans[0].price, 89.99);
+  assert.equal(result.plans[1].id, "TIM_SC_500");
+  assert.equal(result.plans[1].price, 99.9);
+  assert.equal(result.plans[2].price, 119.9);
 });
 
 test("notificação de cobertura usa as mesmas ações do fluxo tradicional", () => {
