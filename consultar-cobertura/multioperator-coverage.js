@@ -78,7 +78,8 @@
 
     return plans.map((plan) => {
       const identifier = `${plan?.code || ""} ${plan?.name || ""}`.replace(/[_-]+/g, " ");
-      const hasOutdatedPrice = Math.abs(Number(plan?.price) - 89.90) < 0.001;
+      const numericPrice = Number(plan?.price);
+      const hasOutdatedPrice = numericPrice >= 89.90 && numericPrice < 90;
       return /\b500\s*(?:MB|MEGA)?\b/i.test(identifier) && hasOutdatedPrice
         ? { ...plan, price: 99.90 }
         : plan;

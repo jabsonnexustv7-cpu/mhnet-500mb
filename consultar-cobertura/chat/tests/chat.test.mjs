@@ -134,7 +134,7 @@ test("consulta real usa o resolvedor público multioperadora e normaliza os plan
               coverage: { status: "VIAVEL", reason: "endereco_elegivel", coords: "-27,-48" },
               plans: [
                 { code: "TIM_SC_600", name: "FIBRA 600MB", price: 89.99, description: "Ótimo custo-benefício." },
-                { code: "TIM_SC_500", name: "FIBRA 500MB", price: 89.90, description: "Plano de 500 Mega." },
+                { code: "TIM_SC_500", name: "FIBRA 500MB", price: 89.99, description: "Plano de 500 Mega." },
                 { code: "TIM_SC_500_COMBO", name: "FIBRA 500MB + COMBO", price: 119.90, description: "Plano combinado." }
               ]
             };

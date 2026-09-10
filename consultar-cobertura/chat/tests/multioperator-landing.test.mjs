@@ -6,7 +6,7 @@ const root = new URL("../../", import.meta.url);
 
 test("landing carrega a integração multioperadora antes dos complementos do funil", async () => {
   const html = await readFile(new URL("index.html", root), "utf8");
-  assert.match(html, /multioperator-coverage\.js\?v=3/);
+  assert.match(html, /multioperator-coverage\.js\?v=4/);
   assert.match(html, /multioperator-coverage\.js[\s\S]*regional-plans\.js/);
 });
 

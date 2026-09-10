@@ -188,10 +188,11 @@ function normalizeCommercialPlan(plan, index, operatorCode = "") {
   const name = String(plan?.name || plan?.code || "Plano de internet");
   const giga = /1\s*GIGA/i.test(name);
   const speed = giga ? 1000 : Number(name.match(/(\d+)\s*(?:MB|MEGA)/i)?.[1] || 0);
-  const hasOutdatedPrice = Math.abs(Number(plan?.price) - 89.9) < 0.001;
+  const numericPrice = Number(plan?.price);
+  const hasOutdatedPrice = numericPrice >= 89.9 && numericPrice < 90;
   const price = String(operatorCode).trim().toUpperCase() === "TIM" && speed === 500 && hasOutdatedPrice
     ? 99.9
-    : Number(plan?.price || 0);
+    : numericPrice || 0;
   return {
     id: String(plan?.code || ""),
     speed,
