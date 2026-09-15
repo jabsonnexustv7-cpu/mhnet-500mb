@@ -20,7 +20,7 @@ fbq('track', 'PageView');
 <!-- TikTok Pixel Code Start -->
 <script>
 !function (w, d, t) {
-  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,n),ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=tqq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
 
   ttq.load('DA9J1Q3C77U3TUSOT4NG');
   ttq.page();
@@ -61,6 +61,13 @@ fbq('track', 'PageView');
 {% assign coverage_html = coverage_html | replace: 'Olá! Consultei a cobertura no site da MhNet e quero contratar.', 'Olá! Consultei a cobertura no site da WebTurbo e quero contratar.' %}
 {% assign coverage_html = coverage_html | replace: 'Olá! Consultei a cobertura no site da WebTurbo, parceira de vendas autorizada MhNet, e quero contratar.', 'Olá! Consultei a cobertura no site da WebTurbo e quero contratar.' %}
 {% assign coverage_html = coverage_html | replace: 'MhNet', 'WebTurbo' %}
+
+{% comment %} Âncoras dedicadas aos sitelinks do Google Ads. {% endcomment %}
+{% assign coverage_html = coverage_html | replace: '<section class="meta-landing-intro" id="meta-formulario" aria-labelledby="meta-landing-title">', '<section class="meta-landing-intro" id="meta-formulario" aria-labelledby="meta-landing-title"><span id="consultar-cobertura" aria-hidden="true" style="display:block;height:0;scroll-margin-top:96px;"></span>' %}
+{% assign coverage_html = coverage_html | replace: '<section class="plans-section section" id="planos" aria-labelledby="titulo-planos">', '<section class="plans-section section" id="planos" aria-labelledby="titulo-planos" style="scroll-margin-top:96px;">' %}
+{% assign coverage_html = coverage_html | replace: '<h3>Instalação grátis</h3>', '<span id="instalacao-gratis" aria-hidden="true" style="display:block;height:0;scroll-margin-top:96px;"></span><h3>Instalação grátis</h3>' %}
+{% assign coverage_html = coverage_html | replace: '<section class="steps-section section" aria-labelledby="titulo-como-contratar">', '<section class="steps-section section" id="como-funciona" aria-labelledby="titulo-como-contratar" style="scroll-margin-top:96px;">' %}
+
 {% assign coverage_html = coverage_html | replace: '<!-- Leaflet JS -->', '<script src="/consultar-cobertura/landing-hero-redesign.js?v=5"></script><!-- Leaflet JS -->' %}
 {% assign coverage_html = coverage_html | replace: '</body>', '<script src="/consultar-cobertura/multioperator-coverage.js?v=4"></script><script src="/consultar-cobertura/general-cep-street-options.js?v=1"></script></body>' %}
 
