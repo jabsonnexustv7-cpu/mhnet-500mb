@@ -230,7 +230,7 @@
     if (!success) return;
 
     const title = success.querySelector("h3");
-    if (title) title.textContent = "Pedido concluído com sucesso!";
+    if (title) title.innerHTML = 'Pedido concluído com <span>sucesso!</span>';
 
     const paragraphs = success.querySelectorAll("p");
     if (paragraphs[0]) {
