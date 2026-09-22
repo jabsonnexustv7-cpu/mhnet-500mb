@@ -1,5 +1,5 @@
-// WebTurbo — finalização autoritativa v4.3.
-// Controla apenas vencimento -> CRM e pós-venda -> WhatsApp. A recuperação no
+// WebTurbo — finalização autoritativa v4.4.
+// Controla vencimento -> CRM e confirma o pedido na própria página. A recuperação no
 // Telegram pertence exclusivamente ao lead-recovery-notification v9.
 (function () {
   "use strict";
@@ -8,7 +8,6 @@
   window.__webturboConversionFinalizerV4Installed = true;
 
   const CRM_ENDPOINT = "https://webturbo-crm-api-964927461432.southamerica-east1.run.app/api/v1/public/site-pre-sales";
-  const WHATS_NUMBER = "555193187300";
   const DUE_DATES = ["05", "08", "09", "10", "15", "25"];
   const CRM_EMAIL_PATTERN = /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+\-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$/;
   const checkoutEventId = `site_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
@@ -226,49 +225,26 @@
     return "";
   }
 
-  function buildWhatsUrl() {
-    const cpf = digits(byId("mCpf")?.value);
-    const message = cpf ? `Acabei de concluir um pedido de internet, meu CPF: ${cpf}` : "Acabei de concluir um pedido de internet pelo site da WebTurbo.";
-    return `https://wa.me/${WHATS_NUMBER}?text=${encodeURIComponent(message)}`;
-  }
-
-  function installEmergencyWhatsFallback(url) {
+  function showSuccessfulOrderMessage() {
     const success = byId("etapaSucesso");
-    if (!success) return null;
+    if (!success) return;
 
-    let button = byId("posVendaWhatsButton");
-    if (!button) {
-      button = document.createElement("a");
-      button.id = "posVendaWhatsButton";
-      button.textContent = "Continuar no WhatsApp";
-      button.target = "_self";
-      button.rel = "noopener";
-      button.dataset.webturboDirectWhatsapp = "true";
-      button.setAttribute("role", "button");
-      button.style.cssText = "display:inline-flex;align-items:center;justify-content:center;min-height:52px;margin-top:16px;padding:0 24px;border-radius:10px;background:#00c853;color:#fff;font-size:15px;font-weight:800;text-decoration:none";
-      success.appendChild(button);
+    const title = success.querySelector("h3");
+    if (title) title.textContent = "Pedido concluído com sucesso!";
+
+    const paragraphs = success.querySelectorAll("p");
+    if (paragraphs[0]) {
+      paragraphs[0].textContent = "Recebemos seu pedido e ele já foi enviado para nossa equipe.";
     }
-    button.href = url;
-    return button;
-  }
-
-  function redirectAfterSuccessfulOrder() {
-    if (typeof window.redirecionarWhatsAppFinal === "function") {
-      try {
-        window.redirecionarWhatsAppFinal();
-        return;
-      } catch (error) {
-        console.warn("[WebTurbo] Redirecionador principal do WhatsApp falhou; usando contingência.", error);
-      }
+    if (paragraphs[1]) {
+      paragraphs[1].textContent = "Nossa equipe entrará em contato para confirmar o agendamento da instalação.";
     }
 
-    const url = buildWhatsUrl();
-    installEmergencyWhatsFallback(url);
-    try {
-      window.location.assign(url);
-    } catch (error) {
-      console.warn("[WebTurbo] Redirecionamento automático não foi aceito; botão manual preservado.", error);
-    }
+    byId("posVendaWhatsButton")?.remove();
+    byId("posVendaWhatsHint")?.remove();
+
+    const countdownParagraph = byId("contadorWhats")?.closest("p");
+    if (countdownParagraph) countdownParagraph.remove();
   }
 
   function setClarityTag(key, value) {
@@ -340,7 +316,7 @@
       submitting = false;
       if (button) { button.disabled = true; button.textContent = "Pedido concluído"; }
       try { window.mostrarEtapa?.(6); } catch (_) {}
-      redirectAfterSuccessfulOrder();
+      showSuccessfulOrderMessage();
     } catch (error) {
       submitting = false;
       if (button) { button.disabled = false; button.textContent = originalText; }
