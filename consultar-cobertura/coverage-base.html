@@ -2929,6 +2929,253 @@
       }
     }
 
+    /* ── ETAPA FINAL: PEDIDO CONCLUÍDO ── */
+    body.wt-order-success {
+      background:
+        radial-gradient(circle at 50% 24%, rgba(34,197,94,.08), transparent 27%),
+        #f4f7fc;
+    }
+
+    body.wt-order-success .meta-landing-intro {
+      max-width: 920px;
+      padding: 0;
+    }
+
+    body.wt-order-success #meta-landing-title,
+    body.wt-order-success #meta-landing-description,
+    body.wt-order-success #meta-trust-row,
+    body.wt-order-success .meta-floating-whatsapp {
+      display: none !important;
+    }
+
+    body.wt-order-success #modalOverlay {
+      padding: 34px 20px 56px;
+    }
+
+    body.wt-order-success #modalOverlay .modal {
+      max-width: 860px;
+      overflow: visible;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    body.wt-order-success #etapaSucesso.wt-order-success-card {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      padding: 52px 56px 46px;
+      border: 1px solid #e0e8f3;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(34,197,94,.075), transparent 28%),
+        #fff;
+      box-shadow:
+        0 26px 68px rgba(10,36,99,.16),
+        0 4px 16px rgba(10,36,99,.05);
+      text-align: center;
+    }
+
+    body.wt-order-success #etapaSucesso.wt-order-success-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 4px;
+      background: linear-gradient(90deg, #1f5fe5 0%, #1592c2 52%, #16a36f 100%);
+    }
+
+    .wt-success-check {
+      display: grid;
+      place-items: center;
+      width: 112px;
+      height: 112px;
+      margin: 0 auto 24px;
+      border-radius: 50%;
+      background: rgba(34,197,94,.10);
+      box-shadow:
+        0 0 0 12px rgba(34,197,94,.06),
+        0 14px 34px rgba(22,163,74,.14);
+    }
+
+    .wt-success-check svg {
+      display: block;
+      width: 82px;
+      height: 82px;
+      overflow: visible;
+    }
+
+    .wt-success-check circle {
+      fill: url(#wt-success-green);
+      fill: #16b85d;
+    }
+
+    .wt-success-check path {
+      fill: none;
+      stroke: #fff;
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    body.wt-order-success #etapaSucesso h3 {
+      max-width: 720px;
+      margin: 0 auto 18px;
+      color: #0a2463;
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(30px, 4.5vw, 42px);
+      font-weight: 900;
+      line-height: 1.12;
+      letter-spacing: -.8px;
+    }
+
+    body.wt-order-success #etapaSucesso h3 span {
+      color: #10a868;
+    }
+
+    .wt-success-copy {
+      max-width: 690px;
+      margin: 0 auto;
+    }
+
+    body.wt-order-success #etapaSucesso .wt-success-copy p {
+      margin: 0;
+      color: #4a5a70;
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    body.wt-order-success #etapaSucesso .wt-success-copy p + p {
+      margin-top: 10px;
+    }
+
+    .wt-success-divider {
+      width: 100%;
+      height: 1px;
+      margin: 32px 0 28px;
+      background: linear-gradient(90deg, transparent 0%, #dce5f2 12%, #dce5f2 88%, transparent 100%);
+    }
+
+    .wt-success-benefits {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .wt-success-benefit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-width: 0;
+      padding: 12px 10px;
+      color: #0a2463;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.35;
+      text-align: left;
+    }
+
+    .wt-success-benefit-icon {
+      display: grid;
+      place-items: center;
+      flex: 0 0 54px;
+      width: 54px;
+      height: 54px;
+      border: 1px solid #dce7f8;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #f7faff 0%, #edf4ff 100%);
+      color: #1769e8;
+      box-shadow: 0 8px 20px rgba(23,105,232,.08);
+    }
+
+    .wt-success-benefit-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    body.wt-order-success .footer {
+      padding-bottom: 32px;
+    }
+
+    @media (max-width: 600px) {
+      body.wt-order-success #modalOverlay {
+        padding: 24px 12px 34px;
+      }
+
+      body.wt-order-success #modalOverlay .modal {
+        border-radius: 0;
+      }
+
+      body.wt-order-success #etapaSucesso.wt-order-success-card {
+        padding: 38px 22px 30px;
+        border-radius: 22px;
+        box-shadow:
+          0 20px 48px rgba(10,36,99,.14),
+          0 3px 12px rgba(10,36,99,.05);
+      }
+
+      .wt-success-check {
+        width: 92px;
+        height: 92px;
+        margin-bottom: 22px;
+        box-shadow:
+          0 0 0 10px rgba(34,197,94,.055),
+          0 12px 28px rgba(22,163,74,.13);
+      }
+
+      .wt-success-check svg {
+        width: 68px;
+        height: 68px;
+      }
+
+      body.wt-order-success #etapaSucesso h3 {
+        margin-bottom: 18px;
+        font-size: clamp(28px, 9.2vw, 36px);
+        line-height: 1.12;
+        letter-spacing: -.65px;
+      }
+
+      body.wt-order-success #etapaSucesso .wt-success-copy p {
+        font-size: 16px;
+        line-height: 1.58;
+      }
+
+      .wt-success-divider {
+        margin: 28px 0 22px;
+      }
+
+      .wt-success-benefits {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        max-width: 290px;
+      }
+
+      .wt-success-benefit {
+        justify-content: flex-start;
+        padding: 7px 4px;
+        font-size: 14px;
+      }
+
+      .wt-success-benefit-icon {
+        flex-basis: 50px;
+        width: 50px;
+        height: 50px;
+      }
+
+      .wt-success-benefit-icon svg {
+        width: 26px;
+        height: 26px;
+      }
+
+      body.wt-order-success .footer {
+        padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .meta-coverage-landing *,
       .meta-coverage-landing *::before,
@@ -3856,11 +4103,53 @@
       </div>
 
       <!-- Sucesso -->
-      <div id="etapaSucesso" style="display:none;" class="modal-success">
-        <div class="modal-success-icon">✅</div>
-        <h3>Pedido concluído com sucesso!</h3>
-        <p>Recebemos seu pedido e ele já foi enviado para nossa equipe.</p>
-        <p style="margin-top:8px;">Nossa equipe entrará em contato para confirmar o agendamento da instalação.</p>
+      <div id="etapaSucesso" style="display:none;" class="modal-success wt-order-success-card" role="status" aria-live="polite">
+        <div class="wt-success-check" aria-hidden="true">
+          <svg viewBox="0 0 64 64" focusable="false">
+            <circle cx="32" cy="32" r="32"></circle>
+            <path d="M18 32.5 27.5 42 47 22.5"></path>
+          </svg>
+        </div>
+
+        <h3>Pedido concluído com <span>sucesso!</span></h3>
+
+        <div class="wt-success-copy">
+          <p>Recebemos seu pedido e ele já foi enviado para nossa equipe.</p>
+          <p>Nossa equipe entrará em contato para confirmar o agendamento da instalação.</p>
+        </div>
+
+        <div class="wt-success-divider" aria-hidden="true"></div>
+
+        <div class="wt-success-benefits" aria-label="Benefícios da contratação">
+          <div class="wt-success-benefit">
+            <span class="wt-success-benefit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                <path d="M2.7 8.8a14.7 14.7 0 0 1 18.6 0M5.8 12.1a9.8 9.8 0 0 1 12.4 0M9 15.4a4.9 4.9 0 0 1 6 0M12 19h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span>Internet 100%<br>fibra óptica</span>
+          </div>
+
+          <div class="wt-success-benefit">
+            <span class="wt-success-benefit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" stroke="currentColor" stroke-width="2"/>
+                <path d="m19.4 15 .1.1 1.4 2.4-2.4 2.4-2.4-1.4-.2.1a8 8 0 0 1-1.5.6l-.1.2-.6 2.8h-3.4l-.6-2.8-.1-.2a8 8 0 0 1-1.5-.6l-.2-.1-2.4 1.4-2.4-2.4 1.4-2.4.1-.1a8 8 0 0 1-.6-1.6l-.2-.1-2.8-.6V9.3l2.8-.6.2-.1A8 8 0 0 1 4.6 7l-.1-.1-1.4-2.4 2.4-2.4 2.4 1.4.2-.1a8 8 0 0 1 1.5-.6l.1-.2.6-2.8h3.4l.6 2.8.1.2a8 8 0 0 1 1.5.6l.2.1 2.4-1.4 2.4 2.4-1.4 2.4-.1.1c.3.5.5 1 .6 1.6l.2.1 2.8.6v3.4l-2.8.6-.2.1a8 8 0 0 1-.6 1.6Z" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span>Instalação<br>grátis</span>
+          </div>
+
+          <div class="wt-success-benefit">
+            <span class="wt-success-benefit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                <path d="M4 13v-1a8 8 0 0 1 16 0v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 13.5A2.5 2.5 0 0 1 6.5 11H8v7H6.5A2.5 2.5 0 0 1 4 15.5v-2ZM20 13.5a2.5 2.5 0 0 0-2.5-2.5H16v7h1.5a2.5 2.5 0 0 0 2.5-2.5v-2ZM16 18c0 1.7-1.3 3-3 3h-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span>Atendimento<br>online</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -5767,6 +6056,7 @@
 
     function mostrarEtapa(n) {
       const etapaAnterior = etapaLandingAtual;
+      document.body.classList.toggle("wt-order-success", n === 6);
 
       ["etapa1","etapa2","etapa3","etapa4","etapa5","etapaSucesso"].forEach((id, index) => {
         const el = $(id);
